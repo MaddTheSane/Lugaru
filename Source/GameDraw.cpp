@@ -511,7 +511,8 @@ int Game::DrawGLScene(void)
 					if(distance>=.5){
 						checkpoint=DoRotation(player[k].skeleton.joints[abs(Random()%player[k].skeleton.num_joints)].position,0,player[k].rotation,0)*player[k].scale+player[k].coords;
 						checkpoint.y+=1;
-						if(!player[k].occluded==0)i=checkcollide(viewer,checkpoint,player[k].lastoccluded);
+						if(!(player[k].occluded==0))
+							i=checkcollide(viewer,checkpoint,player[k].lastoccluded);
 						if(i==-1||player[k].occluded==0)i=checkcollide(viewer,checkpoint);
 						if(i!=-1){
 							player[k].occluded+=1;

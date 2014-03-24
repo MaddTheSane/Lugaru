@@ -118,7 +118,7 @@ void Text::BuildFont()								// Build Our Font Display List
 
 void Text::glPrint(float x, float y, char *string, int set, float size, float width, float height)	// Where The Printing Happens
 {
-	glPrint(x, y, string, set, size, width, height, 0, strlen(string));
+	glPrint(x, y, string, set, size, width, height, 0, (GLuint)strlen(string));
 }
 
 void Text::_glPrint(float x, float y, char *string, int set, float size, float width, float height,int start,int end, int offset)	// Where The Printing Happens
@@ -159,7 +159,7 @@ void Text::glPrint(float x, float y, char *string, int set, float size, float wi
 
 void Text::glPrintOutline(float x, float y, char *string, int set, float size, float width, float height)	// Where The Printing Happens
 {
-	glPrintOutline(x, y, string, set, size, width, height, 0, strlen(string));
+	glPrintOutline(x, y, string, set, size, width, height, 0, (GLuint)strlen(string));
 }
 
 void Text::glPrintOutline(float x, float y, char *string, int set, float size, float width, float height,int start,int end)	// Where The Printing Happens

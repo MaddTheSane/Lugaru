@@ -72,7 +72,6 @@ void	Weapons::DoStuff(){
 	static float elasticity=.4;
 	static XYZ bounceness;
 	static float frictionness;
-	static float moveamount;
 	int closestline;
 	static float closestdistance;
 	static float distance;
@@ -80,7 +79,6 @@ void	Weapons::DoStuff(){
 	static XYZ closestpoint;
 	static XYZ closestswordpoint;
 	static XYZ extramove;
-	static float proportion;
 	static float tempmult;
 
 	//Move
@@ -1294,17 +1292,17 @@ Weapons::Weapons()
 {
 	numweapons = 0;
 
-	//		Model throwingknifemodel;
+	//Model throwingknifemodel;
 	knifetextureptr = 0;
 	lightbloodknifetextureptr = 0;
 	bloodknifetextureptr = 0;
 
-	//		Model swordmodel;
+	//Model swordmodel;
 	swordtextureptr = 0;
 	lightbloodswordtextureptr = 0;
 	bloodswordtextureptr = 0;
 
-	//		Model staffmodel;
+	//Model staffmodel;
 	stafftextureptr = 0;
 }
 
