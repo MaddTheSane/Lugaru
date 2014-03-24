@@ -305,7 +305,8 @@ public:
 static __forceinline void swap_gl_buffers(void)
 {
 
-    SDL_GL_SwapBuffers();
+    extern SDL_Window *sdlwindow;
+    SDL_GL_SwapWindow(sdlwindow);
 
 }
 

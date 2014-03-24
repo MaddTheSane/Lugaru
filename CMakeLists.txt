@@ -235,22 +235,21 @@ endif (NOT OPENAL_FOUND OR LUGARU_FORCE_INTERNAL_OPENAL)
 
 option (LUGARU_FORCE_INTERNAL_SDL "Force internal libSDL, even if there's a system version" False)
 if (NOT LUGARU_FORCE_INTERNAL_SDL)
-    find_package(SDL)
+    find_package(SDL2)
 else(NOT LUGARU_FORCE_INTERNAL_SDL)
 	set(SDL_FOUND False)
 endif (NOT LUGARU_FORCE_INTERNAL_SDL)
 
 if (NOT SDL_FOUND)
-    message(STATUS "Using internal copy of SDL")
-    set(LUGARU_MISSING_DEPS "${LUGARU_MISSING_DEPS} SDL")
-    set(SDLDIR "${DEPDIR}/SDL12")
+    message(STATUS "Using internal copy of SDL2")
+    set(LUGARU_MISSING_DEPS "${LUGARU_MISSING_DEPS} SDL2")
+    set(SDLDIR "${DEPDIR}/SDL2")
     set(SDL_INCLUDE_DIR "${SDLDIR}/include")
     set(SDL_LIBRARY "")
     if (APPLE)
         set(LUGARU_HAS_INTERNAL_SDL True)
         set(SDL_LIBRARY
-            ${SDLDIR}/lib/macosx/libSDL-1.2.0.dylib
-            ${SDLDIR}/lib/macosx/libSDLmain-osx.a
+            ${SDLDIR}/lib/macosx/libSDL2-2.0.0.dylib
         )
     endif (APPLE)
 
@@ -258,21 +257,18 @@ if (NOT SDL_FOUND)
         set(LUGARU_HAS_INTERNAL_SDL True)
         if (MSVC80)
           set(SDL_LIBRARY
-              ${SDLDIR}/lib/win32/msvc2005/SDLmain.lib
-              ${SDLDIR}/lib/win32/msvc2005/SDL.lib
+              ${SDLDIR}/lib/win32/msvc2005/SDL2.lib
           )
         endif (MSVC80)
         if (MSVC90)
           set(SDL_LIBRARY
-              ${SDLDIR}/lib/win32/msvc2008/SDLmain.lib
-              ${SDLDIR}/lib/win32/msvc2008/SDL.lib
+              ${SDLDIR}/lib/win32/msvc2008/SDL2.lib
           )
         endif (MSVC90)
         if (MINGW)
           set(SDL_LIBRARY
               "mingw32"
-              ${SDLDIR}/lib/win32/mingw/libSDLmain.a
-              ${SDLDIR}/lib/win32/mingw/libSDL.dll.a
+              ${SDLDIR}/lib/win32/mingw/libSDL2.dll.a
               "-mwindows"
           )
         endif (MINGW)
@@ -519,15 +515,15 @@ endif(APPLE)
 if(WIN32)
 	install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru.exe DESTINATION ${CMAKE_INSTALL_PREFIX})
 	if(MSVC80)
-		install(FILES ${SDLDIR}/lib/win32/msvc2005/SDL.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
+		install(FILES ${SDLDIR}/lib/win32/msvc2005/SDL2.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
 		install(FILES ${OPENALDIR}/lib/win32/msvc2005/OpenAL32.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
 	endif(MSVC80)
 	if(MSVC90)
-		install(FILES ${SDLDIR}/lib/win32/msvc2008/SDL.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
+		install(FILES ${SDLDIR}/lib/win32/msvc2008/SDL2.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
 		install(FILES ${OPENALDIR}/lib/win32/msvc2008/OpenAL32.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
 	endif(MSVC90)
 	if(MINGW)
-		install(FILES ${SDLDIR}/lib/win32/mingw/SDL.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
+		install(FILES ${SDLDIR}/lib/win32/mingw/SDL2.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
 		install(FILES ${OPENALDIR}/lib/win32/mingw/OpenAL32.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
 	endif(MINGW)
 else(WIN32)
@@ -538,7 +534,7 @@ else(WIN32)
 	endif(APPLE)
 	install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/lugaru DESTINATION ${CMAKE_INSTALL_PREFIX})
 	if(APPLE AND LUGARU_HAS_INTERNAL_SDL)
-		install(FILES ${SDLDIR}/lib/macosx/libSDL-1.2.0.dylib DESTINATION ${CMAKE_INSTALL_PREFIX})
+		install(FILES ${SDLDIR}/lib/macosx/libSDL2-2.0.0.dylib DESTINATION ${CMAKE_INSTALL_PREFIX})
 	endif(APPLE AND LUGARU_HAS_INTERNAL_SDL)
 endif(WIN32)
 

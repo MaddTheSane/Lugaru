@@ -123,20 +123,13 @@ extern float volume;
 #include "win-res/resource.h"
 #endif
 
+extern SDL_Window *sdlwindow;
+
 using namespace std;
 
 
 
 SDL_Rect **resolutions = NULL;
-static SDL_Rect rect_1024_768 = { 0, 0, 1024, 768 };
-static SDL_Rect rect_800_600  = { 0, 0, 800,  600 };
-static SDL_Rect rect_640_480  = { 0, 0, 640,  480 };
-static SDL_Rect *hardcoded_resolutions[] = {
-    &rect_1024_768,
-    &rect_800_600,
-    &rect_640_480,
-    NULL
-};
 
 
 
@@ -225,7 +218,8 @@ void sdlGetCursorPos(POINT *pt)
     pt->y = y;
 }
 #define GetCursorPos(x) sdlGetCursorPos(x)
-#define SetCursorPos(x, y) SDL_WarpMouse(x, y)
+#define SetCursorPos(x, y) SDL_WarpMouseInWindow(sdlwindow, x, y)
+
 #define ScreenToClient(x, pt)
 #define ClientToScreen(x, pt)
 #ifdef MessageBox
@@ -348,11 +342,11 @@ Boolean Button()
 
 
 #define MAX_SDLKEYS SDLK_LAST
-static unsigned short KeyTable[MAX_SDLKEYS];
+typedef std::map<SDL_Keycode, unsigned short> SdlKeyMap;
+static SdlKeyMap KeyTable;
 
 static void initSDLKeyTable(void)
 {
-    memset(KeyTable, 0xFF, sizeof (KeyTable));
     KeyTable[SDLK_BACKSPACE] = MAC_DELETE_KEY;
     KeyTable[SDLK_TAB] = MAC_TAB_KEY;
     KeyTable[SDLK_RETURN] = MAC_RETURN_KEY;
@@ -404,16 +398,16 @@ static void initSDLKeyTable(void)
     KeyTable[SDLK_x] = MAC_X_KEY;
     KeyTable[SDLK_y] = MAC_Y_KEY;
     KeyTable[SDLK_z] = MAC_Z_KEY;
-    KeyTable[SDLK_KP0] = MAC_NUMPAD_0_KEY;
-    KeyTable[SDLK_KP1] = MAC_NUMPAD_1_KEY;
-    KeyTable[SDLK_KP2] = MAC_NUMPAD_2_KEY;
-    KeyTable[SDLK_KP3] = MAC_NUMPAD_3_KEY;
-    KeyTable[SDLK_KP4] = MAC_NUMPAD_4_KEY;
-    KeyTable[SDLK_KP5] = MAC_NUMPAD_5_KEY;
-    KeyTable[SDLK_KP6] = MAC_NUMPAD_6_KEY;
-    KeyTable[SDLK_KP7] = MAC_NUMPAD_7_KEY;
-    KeyTable[SDLK_KP8] = MAC_NUMPAD_8_KEY;
-    KeyTable[SDLK_KP9] = MAC_NUMPAD_9_KEY;
+    KeyTable[SDLK_KP_0] = MAC_NUMPAD_0_KEY;
+    KeyTable[SDLK_KP_1] = MAC_NUMPAD_1_KEY;
+    KeyTable[SDLK_KP_2] = MAC_NUMPAD_2_KEY;
+    KeyTable[SDLK_KP_3] = MAC_NUMPAD_3_KEY;
+    KeyTable[SDLK_KP_4] = MAC_NUMPAD_4_KEY;
+    KeyTable[SDLK_KP_5] = MAC_NUMPAD_5_KEY;
+    KeyTable[SDLK_KP_6] = MAC_NUMPAD_6_KEY;
+    KeyTable[SDLK_KP_7] = MAC_NUMPAD_7_KEY;
+    KeyTable[SDLK_KP_8] = MAC_NUMPAD_8_KEY;
+    KeyTable[SDLK_KP_9] = MAC_NUMPAD_9_KEY;
     KeyTable[SDLK_KP_MULTIPLY] = MAC_NUMPAD_ASTERISK_KEY;
     KeyTable[SDLK_KP_PLUS] = MAC_NUMPAD_PLUS_KEY;
     KeyTable[SDLK_KP_ENTER] = MAC_NUMPAD_ENTER_KEY;
@@ -457,18 +451,26 @@ static inline int clamp_sdl_mouse_button(Uint8 button)
     return -1;
 }
 
-static void sdlEventProc(const SDL_Event &e, Game &game)
+static SDL_bool sdlEventProc(const SDL_Event &e, Game &game)
 {
     int val;
     bool skipkey = false;
-    SDLMod mod;
+    SDL_Keycode sym;
+    Uint16 mod;
 
     switch(e.type)
 	{
+	    case SDL_QUIT:
+            return SDL_FALSE;
+
+	    case SDL_WINDOWEVENT:
+            if (e.window.event == SDL_WINDOWEVENT_CLOSE)
+                return SDL_FALSE;
+
         case SDL_MOUSEMOTION:
             game.deltah += e.motion.xrel;
             game.deltav += e.motion.yrel;
-            return;
+            return SDL_TRUE;
 
 		case SDL_MOUSEBUTTONDOWN:
 			{
@@ -480,7 +482,7 @@ static void sdlEventProc(const SDL_Event &e, Game &game)
     				buttons[val] = true;
                 }
 			}
-			return;
+			return SDL_TRUE;
 
 		case SDL_MOUSEBUTTONUP:
 			{
@@ -492,61 +494,93 @@ static void sdlEventProc(const SDL_Event &e, Game &game)
     				buttons[val] = false;
                 }
 			}
-            return;
+            return SDL_TRUE;
 
         case SDL_KEYDOWN:
-            if (e.key.keysym.sym == SDLK_g)
+            sym = e.key.keysym.sym;
+            mod = e.key.keysym.mod;
+
+            if (sym == SDLK_g)
             {
-                if (e.key.keysym.mod & KMOD_CTRL)
+                if (mod & KMOD_CTRL)
                 {
                     skipkey = true;
-                    SDL_GrabMode mode = SDL_GRAB_ON;
-                    if ((SDL_GetVideoSurface()->flags & SDL_FULLSCREEN) == 0)
-                    {
-                        mode = SDL_WM_GrabInput(SDL_GRAB_QUERY);
-                        mode = (mode==SDL_GRAB_ON) ? SDL_GRAB_OFF:SDL_GRAB_ON;
-                    }
-                    SDL_WM_GrabInput(mode);
+
+                    SDL_bool mode = SDL_TRUE;
+                    if ((SDL_GetWindowFlags(sdlwindow) & SDL_WINDOW_FULLSCREEN) == 0)
+                        mode = SDL_GetWindowGrab(sdlwindow) ? SDL_FALSE : SDL_TRUE;
+                    SDL_SetWindowGrab(sdlwindow, mode);
+                    SDL_SetRelativeMouseMode(mode);
                 }
             }
 
-            else if (e.key.keysym.sym == SDLK_RETURN)
+            #if PLATFORM_MACOSX
+            else if (sym == SDLK_q)
             {
-                if (e.key.keysym.mod & KMOD_ALT)
+                if (mod & KMOD_GUI)
+                    return SDL_FALSE;  // quit game
+            }
+            #endif
+
+            else if (sym == SDLK_RETURN)
+            {
+                if (mod & KMOD_ALT)
                 {
                     skipkey = true;
-                    SDL_WM_ToggleFullScreen(SDL_GetVideoSurface());
+
+                    Uint32 flags = SDL_GetWindowFlags(sdlwindow);
+                    if (flags & SDL_WINDOW_FULLSCREEN)
+                        flags &= ~SDL_WINDOW_FULLSCREEN;
+                    else
+                        flags |= SDL_WINDOW_FULLSCREEN;
+                    SDL_SetWindowFullscreen(sdlwindow, flags);
                 }
             }
 
-            if ((!skipkey) && (e.key.keysym.sym < SDLK_LAST))
+            if (!skipkey)
             {
-                if (KeyTable[e.key.keysym.sym] != 0xffff)
-                    SetKey(KeyTable[e.key.keysym.sym]);
+                SdlKeyMap::const_iterator it = KeyTable.find(sym);
+                if (it != KeyTable.end())
+                    SetKey(it->second);
             }
 
-            mod = SDL_GetModState();
-            if (mod & KMOD_CTRL)
+            if ((mod & KMOD_CTRL) || (sym == SDLK_LCTRL) || (sym == SDLK_RCTRL))
                 SetKey(MAC_CONTROL_KEY);
-            if (mod & KMOD_ALT)
-                SetKey(MAC_OPTION_KEY);
-            if (mod & KMOD_META)
-                SetKey(MAC_COMMAND_KEY);
-            if (mod & KMOD_SHIFT)
-                SetKey(MAC_SHIFT_KEY);
-            if (mod & KMOD_CAPS)
-                SetKey(MAC_CAPS_LOCK_KEY);
+            else
+                ClearKey(MAC_CONTROL_KEY);
 
-            return;
+            if ((mod & KMOD_ALT) || (sym == SDLK_LALT) || (sym == SDLK_RALT))
+                SetKey(MAC_OPTION_KEY);
+            else
+                ClearKey(MAC_OPTION_KEY);
+
+            if ((mod & KMOD_GUI) || (sym == SDLK_LGUI) || (sym == SDLK_RGUI))
+                SetKey(MAC_COMMAND_KEY);
+            else
+                ClearKey(MAC_COMMAND_KEY);
+
+            if ((mod & KMOD_SHIFT) || (sym == SDLK_LSHIFT) || (sym == SDLK_RSHIFT))
+                SetKey(MAC_SHIFT_KEY);
+            else
+                ClearKey(MAC_SHIFT_KEY);
+
+            if ((mod & KMOD_CAPS) || (sym == SDLK_CAPSLOCK))
+                SetKey(MAC_CAPS_LOCK_KEY);
+            else
+                ClearKey(MAC_CAPS_LOCK_KEY);
+
+            return SDL_TRUE;
 
         case SDL_KEYUP:
-            if (e.key.keysym.sym < SDLK_LAST)
+            sym = e.key.keysym.sym;
+            mod = SDL_GetModState();
+
             {
-                if (KeyTable[e.key.keysym.sym] != 0xffff)
-                    ClearKey(KeyTable[e.key.keysym.sym]);
+                SdlKeyMap::const_iterator it = KeyTable.find(sym);
+                if (it != KeyTable.end())
+                    ClearKey(it->second);
             }
 
-            mod = SDL_GetModState();
             if ((mod & KMOD_CTRL) == 0)
                 ClearKey(MAC_CONTROL_KEY);
             if ((mod & KMOD_ALT) == 0)
@@ -557,8 +591,10 @@ static void sdlEventProc(const SDL_Event &e, Game &game)
                 ClearKey(MAC_SHIFT_KEY);
             if ((mod & KMOD_CAPS) == 0)
                 ClearKey(MAC_CAPS_LOCK_KEY);
-            return;
+            return SDL_TRUE;
     }
+
+    return SDL_TRUE;
 }
 
 
@@ -862,31 +898,48 @@ Boolean SetUp (Game & game)
 	SetupDSpFullScreen();
 
 
+    const int displayIdx = 0;  // !!! FIXME: other monitors?
     if (!SDL_WasInit(SDL_INIT_VIDEO))
     {
         if (SDL_Init(SDL_INIT_VIDEO) == -1)
         {
-            fprintf(stderr, "SDL_Init() failed: %s\n", SDL_GetError());
+            char buf[1024];
+            snprintf(buf, sizeof (buf), "SDL_Init() failed: %s\n", SDL_GetError());
+            fprintf(stderr, "%s\n", buf);
+            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Lugaru init failed!", buf, NULL);
             return false;
         }
 
         if (SDL_GL_LoadLibrary(NULL) == -1)
         {
-            fprintf(stderr, "SDL_GL_LoadLibrary() failed: %s\n", SDL_GetError());
+            char buf[1024];
+            snprintf(buf, sizeof (buf), "SDL_GL_LoadLibrary() failed: %s\n", SDL_GetError());
+            fprintf(stderr, "%s\n", buf);
+            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Lugaru init failed!", buf, NULL);
             SDL_Quit();
             return false;
         }
 
-        SDL_Rect **res = SDL_ListModes(NULL, SDL_FULLSCREEN|SDL_OPENGL);
-        if ( (res == NULL) || (res == ((SDL_Rect **)-1)) || (res[0] == NULL) || (res[0]->w < 640) || (res[0]->h < 480) )
-            res = hardcoded_resolutions;
-
-        // reverse list (it was sorted biggest to smallest by SDL)...
-        int count;
-        for (count = 0; res[count]; count++)
+        int count = 0;
+        const int nummodes = SDL_GetNumDisplayModes(displayIdx);
+        for (int i = 0; i < nummodes; i++)
         {
-            if ((res[count]->w < 640) || (res[count]->h < 480))
-                break;   // sane lower limit.
+            SDL_DisplayMode mode;
+            if (SDL_GetDisplayMode(displayIdx, i, &mode) == -1)
+                continue;
+            if ((mode.w < 640) || (mode.h < 480))
+                continue;  // sane lower limit.
+            count++;
+        }
+
+        if (count == 0)
+        {
+            char buf[1024];
+            snprintf(buf, sizeof (buf), "No suitable video resolutions found.");
+            fprintf(stderr, "%s\n", buf);
+            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Lugaru init failed!", buf, NULL);
+            SDL_Quit();
+            return false;
         }
 
         static SDL_Rect *resolutions_block = NULL;
@@ -894,15 +947,25 @@ Boolean SetUp (Game & game)
         resolutions = (SDL_Rect**) realloc(resolutions, sizeof (SDL_Rect *) * (count + 1));
         if ((resolutions_block == NULL) || (resolutions == NULL))
         {
+            char buf[1024];
+            snprintf(buf, sizeof (buf), "Out of memory!");
+            fprintf(stderr, "%s\n", buf);
+            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Lugaru init failed!", buf, NULL);
             SDL_Quit();
-            fprintf(stderr, "Out of memory!\n");
             return false;
         }
 
         resolutions[count--] = NULL;
         for (int i = 0; count >= 0; i++, count--)
         {
-            memcpy(&resolutions_block[count], res[i], sizeof (SDL_Rect));
+            SDL_DisplayMode mode;
+            if (SDL_GetDisplayMode(displayIdx, i, &mode) == -1)
+                continue;
+            if ((mode.w < 640) || (mode.h < 480))
+                continue;  // sane lower limit.
+            resolutions_block[count].x = resolutions_block[count].y = 0;
+            resolutions_block[count].w = mode.w;
+            resolutions_block[count].h = mode.h;
             resolutions[count] = &resolutions_block[count];
         }
 
@@ -914,51 +977,85 @@ Boolean SetUp (Game & game)
         }
     }
 
-    Uint32 sdlflags = SDL_OPENGL;
-    if (!cmdline("windowed"))
-        sdlflags |= SDL_FULLSCREEN;
-
-    SDL_WM_SetCaption("Lugaru", "Lugaru");
-
-    SDL_ShowCursor(0);
-
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-    if (SDL_SetVideoMode(kContextWidth, kContextHeight, 0, sdlflags) == NULL)
+    Uint32 sdlflags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
+    if (!cmdline("windowed"))
+        sdlflags |= SDL_WINDOW_FULLSCREEN;
+    if (!cmdline("nomousegrab"))
+        sdlflags |= SDL_WINDOW_INPUT_GRABBED;
+
+    sdlwindow = SDL_CreateWindow("Lugaru", SDL_WINDOWPOS_CENTERED_DISPLAY(displayIdx), SDL_WINDOWPOS_CENTERED_DISPLAY(displayIdx),
+                                 kContextWidth, kContextHeight, sdlflags);
+
+    if (!sdlwindow)
     {
-        fprintf(stderr, "SDL_SetVideoMode() failed: %s\n", SDL_GetError());
+        fprintf(stderr, "SDL_CreateWindow() failed: %s\n", SDL_GetError());
         fprintf(stderr, "forcing 640x480...\n");
         kContextWidth = 640;
         kContextHeight = 480;
-        if (SDL_SetVideoMode(kContextWidth, kContextHeight, 0, sdlflags) == NULL)
+        sdlwindow = SDL_CreateWindow("Lugaru", SDL_WINDOWPOS_CENTERED_DISPLAY(displayIdx), SDL_WINDOWPOS_CENTERED_DISPLAY(displayIdx),
+                                     kContextWidth, kContextHeight, sdlflags);
+        if (!sdlwindow)
         {
-            fprintf(stderr, "SDL_SetVideoMode() failed: %s\n", SDL_GetError());
+            fprintf(stderr, "SDL_CreateWindow() failed: %s\n", SDL_GetError());
             fprintf(stderr, "forcing 640x480 windowed mode...\n");
-            sdlflags &= ~SDL_FULLSCREEN;
-            if (SDL_SetVideoMode(kContextWidth, kContextHeight, 0, sdlflags) == NULL)
+            sdlflags &= ~SDL_WINDOW_FULLSCREEN;
+            sdlwindow = SDL_CreateWindow("Lugaru", SDL_WINDOWPOS_CENTERED_DISPLAY(displayIdx), SDL_WINDOWPOS_CENTERED_DISPLAY(displayIdx),
+                                         kContextWidth, kContextHeight, sdlflags);
+
+            if (!sdlwindow)
             {
-                fprintf(stderr, "SDL_SetVideoMode() failed: %s\n", SDL_GetError());
+                char buf[1024];
+                snprintf(buf, sizeof (buf), "SDL_CreateWindow() failed: %s\n", SDL_GetError());
+                fprintf(stderr, "%s\n", buf);
+                SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Lugaru init failed!", buf, NULL);
+                SDL_Quit();
                 return false;
             }
         }
     }
 
-    int dblbuf = 0;
-    if ((SDL_GL_GetAttribute(SDL_GL_DOUBLEBUFFER, &dblbuf) == -1) || (!dblbuf))
+    SDL_GLContext glctx = SDL_GL_CreateContext(sdlwindow);
+    if (!glctx)
     {
-        fprintf(stderr, "Failed to get double buffered GL context!\n");
+        char buf[1024];
+        snprintf(buf, sizeof (buf), "SDL_CreateContext() failed: %s\n", SDL_GetError());
+        fprintf(stderr, "%s\n", buf);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Lugaru init failed!", buf, NULL);
         SDL_Quit();
         return false;
     }
+
+    SDL_GL_MakeCurrent(sdlwindow, glctx);
 
     if (!lookup_all_glsyms())
     {
+        char buf[1024];
+        snprintf(buf, sizeof (buf), "Missing required OpenGL functions.");
+        fprintf(stderr, "%s\n", buf);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Lugaru init failed!", buf, NULL);
         SDL_Quit();
         return false;
     }
 
-    if (!cmdline("nomousegrab"))
-        SDL_WM_GrabInput(SDL_GRAB_ON);
+    int dblbuf = 0;
+    if ((SDL_GL_GetAttribute(SDL_GL_DOUBLEBUFFER, &dblbuf) == -1) || (!dblbuf))
+    {
+        char buf[1024];
+        snprintf(buf, sizeof (buf), "Failed to get a double-buffered context.");
+        fprintf(stderr, "%s\n", buf);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Lugaru init failed!", buf, NULL);
+        SDL_Quit();
+        return false;
+    }
+
+    if (SDL_GL_SetSwapInterval(-1) == -1)  // try swap_tear first.
+        SDL_GL_SetSwapInterval(1);
+
+    SDL_ShowCursor(0);
+    SDL_SetWindowGrab(sdlwindow, SDL_TRUE);
+    SDL_SetRelativeMouseMode(SDL_TRUE);
 
 
 	glClear( GL_COLOR_BUFFER_BIT );
@@ -1368,12 +1465,11 @@ int main(int argc, char **argv)
 					// message pump
 					while( SDL_PollEvent( &e ) )
 					{
-						if( e.type == SDL_QUIT )
+						if (!sdlEventProc(e, game))
 						{
 							gDone=true;
 							break;
 						}
-						sdlEventProc(e, game);
 					}
 				
 
