@@ -585,7 +585,7 @@ static SDL_bool sdlEventProc(const SDL_Event &e, Game &game)
                 ClearKey(MAC_CONTROL_KEY);
             if ((mod & KMOD_ALT) == 0)
                 ClearKey(MAC_OPTION_KEY);
-            if ((mod & KMOD_META) == 0)
+            if ((mod & KMOD_GUI) == 0)
                 ClearKey(MAC_COMMAND_KEY);
             if ((mod & KMOD_SHIFT) == 0)
                 ClearKey(MAC_SHIFT_KEY);
@@ -1288,7 +1288,7 @@ void CleanUp (void)
 
 static bool IsFocused()
 {
-    return ((SDL_GetAppState() & SDL_APPINPUTFOCUS) != 0);
+    return (SDL_GetWindowFlags(sdlwindow) & SDL_WINDOW_INPUT_FOCUS) != 0;
 }
 
 
@@ -1296,7 +1296,6 @@ static void launch_web_browser(const char *url)
 {
 #ifdef WIN32
     ShellExecute(NULL, "open", url, NULL, NULL, SW_SHOWNORMAL);
-
 #elif (defined(__APPLE__) && defined(__MACH__))
     const char *fmt = "open '%s'";
     const size_t len = strlen(fmt) + strlen(url) + 16;
@@ -1304,7 +1303,6 @@ static void launch_web_browser(const char *url)
     snprintf(buf, len, fmt, url);
     system(buf);
     delete[] buf;
-
 #elif PLATFORM_LINUX
     const char *fmt = "PATH=$PATH:. xdg-open '%s'";
     const size_t len = strlen(fmt) + strlen(url) + 16;
@@ -1325,16 +1323,14 @@ static char *findBinaryInPath(const char *bin, char *envr)
     char *start = envr;
     char *ptr;
 
-    do
-    {
+    do {
         size_t size;
         ptr = strchr(start, ':');  /* find next $PATH separator. */
         if (ptr)
             *ptr = '\0';
 
         size = strlen(start) + strlen(bin) + 2;
-        if (size > alloc_size)
-        {
+        if (size > alloc_size) {
             char *x = (char *) realloc(exe, size);
             if (x == NULL)
             {

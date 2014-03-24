@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		550AE98018DFC1CE00F0C197 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 550AE97F18DFC1CE00F0C197 /* libz.dylib */; };
+		550AE9A318DFC22800F0C197 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 550AE9A218DFC22800F0C197 /* SDL2.framework */; };
+		550AE9A518DFC24700F0C197 /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 550AE9A218DFC22800F0C197 /* SDL2.framework */; };
+		550AE9A718DFC29A00F0C197 /* Data in Resources */ = {isa = PBXBuildFile; fileRef = 550AE9A618DFC29A00F0C197 /* Data */; };
 		565AD00C11990D7600DF867A /* Frustum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 565ACFF111990D7600DF867A /* Frustum.cpp */; };
 		565AD00D11990D7600DF867A /* GameDraw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 565ACFF211990D7600DF867A /* GameDraw.cpp */; };
 		565AD00E11990D7600DF867A /* GameInitDispose.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 565ACFF311990D7600DF867A /* GameInitDispose.cpp */; };
@@ -110,17 +114,6 @@
 		565AD0D11199133D00DF867A /* jquant1.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD0A41199133D00DF867A /* jquant1.c */; };
 		565AD0D21199133D00DF867A /* jquant2.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD0A51199133D00DF867A /* jquant2.c */; };
 		565AD0D31199133D00DF867A /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD0A61199133D00DF867A /* jutils.c */; };
-		565AD0E01199137000DF867A /* adler32.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD0D41199137000DF867A /* adler32.c */; };
-		565AD0E11199137000DF867A /* compress.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD0D51199137000DF867A /* compress.c */; };
-		565AD0E21199137000DF867A /* crc32.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD0D61199137000DF867A /* crc32.c */; };
-		565AD0E31199137000DF867A /* deflate.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD0D71199137000DF867A /* deflate.c */; };
-		565AD0E51199137000DF867A /* infback.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD0D91199137000DF867A /* infback.c */; };
-		565AD0E61199137000DF867A /* inffast.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD0DA1199137000DF867A /* inffast.c */; };
-		565AD0E71199137000DF867A /* inflate.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD0DB1199137000DF867A /* inflate.c */; };
-		565AD0E81199137000DF867A /* inftrees.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD0DC1199137000DF867A /* inftrees.c */; };
-		565AD0E91199137000DF867A /* trees.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD0DD1199137000DF867A /* trees.c */; };
-		565AD0EA1199137000DF867A /* uncompr.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD0DE1199137000DF867A /* uncompr.c */; };
-		565AD0EB1199137000DF867A /* zutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD0DF1199137000DF867A /* zutil.c */; };
 		565AD0FD1199140000DF867A /* png.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD0EC1199140000DF867A /* png.c */; };
 		565AD0FE1199140000DF867A /* pngerror.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD0ED1199140000DF867A /* pngerror.c */; };
 		565AD1001199140000DF867A /* pngget.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD0EF1199140000DF867A /* pngget.c */; };
@@ -143,14 +136,62 @@
 		565AD1171199144400DF867A /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 565AD1161199144400DF867A /* OpenGL.framework */; };
 		565AD1241199145D00DF867A /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 565AD1231199145D00DF867A /* CoreFoundation.framework */; };
 		565AD18E1199303700DF867A /* lugaru.icns in Resources */ = {isa = PBXBuildFile; fileRef = 565AD18D1199303700DF867A /* lugaru.icns */; };
-		56A5C952119BAF1B00822AF6 /* libSDL-1.2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 56A5C950119BAF1B00822AF6 /* libSDL-1.2.0.dylib */; };
-		56A5C953119BAF1B00822AF6 /* libSDLmain-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 56A5C951119BAF1B00822AF6 /* libSDLmain-osx.a */; };
 		56A5C960119BB09D00822AF6 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = 56A5C95D119BB09D00822AF6 /* jaricom.c */; };
 		56A5C961119BB09D00822AF6 /* jcarith.c in Sources */ = {isa = PBXBuildFile; fileRef = 56A5C95E119BB09D00822AF6 /* jcarith.c */; };
 		56A5C962119BB09D00822AF6 /* jdarith.c in Sources */ = {isa = PBXBuildFile; fileRef = 56A5C95F119BB09D00822AF6 /* jdarith.c */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		550AE9A418DFC23800F0C197 /* Copy Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				550AE9A518DFC24700F0C197 /* SDL2.framework in Copy Frameworks */,
+			);
+			name = "Copy Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		550AE97F18DFC1CE00F0C197 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		550AE98118DFC20600F0C197 /* alstubs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = alstubs.h; path = ../Source/alstubs.h; sourceTree = "<group>"; };
+		550AE98218DFC20600F0C197 /* binio.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = binio.h; path = ../Source/binio.h; sourceTree = "<group>"; };
+		550AE98318DFC20600F0C197 /* ConsoleCmds.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ConsoleCmds.h; path = ../Source/ConsoleCmds.h; sourceTree = "<group>"; };
+		550AE98418DFC20600F0C197 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Constants.h; path = ../Source/Constants.h; sourceTree = "<group>"; };
+		550AE98518DFC20600F0C197 /* Frustum.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Frustum.h; path = ../Source/Frustum.h; sourceTree = "<group>"; };
+		550AE98618DFC20600F0C197 /* Game.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Game.h; path = ../Source/Game.h; sourceTree = "<group>"; };
+		550AE98718DFC20600F0C197 /* gamegl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = gamegl.h; path = ../Source/gamegl.h; sourceTree = "<group>"; };
+		550AE98818DFC20600F0C197 /* glstubs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = glstubs.h; path = ../Source/glstubs.h; sourceTree = "<group>"; };
+		550AE98918DFC20600F0C197 /* Lights.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Lights.h; path = ../Source/Lights.h; sourceTree = "<group>"; };
+		550AE98A18DFC20600F0C197 /* LinkedList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LinkedList.h; path = ../Source/LinkedList.h; sourceTree = "<group>"; };
+		550AE98B18DFC20600F0C197 /* MacCompatibility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MacCompatibility.h; path = ../Source/MacCompatibility.h; sourceTree = "<group>"; };
+		550AE98C18DFC20600F0C197 /* mmgr.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = mmgr.h; path = ../Source/mmgr.h; sourceTree = "<group>"; };
+		550AE98D18DFC20600F0C197 /* Models.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Models.h; path = ../Source/Models.h; sourceTree = "<group>"; };
+		550AE98E18DFC20600F0C197 /* nommgr.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = nommgr.h; path = ../Source/nommgr.h; sourceTree = "<group>"; };
+		550AE98F18DFC20600F0C197 /* Objects.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Objects.h; path = ../Source/Objects.h; sourceTree = "<group>"; };
+		550AE99018DFC20600F0C197 /* openal_wrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = openal_wrapper.h; path = ../Source/openal_wrapper.h; sourceTree = "<group>"; };
+		550AE99118DFC20600F0C197 /* pack_private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = pack_private.h; path = ../Source/pack_private.h; sourceTree = "<group>"; };
+		550AE99218DFC20600F0C197 /* Person.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Person.h; path = ../Source/Person.h; sourceTree = "<group>"; };
+		550AE99318DFC20600F0C197 /* PhysicsMath.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PhysicsMath.h; path = ../Source/PhysicsMath.h; sourceTree = "<group>"; };
+		550AE99418DFC20600F0C197 /* Pointer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Pointer.h; path = ../Source/Pointer.h; sourceTree = "<group>"; };
+		550AE99518DFC20600F0C197 /* private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = private.h; path = ../Source/private.h; sourceTree = "<group>"; };
+		550AE99618DFC20600F0C197 /* Quaternions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Quaternions.h; path = ../Source/Quaternions.h; sourceTree = "<group>"; };
+		550AE99718DFC20600F0C197 /* Random.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Random.h; path = ../Source/Random.h; sourceTree = "<group>"; };
+		550AE99818DFC20600F0C197 /* Skeleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Skeleton.h; path = ../Source/Skeleton.h; sourceTree = "<group>"; };
+		550AE99918DFC20600F0C197 /* Skybox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Skybox.h; path = ../Source/Skybox.h; sourceTree = "<group>"; };
+		550AE99A18DFC20600F0C197 /* Sprites.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Sprites.h; path = ../Source/Sprites.h; sourceTree = "<group>"; };
+		550AE99B18DFC20600F0C197 /* Terrain.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Terrain.h; path = ../Source/Terrain.h; sourceTree = "<group>"; };
+		550AE99C18DFC20600F0C197 /* Text.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Text.h; path = ../Source/Text.h; sourceTree = "<group>"; };
+		550AE99D18DFC20600F0C197 /* TGALoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TGALoader.h; path = ../Source/TGALoader.h; sourceTree = "<group>"; };
+		550AE99E18DFC20600F0C197 /* unpack_private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = unpack_private.h; path = ../Source/unpack_private.h; sourceTree = "<group>"; };
+		550AE99F18DFC20600F0C197 /* Weapons.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Weapons.h; path = ../Source/Weapons.h; sourceTree = "<group>"; };
+		550AE9A018DFC20600F0C197 /* WinDefs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = WinDefs.h; path = ../Source/WinDefs.h; sourceTree = "<group>"; };
+		550AE9A118DFC20600F0C197 /* WinInput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = WinInput.h; path = ../Source/WinInput.h; sourceTree = "<group>"; };
+		550AE9A218DFC22800F0C197 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = /Library/Frameworks/SDL2.framework; sourceTree = "<absolute>"; };
+		550AE9A618DFC29A00F0C197 /* Data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Data; path = ../Data; sourceTree = "<group>"; };
 		565ACFF111990D7600DF867A /* Frustum.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Frustum.cpp; path = ../Source/Frustum.cpp; sourceTree = SOURCE_ROOT; };
 		565ACFF211990D7600DF867A /* GameDraw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GameDraw.cpp; path = ../Source/GameDraw.cpp; sourceTree = SOURCE_ROOT; };
 		565ACFF311990D7600DF867A /* GameInitDispose.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GameInitDispose.cpp; path = ../Source/GameInitDispose.cpp; sourceTree = SOURCE_ROOT; };
@@ -254,17 +295,6 @@
 		565AD0A41199133D00DF867A /* jquant1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jquant1.c; path = ../Dependencies/libjpeg/jquant1.c; sourceTree = SOURCE_ROOT; };
 		565AD0A51199133D00DF867A /* jquant2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jquant2.c; path = ../Dependencies/libjpeg/jquant2.c; sourceTree = SOURCE_ROOT; };
 		565AD0A61199133D00DF867A /* jutils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jutils.c; path = ../Dependencies/libjpeg/jutils.c; sourceTree = SOURCE_ROOT; };
-		565AD0D41199137000DF867A /* adler32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = adler32.c; path = ../Dependencies/zlib/adler32.c; sourceTree = SOURCE_ROOT; };
-		565AD0D51199137000DF867A /* compress.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = compress.c; path = ../Dependencies/zlib/compress.c; sourceTree = SOURCE_ROOT; };
-		565AD0D61199137000DF867A /* crc32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = crc32.c; path = ../Dependencies/zlib/crc32.c; sourceTree = SOURCE_ROOT; };
-		565AD0D71199137000DF867A /* deflate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = deflate.c; path = ../Dependencies/zlib/deflate.c; sourceTree = SOURCE_ROOT; };
-		565AD0D91199137000DF867A /* infback.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = infback.c; path = ../Dependencies/zlib/infback.c; sourceTree = SOURCE_ROOT; };
-		565AD0DA1199137000DF867A /* inffast.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = inffast.c; path = ../Dependencies/zlib/inffast.c; sourceTree = SOURCE_ROOT; };
-		565AD0DB1199137000DF867A /* inflate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = inflate.c; path = ../Dependencies/zlib/inflate.c; sourceTree = SOURCE_ROOT; };
-		565AD0DC1199137000DF867A /* inftrees.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = inftrees.c; path = ../Dependencies/zlib/inftrees.c; sourceTree = SOURCE_ROOT; };
-		565AD0DD1199137000DF867A /* trees.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = trees.c; path = ../Dependencies/zlib/trees.c; sourceTree = SOURCE_ROOT; };
-		565AD0DE1199137000DF867A /* uncompr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = uncompr.c; path = ../Dependencies/zlib/uncompr.c; sourceTree = SOURCE_ROOT; };
-		565AD0DF1199137000DF867A /* zutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = zutil.c; path = ../Dependencies/zlib/zutil.c; sourceTree = SOURCE_ROOT; };
 		565AD0EC1199140000DF867A /* png.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = png.c; path = ../Dependencies/libpng/png.c; sourceTree = SOURCE_ROOT; };
 		565AD0ED1199140000DF867A /* pngerror.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngerror.c; path = ../Dependencies/libpng/pngerror.c; sourceTree = SOURCE_ROOT; };
 		565AD0EF1199140000DF867A /* pngget.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngget.c; path = ../Dependencies/libpng/pngget.c; sourceTree = SOURCE_ROOT; };
@@ -287,8 +317,6 @@
 		565AD1161199144400DF867A /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		565AD1231199145D00DF867A /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		565AD18D1199303700DF867A /* lugaru.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = lugaru.icns; sourceTree = "<group>"; };
-		56A5C950119BAF1B00822AF6 /* libSDL-1.2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libSDL-1.2.0.dylib"; path = "../Dependencies/SDL12/lib/macosx/libSDL-1.2.0.dylib"; sourceTree = SOURCE_ROOT; };
-		56A5C951119BAF1B00822AF6 /* libSDLmain-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDLmain-osx.a"; path = "../Dependencies/SDL12/lib/macosx/libSDLmain-osx.a"; sourceTree = SOURCE_ROOT; };
 		56A5C95D119BB09D00822AF6 /* jaricom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jaricom.c; path = ../Dependencies/libjpeg/jaricom.c; sourceTree = SOURCE_ROOT; };
 		56A5C95E119BB09D00822AF6 /* jcarith.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jcarith.c; path = ../Dependencies/libjpeg/jcarith.c; sourceTree = SOURCE_ROOT; };
 		56A5C95F119BB09D00822AF6 /* jdarith.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jdarith.c; path = ../Dependencies/libjpeg/jdarith.c; sourceTree = SOURCE_ROOT; };
@@ -301,34 +329,20 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				550AE9A318DFC22800F0C197 /* SDL2.framework in Frameworks */,
+				550AE98018DFC1CE00F0C197 /* libz.dylib in Frameworks */,
 				565AD10F1199144400DF867A /* Carbon.framework in Frameworks */,
 				565AD1111199144400DF867A /* Cocoa.framework in Frameworks */,
 				565AD1131199144400DF867A /* IOKit.framework in Frameworks */,
 				565AD1151199144400DF867A /* OpenAL.framework in Frameworks */,
 				565AD1171199144400DF867A /* OpenGL.framework in Frameworks */,
 				565AD1241199145D00DF867A /* CoreFoundation.framework in Frameworks */,
-				56A5C952119BAF1B00822AF6 /* libSDL-1.2.0.dylib in Frameworks */,
-				56A5C953119BAF1B00822AF6 /* libSDLmain-osx.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = "Linked Frameworks";
-			sourceTree = "<group>";
-		};
-		1058C7A2FEA54F0111CA2CBB /* Other Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = "Other Frameworks";
-			sourceTree = "<group>";
-		};
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -352,6 +366,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				550AE9A618DFC29A00F0C197 /* Data */,
 				565AD18D1199303700DF867A /* lugaru.icns */,
 				8D1107310486CEB800E47090 /* Lugaru-Info.plist */,
 			);
@@ -361,16 +376,14 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				56A5C950119BAF1B00822AF6 /* libSDL-1.2.0.dylib */,
-				56A5C951119BAF1B00822AF6 /* libSDLmain-osx.a */,
-				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
-				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
+				550AE9A218DFC22800F0C197 /* SDL2.framework */,
 				565AD10E1199144400DF867A /* Carbon.framework */,
 				565AD1101199144400DF867A /* Cocoa.framework */,
 				565AD1121199144400DF867A /* IOKit.framework */,
 				565AD1141199144400DF867A /* OpenAL.framework */,
 				565AD1161199144400DF867A /* OpenGL.framework */,
 				565AD1231199145D00DF867A /* CoreFoundation.framework */,
+				550AE97F18DFC1CE00F0C197 /* libz.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -382,7 +395,6 @@
 				565AD03411990DE400DF867A /* libogg */,
 				565AD03311990DDD00DF867A /* GLU */,
 				565AD03211990DD400DF867A /* libjpeg */,
-				565AD03111990DCF00DF867A /* zlib */,
 				565AD03011990DCA00DF867A /* libpng */,
 			);
 			name = Middleware;
@@ -408,24 +420,6 @@
 				565AD0FC1199140000DF867A /* pngwutil.c */,
 			);
 			name = libpng;
-			sourceTree = "<group>";
-		};
-		565AD03111990DCF00DF867A /* zlib */ = {
-			isa = PBXGroup;
-			children = (
-				565AD0D41199137000DF867A /* adler32.c */,
-				565AD0D51199137000DF867A /* compress.c */,
-				565AD0D61199137000DF867A /* crc32.c */,
-				565AD0D71199137000DF867A /* deflate.c */,
-				565AD0D91199137000DF867A /* infback.c */,
-				565AD0DA1199137000DF867A /* inffast.c */,
-				565AD0DB1199137000DF867A /* inflate.c */,
-				565AD0DC1199137000DF867A /* inftrees.c */,
-				565AD0DD1199137000DF867A /* trees.c */,
-				565AD0DE1199137000DF867A /* uncompr.c */,
-				565AD0DF1199137000DF867A /* zutil.c */,
-			);
-			name = zlib;
 			sourceTree = "<group>";
 		};
 		565AD03211990DD400DF867A /* libjpeg */ = {
@@ -538,6 +532,39 @@
 		56B7BBB311990A5900D910BE /* Lugaru Sources */ = {
 			isa = PBXGroup;
 			children = (
+				550AE98118DFC20600F0C197 /* alstubs.h */,
+				550AE98218DFC20600F0C197 /* binio.h */,
+				550AE98318DFC20600F0C197 /* ConsoleCmds.h */,
+				550AE98418DFC20600F0C197 /* Constants.h */,
+				550AE98518DFC20600F0C197 /* Frustum.h */,
+				550AE98618DFC20600F0C197 /* Game.h */,
+				550AE98718DFC20600F0C197 /* gamegl.h */,
+				550AE98818DFC20600F0C197 /* glstubs.h */,
+				550AE98918DFC20600F0C197 /* Lights.h */,
+				550AE98A18DFC20600F0C197 /* LinkedList.h */,
+				550AE98B18DFC20600F0C197 /* MacCompatibility.h */,
+				550AE98C18DFC20600F0C197 /* mmgr.h */,
+				550AE98D18DFC20600F0C197 /* Models.h */,
+				550AE98E18DFC20600F0C197 /* nommgr.h */,
+				550AE98F18DFC20600F0C197 /* Objects.h */,
+				550AE99018DFC20600F0C197 /* openal_wrapper.h */,
+				550AE99118DFC20600F0C197 /* pack_private.h */,
+				550AE99218DFC20600F0C197 /* Person.h */,
+				550AE99318DFC20600F0C197 /* PhysicsMath.h */,
+				550AE99418DFC20600F0C197 /* Pointer.h */,
+				550AE99518DFC20600F0C197 /* private.h */,
+				550AE99618DFC20600F0C197 /* Quaternions.h */,
+				550AE99718DFC20600F0C197 /* Random.h */,
+				550AE99818DFC20600F0C197 /* Skeleton.h */,
+				550AE99918DFC20600F0C197 /* Skybox.h */,
+				550AE99A18DFC20600F0C197 /* Sprites.h */,
+				550AE99B18DFC20600F0C197 /* Terrain.h */,
+				550AE99C18DFC20600F0C197 /* Text.h */,
+				550AE99D18DFC20600F0C197 /* TGALoader.h */,
+				550AE99E18DFC20600F0C197 /* unpack_private.h */,
+				550AE99F18DFC20600F0C197 /* Weapons.h */,
+				550AE9A018DFC20600F0C197 /* WinDefs.h */,
+				550AE9A118DFC20600F0C197 /* WinInput.h */,
 				565ACFF111990D7600DF867A /* Frustum.cpp */,
 				565ACFF211990D7600DF867A /* GameDraw.cpp */,
 				565ACFF311990D7600DF867A /* GameInitDispose.cpp */,
@@ -579,7 +606,7 @@
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
-				56F2189C119E7612000FCD52 /* ShellScript */,
+				550AE9A418DFC23800F0C197 /* Copy Frameworks */,
 			);
 			buildRules = (
 			);
@@ -597,11 +624,16 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = Wolfire;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Lugaru" */;
 			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* Lugaru */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -616,28 +648,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				550AE9A718DFC29A00F0C197 /* Data in Resources */,
 				565AD18E1199303700DF867A /* lugaru.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		56F2189C119E7612000FCD52 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			comments = "Copy libSDL dylib and the Data folder to build path when building.";
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "#!/bin/sh\nBUILDPATH=build/Debug/Lugaru.app/Contents/MacOS\nLIBPATH=../Dependencies\nDATAPATH=..\ncp -r ${LIBPATH}/SDL12/lib/macosx/libSDL-1.2.0.dylib $BUILDPATH/\ncp -r ${DATAPATH}/Data ${BUILDPATH}/../../\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		8D11072C0486CEB800E47090 /* Sources */ = {
@@ -747,17 +763,6 @@
 				565AD0D11199133D00DF867A /* jquant1.c in Sources */,
 				565AD0D21199133D00DF867A /* jquant2.c in Sources */,
 				565AD0D31199133D00DF867A /* jutils.c in Sources */,
-				565AD0E01199137000DF867A /* adler32.c in Sources */,
-				565AD0E11199137000DF867A /* compress.c in Sources */,
-				565AD0E21199137000DF867A /* crc32.c in Sources */,
-				565AD0E31199137000DF867A /* deflate.c in Sources */,
-				565AD0E51199137000DF867A /* infback.c in Sources */,
-				565AD0E61199137000DF867A /* inffast.c in Sources */,
-				565AD0E71199137000DF867A /* inflate.c in Sources */,
-				565AD0E81199137000DF867A /* inftrees.c in Sources */,
-				565AD0E91199137000DF867A /* trees.c in Sources */,
-				565AD0EA1199137000DF867A /* uncompr.c in Sources */,
-				565AD0EB1199137000DF867A /* zutil.c in Sources */,
 				565AD0FD1199140000DF867A /* png.c in Sources */,
 				565AD0FE1199140000DF867A /* pngerror.c in Sources */,
 				565AD1001199140000DF867A /* pngget.c in Sources */,
@@ -786,7 +791,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
@@ -807,7 +817,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				INFOPLIST_FILE = "Lugaru-Info.plist";
@@ -824,7 +839,13 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -835,17 +856,19 @@
 					"stricmp=strcasecmp",
 					"FALSE=0",
 					"TRUE=1",
-					"Z_PREFIX=1",
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/..",
-					"$(SRCROOT)/../Dependencies/SDL12/include",
+					/Library/Frameworks/SDL2.framework/Headers,
 					"$(SRCROOT)/../Dependencies/OpenGL",
 					"$(SRCROOT)/../Dependencies/OpenGL/GL",
-					"$(SRCROOT)/../Dependencies/zlib",
 					"$(SRCROOT)/../Dependencies/libpng",
 					"$(SRCROOT)/../Dependencies/libjpeg",
 					"$(SRCROOT)/../Dependencies/OpenAL/include/AL",
@@ -854,15 +877,20 @@
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
-				SDKROOT = macosx10.6;
-				VALID_ARCHS = "i386 ppc ppc7400 ppc970 x86_64";
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"USE_SDL=1",
@@ -872,17 +900,19 @@
 					"stricmp=strcasecmp",
 					"FALSE=0",
 					"TRUE=1",
-					"Z_PREFIX=1",
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/..",
-					"$(SRCROOT)/../Dependencies/SDL12/include",
+					/Library/Frameworks/SDL2.framework/Headers,
 					"$(SRCROOT)/../Dependencies/OpenGL",
 					"$(SRCROOT)/../Dependencies/OpenGL/GL",
-					"$(SRCROOT)/../Dependencies/zlib",
 					"$(SRCROOT)/../Dependencies/libpng",
 					"$(SRCROOT)/../Dependencies/libjpeg",
 					"$(SRCROOT)/../Dependencies/OpenAL/include/AL",
@@ -890,8 +920,7 @@
 					"$(SRCROOT)/../Dependencies/libvorbis/include",
 				);
 				PREBINDING = NO;
-				SDKROOT = macosx10.6;
-				VALID_ARCHS = "i386 ppc ppc7400 ppc970 x86_64";
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
