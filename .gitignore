@@ -1,0 +1,13 @@
+**/.DS_Store
+**/project.xcworkspace/
+**/xcuserdata/
+lugaru*
+cmake_install.cmake
+cmake-build
+CMakeFiles
+CMakeCache.txt
+Makefile
+*~
+bin
+run
+**/build
