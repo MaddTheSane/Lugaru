@@ -237,18 +237,18 @@ option (LUGARU_FORCE_INTERNAL_SDL "Force internal libSDL, even if there's a syst
 if (NOT LUGARU_FORCE_INTERNAL_SDL)
     find_package(SDL2)
 else(NOT LUGARU_FORCE_INTERNAL_SDL)
-	set(SDL_FOUND False)
+	set(SDL2_FOUND False)
 endif (NOT LUGARU_FORCE_INTERNAL_SDL)
 
-if (NOT SDL_FOUND)
+if (NOT SDL2_FOUND)
     message(STATUS "Using internal copy of SDL2")
     set(LUGARU_MISSING_DEPS "${LUGARU_MISSING_DEPS} SDL2")
     set(SDLDIR "${DEPDIR}/SDL2")
-    set(SDL_INCLUDE_DIR "${SDLDIR}/include")
-    set(SDL_LIBRARY "")
+    set(SDL2_INCLUDE_DIR "${SDLDIR}/include")
+    set(SDL2_LIBRARY "")
     if (APPLE)
         set(LUGARU_HAS_INTERNAL_SDL True)
-        set(SDL_LIBRARY
+        set(SDL2_LIBRARY
             ${SDLDIR}/lib/macosx/libSDL2-2.0.0.dylib
         )
     endif (APPLE)
@@ -256,17 +256,17 @@ if (NOT SDL_FOUND)
     if (WIN32)
         set(LUGARU_HAS_INTERNAL_SDL True)
         if (MSVC80)
-          set(SDL_LIBRARY
+          set(SDL2_LIBRARY
               ${SDLDIR}/lib/win32/msvc2005/SDL2.lib
           )
         endif (MSVC80)
         if (MSVC90)
-          set(SDL_LIBRARY
+          set(SDL2_LIBRARY
               ${SDLDIR}/lib/win32/msvc2008/SDL2.lib
           )
         endif (MSVC90)
         if (MINGW)
-          set(SDL_LIBRARY
+          set(SDL2_LIBRARY
               "mingw32"
               ${SDLDIR}/lib/win32/mingw/libSDL2.dll.a
               "-mwindows"
@@ -277,7 +277,7 @@ if (NOT SDL_FOUND)
     if (NOT LUGARU_HAS_INTERNAL_SDL)
         message(ERROR "We don't have a prebuilt SDL for this platform.")
     endif (NOT LUGARU_HAS_INTERNAL_SDL)
-endif (NOT SDL_FOUND)
+endif (NOT SDL2_FOUND)
 
 option (LUGARU_FORCE_INTERNAL_PNG "Force internal libPNG, even if there's a system version" False)
 if (NOT LUGARU_FORCE_INTERNAL_PNG)
@@ -482,13 +482,13 @@ include_directories(
     ${ZLIB_INCLUDE_DIR}
     ${OPENGL_INCLUDE_DIR}
     ${GLU_INCLUDE_DIR}
-    ${SDL_INCLUDE_DIR}
+    ${SDL2_INCLUDE_DIR}
     ${VORBISFILE_INCLUDE_DIR}
     ${OGG_INCLUDE_DIR}
     ${CMAKE_SOURCE_DIR}/Source
 )
 
-set(LUGARU_LIBS ${OPENAL_LIBRARY} ${PNG_LIBRARY} ${JPEG_LIBRARY} ${ZLIB_LIBRARIES} ${SDL_LIBRARY} ${GLU_LIBRARY} ${OPENGL_LIBRARY} ${VORBISFILE_LIBRARY} ${OGG_LIBRARY} ${PLATFORM_LIBS})
+set(LUGARU_LIBS ${OPENAL_LIBRARY} ${PNG_LIBRARY} ${JPEG_LIBRARY} ${ZLIB_LIBRARIES} ${SDL2_LIBRARY} ${GLU_LIBRARY} ${OPENGL_LIBRARY} ${VORBISFILE_LIBRARY} ${OGG_LIBRARY} ${PLATFORM_LIBS})
 
 
 if(WIN32)
