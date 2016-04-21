@@ -932,7 +932,7 @@ void Model::CalculateNormals(bool facenormalise)
 
 void Model::drawimmediate()
 {
-	glBindTexture(GL_TEXTURE_2D,(unsigned long)textureptr);
+	glBindTexture(GL_TEXTURE_2D,textureptr);
 	glBegin(GL_TRIANGLES);
 	for(int i=0;i<TriangleNum;i++){
 		/*if(Triangles[i].vertex[0]<vertexNum&&Triangles[i].vertex[1]<vertexNum&&Triangles[i].vertex[2]<vertexNum&&Triangles[i].vertex[0]>=0&&Triangles[i].vertex[1]>=0&&Triangles[i].vertex[2]>=0){
@@ -973,7 +973,7 @@ void Model::draw()
 
 	if(!color)glInterleavedArrays( GL_T2F_N3F_V3F,8*sizeof(GLfloat),&vArray[0]);
 	if(color)glInterleavedArrays( GL_T2F_C3F_V3F,8*sizeof(GLfloat),&vArray[0]);
-	glBindTexture(GL_TEXTURE_2D,(unsigned long)textureptr);
+	glBindTexture(GL_TEXTURE_2D,textureptr);
 
 #if PLATFORM_MACOSX
 	glLockArraysEXT( 0, TriangleNum*3);
@@ -999,7 +999,7 @@ void Model::drawdifftex(GLuint texture)
 	if(!color)glInterleavedArrays( GL_T2F_N3F_V3F,8*sizeof(GLfloat),&vArray[0]);
 	if(color)glInterleavedArrays( GL_T2F_C3F_V3F,8*sizeof(GLfloat),&vArray[0]);
 
-	glBindTexture(GL_TEXTURE_2D,(unsigned long)texture);
+	glBindTexture(GL_TEXTURE_2D,texture);
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 
@@ -1022,7 +1022,7 @@ void Model::drawdifftex(GLuint texture)
 
 void Model::drawdiffteximmediate(GLuint texture)
 {
-	glBindTexture(GL_TEXTURE_2D,(unsigned long)texture);
+	glBindTexture(GL_TEXTURE_2D,texture);
 
 	glBegin(GL_TRIANGLES);
 	for(int i=0;i<TriangleNum;i++){

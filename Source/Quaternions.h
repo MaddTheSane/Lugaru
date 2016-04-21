@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 //#include "Carbon.h"
+#include <simd/simd.h>
 #include "math.h"
 #include "PhysicsMath.h"
 #include "gamegl.h"
@@ -40,18 +41,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 //using namespace std;
 typedef float Matrix_t [4][4];
-struct euler
-{
-	float x, y, z;
-};
+typedef simd::float3 euler;
+//struct euler
+//{
+//	float x, y, z;
+//};
 struct angle_axis
 {
 	float x, y, z, angle;
 };
-struct quaternion
-{
-	float x, y, z, w;
-};
+
+typedef simd::float4 quaternion;
+//struct quaternion
+//{
+//	float x, y, z, w;
+//};
 
 class XYZ{
 public:
@@ -80,9 +84,6 @@ quaternion To_Quat(angle_axis Ang_Ax);
 quaternion To_Quat(Matrix_t m);
 angle_axis Quat_2_AA(quaternion Quat);
 void Quat_2_Matrix(quaternion Quat, Matrix_t m);
-quaternion Normalize(quaternion Quat);
-quaternion Quat_Mult(quaternion q1, quaternion q2);
-quaternion QNormalize(quaternion Quat);
 XYZ Quat2Vector(quaternion Quat);
 
 inline void CrossProduct(XYZ *P, XYZ *Q, XYZ *V);
@@ -90,7 +91,7 @@ inline void CrossProduct(XYZ P, XYZ Q, XYZ *V);
 inline void Normalise(XYZ *vectory);
 inline float normaldotproduct(XYZ point1, XYZ point2);
 inline float fast_sqrt (register float arg);
-bool PointInTriangle(XYZ *p, XYZ normal, XYZ *p1, XYZ *p2, XYZ *p3);
+bool PointInTriangle(const XYZ *p, const XYZ normal, const XYZ *p1, const XYZ *p2, const XYZ *p3);
 bool LineFacet(XYZ p1,XYZ p2,XYZ pa,XYZ pb,XYZ pc,XYZ *p);
 float LineFacetd(XYZ p1,XYZ p2,XYZ pa,XYZ pb,XYZ pc,XYZ *p);
 float LineFacetd(XYZ p1,XYZ p2,XYZ pa,XYZ pb,XYZ pc,XYZ n, XYZ *p);

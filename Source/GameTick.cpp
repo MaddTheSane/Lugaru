@@ -7200,7 +7200,7 @@ void	Game::Tick()
 																									if(((player[i].targetanimation!=getupfrombackanim&&player[i].targetanimation!=getupfromfrontanim)||player[i].skeleton.free)&&((player[k].targetanimation!=getupfrombackanim&&player[k].targetanimation!=getupfromfrontanim)||player[k].skeleton.free))
 																										if(((((findLengthfast(&rotatetarget)>150&&(i!=0&&k!=0))||(findLengthfast(&rotatetarget)>50&&player[0].rabbitkickragdoll/*currentanimation==rabbitkickanim*/&&(i==0||k==0)))&&normaldotproduct(rotatetarget,player[k].coords-player[i].coords)>0)&&((i==0||k==0)||((player[i].skeleton.oldfree==1&&k!=0&&animation[player[k].currentanimation].attack==neutral)||(player[k].skeleton.oldfree==1&&i!=0&&animation[player[i].currentanimation].attack==neutral)||(player[i].isFlip()&&!player[i].skeleton.oldfree&&(i==0||k==0))||(player[k].isFlip()&&!player[k].skeleton.oldfree&&(i==0||k==0))||(i==0||k==0))))||((player[i].targetanimation==jumpupanim||player[i].targetanimation==jumpdownanim||player[i].isFlip())&&(player[k].targetanimation==jumpupanim||player[k].targetanimation==jumpdownanim||player[k].isFlip())&&(i==0||k==0)&&(!player[i].skeleton.oldfree&&!player[k].skeleton.oldfree))){
 																											//If hit by body
-																											if((i!=0||player[i].skeleton.free)&&(k!=0||player[k].skeleton.free)||(animation[player[i].targetanimation].height==highheight&&animation[player[k].targetanimation].height==highheight)){
+																											if(((i!=0||player[i].skeleton.free)&&(k!=0||player[k].skeleton.free))||(animation[player[i].targetanimation].height==highheight&&animation[player[k].targetanimation].height==highheight)){
 																												static float gLoc[3];
 																												static float vel[3];
 																												gLoc[0]=player[i].coords.x;
@@ -7489,7 +7489,7 @@ void	Game::Tick()
 							}
 
 							static bool respawnkeydown;
-							if(!editorenabled&&(whichlevel!=-2&&(IsKeyDown(theKeyMap, MAC_Z_KEY)&&IsKeyDown(theKeyMap, MAC_COMMAND_KEY)&&debugmode&&!editorenabled)||(IsKeyDown(theKeyMap, jumpkey)&&!respawnkeydown&&!oldattackkey&&player[0].dead))){
+							if(!editorenabled&&((whichlevel!=-2&&(IsKeyDown(theKeyMap, MAC_Z_KEY)&&IsKeyDown(theKeyMap, MAC_COMMAND_KEY)&&debugmode&&!editorenabled))||(IsKeyDown(theKeyMap, jumpkey)&&!respawnkeydown&&!oldattackkey&&player[0].dead))){
 								targetlevel=whichlevel;
 								loading=1;
 								leveltime=5;
@@ -8264,7 +8264,7 @@ void	Game::Tick()
 													if(player[0].targetanimation!=rabbitkickanim&&player[0].weaponactive!=-1){
 														if(weapons.type[player[0].weaponids[0]]==knife){
 															if(player[i].isIdle()||player[i].isCrouch()||player[i].isRun()||player[i].isFlip()){
-																if(abs(Random()%2==0))player[i].targetanimation=backhandspringanim;
+																if((Random()%2==0))player[i].targetanimation=backhandspringanim;
 																else player[i].targetanimation=rollanim;
 																player[i].target=0;
 																player[i].targetframe=0;

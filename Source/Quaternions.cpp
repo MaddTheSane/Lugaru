@@ -173,7 +173,7 @@ quaternion To_Quat(int In_Degrees, euler Euler)
 
 quaternion QNormalize(quaternion Quat)
 {
-	static float norm;
+	float norm;
 	norm =  Quat.x * Quat.x + 
 		Quat.y * Quat.y + 
 		Quat.z * Quat.z + 
@@ -240,14 +240,10 @@ bool PointInTriangle(Vector *p, Vector normal, float p11, float p12, float p13, 
 	normalv[1]=normal.y;
 	normalv[2]=normal.z;
 
-#define ABS(X) (((X)<0.f)?-(X):(X) )
-#define MAX(A, B) (((A)<(B))?(B):(A))	
-	max = MAX(MAX(ABS(normalv[0]), ABS(normalv[1])), ABS(normalv[2]));
-#undef MAX
-	if (max == ABS(normalv[0])) {i = 1; j = 2;} // y, z
-	if (max == ABS(normalv[1])) {i = 0; j = 2;} // x, z
-	if (max == ABS(normalv[2])) {i = 0; j = 1;} // x, y
-#undef ABS
+	max = std::max(std::max(fabs(normalv[0]), fabs(normalv[1])), fabs(normalv[2]));
+	if (max == fabs(normalv[0])) {i = 1; j = 2;} // y, z
+	if (max == fabs(normalv[1])) {i = 0; j = 2;} // x, z
+	if (max == fabs(normalv[2])) {i = 0; j = 1;} // x, y
 
 	u0 = pointv[i] - p1v[i];
 	v0 = pointv[j] - p1v[j];
@@ -283,15 +279,14 @@ bool PointInTriangle(Vector *p, Vector normal, float p11, float p12, float p13, 
 bool LineFacet(Vector p1,Vector p2,Vector pa,Vector pb,Vector pc,Vector *p)
 {
 	static float d;
-	static float a1,a2,a3;
-	static float total,denom,mu;
-	static Vector n,pa1,pa2,pa3;
+	static float denom,mu;
+	static Vector n;
 
-	//Calculate the parameters for the plane 
+	//Calculate the parameters for the plane
 	n.x = (pb.y - pa.y)*(pc.z - pa.z) - (pb.z - pa.z)*(pc.y - pa.y);
 	n.y = (pb.z - pa.z)*(pc.x - pa.x) - (pb.x - pa.x)*(pc.z - pa.z);
 	n.z = (pb.x - pa.x)*(pc.y - pa.y) - (pb.y - pa.y)*(pc.x - pa.x);
-	n.Normalize();
+	n = vector_normalize(n);
 	d = - n.x * pa.x - n.y * pa.y - n.z * pa.z;
 
 	//Calculate the position on the line that intersects the plane 
@@ -310,21 +305,19 @@ bool LineFacet(Vector p1,Vector p2,Vector pa,Vector pb,Vector pc,Vector *p)
 	return 1;
 }
 
-bool PointInTriangle(XYZ *p, XYZ normal, XYZ *p1, XYZ *p2, XYZ *p3)
+bool PointInTriangle(const XYZ *p, const XYZ normal, const XYZ *p1, const XYZ *p2, const XYZ *p3)
 {
 	static float u0, u1, u2;
 	static float v0, v1, v2;
 	static float a, b;
 	static float max;
 	static int i, j;
-	static bool bInter = 0;
+	bool bInter = false;
 	static float pointv[3];
 	static float p1v[3];
 	static float p2v[3];
 	static float p3v[3];
 	static float normalv[3];
-
-	bInter=0;
 
 	pointv[0]=p->x;
 	pointv[1]=p->y;
@@ -347,14 +340,10 @@ bool PointInTriangle(XYZ *p, XYZ normal, XYZ *p1, XYZ *p2, XYZ *p3)
 	normalv[1]=normal.y;
 	normalv[2]=normal.z;
 
-#define ABS(X) (((X)<0.f)?-(X):(X) )
-#define MAX(A, B) (((A)<(B))?(B):(A))	
-	max = MAX(MAX(ABS(normalv[0]), ABS(normalv[1])), ABS(normalv[2]));
-#undef MAX
-	if (max == ABS(normalv[0])) {i = 1; j = 2;} // y, z
-	if (max == ABS(normalv[1])) {i = 0; j = 2;} // x, z
-	if (max == ABS(normalv[2])) {i = 0; j = 1;} // x, y
-#undef ABS
+	max = std::max(std::max(fabs(normalv[0]), fabs(normalv[1])), fabs(normalv[2]));
+	if (max == fabs(normalv[0])) {i = 1; j = 2;} // y, z
+	if (max == fabs(normalv[1])) {i = 0; j = 2;} // x, z
+	if (max == fabs(normalv[2])) {i = 0; j = 1;} // x, y
 
 	u0 = pointv[i] - p1v[i];
 	v0 = pointv[j] - p1v[j];
@@ -390,8 +379,7 @@ bool PointInTriangle(XYZ *p, XYZ normal, XYZ *p1, XYZ *p2, XYZ *p3)
 bool LineFacet(XYZ p1,XYZ p2,XYZ pa,XYZ pb,XYZ pc,XYZ *p)
 {
 	static float d;
-	static float a1,a2,a3;
-	static float total,denom,mu;
+	static float denom,mu;
 	static XYZ n,pa1,pa2,pa3;
 
 	//Calculate the parameters for the plane 
@@ -420,8 +408,7 @@ bool LineFacet(XYZ p1,XYZ p2,XYZ pa,XYZ pb,XYZ pc,XYZ *p)
 float LineFacetd(XYZ p1,XYZ p2,XYZ pa,XYZ pb,XYZ pc,XYZ *p)
 {
 	static float d;
-	static float a1,a2,a3;
-	static float total,denom,mu;
+	static float denom,mu;
 	static XYZ n,pa1,pa2,pa3;
 
 	//Calculate the parameters for the plane 
@@ -450,8 +437,7 @@ float LineFacetd(XYZ p1,XYZ p2,XYZ pa,XYZ pb,XYZ pc,XYZ *p)
 float LineFacetd(XYZ p1,XYZ p2,XYZ pa,XYZ pb,XYZ pc, XYZ n, XYZ *p)
 {
 	static float d;
-	static float a1,a2,a3;
-	static float total,denom,mu;
+	static float denom,mu;
 	static XYZ pa1,pa2,pa3;
 
 	//Calculate the parameters for the plane 
@@ -475,8 +461,7 @@ float LineFacetd(XYZ p1,XYZ p2,XYZ pa,XYZ pb,XYZ pc, XYZ n, XYZ *p)
 float LineFacetd(XYZ *p1,XYZ *p2,XYZ *pa,XYZ *pb,XYZ *pc, XYZ *p)
 {
 	static float d;
-	static float a1,a2,a3;
-	static float total,denom,mu;
+	static float denom,mu;
 	static XYZ pa1,pa2,pa3,n;
 
 	//Calculate the parameters for the plane 
@@ -505,8 +490,7 @@ float LineFacetd(XYZ *p1,XYZ *p2,XYZ *pa,XYZ *pb,XYZ *pc, XYZ *p)
 float LineFacetd(XYZ *p1,XYZ *p2,XYZ *pa,XYZ *pb,XYZ *pc, XYZ *n, XYZ *p)
 {
 	static float d;
-	static float a1,a2,a3;
-	static float total,denom,mu;
+	static float denom,mu;
 	static XYZ pa1,pa2,pa3;
 
 	//Calculate the parameters for the plane 

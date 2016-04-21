@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //#include <Carbon.h>
 
 #include "MacCompatibility.h"
+#include <simd/simd.h>
 
 //------------------------------------------------------------------------//
 // Misc. Constants
@@ -55,171 +56,10 @@ inline	float	RadiansToDegrees(float rad)
 //------------------------------------------------------------------------//
 // Vector Class and vector functions
 //------------------------------------------------------------------------//
-class Vector {
-public:
-	float x;
-	float y;
-	float z;
+typedef simd::float3 Vector;
 
-	Vector(void);
-	Vector(float xi, float yi, float zi);
+//float Magnitude(Vector vect);
 
-	float Magnitude(void);
-	void  Normalize(void);
-	void  Reverse(void);
-
-	Vector& operator+=(Vector u);	// vector addition
-	Vector& operator-=(Vector u);	// vector subtraction
-	Vector& operator*=(float s);	// scalar multiply
-	Vector& operator/=(float s);	// scalar divide
-
-	Vector operator-(void);
-
-};
-
-inline	Vector operator+(Vector u, Vector v);
-inline	Vector operator-(Vector u, Vector v);
-inline	Vector operator^(Vector u, Vector v);
-inline	float operator*(Vector u, Vector v);
-inline	Vector operator*(float s, Vector u);
-inline	Vector operator*(Vector u, float s);
-inline	Vector operator/(Vector u, float s);
-inline	float TripleScalarProduct(Vector u, Vector v, Vector w);
-/*
-float fast_sqrt2 (register float arg);
-float fast_sqrt2 (register float arg)
-{	
-// Can replace with slower return std::sqrt(arg);
-register float result;
-
-if (arg == 0.0) return 0.0;
-
-asm {
-frsqrte		result,arg			// Calculate Square root
-}	
-
-// Newton Rhapson iterations.
-result = result + 0.5 * result * (1.0 - arg * result * result);
-result = result + 0.5 * result * (1.0 - arg * result * result);
-
-return result * arg;
-}
-*/
-inline Vector::Vector(void)
-{
-	x = 0;
-	y = 0;
-	z = 0;
-}
-
-inline Vector::Vector(float xi, float yi, float zi)
-{
-	x = xi;
-	y = yi;
-	z = zi;
-}
-
-inline	float Vector::Magnitude(void)
-{
-	return (float) sqrt(x*x + y*y + z*z);
-}
-
-inline	void  Vector::Normalize(void)
-{
-	float m = (float) sqrt(x*x + y*y + z*z);
-	if(m <= tol) m = 1;
-	x /= m;
-	y /= m;
-	z /= m;	
-
-	if (fabs(x) < tol) x = 0.0f;
-	if (fabs(y) < tol) y = 0.0f;
-	if (fabs(z) < tol) z = 0.0f;
-}
-
-inline	void  Vector::Reverse(void)
-{
-	x = -x;
-	y = -y;
-	z = -z;
-}
-
-inline Vector& Vector::operator+=(Vector u)
-{
-	x += u.x;
-	y += u.y;
-	z += u.z;
-	return *this;
-}
-
-inline	Vector& Vector::operator-=(Vector u)
-{
-	x -= u.x;
-	y -= u.y;
-	z -= u.z;
-	return *this;
-}
-
-inline	Vector& Vector::operator*=(float s)
-{
-	x *= s;
-	y *= s;
-	z *= s;
-	return *this;
-}
-
-inline	Vector& Vector::operator/=(float s)
-{
-	x /= s;
-	y /= s;
-	z /= s;
-	return *this;
-}
-
-inline	Vector Vector::operator-(void)
-{
-	return Vector(-x, -y, -z);
-}
-
-
-inline	Vector operator+(Vector u, Vector v)
-{
-	return Vector(u.x + v.x, u.y + v.y, u.z + v.z);
-}
-
-inline	Vector operator-(Vector u, Vector v)
-{
-	return Vector(u.x - v.x, u.y - v.y, u.z - v.z);
-}
-
-// Vector cross product (u cross v)
-inline	Vector operator^(Vector u, Vector v)
-{
-	return Vector(	u.y*v.z - u.z*v.y,
-		-u.x*v.z + u.z*v.x,
-		u.x*v.y - u.y*v.x );
-}
-
-// Vector dot product
-inline	float operator*(Vector u, Vector v)
-{
-	return (u.x*v.x + u.y*v.y + u.z*v.z);
-}
-
-inline	Vector operator*(float s, Vector u)
-{
-	return Vector(u.x*s, u.y*s, u.z*s);
-}
-
-inline	Vector operator*(Vector u, float s)
-{
-	return Vector(u.x*s, u.y*s, u.z*s);
-}
-
-inline	Vector operator/(Vector u, float s)
-{
-	return Vector(u.x/s, u.y/s, u.z/s);
-}
 
 // triple scalar product (u dot (v cross w))
 inline	float TripleScalarProduct(Vector u, Vector v, Vector w)
@@ -471,16 +311,16 @@ inline	Matrix3x3 operator*(float s, Matrix3x3 m)
 
 inline	Vector operator*(Matrix3x3 m, Vector u)
 {
-	return Vector(	m.e11*u.x + m.e12*u.y + m.e13*u.z,
+	return (Vector){	m.e11*u.x + m.e12*u.y + m.e13*u.z,
 		m.e21*u.x + m.e22*u.y + m.e23*u.z,
-		m.e31*u.x + m.e32*u.y + m.e33*u.z);					
+		m.e31*u.x + m.e32*u.y + m.e33*u.z};
 }
 
 inline	Vector operator*(Vector u, Matrix3x3 m)
 {
-	return Vector(	u.x*m.e11 + u.y*m.e21 + u.z*m.e31,
+	return (Vector){u.x*m.e11 + u.y*m.e21 + u.z*m.e31,
 		u.x*m.e12 + u.y*m.e22 + u.z*m.e32,
-		u.x*m.e13 + u.y*m.e23 + u.z*m.e33);
+		u.x*m.e13 + u.y*m.e23 + u.z*m.e33};
 }
 
 //------------------------------------------------------------------------//
@@ -544,7 +384,7 @@ inline	float	Quaternion::Magnitude(void)
 
 inline	Vector	Quaternion::GetVector(void)
 {
-	return Vector(v.x, v.y, v.z);
+	return (Vector){v.x, v.y, v.z};
 }
 
 inline	float	Quaternion::GetScalar(void)
@@ -659,7 +499,7 @@ inline	Vector QGetAxis(Quaternion q)
 	float m;
 
 	v = q.GetVector();
-	m = v.Magnitude();
+	m = vector_length(v);
 
 	if (m <= tol)
 		return Vector();
