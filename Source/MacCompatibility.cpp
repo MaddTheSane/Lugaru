@@ -77,7 +77,7 @@ static AppTime g_appTime;
 
 void CopyCStringToPascal( const char* src, unsigned char dst[256])
 {
-	int len = strlen( src);
+	size_t len = strlen( src);
 	dst[ 0] = len;
 	memcpy( dst + 1, src, len);
 }
@@ -99,8 +99,8 @@ AbsoluteTime UpTime()
 	counter -= g_appTime.baseCounter;
 
 	AbsoluteTime time;
-	time.lo = (unsigned long)counter;
-	time.hi = (unsigned long)(counter >> 32);
+	time.lo = (unsigned int)counter;
+	time.hi = (unsigned int)(counter >> 32);
 	return time;
 }
 
@@ -154,8 +154,6 @@ Duration AbsoluteDeltaToDuration( AbsoluteTime& a, AbsoluteTime& b)
 static int locateOneElement(char *buf)
 {
     char *ptr;
-    char **rc;
-    char **i;
     DIR *dirp;
 
     //if (PHYSFS_exists(buf))
@@ -232,7 +230,7 @@ static int locateCorrectCase(char *buf, bool makedirs)
     char *prevptr;
 
     ptr = prevptr = buf;
-    while (ptr = strchr(ptr + 1, '/'))
+    while ((ptr = strchr(ptr + 1, '/')))
     {
         *ptr = '\0';  /* block this path section off */
         rc = locateOneElement(buf);

@@ -74,8 +74,8 @@ void CopyPascalStringToC( const unsigned char* src, char* dst);
 
 typedef struct AbsoluteTime
 {
-	unsigned long   hi;
-	unsigned long   lo;
+	unsigned int   hi;
+	unsigned int   lo;
 } AbsoluteTime; 
 
 AbsoluteTime UpTime();		// NOTE: returns time since app started, not system start

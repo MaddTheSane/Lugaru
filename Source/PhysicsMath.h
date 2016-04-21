@@ -116,10 +116,42 @@ public:
 	{
 		return n;
 	}
-	Quaternion	operator+=(Quaternion q);
-	Quaternion	operator-=(Quaternion q);
-	Quaternion operator*=(float s);
-	Quaternion operator/=(float s);
+	
+	inline Quaternion operator+=(Quaternion q)
+	{
+		n += q.n;
+		v.x += q.v.x;
+		v.y += q.v.y;
+		v.z += q.v.z;
+		return *this;
+	}
+	
+	inline Quaternion operator-=(Quaternion q)
+	{
+		n -= q.n;
+		v.x -= q.v.x;
+		v.y -= q.v.y;
+		v.z -= q.v.z;
+		return *this;
+	}
+	
+	inline Quaternion operator*=(float s)
+	{
+		n *= s;
+		v.x *= s;
+		v.y *= s;
+		v.z *= s;
+		return *this;
+	}
+	
+	inline Quaternion operator/=(float s)
+	{
+		n /= s;
+		v.x /= s;
+		v.y /= s;
+		v.z /= s;
+		return *this;
+	}
 	Quaternion	operator~(void) const { return Quaternion(n, -v.x, -v.y, -v.z);}
 };
 
@@ -138,41 +170,6 @@ inline	Vector	QVRotate(Quaternion q, Vector v);
 inline	Quaternion	MakeQFromEulerAngles(float x, float y, float z);
 inline	Vector	MakeEulerAnglesFromQ(Quaternion q);
 
-inline	Quaternion	Quaternion::operator+=(Quaternion q)
-{
-	n += q.n;
-	v.x += q.v.x;
-	v.y += q.v.y;
-	v.z += q.v.z;
-	return *this;
-}
-
-inline	Quaternion	Quaternion::operator-=(Quaternion q)
-{
-	n -= q.n;
-	v.x -= q.v.x;
-	v.y -= q.v.y;
-	v.z -= q.v.z;
-	return *this;
-}
-
-inline	Quaternion Quaternion::operator*=(float s)
-{
-	n *= s;
-	v.x *= s;
-	v.y *= s;
-	v.z *= s;
-	return *this;
-}
-
-inline	Quaternion Quaternion::operator/=(float s)
-{
-	n /= s;
-	v.x /= s;
-	v.y /= s;
-	v.z /= s;
-	return *this;
-}
 
 /*inline	Quaternion	Quaternion::operator~()
 {

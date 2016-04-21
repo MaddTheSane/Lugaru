@@ -53,7 +53,7 @@ void dealloc(void* param){
 	param=0;
 }
 
-int Model::LineCheck(XYZ *p1,XYZ *p2, XYZ *p, XYZ *move, float *rotate)
+int Model::LineCheck(XYZ *p1,XYZ *p2, XYZ *p, const XYZ *const move, const float *const rotate)
 {
 	static int j;
 	static float distance;
@@ -81,7 +81,7 @@ int Model::LineCheck(XYZ *p1,XYZ *p2, XYZ *p, XYZ *move, float *rotate)
 	return firstintersecting;
 }
 
-int Model::LineCheckSlide(XYZ *p1,XYZ *p2, XYZ *p, XYZ *move, float *rotate)
+int Model::LineCheckSlide(XYZ *p1,XYZ *p2, XYZ *p, const XYZ *const move, const float *const rotate)
 {
 	static int j;
 	static float distance;
@@ -112,7 +112,7 @@ int Model::LineCheckSlide(XYZ *p1,XYZ *p2, XYZ *p, XYZ *move, float *rotate)
 	return firstintersecting;
 }
 
-int Model::LineCheckPossible(XYZ *p1,XYZ *p2, XYZ *p, XYZ *move, float *rotate)
+int Model::LineCheckPossible(XYZ *p1,XYZ *p2, XYZ *p, const XYZ *const move, const float *const rotate)
 {
 	static int j;
 	static float distance;
@@ -143,7 +143,7 @@ int Model::LineCheckPossible(XYZ *p1,XYZ *p2, XYZ *p, XYZ *move, float *rotate)
 		return firstintersecting;
 }
 
-int Model::LineCheckSlidePossible(XYZ *p1,XYZ *p2, XYZ *p, XYZ *move, float *rotate)
+int Model::LineCheckSlidePossible(XYZ *p1,XYZ *p2, XYZ *p, const XYZ *const move, const float *const rotate)
 {
 	static int j;
 	static float distance;
@@ -179,23 +179,23 @@ int Model::LineCheckSlidePossible(XYZ *p1,XYZ *p2, XYZ *p, XYZ *move, float *rot
 		return firstintersecting;
 }
 
-int Model::SphereCheck(XYZ *p1,float radius, XYZ *p, XYZ *move, float *rotate)
+int Model::SphereCheck(XYZ *p1,float radius, XYZ *p, const XYZ *const move, float *rotate)
 {
 	static int i,j;
 	static float distance;
 	static float olddistance;
 	static int intersecting;
 	static int firstintersecting;
-	static XYZ point;
-	static XYZ oldp1;
-	static XYZ start,end;
+	XYZ point;
+	XYZ oldp1;
 
 	firstintersecting=-1;
 
 	oldp1=*p1;
 	*p1=*p1-*move;
 	if(*rotate)*p1=DoRotation(*p1,0,-*rotate,0);
-	if(findDistancefast(p1,&boundingspherecenter)>radius*radius+boundingsphereradius*boundingsphereradius)return -1;
+	if(findDistancefast(p1,&boundingspherecenter)>radius*radius+boundingsphereradius*boundingsphereradius)
+		return -1;
 
 	for(i=0;i<4;i++){
 		for (j=0;j<TriangleNum;j++){
@@ -233,16 +233,14 @@ int Model::SphereCheck(XYZ *p1,float radius, XYZ *p, XYZ *move, float *rotate)
 	return firstintersecting;
 }
 
-int Model::SphereCheckPossible(XYZ *p1,float radius, XYZ *move, float *rotate)
+int Model::SphereCheckPossible(XYZ *p1,float radius, const XYZ *const move, const float *const rotate)
 {
-	static int i,j;
 	static float distance;
 	static float olddistance;
 	static int intersecting;
 	static int firstintersecting;
-	static XYZ point;
-	static XYZ oldp1;
-	static XYZ start,end;
+	XYZ point;
+	XYZ oldp1;
 
 	firstintersecting=-1;
 
@@ -254,7 +252,7 @@ int Model::SphereCheckPossible(XYZ *p1,float radius, XYZ *move, float *rotate)
 	if(*rotate)*p1=DoRotation(*p1,0,-*rotate,0);
 	if(findDistancefast(p1,&boundingspherecenter)>radius*radius+boundingsphereradius*boundingsphereradius){*p1=oldp1; return -1;}
 
-	for (j=0;j<TriangleNum;j++){
+	for (int j=0;j<TriangleNum;j++){
 		intersecting=0;
 		distance=abs((facenormals[j].x*p1->x)+(facenormals[j].y*p1->y)+(facenormals[j].z*p1->z)-((facenormals[j].x*vertex[Triangles[j].vertex[0]].x)+(facenormals[j].y*vertex[Triangles[j].vertex[0]].y)+(facenormals[j].z*vertex[Triangles[j].vertex[0]].z)));
 		if(distance<radius){
@@ -501,7 +499,7 @@ bool Model::loadnotex(const char *filename )
 }
 
 
-bool Model::load(const char *filename,bool texture )
+bool Model::load(const char *filename, bool texture)
 {
 	FILE			*tfile;
 	long				i;
@@ -818,9 +816,7 @@ void Model::Scale(float xscale,float yscale,float zscale)
 {
 	static int i;
 	for(i=0; i<vertexNum; i++){
-		vertex[i].x*=xscale;
-		vertex[i].y*=yscale;
-		vertex[i].z*=zscale;
+		vertex[i] *= {xscale, yscale, zscale};
 	}
 	UpdateVertexArray();
 
@@ -843,14 +839,10 @@ void Model::ScaleNormals(float xscale,float yscale,float zscale)
 	if(type!=normaltype&&type!=decalstype)return;
 	static int i;
 	for(i=0; i<vertexNum; i++){
-		normals[i].x*=xscale;
-		normals[i].y*=yscale;
-		normals[i].z*=zscale;
+		normals[i]*={xscale, yscale, zscale};
 	}
 	for(i=0; i<TriangleNum; i++){
-		facenormals[i].x*=xscale;
-		facenormals[i].y*=yscale;
-		facenormals[i].z*=zscale;
+		facenormals[i] *= {xscale, yscale, zscale};
 	}
 	UpdateVertexArray();
 }
@@ -859,9 +851,7 @@ void Model::Translate(float xtrans,float ytrans,float ztrans)
 {
 	static int i;
 	for(i=0; i<vertexNum; i++){
-		vertex[i].x+=xtrans;
-		vertex[i].y+=ytrans;
-		vertex[i].z+=ztrans;
+		vertex[i] += {xtrans, ytrans, ztrans};
 	}
 	UpdateVertexArray();
 
@@ -906,32 +896,28 @@ void Model::CalculateNormals(bool facenormalise)
 		loadscreencolor=3;
 		pgame->LoadingScreen();
 	}
-	static int i;
-	if(type!=normaltype&&type!=decalstype)return;
+	if (type != normaltype && type != decalstype)
+		return;
 
-	for(i=0; i<vertexNum; i++){
+	for (short i=0; i<vertexNum; i++){
 		normals[i].x=0;
 		normals[i].y=0;
 		normals[i].z=0;
 	}
 
-	for(i=0;i<TriangleNum;i++){
-		CrossProduct(vertex[Triangles[i].vertex[1]]-vertex[Triangles[i].vertex[0]],vertex[Triangles[i].vertex[2]]-vertex[Triangles[i].vertex[0]],&facenormals[i]);
-
-		normals[Triangles[i].vertex[0]].x+=facenormals[i].x;
-		normals[Triangles[i].vertex[0]].y+=facenormals[i].y;
-		normals[Triangles[i].vertex[0]].z+=facenormals[i].z;
-
-		normals[Triangles[i].vertex[1]].x+=facenormals[i].x;
-		normals[Triangles[i].vertex[1]].y+=facenormals[i].y;
-		normals[Triangles[i].vertex[1]].z+=facenormals[i].z;
-
-		normals[Triangles[i].vertex[2]].x+=facenormals[i].x;
-		normals[Triangles[i].vertex[2]].y+=facenormals[i].y;
-		normals[Triangles[i].vertex[2]].z+=facenormals[i].z;
-		if(facenormalise)Normalise(facenormals[i]);
+	for(short i=0;i<TriangleNum;i++){
+		XYZ l_vect_b1 = vertex[Triangles[i].vertex[1]] - vertex[Triangles[i].vertex[0]];
+		XYZ l_vect_b2 = vertex[Triangles[i].vertex[2]] - vertex[Triangles[i].vertex[0]];
+		facenormals[i] = vector_cross(l_vect_b1, l_vect_b2);
+		
+		normals[Triangles[i].vertex[0]] += facenormals[i];
+		normals[Triangles[i].vertex[1]] += facenormals[i];
+		normals[Triangles[i].vertex[2]] += facenormals[i];
+		
+		if (facenormalise)
+			Normalise(facenormals[i]);
 	}
-	for(i=0; i<vertexNum; i++){
+	for (short i=0; i<vertexNum; i++){
 		Normalise(normals[i]);
 		normals[i]*=-1;
 	}

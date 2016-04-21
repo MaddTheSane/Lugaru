@@ -78,7 +78,6 @@ void	Weapons::DoStuff(){
 	static XYZ point[3];
 	static XYZ closestpoint;
 	static XYZ closestswordpoint;
-	static XYZ extramove;
 	static float tempmult;
 
 	//Move
@@ -158,7 +157,7 @@ void	Weapons::DoStuff(){
 								if(type[i]==knife)position[i]=colpoint-normalrot*.1;
 								if(type[i]==sword)position[i]=colpoint-normalrot*.2;
 								if(type[i]==staff)position[i]=colpoint-normalrot*.2;
-								XYZ temppoint1,temppoint2,tempforward;
+								XYZ temppoint1,temppoint2;
 								float distance;
 
 								temppoint1=0;
@@ -212,7 +211,6 @@ void	Weapons::DoStuff(){
 						footpoint=DoRotation((player[j].skeleton.joints[player[j].skeleton.jointlabels[abdomen]].position+player[j].skeleton.joints[player[j].skeleton.jointlabels[neck]].position)/2,0,player[j].rotation,0)*player[j].scale+player[j].coords;
 						if(owner[i]==-1&&findDistancefastflat(&position[i],&player[j].coords)<1.5&&findDistancefast(&position[i],&player[j].coords)<4&&player[j].weaponstuck==-1&&!player[j].skeleton.free&&j!=oldowner[i]){
 							if((player[j].aitype!=attacktypecutoff||abs(Random()%6)==0||(player[j].targetanimation!=backhandspringanim&&player[j].targetanimation!=rollanim&&player[j].targetanimation!=flipanim&&Random()%2==0))&&!missed[i]){
-								bool caught=0;
 								if((player[j].creature==wolftype&&Random()%3!=0&&player[j].weaponactive==-1&&(player[j].isIdle()||player[j].isRun()||player[j].targetanimation==walkanim))||(player[j].creature==rabbittype&&Random()%2==0&&player[j].aitype==attacktypecutoff&&player[j].weaponactive==-1)){
 									float gLoc[3];
 									float vel[3];
@@ -331,8 +329,6 @@ void	Weapons::DoStuff(){
 								tippoint[i].z=M[14];
 							glPopMatrix();
 							position[i]-=tippoint[i]*.15;
-							XYZ temppoint1,temppoint2,tempforward;
-							float distance;
 
 							rotation3[i]=0;
 							smallrotation[i]=90;
@@ -379,7 +375,7 @@ void	Weapons::DoStuff(){
 					if(velocity[i].x!=0||velocity[i].z!=0||velocity[i].y!=0){
 						velocity[i].y+=gravity*multiplier;
 
-						XYZ temppoint1,temppoint2,tempforward;
+						XYZ temppoint1,temppoint2;
 						float distance;
 
 						temppoint1=0;
@@ -1033,7 +1029,7 @@ void	Weapons::DoStuff(){
 					//tippoint[i].y+=gravity*multiplier*multiplier;
 
 					//Rotation
-					XYZ temppoint1,temppoint2,tempforward;
+					XYZ temppoint1,temppoint2;
 					float distance;
 
 					temppoint1=position[i];

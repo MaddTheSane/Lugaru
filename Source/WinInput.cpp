@@ -362,8 +362,6 @@ unsigned short 	CharToKey(const char* which)
 
 const char* 	KeyToChar(unsigned short which)
 {
-	static int i;
-
 	// alphabetic keys
 	if(which==MAC_A_KEY){
 		return "a";
@@ -668,8 +666,6 @@ const char* 	KeyToChar(unsigned short which)
 
 char 	KeyToSingleChar(unsigned short which)
 {
-	static int i;
-
 	if(which==MAC_A_KEY){
 		return 'a';
 	}
@@ -850,10 +846,8 @@ char 	KeyToSingleChar(unsigned short which)
 	return '\0';
 }
 
-char 	Shift(char which)
+char Shift(char which)
 {
-	static int i;
-
 	if(which=='a'){
 		return 'A';
 	}
