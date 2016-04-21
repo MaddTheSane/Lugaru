@@ -405,7 +405,7 @@ float LineFacetd(XYZ p1,XYZ p2,XYZ pa,XYZ pb,XYZ pc,XYZ *p)
 	return 1;
 }
 
-float LineFacetd(XYZ p1,XYZ p2,XYZ pa,XYZ pb,XYZ pc, XYZ n, XYZ *p)
+float LineFacetd(const XYZ &p1,const XYZ &p2,const XYZ &pa,const XYZ &pb,const XYZ &pc, const XYZ &n, XYZ &p)
 {
 	static float d;
 	static float denom,mu;
@@ -418,13 +418,13 @@ float LineFacetd(XYZ p1,XYZ p2,XYZ pa,XYZ pb,XYZ pc, XYZ n, XYZ *p)
 	if (fabs(denom) < 0.0000001)        // Line and plane don't intersect 
 		return 0;
 	mu = - (d + n.x * p1.x + n.y * p1.y + n.z * p1.z) / denom;
-	p->x = p1.x + mu * (p2.x - p1.x);
-	p->y = p1.y + mu * (p2.y - p1.y);
-	p->z = p1.z + mu * (p2.z - p1.z);
+	p.x = p1.x + mu * (p2.x - p1.x);
+	p.y = p1.y + mu * (p2.y - p1.y);
+	p.z = p1.z + mu * (p2.z - p1.z);
 	if (mu < 0 || mu > 1)   // Intersection not along line segment 
 		return 0;
 
-	if(!PointInTriangle( p, n, &pa, &pb, &pc)){return 0;}
+	if(!PointInTriangle( &p, n, &pa, &pb, &pc)){return 0;}
 	return 1;
 }
 

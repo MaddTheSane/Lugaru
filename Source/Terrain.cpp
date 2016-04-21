@@ -1377,7 +1377,7 @@ void Terrain::DoLighting()
 			/*brightness=0;
 			if(lineTerrain(lightlocation*10+terrainpoint,terrainpoint,&blank)==-1)
 			*/
-			brightness=dotproduct(&lightloc,&normals[i][j]);
+			brightness=dotproduct(lightloc,normals[i][j]);
 
 			if(brightness>1)brightness=1;
 			if(brightness<0)brightness=0;
@@ -1450,14 +1450,14 @@ void Terrain::DoShadows()
 					if(objects.type[l]!=treetrunktype){
 						testpoint=terrainpoint;
 						testpoint2=terrainpoint+lightloc*50*(1-shadowed);
-						if(objects.model[l].LineCheck(&testpoint,&testpoint2,&col,&objects.position[l],&objects.rotation[l])!=-1){
-							shadowed=1-(findDistance(&terrainpoint,&col)/50);	
+						if(objects.model[l].LineCheck(testpoint,testpoint2,col,objects.position[l],objects.rotation[l])!=-1){
+							shadowed=1-(findDistance(terrainpoint,col)/50);	
 						}
 					}
 				}
 				if(visibleloading)pgame->LoadingScreen();
 			}
-			brightness=dotproduct(&lightloc,&normals[i][j]);
+			brightness=dotproduct(lightloc,normals[i][j]);
 			if(shadowed)brightness*=1-shadowed;
 
 			if(brightness>1)brightness=1;

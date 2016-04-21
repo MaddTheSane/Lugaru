@@ -53,168 +53,181 @@ void dealloc(void* param){
 	param=0;
 }
 
-int Model::LineCheck(XYZ *p1,XYZ *p2, XYZ *p, const XYZ *const move, const float *const rotate)
+int Model::LineCheck(XYZ &p1,XYZ &p2, XYZ &p, const XYZ &move, const float rotate)
 {
-	static int j;
-	static float distance;
-	static float olddistance;
-	static int intersecting;
-	static int firstintersecting;
-	static XYZ point;
+	float distance;
+	float olddistance;
+	int intersecting;
+	int firstintersecting;
+	XYZ point;
 
-	*p1=*p1-*move;
-	*p2=*p2-*move;
-	if(*rotate)*p1=DoRotation(*p1,0,-*rotate,0);
-	if(*rotate)*p2=DoRotation(*p2,0,-*rotate,0);
-	if(!sphere_line_intersection(p1,p2,&boundingspherecenter,
-		&boundingsphereradius))return -1;
+	p1=p1-move;
+	p2=p2-move;
+	if(rotate)
+		p1=DoRotation(p1,0,-rotate,0);
+	if(rotate)
+		p2=DoRotation(p2,0,-rotate,0);
+	if(!sphere_line_intersection(p1,p2,boundingspherecenter,
+								 boundingsphereradius))return -1;
 	firstintersecting=-1;
 
-	for (j=0;j<TriangleNum;j++){
-		intersecting=LineFacetd(p1,p2,&vertex[Triangles[j].vertex[0]],&vertex[Triangles[j].vertex[1]],&vertex[Triangles[j].vertex[2]],&facenormals[j],&point);
-		distance=(point.x-p1->x)*(point.x-p1->x)+(point.y-p1->y)*(point.y-p1->y)+(point.z-p1->z)*(point.z-p1->z);
-		if((distance<olddistance||firstintersecting==-1)&&intersecting){olddistance=distance; firstintersecting=j; *p=point;}
+	for (int j=0;j<TriangleNum;j++){
+		intersecting=LineFacetd(p1,p2,vertex[Triangles[j].vertex[0]],vertex[Triangles[j].vertex[1]],vertex[Triangles[j].vertex[2]],facenormals[j],point);
+		distance= vector_distance_squared(point, p1);
+		if((distance<olddistance||firstintersecting==-1)&&intersecting){olddistance=distance; firstintersecting=j; p=point;}
 	}
 
-	if(*rotate)*p=DoRotation(*p,0,*rotate,0);
-	*p=*p+*move;
+	if(rotate)
+		p=DoRotation(p,0,rotate,0);
+	p += move;
 	return firstintersecting;
 }
 
-int Model::LineCheckSlide(XYZ *p1,XYZ *p2, XYZ *p, const XYZ *const move, const float *const rotate)
+int Model::LineCheckSlide(XYZ &p1,XYZ &p2, XYZ &p, const XYZ &move, const float rotate)
 {
-	static int j;
-	static float distance;
+	float distance;
 	static float olddistance;
-	static int intersecting;
-	static int firstintersecting;
-	static XYZ point;
+	int intersecting;
+	int firstintersecting;
+	XYZ point;
 
-	*p1=*p1-*move;
-	*p2=*p2-*move;
-	if(!sphere_line_intersection(p1,p2,&boundingspherecenter,
-		&boundingsphereradius))return -1;
+	p1 = p1 - move;
+	p2 = p2 - move;
+	if(!sphere_line_intersection(p1,p2,boundingspherecenter,
+								 boundingsphereradius))return -1;
 	firstintersecting=-1;
-	if(*rotate)*p1=DoRotation(*p1,0,-*rotate,0);
-	if(*rotate)*p2=DoRotation(*p2,0,-*rotate,0);
+	if(rotate)
+		p1=DoRotation(p1,0,-rotate,0);
+	if(rotate)
+		p2=DoRotation(p2,0,-rotate,0);
 
-	for (j=0;j<TriangleNum;j++){
-		intersecting=LineFacetd(p1,p2,&vertex[Triangles[j].vertex[0]],&vertex[Triangles[j].vertex[1]],&vertex[Triangles[j].vertex[2]],&facenormals[j],&point);
-		distance=(point.x-p1->x)*(point.x-p1->x)+(point.y-p1->y)*(point.y-p1->y)+(point.z-p1->z)*(point.z-p1->z);
+	for (int j=0;j<TriangleNum;j++){
+		intersecting=LineFacetd(p1,p2,vertex[Triangles[j].vertex[0]],vertex[Triangles[j].vertex[1]],vertex[Triangles[j].vertex[2]],facenormals[j],point);
+		distance= vector_distance_squared(point, p1);
 		if((distance<olddistance||firstintersecting==-1)&&intersecting){olddistance=distance; firstintersecting=j;}
 	}
 
-	distance=abs((facenormals[firstintersecting].x*p2->x)+(facenormals[firstintersecting].y*p2->y)+(facenormals[firstintersecting].z*p2->z)-((facenormals[firstintersecting].x*vertex[Triangles[firstintersecting].vertex[0]].x)+(facenormals[firstintersecting].y*vertex[Triangles[firstintersecting].vertex[0]].y)+(facenormals[firstintersecting].z*vertex[Triangles[firstintersecting].vertex[0]].z)));
-	*p2-=facenormals[firstintersecting]*distance;
+	distance=abs((facenormals[firstintersecting].x*p2.x)+(facenormals[firstintersecting].y*p2.y)+(facenormals[firstintersecting].z*p2.z)-((facenormals[firstintersecting].x*vertex[Triangles[firstintersecting].vertex[0]].x)+(facenormals[firstintersecting].y*vertex[Triangles[firstintersecting].vertex[0]].y)+(facenormals[firstintersecting].z*vertex[Triangles[firstintersecting].vertex[0]].z)));
+	p2 -= facenormals[firstintersecting]*distance;
 
-	if(*rotate)*p2=DoRotation(*p2,0,*rotate,0);
-	*p2=*p2+*move;
+	if(rotate)
+		p2=DoRotation(p2,0,rotate,0);
+	p2 += move;
 	return firstintersecting;
 }
 
-int Model::LineCheckPossible(XYZ *p1,XYZ *p2, XYZ *p, const XYZ *const move, const float *const rotate)
+int Model::LineCheckPossible(XYZ &p1,XYZ &p2, XYZ &p, const XYZ &move, const float rotate)
 {
-	static int j;
-	static float distance;
+	float distance;
 	static float olddistance;
-	static int intersecting;
-	static int firstintersecting;
-	static XYZ point;
+	int intersecting;
+	int firstintersecting;
+	XYZ point;
 
-	*p1=*p1-*move;
-	*p2=*p2-*move;
-	if(!sphere_line_intersection(p1,p2,&boundingspherecenter,
-		&boundingsphereradius))return -1;
+	p1=p1-move;
+	p2=p2-move;
+	if(!sphere_line_intersection(p1,p2,boundingspherecenter,
+		boundingsphereradius))return -1;
 	firstintersecting=-1;
-	if(*rotate)*p1=DoRotation(*p1,0,-*rotate,0);
-	if(*rotate)*p2=DoRotation(*p2,0,-*rotate,0);
+	if(rotate)
+		p1=DoRotation(p1,0,-rotate,0);
+	if(rotate)
+		p2=DoRotation(p2,0,-rotate,0);
 
 	if(numpossible>0&&numpossible<TriangleNum)
-		for (j=0;j<numpossible;j++){
+		for (int j=0;j<numpossible;j++){
 			if(possible[j]>=0&&possible[j]<TriangleNum){
-				intersecting=LineFacetd(p1,p2,&vertex[Triangles[possible[j]].vertex[0]],&vertex[Triangles[possible[j]].vertex[1]],&vertex[Triangles[possible[j]].vertex[2]],&facenormals[possible[j]],&point);
-				distance=(point.x-p1->x)*(point.x-p1->x)+(point.y-p1->y)*(point.y-p1->y)+(point.z-p1->z)*(point.z-p1->z);
-				if((distance<olddistance||firstintersecting==-1)&&intersecting){olddistance=distance; firstintersecting=possible[j]; *p=point;}
+				intersecting=LineFacetd(p1,p2,vertex[Triangles[possible[j]].vertex[0]],vertex[Triangles[possible[j]].vertex[1]],vertex[Triangles[possible[j]].vertex[2]],facenormals[possible[j]],point);
+				distance= vector_distance_squared(point, p1);
+				if((distance<olddistance||firstintersecting==-1)&&intersecting) {
+					olddistance=distance;
+					firstintersecting=possible[j];
+					p=point;
+				}
 			}
 		}
 
-		if(*rotate)*p=DoRotation(*p,0,*rotate,0);
-		*p=*p+*move;
+		if(rotate)
+			p=DoRotation(p,0,rotate,0);
+		p += move;
 		return firstintersecting;
 }
 
-int Model::LineCheckSlidePossible(XYZ *p1,XYZ *p2, XYZ *p, const XYZ *const move, const float *const rotate)
+int Model::LineCheckSlidePossible(XYZ &p1,XYZ &p2, XYZ &p, const XYZ &move, const float rotate)
 {
-	static int j;
-	static float distance;
+	float distance;
 	static float olddistance;
-	static int intersecting;
-	static int firstintersecting;
-	static XYZ point;
-
-	*p1=*p1-*move;
-	*p2=*p2-*move;
-	if(!sphere_line_intersection(p1,p2,&boundingspherecenter,
-		&boundingsphereradius))return -1;
-	firstintersecting=-1;
-	if(*rotate)*p1=DoRotation(*p1,0,-*rotate,0);
-	if(*rotate)*p2=DoRotation(*p2,0,-*rotate,0);
-
-	if(numpossible)
-		for (j=0;j<numpossible;j++){
-			if(possible[j]>=0&&possible[j]<TriangleNum){
-				intersecting=LineFacetd(p1,p2,&vertex[Triangles[possible[j]].vertex[0]],&vertex[Triangles[possible[j]].vertex[1]],&vertex[Triangles[possible[j]].vertex[2]],&facenormals[possible[j]],&point);
-				distance=(point.x-p1->x)*(point.x-p1->x)+(point.y-p1->y)*(point.y-p1->y)+(point.z-p1->z)*(point.z-p1->z);
-				if((distance<olddistance||firstintersecting==-1)&&intersecting){olddistance=distance; firstintersecting=possible[j];}
-			}
-		}
-
-		if(firstintersecting>0){
-			distance=abs((facenormals[firstintersecting].x*p2->x)+(facenormals[firstintersecting].y*p2->y)+(facenormals[firstintersecting].z*p2->z)-((facenormals[firstintersecting].x*vertex[Triangles[firstintersecting].vertex[0]].x)+(facenormals[firstintersecting].y*vertex[Triangles[firstintersecting].vertex[0]].y)+(facenormals[firstintersecting].z*vertex[Triangles[firstintersecting].vertex[0]].z)));
-			*p2-=facenormals[firstintersecting]*distance;
-		}
-
-		if(*rotate)*p2=DoRotation(*p2,0,*rotate,0);
-		*p2=*p2+*move;
-		return firstintersecting;
-}
-
-int Model::SphereCheck(XYZ *p1,float radius, XYZ *p, const XYZ *const move, float *rotate)
-{
-	static int i,j;
-	static float distance;
-	static float olddistance;
-	static int intersecting;
-	static int firstintersecting;
+	int intersecting;
+	int firstintersecting;
 	XYZ point;
-	XYZ oldp1;
 
+	p1=p1-move;
+	p2=p2-move;
+	if(!sphere_line_intersection(p1,p2,boundingspherecenter,
+								 boundingsphereradius))return -1;
 	firstintersecting=-1;
+	if(rotate)
+		p1=DoRotation(p1,0,-rotate,0);
+	if(rotate)
+		p2=DoRotation(p2,0,-rotate,0);
 
-	oldp1=*p1;
-	*p1=*p1-*move;
-	if(*rotate)*p1=DoRotation(*p1,0,-*rotate,0);
-	if(findDistancefast(p1,&boundingspherecenter)>radius*radius+boundingsphereradius*boundingsphereradius)
+	if(numpossible) {
+		for (int j=0;j<numpossible;j++){
+			if(possible[j]>=0&&possible[j]<TriangleNum){
+				intersecting=LineFacetd(p1,p2,vertex[Triangles[possible[j]].vertex[0]],vertex[Triangles[possible[j]].vertex[1]],vertex[Triangles[possible[j]].vertex[2]],facenormals[possible[j]],point);
+				distance= vector_distance_squared(point, p1);
+				if((distance<olddistance||firstintersecting==-1)&&intersecting) {
+					olddistance=distance;
+					firstintersecting=possible[j];
+				}
+			}
+		}
+	}
+
+	if(firstintersecting>0){
+		distance=abs((facenormals[firstintersecting].x*p2.x)+(facenormals[firstintersecting].y*p2.y)+(facenormals[firstintersecting].z*p2.z)-((facenormals[firstintersecting].x*vertex[Triangles[firstintersecting].vertex[0]].x)+(facenormals[firstintersecting].y*vertex[Triangles[firstintersecting].vertex[0]].y)+(facenormals[firstintersecting].z*vertex[Triangles[firstintersecting].vertex[0]].z)));
+		p2 -= facenormals[firstintersecting]*distance;
+	}
+
+	if(rotate)
+		p2=DoRotation(p2,0,rotate,0);
+	p2 += move;
+	return firstintersecting;
+}
+
+int Model::SphereCheck(XYZ &p1,const float radius, XYZ &p, const XYZ &move, const float rotate)
+{
+	float distance;
+	static float olddistance;
+	int intersecting;
+	int firstintersecting = -1;
+	XYZ point;
+
+	XYZ oldp1=p1;
+	p1=p1-move;
+	if(rotate)
+		p1=DoRotation(p1,0,-rotate,0);
+	if(findDistancefast(p1,boundingspherecenter) > radius*radius+boundingsphereradius*boundingsphereradius)
 		return -1;
 
-	for(i=0;i<4;i++){
-		for (j=0;j<TriangleNum;j++){
+	for(int i=0;i<4;i++){
+		for (int j=0;j<TriangleNum;j++){
 			intersecting=0;
-			distance=abs((facenormals[j].x*p1->x)+(facenormals[j].y*p1->y)+(facenormals[j].z*p1->z)-((facenormals[j].x*vertex[Triangles[j].vertex[0]].x)+(facenormals[j].y*vertex[Triangles[j].vertex[0]].y)+(facenormals[j].z*vertex[Triangles[j].vertex[0]].z)));
+			distance=abs((facenormals[j].x*p1.x)+(facenormals[j].y*p1.y)+(facenormals[j].z*p1.z)-((facenormals[j].x*vertex[Triangles[j].vertex[0]].x)+(facenormals[j].y*vertex[Triangles[j].vertex[0]].y)+(facenormals[j].z*vertex[Triangles[j].vertex[0]].z)));
 			if(distance<radius){
-				point=*p1-facenormals[j]*distance;
+				point=p1-facenormals[j]*distance;
 				if(PointInTriangle( &point, facenormals[j], &vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[1]], &vertex[Triangles[j].vertex[2]]))intersecting=1;
-				if(!intersecting)intersecting=sphere_line_intersection(&vertex[Triangles[j].vertex[0]],
-					&vertex[Triangles[j].vertex[1]],
-					p1, &radius);
-				if(!intersecting)intersecting=sphere_line_intersection(&vertex[Triangles[j].vertex[1]],
-					&vertex[Triangles[j].vertex[2]],
-					p1, &radius);
-				if(!intersecting)intersecting=sphere_line_intersection(&vertex[Triangles[j].vertex[0]],
-					&vertex[Triangles[j].vertex[2]],
-					p1, &radius);
+				if(!intersecting)intersecting=sphere_line_intersection(vertex[Triangles[j].vertex[0]],
+																	   vertex[Triangles[j].vertex[1]],
+																	   p1, radius);
+				if(!intersecting)intersecting=sphere_line_intersection(vertex[Triangles[j].vertex[1]],
+																	   vertex[Triangles[j].vertex[2]],
+																	   p1, radius);
+				if(!intersecting)intersecting=sphere_line_intersection(vertex[Triangles[j].vertex[0]],
+																	   vertex[Triangles[j].vertex[2]],
+																	   p1, radius);
 				if(intersecting){
-					*p1+=facenormals[j]*(distance-radius);
+					p1+=facenormals[j]*(distance-radius);
 					/*start=*p1;
 					end=*p1;
 					end.y-=radius;
@@ -223,50 +236,57 @@ int Model::SphereCheck(XYZ *p1,float radius, XYZ *p, const XYZ *const move, floa
 					}*/
 				}
 			}
-			if((distance<olddistance||firstintersecting==-1)&&intersecting){olddistance=distance; firstintersecting=j; *p=point;}
+			if((distance<olddistance||firstintersecting==-1)&&intersecting) {
+				olddistance=distance;
+				firstintersecting=j;
+				p=point;
+			}
 		}
 	}
-	if(*rotate)*p=DoRotation(*p,0,*rotate,0);
-	*p=*p+*move;
-	if(*rotate)*p1=DoRotation(*p1,0,*rotate,0);
-	*p1+=*move;
+	if(rotate)
+		p=DoRotation(p,0,rotate,0);
+	p += move;
+	if(rotate)
+		p1=DoRotation(p1,0,rotate,0);
+	p1 += move;
 	return firstintersecting;
 }
 
-int Model::SphereCheckPossible(XYZ *p1,float radius, const XYZ *const move, const float *const rotate)
+int Model::SphereCheckPossible(XYZ &p1,const float radius, const XYZ &move, const float rotate)
 {
-	static float distance;
+	float distance;
 	static float olddistance;
-	static int intersecting;
-	static int firstintersecting;
+	int intersecting;
+	int firstintersecting = -1;
 	XYZ point;
-	XYZ oldp1;
 
-	firstintersecting=-1;
-
-	oldp1=*p1;
-	*p1=*p1-*move;
+	XYZ oldp1 = p1;
+	p1=p1-move;
 
 	numpossible=0;
 
-	if(*rotate)*p1=DoRotation(*p1,0,-*rotate,0);
-	if(findDistancefast(p1,&boundingspherecenter)>radius*radius+boundingsphereradius*boundingsphereradius){*p1=oldp1; return -1;}
+	if(rotate)
+		p1=DoRotation(p1,0,-rotate,0);
+	if(findDistancefast(p1,boundingspherecenter)>radius*radius+boundingsphereradius*boundingsphereradius) {
+		p1=oldp1;
+		return -1;
+	}
 
 	for (int j=0;j<TriangleNum;j++){
 		intersecting=0;
-		distance=abs((facenormals[j].x*p1->x)+(facenormals[j].y*p1->y)+(facenormals[j].z*p1->z)-((facenormals[j].x*vertex[Triangles[j].vertex[0]].x)+(facenormals[j].y*vertex[Triangles[j].vertex[0]].y)+(facenormals[j].z*vertex[Triangles[j].vertex[0]].z)));
+		distance=abs((facenormals[j].x*p1.x)+(facenormals[j].y*p1.y)+(facenormals[j].z*p1.z)-((facenormals[j].x*vertex[Triangles[j].vertex[0]].x)+(facenormals[j].y*vertex[Triangles[j].vertex[0]].y)+(facenormals[j].z*vertex[Triangles[j].vertex[0]].z)));
 		if(distance<radius){
-			point=*p1-facenormals[j]*distance;
+			point=p1-facenormals[j]*distance;
 			if(PointInTriangle( &point, facenormals[j], &vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[1]], &vertex[Triangles[j].vertex[2]]))intersecting=1;
-			if(!intersecting)intersecting=sphere_line_intersection(&vertex[Triangles[j].vertex[0]],
-				&vertex[Triangles[j].vertex[1]],
-				p1, &radius);
-			if(!intersecting)intersecting=sphere_line_intersection(&vertex[Triangles[j].vertex[1]],
-				&vertex[Triangles[j].vertex[2]],
-				p1, &radius);
-			if(!intersecting)intersecting=sphere_line_intersection(&vertex[Triangles[j].vertex[0]],
-				&vertex[Triangles[j].vertex[2]],
-				p1, &radius);
+			if(!intersecting)intersecting=sphere_line_intersection(vertex[Triangles[j].vertex[0]],
+																   vertex[Triangles[j].vertex[1]],
+																   p1, radius);
+			if(!intersecting)intersecting=sphere_line_intersection(vertex[Triangles[j].vertex[1]],
+																   vertex[Triangles[j].vertex[2]],
+																   p1, radius);
+			if(!intersecting)intersecting=sphere_line_intersection(vertex[Triangles[j].vertex[0]],
+																   vertex[Triangles[j].vertex[2]],
+																   p1, radius);
 			if(intersecting){
 				//if(j>=0&&j<TriangleNum)
 				possible[numpossible]=j;
@@ -275,16 +295,17 @@ int Model::SphereCheckPossible(XYZ *p1,float radius, const XYZ *const move, cons
 		}
 		if((distance<olddistance||firstintersecting==-1)&&intersecting){olddistance=distance; firstintersecting=j;}
 	}
-	if(*rotate)*p1=DoRotation(*p1,0,*rotate,0);
-	*p1+=*move;
+	if(rotate)
+		p1=DoRotation(p1,0,rotate,0);
+	p1 += move;
 	return firstintersecting;
 }
 
 
 void Model::UpdateVertexArray(){
 	if(type!=normaltype&&type!=decalstype)return;
-	static int i;
-	static int j;
+	int i;
+	int j;
 	if(!flat)
 		for(i=0;i<TriangleNum;i++){
 			j=i*24;
@@ -350,8 +371,8 @@ void Model::UpdateVertexArray(){
 
 void Model::UpdateVertexArrayNoTex(){
 	if(type!=normaltype&&type!=decalstype)return;
-	static int i;
-	static int j;
+	int i;
+	int j;
 	if(!flat)
 		for(i=0;i<TriangleNum;i++){
 			j=i*24;
@@ -403,9 +424,10 @@ void Model::UpdateVertexArrayNoTex(){
 }
 
 void Model::UpdateVertexArrayNoTexNoNorm(){
-	if(type!=normaltype&&type!=decalstype)return;
-	static int i;
-	static int j;
+	if(type!=normaltype&&type!=decalstype)
+		return;
+	int i;
+	int j;
 	for(i=0;i<TriangleNum;i++){
 		j=i*24;
 		vArray[j+5]=vertex[Triangles[i].vertex[0]].x;
@@ -814,17 +836,14 @@ void Model::ScaleTexCoords(float howmuch)
 
 void Model::Scale(float xscale,float yscale,float zscale)
 {
-	static int i;
-	for(i=0; i<vertexNum; i++){
+	for(int i=0; i<vertexNum; i++){
 		vertex[i] *= {xscale, yscale, zscale};
 	}
 	UpdateVertexArray();
 
-	static int j;
-
 	boundingsphereradius=0;
-	for(i=0;i<vertexNum;i++){
-		for(j=0;j<vertexNum;j++){
+	for(int i=0;i<vertexNum;i++){
+		for(int j=0;j<vertexNum;j++){
 			if(j!=i&&findDistancefast(&vertex[j],&vertex[i])/2>boundingsphereradius){
 				boundingsphereradius=findDistancefast(&vertex[j],&vertex[i])/2;
 				boundingspherecenter=(vertex[i]+vertex[j])/2;
@@ -837,11 +856,10 @@ void Model::Scale(float xscale,float yscale,float zscale)
 void Model::ScaleNormals(float xscale,float yscale,float zscale)
 {
 	if(type!=normaltype&&type!=decalstype)return;
-	static int i;
-	for(i=0; i<vertexNum; i++){
+	for(int i=0; i<vertexNum; i++){
 		normals[i]*={xscale, yscale, zscale};
 	}
-	for(i=0; i<TriangleNum; i++){
+	for(int i=0; i<TriangleNum; i++){
 		facenormals[i] *= {xscale, yscale, zscale};
 	}
 	UpdateVertexArray();
@@ -849,13 +867,13 @@ void Model::ScaleNormals(float xscale,float yscale,float zscale)
 
 void Model::Translate(float xtrans,float ytrans,float ztrans)
 {
-	static int i;
+	int i;
 	for(i=0; i<vertexNum; i++){
 		vertex[i] += {xtrans, ytrans, ztrans};
 	}
 	UpdateVertexArray();
 
-	static int j;
+	int j;
 	boundingsphereradius=0;
 	for(i=0;i<vertexNum;i++){
 		for(j=0;j<vertexNum;j++){
@@ -870,13 +888,13 @@ void Model::Translate(float xtrans,float ytrans,float ztrans)
 
 void Model::Rotate(float xang,float yang,float zang)
 {
-	static int i;
+	int i;
 	for(i=0; i<vertexNum; i++){
 		vertex[i]=DoRotation(vertex[i],xang,yang,zang);
 	}
 	UpdateVertexArray();
 
-	static int j;
+	int j;
 	boundingsphereradius=0;
 	for(i=0;i<vertexNum;i++){
 		for(j=0;j<vertexNum;j++){
@@ -1157,7 +1175,7 @@ void Model::DeleteDecal(int which)
 	}
 }
 
-void Model::MakeDecal(int atype, XYZ *where,float *size, float *opacity, float *rotation){
+void Model::MakeDecal(int atype, XYZ *where,float *size, float *opacity, const float rotation){
 	if(decals){
 		if(type!=decalstype)return;
 
@@ -1173,7 +1191,7 @@ void Model::MakeDecal(int atype, XYZ *where,float *size, float *opacity, float *
 					if(facenormals[i].y<-.1&&(vertex[Triangles[i].vertex[0]].y<where->y||vertex[Triangles[i].vertex[1]].y<where->y||vertex[Triangles[i].vertex[2]].y<where->y)){
 						decalposition[numdecals]=*where;
 						decaltype[numdecals]=atype;
-						decalrotation[numdecals]=*rotation;
+						decalrotation[numdecals]=rotation;
 						decalalivetime[numdecals]=0;
 						distance=abs(((facenormals[i].x*where->x)+(facenormals[i].y*where->y)+(facenormals[i].z*where->z)-((facenormals[i].x*vertex[Triangles[i].vertex[0]].x)+(facenormals[i].y*vertex[Triangles[i].vertex[0]].y)+(facenormals[i].z*vertex[Triangles[i].vertex[0]].z)))/facenormals[i].y);
 						decalopacity[numdecals]=*opacity-distance/10;

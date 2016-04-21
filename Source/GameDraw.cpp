@@ -399,7 +399,7 @@ int Game::DrawGLScene(void)
 										if(k!=0&&tutoriallevel==1){
 											opacity=.2+.2*sin(smoketex*6+i);
 										}
-										objects.model[j].MakeDecal(shadowdecal,&point,&size,&opacity,&rotation);
+										objects.model[j].MakeDecal(shadowdecal,&point,&size,&opacity,rotation);
 									}
 								}
 						}
@@ -427,7 +427,7 @@ int Game::DrawGLScene(void)
 												if(k!=0&&tutoriallevel==1){
 													opacity=.2+.2*sin(smoketex*6+i);
 												}
-												objects.model[j].MakeDecal(shadowdecal,&point,&size,&opacity,&rotation);
+												objects.model[j].MakeDecal(shadowdecal,&point,&size,&opacity,rotation);
 											}
 										}
 								}
@@ -446,7 +446,7 @@ int Game::DrawGLScene(void)
 											point=DoRotation(player[k].coords-objects.position[j],0,-objects.rotation[j],0);
 											size=.7;
 											opacity=.4f;
-											objects.model[j].MakeDecal(shadowdecal,&point,&size,&opacity,&rotation);
+											objects.model[j].MakeDecal(shadowdecal,&point,&size,&opacity,rotation);
 										}
 								}
 		}

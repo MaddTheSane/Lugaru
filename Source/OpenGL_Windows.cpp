@@ -102,7 +102,7 @@ extern bool immediate;
 extern bool velocityblur;
 extern bool debugmode;
 extern int mainmenu;
-/*extern*/ bool gameFocused;
+/*extern*/ bool gameFocused = true;
 extern int kBitsPerPixel;
 extern float slomospeed;
 extern float slomofreq;
@@ -1288,7 +1288,7 @@ void CleanUp (void)
 
 static bool IsFocused()
 {
-    return (SDL_GetWindowFlags(sdlwindow) & SDL_WINDOW_INPUT_FOCUS) != 0;
+    return (SDL_GetWindowFlags(sdlwindow) & SDL_WINDOW_INPUT_FOCUS) == SDL_WINDOW_INPUT_FOCUS;
 }
 
 
@@ -1480,9 +1480,15 @@ int main(int argc, char **argv)
 						gameFocused = false;
 						DoUpdate(game);
 					}
+					game.deltah = 0;
+					game.deltav = 0;
+					SDL_Event e;
 
 					// game is not in focus, give CPU time to other apps by waiting for messages instead of 'peeking'
                     STUBBED("give up CPU but sniff the event queue");
+					while (SDL_PollEvent(&e)) {
+
+					}
 				}
 			}
 

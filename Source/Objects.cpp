@@ -55,7 +55,7 @@ bool 	Objects::checkcollide(XYZ startpoint,XYZ endpoint,int which){
 		if(type[i]!=treeleavestype&&type[i]!=treetrunktype&&type[i]!=bushtype&&type[i]!=firetype&&i!=which){
 			colviewer=startpoint;
 			coltarget=endpoint;
-			if(model[i].LineCheck(&colviewer,&coltarget,&colpoint,&position[i],&rotation[i])!=-1)return 1;	
+			if(model[i].LineCheck(colviewer,coltarget,colpoint,position[i],rotation[i])!=-1)return 1;	
 		}
 	}
 
@@ -76,7 +76,7 @@ void Objects::SphereCheckPossible(XYZ *p1,float radius)
 			for(j=0;j<terrain.patchobjectnum[whichpatchx][whichpatchz];j++){
 				i=terrain.patchobjects[whichpatchx][whichpatchz][j];
 				possible[i]=0;
-				if(model[i].SphereCheckPossible(p1, radius, &position[i], &rotation[i])!=-1){
+				if(model[i].SphereCheckPossible(*p1, radius, position[i], rotation[i])!=-1){
 					possible[i]=1;
 				}
 			}
@@ -89,7 +89,7 @@ void Objects::Draw()
 	static XYZ moved,terrainlight;
 	bool hidden;
 
-	for(i=0;i<numobjects;i++){
+	for(int i=0;i<numobjects;i++){
 		if(type[i]!=firetype){
 			moved=DoRotation(model[i].boundingspherecenter,0,rotation[i],0);
 			if(type[i]==tunneltype||frustum.SphereInFrustum(position[i].x+moved.x,position[i].y+moved.y,position[i].z+moved.z,model[i].boundingsphereradius)){   
@@ -722,8 +722,8 @@ void Objects::DoShadows()
 								if(type[l]!=treetrunktype/*&&l!=i*/){
 									testpoint=terrainpoint;
 									testpoint2=terrainpoint+lightloc*50*(1-shadowed[i]);
-									if(model[l].LineCheck(&testpoint,&testpoint2,&col,&position[l],&rotation[l])!=-1){
-										shadowed[i]=1-(findDistance(&terrainpoint,&col)/50);	
+									if(model[l].LineCheck(testpoint,testpoint2,col,position[l],rotation[l])!=-1){
+										shadowed[i]=1-(findDistance(terrainpoint,col)/50);
 									}
 								}
 							}

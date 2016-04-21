@@ -148,7 +148,7 @@ void	Weapons::DoStuff(){
 						k=terrain.patchobjects[whichpatchx][whichpatchz][j];
 						start=oldtippoint[i];
 						end=tippoint[i];
-						whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
+						whichhit=objects.model[k].LineCheck(start,end,colpoint,objects.position[k],objects.rotation[k]);
 						if(whichhit!=-1){
 							if(objects.type[k]==treetrunktype){
 								objects.model[k].MakeDecal(breakdecal,DoRotation(colpoint-objects.position[k],0,-objects.rotation[k],0),.1,1,Random()%360);
@@ -162,12 +162,12 @@ void	Weapons::DoStuff(){
 
 								temppoint1=0;
 								temppoint2=normalrot;
-								distance=findDistance(&temppoint1,&temppoint2);
+								distance=findDistance(temppoint1,temppoint2);
 								rotation2[i]=asin((temppoint1.y-temppoint2.y)/distance);
 								rotation2[i]*=360/6.28;
 								temppoint1.y=0;
 								temppoint2.y=0;
-								rotation1[i]=acos((temppoint1.z-temppoint2.z)/findDistance(&temppoint1,&temppoint2));
+								rotation1[i]=acos((temppoint1.z-temppoint2.z)/findDistance(temppoint1,temppoint2));
 								rotation1[i]*=360/6.28;
 								if(temppoint1.x>temppoint2.x)rotation1[i]=360-rotation1[i];
 
@@ -380,12 +380,12 @@ void	Weapons::DoStuff(){
 
 						temppoint1=0;
 						temppoint2=velocity[i];
-						distance=findDistance(&temppoint1,&temppoint2);
+						distance=findDistance(temppoint1,temppoint2);
 						rotation2[i]=asin((temppoint1.y-temppoint2.y)/distance);
 						rotation2[i]*=360/6.28;
 						temppoint1.y=0;
 						temppoint2.y=0;
-						rotation1[i]=acos((temppoint1.z-temppoint2.z)/findDistance(&temppoint1,&temppoint2));
+						rotation1[i]=acos((temppoint1.z-temppoint2.z)/findDistance(temppoint1,temppoint2));
 						rotation1[i]*=360/6.28;
 						rotation3[i]=0;
 						smallrotation[i]=90;
@@ -435,7 +435,7 @@ void	Weapons::DoStuff(){
 								if(type[i]!=staff){
 									start=position[i]-(tippoint[i]-position[i])/5;
 									end=tippoint[i]+(tippoint[i]-position[i])/30;
-									whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
+									whichhit=objects.model[k].LineCheck(start,end,colpoint,objects.position[k],objects.rotation[k]);
 									if(whichhit!=-1){
 										XYZ diff;
 										diff=(colpoint-tippoint[i]);
@@ -451,7 +451,7 @@ void	Weapons::DoStuff(){
 								if(type[i]==staff){
 									start=tippoint[i]-(position[i]-tippoint[i])/5;
 									end=position[i]+(position[i]-tippoint[i])/30;
-									whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
+									whichhit=objects.model[k].LineCheck(start,end,colpoint,objects.position[k],objects.rotation[k]);
 									if(whichhit!=-1){
 										XYZ diff;
 										diff=(colpoint-position[i]);
@@ -468,7 +468,7 @@ void	Weapons::DoStuff(){
 
 							start=oldposition[i];
 							end=position[i];
-							whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
+							whichhit=objects.model[k].LineCheck(start,end,colpoint,objects.position[k],objects.rotation[k]);
 							if(whichhit!=-1){
 								hitsomething[i]=1;
 								position[i]=colpoint;
@@ -476,7 +476,7 @@ void	Weapons::DoStuff(){
 								ReflectVector(&velocity[i],&terrainnormal);
 								position[i]+=terrainnormal*.002;
 
-								bounceness=terrainnormal*findLength(&velocity[i])*(abs(normaldotproduct(velocity[i],terrainnormal)));
+								bounceness=terrainnormal*findLength(velocity[i])*(abs(normaldotproduct(velocity[i],terrainnormal)));
 								if(findLengthfast(&velocity[i])<findLengthfast(&bounceness))bounceness=0;
 								frictionness=abs(normaldotproduct(velocity[i],terrainnormal));
 								velocity[i]-=bounceness;
@@ -504,7 +504,7 @@ void	Weapons::DoStuff(){
 							}
 							start=oldtippoint[i];
 							end=tippoint[i];
-							whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
+							whichhit=objects.model[k].LineCheck(start,end,colpoint,objects.position[k],objects.rotation[k]);
 							if(whichhit!=-1){
 								hitsomething[i]=1;
 								tippoint[i]=colpoint;
@@ -512,7 +512,7 @@ void	Weapons::DoStuff(){
 								ReflectVector(&tipvelocity[i],&terrainnormal);
 								tippoint[i]+=terrainnormal*.002;
 
-								bounceness=terrainnormal*findLength(&tipvelocity[i])*(abs(normaldotproduct(tipvelocity[i],terrainnormal)));
+								bounceness=terrainnormal*findLength(tipvelocity[i])*(abs(normaldotproduct(tipvelocity[i],terrainnormal)));
 								if(findLengthfast(&tipvelocity[i])<findLengthfast(&bounceness))bounceness=0;
 								frictionness=abs(normaldotproduct(tipvelocity[i],terrainnormal));
 								tipvelocity[i]-=bounceness;
@@ -548,14 +548,14 @@ void	Weapons::DoStuff(){
 
 									start=oldmid;
 									end=mid;
-									whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
+									whichhit=objects.model[k].LineCheck(start,end,colpoint,objects.position[k],objects.rotation[k]);
 									if(whichhit!=-1){
 										hitsomething[i]=1;
 										mid=colpoint;
 										terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
 										ReflectVector(&velocity[i],&terrainnormal);
 
-										bounceness=terrainnormal*findLength(&velocity[i])*(abs(normaldotproduct(velocity[i],terrainnormal)));
+										bounceness=terrainnormal*findLength(velocity[i])*(abs(normaldotproduct(velocity[i],terrainnormal)));
 										if(findLengthfast(&velocity[i])<findLengthfast(&bounceness))bounceness=0;
 										frictionness=abs(normaldotproduct(velocity[i],terrainnormal));
 										velocity[i]-=bounceness;
@@ -589,14 +589,14 @@ void	Weapons::DoStuff(){
 
 									start=oldmid;
 									end=mid;
-									whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
+									whichhit=objects.model[k].LineCheck(start,end,colpoint,objects.position[k],objects.rotation[k]);
 									if(whichhit!=-1){
 										hitsomething[i]=1;
 										mid=colpoint;
 										terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
 										ReflectVector(&tipvelocity[i],&terrainnormal);
 
-										bounceness=terrainnormal*findLength(&tipvelocity[i])*(abs(normaldotproduct(tipvelocity[i],terrainnormal)));
+										bounceness=terrainnormal*findLength(tipvelocity[i])*(abs(normaldotproduct(tipvelocity[i],terrainnormal)));
 										if(findLengthfast(&tipvelocity[i])<findLengthfast(&bounceness))bounceness=0;
 										frictionness=abs(normaldotproduct(tipvelocity[i],terrainnormal));
 										tipvelocity[i]-=bounceness;
@@ -628,7 +628,7 @@ void	Weapons::DoStuff(){
 							{
 								start=position[i];
 								end=tippoint[i];
-								whichhit=objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k]);
+								whichhit=objects.model[k].LineCheck(start,end,colpoint,objects.position[k],objects.rotation[k]);
 								if(whichhit!=-1){
 									hitsomething[i]=1;
 									closestdistance=-1;
@@ -678,7 +678,7 @@ void	Weapons::DoStuff(){
 						terrainnormal=terrain.getNormal(position[i].x,position[i].z);
 						ReflectVector(&velocity[i],&terrainnormal);
 						position[i]+=terrainnormal*.002;
-						bounceness=terrainnormal*findLength(&velocity[i])*(abs(normaldotproduct(velocity[i],terrainnormal)));
+						bounceness=terrainnormal*findLength(velocity[i])*(abs(normaldotproduct(velocity[i],terrainnormal)));
 						if(findLengthfast(&velocity[i])<findLengthfast(&bounceness))bounceness=0;
 						frictionness=abs(normaldotproduct(velocity[i],terrainnormal));
 						velocity[i]-=bounceness;
@@ -731,7 +731,7 @@ void	Weapons::DoStuff(){
 						terrainnormal=terrain.getNormal(tippoint[i].x,tippoint[i].z);
 						ReflectVector(&tipvelocity[i],&terrainnormal);
 						tippoint[i]+=terrainnormal*.002;
-						bounceness=terrainnormal*findLength(&tipvelocity[i])*(abs(normaldotproduct(tipvelocity[i],terrainnormal)));
+						bounceness=terrainnormal*findLength(tipvelocity[i])*(abs(normaldotproduct(tipvelocity[i],terrainnormal)));
 						if(findLengthfast(&tipvelocity[i])<findLengthfast(&bounceness))bounceness=0;
 						frictionness=abs(normaldotproduct(tipvelocity[i],terrainnormal));
 						tipvelocity[i]-=bounceness;
@@ -790,7 +790,7 @@ void	Weapons::DoStuff(){
 						terrainnormal=terrain.getNormal(mid.x,mid.z);
 						ReflectVector(&velocity[i],&terrainnormal);
 						//mid+=terrainnormal*.002;
-						bounceness=terrainnormal*findLength(&velocity[i])*(abs(normaldotproduct(velocity[i],terrainnormal)));
+						bounceness=terrainnormal*findLength(velocity[i])*(abs(normaldotproduct(velocity[i],terrainnormal)));
 						if(findLengthfast(&velocity[i])<findLengthfast(&bounceness))bounceness=0;
 						frictionness=abs(normaldotproduct(velocity[i],terrainnormal));
 						velocity[i]-=bounceness;
@@ -834,7 +834,7 @@ void	Weapons::DoStuff(){
 						terrainnormal=terrain.getNormal(mid.x,mid.z);
 						ReflectVector(&tipvelocity[i],&terrainnormal);
 						//mid+=terrainnormal*.002;
-						bounceness=terrainnormal*findLength(&tipvelocity[i])*(abs(normaldotproduct(tipvelocity[i],terrainnormal)));
+						bounceness=terrainnormal*findLength(tipvelocity[i])*(abs(normaldotproduct(tipvelocity[i],terrainnormal)));
 						if(findLengthfast(&tipvelocity[i])<findLengthfast(&bounceness))bounceness=0;
 						frictionness=abs(normaldotproduct(tipvelocity[i],terrainnormal));
 						tipvelocity[i]-=bounceness;
@@ -876,7 +876,7 @@ void	Weapons::DoStuff(){
 					terrainnormal=terrain.getNormal(mid.x,mid.z);
 					ReflectVector(&velocity[i],&terrainnormal);
 					position[i]+=terrainnormal*.002;
-					bounceness=terrainnormal*findLength(&velocity[i])*(abs(normaldotproduct(velocity[i],terrainnormal)));
+					bounceness=terrainnormal*findLength(velocity[i])*(abs(normaldotproduct(velocity[i],terrainnormal)));
 					if(findLengthfast(&velocity[i])<findLengthfast(&bounceness))bounceness=0;
 					frictionness=abs(normaldotproduct(velocity[i],terrainnormal));
 					velocity[i]-=bounceness;
@@ -915,7 +915,7 @@ void	Weapons::DoStuff(){
 					terrainnormal=terrain.getNormal(mid.x,mid.z);
 					ReflectVector(&tipvelocity[i],&terrainnormal);
 					tippoint[i]+=terrainnormal*.002;
-					bounceness=terrainnormal*findLength(&tipvelocity[i])*(abs(normaldotproduct(tipvelocity[i],terrainnormal)));
+					bounceness=terrainnormal*findLength(tipvelocity[i])*(abs(normaldotproduct(tipvelocity[i],terrainnormal)));
 					if(findLengthfast(&tipvelocity[i])<findLengthfast(&bounceness))bounceness=0;
 					frictionness=abs(normaldotproduct(tipvelocity[i],terrainnormal));
 					tipvelocity[i]-=bounceness;
@@ -1034,12 +1034,12 @@ void	Weapons::DoStuff(){
 
 					temppoint1=position[i];
 					temppoint2=tippoint[i];
-					distance=findDistance(&temppoint1,&temppoint2);
+					distance=findDistance(temppoint1,temppoint2);
 					rotation2[i]=asin((temppoint1.y-temppoint2.y)/distance);
 					rotation2[i]*=360/6.28;
 					temppoint1.y=0;
 					temppoint2.y=0;
-					rotation1[i]=acos((temppoint1.z-temppoint2.z)/findDistance(&temppoint1,&temppoint2));
+					rotation1[i]=acos((temppoint1.z-temppoint2.z)/findDistance(temppoint1,temppoint2));
 					rotation1[i]*=360/6.28;
 					rotation3[i]=0;
 					smallrotation[i]=90;
@@ -1111,7 +1111,7 @@ void	Weapons::DoStuff(){
 				if(Random()%50==0&&findDistancefast(&position[i],&viewer)>80){
 					XYZ shinepoint;
 					shinepoint=position[i]+(tippoint[i]-position[i])*(((float)abs(Random()%100))/100);
-					sprites.MakeSprite(weaponshinesprite, shinepoint,normalrot, 1,1,1, (.1+(float)abs(Random()%100)/200-.25)*1/3*fast_sqrt(findDistance(&shinepoint,&viewer)), 1);
+					sprites.MakeSprite(weaponshinesprite, shinepoint,normalrot, 1,1,1, (.1+(float)abs(Random()%100)/200-.25)*1/3*fast_sqrt(findDistance(shinepoint,viewer)), 1);
 					sprites.speed[sprites.numsprites-1]=4;
 					sprites.alivetime[sprites.numsprites-1]=.3;
 				}

@@ -332,7 +332,7 @@ static void ch_save(Game *game, const char *args)
 	fpackf(tfile, "Bf Bf Bf", participantlocation[k][l].x, participantlocation[k][l].y, participantlocation[k][l].z);
 	fpackf(tfile, "Bf", participantrotation[k][l]);
       }
-      if(numdialogueboxes)
+      //if(numdialogueboxes)
 	for(size_t l=0;l<numdialogueboxes[k];l++){
 	  fpackf(tfile, "Bi", dialogueboxlocation[k][l]);
 	  fpackf(tfile, "Bf", dialogueboxcolor[k][l][0]);
@@ -1510,7 +1510,7 @@ int Game::checkcollide(XYZ startpoint,XYZ endpoint){
 			if(objects.type[i]!=treeleavestype&&objects.type[i]!=bushtype&&objects.type[i]!=firetype){
 				colviewer=startpoint;
 				coltarget=endpoint;
-				if(objects.model[i].LineCheck(&colviewer,&coltarget,&colpoint,&objects.position[i],&objects.rotation[i])!=-1)return i;
+				if(objects.model[i].LineCheck(colviewer,coltarget,colpoint,objects.position[i],objects.rotation[i])!=-1)return i;
 			}
 		}
 	}
@@ -1556,7 +1556,8 @@ int Game::checkcollide(XYZ startpoint,XYZ endpoint,int what){
 			if(objects.type[what]!=treeleavestype&&objects.type[what]!=bushtype&&objects.type[what]!=firetype){
 				colviewer=startpoint;
 				coltarget=endpoint;
-				if(objects.model[what].LineCheck(&colviewer,&coltarget,&colpoint,&objects.position[what],&objects.rotation[what])!=-1)return i;
+				if(objects.model[what].LineCheck(colviewer,coltarget,colpoint,objects.position[what],objects.rotation[what])!=-1)
+					return i;
 			}
 		}
 	}
@@ -5092,7 +5093,7 @@ void	Game::Tick()
 													if(player[k].aitype==playercontrolled&&(player[k].targetanimation==jumpupanim||player[k].targetanimation==jumpdownanim||player[k].isFlip())&&!player[k].jumptogglekeydown&&player[k].jumpkeydown){
 														lowpointtarget=lowpoint+DoRotation(player[k].facing,0,-90,0)*1.5;
 														tempcoords1=lowpoint;
-														whichhit=objects.model[i].LineCheck(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.rotation[i]);
+														whichhit=objects.model[i].LineCheck(lowpoint,lowpointtarget,colpoint,objects.position[i],objects.rotation[i]);
 														if(whichhit!=-1&&abs(objects.model[i].facenormals[whichhit].y)<.3){
 															player[k].target=0;
 															player[k].targetanimation=walljumpleftanim;
@@ -5123,7 +5124,7 @@ void	Game::Tick()
 														{
 															lowpoint=tempcoords1;
 															lowpointtarget=lowpoint+DoRotation(player[k].facing,0,90,0)*1.5;
-															whichhit=objects.model[i].LineCheck(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.rotation[i]);
+															whichhit=objects.model[i].LineCheck(lowpoint,lowpointtarget,colpoint,objects.position[i],objects.rotation[i]);
 															if(whichhit!=-1&&abs(objects.model[i].facenormals[whichhit].y)<.3){
 																player[k].target=0;
 																player[k].targetanimation=walljumprightanim;
@@ -5154,7 +5155,7 @@ void	Game::Tick()
 															{
 																lowpoint=tempcoords1;
 																lowpointtarget=lowpoint+player[k].facing*2;
-																whichhit=objects.model[i].LineCheck(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.rotation[i]);
+																whichhit=objects.model[i].LineCheck(lowpoint,lowpointtarget,colpoint,objects.position[i],objects.rotation[i]);
 																if(whichhit!=-1&&abs(objects.model[i].facenormals[whichhit].y)<.3){
 																	player[k].target=0;
 																	player[k].targetanimation=walljumpbackanim;
@@ -5185,7 +5186,7 @@ void	Game::Tick()
 																{
 																	lowpoint=tempcoords1;
 																	lowpointtarget=lowpoint-player[k].facing*2;
-																	whichhit=objects.model[i].LineCheck(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.rotation[i]);
+																	whichhit=objects.model[i].LineCheck(lowpoint,lowpointtarget,colpoint,objects.position[i],objects.rotation[i]);
 																	if(whichhit!=-1&&abs(objects.model[i].facenormals[whichhit].y)<.3){
 																		player[k].target=0;
 																		player[k].targetanimation=walljumpfrontanim;
@@ -5223,7 +5224,7 @@ void	Game::Tick()
 												lowpoint2=player[k].coords;
 												lowpoint=player[k].coords;
 												lowpoint.y+=2;
-												if(objects.model[i].LineCheck(&lowpoint,&lowpoint2,&colpoint,&objects.position[i],&objects.rotation[i])!=-1){
+												if(objects.model[i].LineCheck(lowpoint,lowpoint2,colpoint,objects.position[i],objects.rotation[i])!=-1){
 													player[k].coords=colpoint;
 													player[k].collide=1;
 													tempcollide=1;
@@ -5282,14 +5283,14 @@ void	Game::Tick()
 
 														if((player[k].grabdelay<=0||player[k].aitype!=playercontrolled)&&((/*(player[k].isRun()||player[k].targetanimation==sneakanim||player[k].targetanimation==walkanim)&&*/player[k].currentanimation!=climbanim&&player[k].currentanimation!=hanganim&&!player[k].isWallJump())||player[k].targetanimation==jumpupanim||player[k].targetanimation==jumpdownanim)){
 															lowpoint=player[k].coords;
-															objects.model[i].SphereCheckPossible(&lowpoint, 1.5, &objects.position[i], &objects.rotation[i]);
+															objects.model[i].SphereCheckPossible(lowpoint, 1.5, objects.position[i], objects.rotation[i]);
 															lowpoint=player[k].coords;
 															lowpoint.y+=.05;
 															facing=0;
 															facing.z=-1;
 															facing=DoRotation(facing,0,player[k].targetrotation+180,0);
 															lowpointtarget=lowpoint+facing*1.4;
-															whichhit=objects.model[i].LineCheckPossible(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.rotation[i]);
+															whichhit=objects.model[i].LineCheckPossible(lowpoint,lowpointtarget,colpoint,objects.position[i],objects.rotation[i]);
 															if(whichhit!=-1){
 																lowpoint=player[k].coords;
 																lowpoint.y+=.1;
@@ -5318,19 +5319,19 @@ void	Game::Tick()
 																lowpointtarget6.y+=45/13;
 																lowpointtarget6+=facing*.6;
 																lowpointtarget7.y+=90/13;
-																whichhit=objects.model[i].LineCheckPossible(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.rotation[i]);
+																whichhit=objects.model[i].LineCheckPossible(lowpoint,lowpointtarget,colpoint,objects.position[i],objects.rotation[i]);
 																if(objects.friction[i]>.5)
 																	if(whichhit!=-1){
 																		//if(k==0){
 																		if(whichhit!=-1)if(player[k].targetanimation!=jumpupanim&&player[k].targetanimation!=jumpdownanim)player[k].collided=1;
 																		if(checkcollide(lowpoint7,lowpointtarget7)==-1)
 																			if(checkcollide(lowpoint6,lowpointtarget6)==-1)
-																				if(objects.model[i].LineCheckPossible(&lowpoint2,&lowpointtarget2,&colpoint,&objects.position[i],&objects.rotation[i])!=-1&&objects.model[i].LineCheckPossible(&lowpoint3,&lowpointtarget3,&colpoint,&objects.position[i],&objects.rotation[i])!=-1&&objects.model[i].LineCheckPossible(&lowpoint4,&lowpointtarget4,&colpoint,&objects.position[i],&objects.rotation[i])!=-1&&objects.model[i].LineCheckPossible(&lowpoint5,&lowpointtarget5,&colpoint,&objects.position[i],&objects.rotation[i])!=-1)
+																				if(objects.model[i].LineCheckPossible(lowpoint2,lowpointtarget2,colpoint,objects.position[i],objects.rotation[i])!=-1&&objects.model[i].LineCheckPossible(lowpoint3,lowpointtarget3,colpoint,objects.position[i],objects.rotation[i])!=-1&&objects.model[i].LineCheckPossible(lowpoint4,lowpointtarget4,colpoint,objects.position[i],objects.rotation[i])!=-1&&objects.model[i].LineCheckPossible(lowpoint5,lowpointtarget5,colpoint,objects.position[i],objects.rotation[i])!=-1)
 																					for(j=0;j<45;j++){
 																						lowpoint=player[k].coords;
 																						lowpoint.y+=(float)j/13;
 																						lowpointtarget=lowpoint+facing*1.4;
-																						if(objects.model[i].LineCheckPossible(&lowpoint,&lowpointtarget,&colpoint2,&objects.position[i],&objects.rotation[i])==-1){
+																						if(objects.model[i].LineCheckPossible(lowpoint,lowpointtarget,colpoint2,objects.position[i],objects.rotation[i])==-1){
 																							if(j<=6){
 																								j=100;
 																							}
@@ -7683,7 +7684,7 @@ void	Game::Tick()
 														for(k=0;k<numpathpointconnect[j];k++){
 															DistancePointLine(&player[i].finalfinaltarget, &pathpoint[j], &pathpoint[pathpointconnect[j][k]], &tempdist,&colpoint );
 															if(tempdist*tempdist<closestdistance){
-																if(findDistance(&colpoint,&pathpoint[j])+findDistance(&colpoint,&pathpoint[pathpointconnect[j][k]])<findDistance(&pathpoint[j],&pathpoint[pathpointconnect[j][k]])+.1){
+																if(findDistance(colpoint,pathpoint[j])+findDistance(colpoint,pathpoint[pathpointconnect[j][k]])<findDistance(pathpoint[j],pathpoint[pathpointconnect[j][k]])+.1){
 																	closestdistance=tempdist*tempdist;
 																	closest=j;
 																	player[i].finaltarget=colpoint;
@@ -7716,7 +7717,7 @@ void	Game::Tick()
 																for(k=0;k<numpathpointconnect[j];k++){
 																	DistancePointLine(&player[i].coords, &pathpoint[j], &pathpoint[pathpointconnect[j][k]], &tempdist,&colpoint );
 																	if(tempdist*tempdist<closestdistance){
-																		if(findDistance(&colpoint,&pathpoint[j])+findDistance(&colpoint,&pathpoint[pathpointconnect[j][k]])<findDistance(&pathpoint[j],&pathpoint[pathpointconnect[j][k]])+.1){
+																		if(findDistance(colpoint,pathpoint[j])+findDistance(colpoint,pathpoint[pathpointconnect[j][k]])<findDistance(pathpoint[j],pathpoint[pathpointconnect[j][k]])+.1){
 																			//if(findDistancefast(&player[i].finaltarget,&colpoint)<findDistancefast(&player[i].finaltarget,&player[i].coords)){
 																			closestdistance=tempdist*tempdist;
 																			closest=j;
@@ -8363,7 +8364,7 @@ void	Game::Tick()
 																player[i].rabbitkickenabled=Random()%2;
 																rotatetarget=player[player[i].aitarget].coords+player[player[i].aitarget].velocity;
 																if(findDistancefast(&player[player[i].aitarget].coords,&player[i].coords)<findDistancefast(&rotatetarget,&player[i].coords))
-																	rotatetarget=player[player[i].aitarget].coords+player[player[i].aitarget].velocity*findDistance(&player[player[i].aitarget].coords,&player[i].coords)/findLength(&player[i].velocity)-player[i].coords;
+																	rotatetarget=player[player[i].aitarget].coords+player[player[i].aitarget].velocity*findDistance(player[player[i].aitarget].coords,player[i].coords)/findLength(player[i].velocity)-player[i].coords;
 																else rotatetarget=player[player[i].aitarget].coords-player[i].coords;
 																Normalise(rotatetarget);
 																player[i].targetrotation=-asin(0-rotatetarget.x);
@@ -8807,7 +8808,7 @@ void	Game::Tick()
 																					player[i].victim=&player[j];
 																					XYZ aim;
 																					weapons.owner[player[i].weaponids[0]]=-1;
-																					aim=player[i].victim->coords+DoRotation(player[i].victim->skeleton.joints[player[i].victim->skeleton.jointlabels[abdomen]].position,0,player[i].victim->rotation,0)*player[i].victim->scale+player[i].victim->velocity*findDistance(&player[i].victim->coords,&player[i].coords)/50-(player[i].coords+DoRotation(player[i].skeleton.joints[player[i].skeleton.jointlabels[righthand]].position,0,player[i].rotation,0)*player[i].scale);
+																					aim=player[i].victim->coords+DoRotation(player[i].victim->skeleton.joints[player[i].victim->skeleton.jointlabels[abdomen]].position,0,player[i].victim->rotation,0)*player[i].victim->scale+player[i].victim->velocity*findDistance(player[i].victim->coords,player[i].coords)/50-(player[i].coords+DoRotation(player[i].skeleton.joints[player[i].skeleton.jointlabels[righthand]].position,0,player[i].rotation,0)*player[i].scale);
 																					Normalise(aim);
 
 																					aim=DoRotation(aim,(float)abs(Random()%30)-15,(float)abs(Random()%30)-15,0);
@@ -9959,7 +9960,7 @@ void	Game::TickOnceAfter(){
 		if(player[0].skeleton.free!=2&&!autocam){
 			cameraspeed=20;
 			if(findLengthfast(&player[0].velocity)>400){
-				cameraspeed=20+(findLength(&player[0].velocity)-20)*.96;
+				cameraspeed=20+(findLength(player[0].velocity)-20)*.96;
 			}
 			if(player[0].skeleton.free==0&&player[0].targetanimation!=hanganim&&player[0].targetanimation!=climbanim)target.y+=1.4;
 			coltarget=target-cameraloc;
@@ -9975,23 +9976,23 @@ void	Game::TickOnceAfter(){
 			viewer=cameraloc-facing*cameradist;
 			colviewer=viewer;
 			coltarget=cameraloc;
-			objects.SphereCheckPossible(&colviewer, findDistance(&colviewer,&coltarget));
+			objects.SphereCheckPossible(&colviewer, findDistance(colviewer,coltarget));
 			if(terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz])
 				for(j=0;j<terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz];j++){
 					i=terrain.patchobjects[player[0].whichpatchx][player[0].whichpatchz][j];
 					colviewer=viewer;
 					coltarget=cameraloc;
-					if(objects.model[i].LineCheckPossible(&colviewer,&coltarget,&col,&objects.position[i],&objects.rotation[i])!=-1)viewer=col;
+					if(objects.model[i].LineCheckPossible(colviewer,coltarget,col,objects.position[i],objects.rotation[i])!=-1)viewer=col;
 				}
 				if(terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz])
 					for(j=0;j<terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz];j++){
 						i=terrain.patchobjects[player[0].whichpatchx][player[0].whichpatchz][j];
 						colviewer=viewer;
-						if(objects.model[i].SphereCheck(&colviewer,.15,&col,&objects.position[i],&objects.rotation[i])!=-1){
+						if(objects.model[i].SphereCheck(colviewer,.15,col,objects.position[i],objects.rotation[i])!=-1){
 							viewer=colviewer;
 						}
 					}
-					cameradist=findDistance(&viewer,&target);
+					cameradist=findDistance(viewer,target);
 					if(viewer.y<terrain.getHeight(viewer.x,viewer.z)+.6){
 						viewer.y=terrain.getHeight(viewer.x,viewer.z)+.6;
 					}
@@ -10002,7 +10003,7 @@ void	Game::TickOnceAfter(){
 		if(player[0].skeleton.free!=2&&autocam){
 			cameraspeed=20;
 			if(findLengthfast(&player[0].velocity)>400){
-				cameraspeed=20+(findLength(&player[0].velocity)-20)*.96;
+				cameraspeed=20+(findLength(player[0].velocity)-20)*.96;
 			}
 			if(player[0].skeleton.free==0&&player[0].targetanimation!=hanganim&&player[0].targetanimation!=climbanim)target.y+=1.4;
 			cameradist+=multiplier*5;
@@ -10019,23 +10020,23 @@ void	Game::TickOnceAfter(){
 			viewer=cameraloc;
 			colviewer=viewer;
 			coltarget=cameraloc;
-			objects.SphereCheckPossible(&colviewer, findDistance(&colviewer,&coltarget));
+			objects.SphereCheckPossible(&colviewer, findDistance(colviewer,coltarget));
 			if(terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz])
 				for(j=0;j<terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz];j++){
 					i=terrain.patchobjects[player[0].whichpatchx][player[0].whichpatchz][j];
 					colviewer=viewer;
 					coltarget=cameraloc;
-					if(objects.model[i].LineCheckPossible(&colviewer,&coltarget,&col,&objects.position[i],&objects.rotation[i])!=-1)viewer=col;
+					if(objects.model[i].LineCheckPossible(colviewer,coltarget,col,objects.position[i],objects.rotation[i])!=-1)viewer=col;
 				}
 				if(terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz])
 					for(j=0;j<terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz];j++){
 						i=terrain.patchobjects[player[0].whichpatchx][player[0].whichpatchz][j];
 						colviewer=viewer;
-						if(objects.model[i].SphereCheck(&colviewer,.15,&col,&objects.position[i],&objects.rotation[i])!=-1){
+						if(objects.model[i].SphereCheck(colviewer,.15,col,objects.position[i],objects.rotation[i])!=-1){
 							viewer=colviewer;
 						}
 					}
-					cameradist=findDistance(&viewer,&target);
+					cameradist=findDistance(viewer,target);
 					if(viewer.y<terrain.getHeight(viewer.x,viewer.z)+.6){
 						viewer.y=terrain.getHeight(viewer.x,viewer.z)+.6;
 					}

@@ -256,7 +256,7 @@ void Sprites::Draw()
 		if(type[i]==breathsprite){
 			opacity[i]-=multiplier/2;
 			size[i]+=multiplier/2;
-			if(findLength(&velocity[i])<=multiplier)velocity[i]=0;
+			if(findLength(velocity[i])<=multiplier)velocity[i]=0;
 			else{
 				XYZ slowdown;
 				slowdown=velocity[i]*-1;
@@ -299,7 +299,7 @@ void Sprites::Draw()
 
 						movepoint=0;
 						rotationpoint=0;
-						whichtri=player[j].skeleton.drawmodel.LineCheck(&startpoint,&endpoint, &footpoint, &movepoint, &rotationpoint);
+						whichtri=player[j].skeleton.drawmodel.LineCheck(startpoint,endpoint, footpoint, movepoint, rotationpoint);
 						if(whichtri!=-1){
 							spritehit=1;
 							player[j].DoBloodBigWhere(0,160,oldposition[i]);
@@ -318,7 +318,7 @@ void Sprites::Draw()
 								start=oldposition[i];
 								end=position[i];
 								if(!spritehit)
-									if(objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k])!=-1){
+									if(objects.model[k].LineCheck(start,end,colpoint,objects.position[k],objects.rotation[k])!=-1){
 										if(detail==2||(detail==1&&abs(Random()%4)==0)||(detail==0&&abs(Random()%8)==0))objects.model[k].MakeDecal(blooddecalfast,DoRotation(colpoint-objects.position[k],0,-objects.rotation[k],0),size[i]*1.6/*+abs((float)(Random()%100))/2400*/,.5,Random()%360);
 										DeleteSprite(i);
 										spritehit=1;
