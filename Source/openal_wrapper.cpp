@@ -415,7 +415,7 @@ static void *decode_to_pcm(const char *_fname, ALenum &format, ALsizei &size, AL
         vorbis_info *info = ov_info(&vf, -1);
         size = 0;
         format = (info->channels == 1) ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
-        freq = info->rate;
+        freq = (ALuint)info->rate;
 
         if ((info->channels != 1) && (info->channels != 2))
         {
@@ -465,7 +465,6 @@ AL_API OPENAL_SAMPLE *OPENAL_Sample_Load(int index, const char *name_or_data, un
     if ((mode != OPENAL_HW3D) && (mode != OPENAL_2D)) return NULL;  // this is all the game does...
 
     OPENAL_SAMPLE *retval = NULL;
-    ALuint bufferName = 0;
     ALenum format = AL_NONE;
     ALsizei size = 0;
     ALuint frequency = 0;

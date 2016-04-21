@@ -680,13 +680,13 @@ void Terrain::CalculateNormals()
 			normals[i][j+1]=normals[i][j+1]+facenormal;
 			normals[i+1][j]=normals[i+1][j]+facenormal;
 
-			Normalise(&facenormals[i][j]);
+			Normalise(facenormals[i][j]);
 		}
 	}
 
 	for(i=0; i<size; i++){
 		for(j=0; j<size; j++){
-			Normalise(&normals[i][j]);
+			Normalise(normals[i][j]);
 			normals[i][j]=normals[i][j];
 		}
 	}
@@ -926,7 +926,7 @@ XYZ Terrain::getNormal(float pointx, float pointz)
 	height1=normals[tilex][tiley]*(1-(pointx-tilex))+normals[tilex+1][tiley]*(pointx-tilex);
 	height2=normals[tilex][tiley+1]*(1-(pointx-tilex))+normals[tilex+1][tiley+1]*(pointx-tilex);
 	total=height1*(1-(pointz-tiley))+height2*(pointz-tiley);
-	Normalise(&total);
+	Normalise(total);
 	return total;
 }
 
@@ -1367,7 +1367,7 @@ void Terrain::DoLighting()
 	static float brightness, total;
 	static XYZ blank, terrainpoint,lightloc;
 	lightloc=light.location;
-	Normalise(&lightloc);
+	Normalise(lightloc);
 	//Calculate shadows
 	for(i=0;i<size;i++){
 		for(j=0;j<size;j++){
@@ -1433,7 +1433,7 @@ void Terrain::DoShadows()
 	}
 	int patchx,patchz;
 	float shadowed;
-	Normalise(&lightloc);
+	Normalise(lightloc);
 	//Calculate shadows
 	for(i=0;i<size;i++){
 		for(j=0;j<size;j++){

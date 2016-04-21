@@ -1543,7 +1543,7 @@ void Game::LoadStuff()
 	light.location.x=1;
 	light.location.y=1;
 	light.location.z=-.2;
-	Normalise(&light.location);
+	Normalise(light.location);
 
 	LoadingScreen();
 

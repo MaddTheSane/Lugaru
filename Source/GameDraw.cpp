@@ -180,9 +180,8 @@ extern int channels[100];
 extern "C" 	void PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 
 /*********************> DrawGLScene() <*****/
-long long Game::MD5_string (char *string){
+long long Game::MD5_string (char *string) {
 	char temp[256]="";
-	char temp2[256]="";
 	long long num=90814;
 
 	sprintf (temp, "%s",string);
@@ -216,9 +215,6 @@ int Game::DrawGLScene(void)
 	static float texcoordwidth,texcoordheight;
 	static float texviewwidth, texviewheight;
 	static int i,j,k,l;
-	static GLubyte color;
-	static float newbrightness;
-	static float changespeed;
 	static XYZ checkpoint;
 	static float tempmult;
 	float tutorialopac;
@@ -661,7 +657,7 @@ int Game::DrawGLScene(void)
 		glEnable(GL_TEXTURE_2D);
 		glColor4f(.5,.5,.5,1);
 		if(!console){
-			sprintf (string, " ",(int)(fps));
+			sprintf (string, "%i",(int)(fps));
 			text.glPrint(10,30,string,0,.8,screenwidth,screenheight);
 
 			if(!tutoriallevel)
@@ -776,7 +772,7 @@ int Game::DrawGLScene(void)
 						sprintf (string3, "Be sure to use the movement keys to press against the wall");
 					}
 					if(tutorialstage==12){
-						sprintf (string, "While in the air, you can press crouch to flip.",KeyToChar(jumpkey));
+						sprintf (string, "While in the air, you can press crouch (%s) to flip.",KeyToChar(jumpkey));
 						sprintf (string2, "Walljumps and flips confuse enemies and give you more control.");
 						sprintf (string3, " ");
 					}
@@ -989,7 +985,7 @@ int Game::DrawGLScene(void)
 					text.glPrint(screenwidth/2-7.6*strlen(string2)*screenwidth/1024,screenheight/16+screenheight*4/5-20*screenwidth/1024,string2,1,1.5*screenwidth/1024,screenwidth,screenheight);
 					text.glPrint(screenwidth/2-7.6*strlen(string3)*screenwidth/1024,screenheight/16+screenheight*4/5-40*screenwidth/1024,string3,1,1.5*screenwidth/1024,screenwidth,screenheight);
 
-					sprintf (string, "Press 'tab' to skip to the next item.",KeyToChar(jumpkey));
+					sprintf (string, "Press 'tab' to skip to the next item.");
 					sprintf (string2, "Press escape at any time to");
 					sprintf (string3, "pause or exit the tutorial.");
 
@@ -2427,7 +2423,7 @@ int Game::DrawGLScene(void)
 				else sprintf (menustring[0], "Resolution: %d*%d (widescreen)",(int)newscreenwidth,(int)newscreenheight);
 				startx[0]=10+20;
 				starty[0]=440;
-				endx[0]=startx[0]+strlen(menustring[0])*10;
+				endx[0]=startx[0]+(int)strlen(menustring[0])*10;
 				endy[0]=starty[0]+20;
 				movex[0]=0;
 				movey[0]=0;
@@ -2437,7 +2433,7 @@ int Game::DrawGLScene(void)
 				else sprintf (menustring[1], "Detail: Low");
 				startx[1]=10+60;
 				starty[1]=405;
-				endx[1]=startx[1]+strlen(menustring[1])*10;
+				endx[1]=startx[1]+(int)strlen(menustring[1])*10;
 				endy[1]=starty[1]+20;
 				movex[1]=0;
 				movey[1]=0;
@@ -2447,7 +2443,7 @@ int Game::DrawGLScene(void)
 				if(bloodtoggle==0)sprintf (menustring[2], "Blood: Off");
 				startx[2]=10+70;
 				starty[2]=370;
-				endx[2]=startx[2]+strlen(menustring[2])*10;
+				endx[2]=startx[2]+(int)strlen(menustring[2])*10;
 				endy[2]=starty[2]+20;
 				movex[2]=0;
 				movey[2]=0;
@@ -2457,7 +2453,7 @@ int Game::DrawGLScene(void)
 				if(difficulty==0)sprintf (menustring[3], "Difficulty: Easier");
 				startx[3]=10+20-1000;
 				starty[3]=335-1000;
-				endx[3]=startx[3]+strlen(menustring[3])*10;
+				endx[3]=startx[3]+(int)strlen(menustring[3])*10;
 				endy[3]=starty[3]+20;
 				movex[3]=0;
 				movey[3]=0;
@@ -2466,7 +2462,7 @@ int Game::DrawGLScene(void)
 				if(ismotionblur==0)sprintf (menustring[4], "Blur Effects: Disabled (more compatible)");
 				startx[4]=10;
 				starty[4]=335;
-				endx[4]=startx[4]+strlen(menustring[4])*10;
+				endx[4]=startx[4]+(int)strlen(menustring[4])*10;
 				endy[4]=starty[4]+20;
 				movex[4]=0;
 				movey[4]=0;
@@ -2475,7 +2471,7 @@ int Game::DrawGLScene(void)
 				if(decals==0)sprintf (menustring[5], "Decals: Disabled");
 				startx[5]=10+60;
 				starty[5]=300;
-				endx[5]=startx[5]+strlen(menustring[5])*10;
+				endx[5]=startx[5]+(int)strlen(menustring[5])*10;
 				endy[5]=starty[5]+20;
 				movex[5]=0;
 				movey[5]=0;
@@ -2484,7 +2480,7 @@ int Game::DrawGLScene(void)
 				if(musictoggle==0)sprintf (menustring[6], "Music: Disabled");
 				startx[6]=10+70;
 				starty[6]=265;
-				endx[6]=startx[6]+strlen(menustring[6])*10;
+				endx[6]=startx[6]+(int)strlen(menustring[6])*10;
 				endy[6]=starty[6]+20;
 				movex[6]=0;
 				movey[6]=0;
@@ -2493,7 +2489,7 @@ int Game::DrawGLScene(void)
 				if(invertmouse==0)sprintf (menustring[9], "Invert mouse: No");
 				startx[9]=10;
 				starty[9]=230;
-				endx[9]=startx[9]+strlen(menustring[9])*10;
+				endx[9]=startx[9]+(int)strlen(menustring[9])*10;
 				endy[9]=starty[9]+20;
 				movex[9]=0;
 				movey[9]=0;
@@ -2501,7 +2497,7 @@ int Game::DrawGLScene(void)
 				sprintf (menustring[10], "Mouse Speed: %d", (int)(usermousesensitivity*5));
 				startx[10]=20;
 				starty[10]=195;
-				endx[10]=startx[10]+strlen(menustring[10])*10;
+				endx[10]=startx[10]+(int)strlen(menustring[10])*10;
 				endy[10]=starty[10]+20;
 				movex[10]=0;
 				movey[10]=0;
@@ -2509,7 +2505,7 @@ int Game::DrawGLScene(void)
 				sprintf (menustring[11], "Volume: %d%%", (int)(volume*100));
 				startx[11]=10+60;
 				starty[11]=155;
-				endx[11]=startx[11]+strlen(menustring[11])*10;
+				endx[11]=startx[11]+(int)strlen(menustring[11])*10;
 				endy[11]=starty[11]+20;
 				movex[11]=0;
 				movey[11]=0;
@@ -2517,7 +2513,7 @@ int Game::DrawGLScene(void)
 				sprintf (menustring[7], "-Configure Controls-");
 				startx[7]=10+15;
 				starty[7]=100;
-				endx[7]=startx[7]+strlen(menustring[7])*10;
+				endx[7]=startx[7]+(int)strlen(menustring[7])*10;
 				endy[7]=starty[7]+20;
 				movex[7]=0;
 				movey[7]=0;
@@ -2525,7 +2521,7 @@ int Game::DrawGLScene(void)
 				if(newdetail==detail&&newscreenheight==(int)screenheight&&newscreenwidth==(int)screenwidth)sprintf (menustring[8], "Back");
 				else sprintf (menustring[8], "Back (some changes take effect next time Lugaru is opened)");
 				startx[8]=10;
-				endx[8]=startx[8]+strlen(menustring[8])*10;
+				endx[8]=startx[8]+(int)strlen(menustring[8])*10;
 				starty[8]=10;
 				endy[8]=starty[8]+20;
 				movex[8]=0;
@@ -2538,7 +2534,7 @@ int Game::DrawGLScene(void)
 				else sprintf (menustring[0], "Forwards: _");
 				startx[0]=10;
 				starty[0]=400;
-				endx[0]=startx[0]+strlen(menustring[0])*10;
+				endx[0]=startx[0]+(int)strlen(menustring[0])*10;
 				endy[0]=starty[0]+20;
 				movex[0]=0;
 				movey[0]=0;
@@ -2547,7 +2543,7 @@ int Game::DrawGLScene(void)
 				else sprintf (menustring[1], "Back: _");
 				startx[1]=10+40;
 				starty[1]=360;
-				endx[1]=startx[1]+strlen(menustring[1])*10;
+				endx[1]=startx[1]+(int)strlen(menustring[1])*10;
 				endy[1]=starty[1]+20;
 				movex[1]=0;
 				movey[1]=0;
@@ -2556,7 +2552,7 @@ int Game::DrawGLScene(void)
 				else sprintf (menustring[2], "Left: _");
 				startx[2]=10+40;
 				starty[2]=320;
-				endx[2]=startx[2]+strlen(menustring[2])*10;
+				endx[2]=startx[2]+(int)strlen(menustring[2])*10;
 				endy[2]=starty[2]+20;
 				movex[2]=0;
 				movey[2]=0;
@@ -2565,7 +2561,7 @@ int Game::DrawGLScene(void)
 				else sprintf (menustring[3], "Right: _");
 				startx[3]=10+30;
 				starty[3]=280;
-				endx[3]=startx[3]+strlen(menustring[3])*10;
+				endx[3]=startx[3]+(int)strlen(menustring[3])*10;
 				endy[3]=starty[3]+20;
 				movex[3]=0;
 				movey[3]=0;
@@ -2574,7 +2570,7 @@ int Game::DrawGLScene(void)
 				else sprintf (menustring[4], "Crouch: _");
 				startx[4]=10+20;
 				starty[4]=240;
-				endx[4]=startx[4]+strlen(menustring[4])*10;
+				endx[4]=startx[4]+(int)strlen(menustring[4])*10;
 				endy[4]=starty[4]+20;
 				movex[4]=0;
 				movey[4]=0;
@@ -2583,7 +2579,7 @@ int Game::DrawGLScene(void)
 				else sprintf (menustring[5], "Jump: _");
 				startx[5]=10+40;
 				starty[5]=200;
-				endx[5]=startx[5]+strlen(menustring[5])*10;
+				endx[5]=startx[5]+(int)strlen(menustring[5])*10;
 				endy[5]=starty[5]+20;
 				movex[5]=0;
 				movey[5]=0;
@@ -2592,7 +2588,7 @@ int Game::DrawGLScene(void)
 				else sprintf (menustring[6], "Draw: _");
 				startx[6]=10+40;
 				starty[6]=160;
-				endx[6]=startx[6]+strlen(menustring[6])*10;
+				endx[6]=startx[6]+(int)strlen(menustring[6])*10;
 				endy[6]=starty[6]+20;
 				movex[6]=0;
 				movey[6]=0;
@@ -2601,7 +2597,7 @@ int Game::DrawGLScene(void)
 				else sprintf (menustring[7], "Throw: _");
 				startx[7]=10+30;
 				starty[7]=120;
-				endx[7]=startx[7]+strlen(menustring[7])*10;
+				endx[7]=startx[7]+(int)strlen(menustring[7])*10;
 				endy[7]=starty[7]+20;
 				movex[7]=0;
 				movey[7]=0;
@@ -2610,7 +2606,7 @@ int Game::DrawGLScene(void)
 				else sprintf (menustring[8], "Attack: _");
 				startx[8]=10+20;
 				starty[8]=80;
-				endx[8]=startx[8]+strlen(menustring[8])*10;
+				endx[8]=startx[8]+(int)strlen(menustring[8])*10;
 				endy[8]=starty[8]+20;
 				movex[8]=0;
 				movey[8]=0;
@@ -2619,7 +2615,7 @@ int Game::DrawGLScene(void)
 
 				sprintf (menustring[9], "Back");
 				startx[9]=10;
-				endx[9]=startx[9]+strlen(menustring[9])*10;
+				endx[9]=startx[9]+(int)strlen(menustring[9])*10;
 				starty[9]=10;
 				endy[9]=starty[9]+20;
 				movex[9]=0;
@@ -2631,7 +2627,7 @@ int Game::DrawGLScene(void)
 				sprintf (menustring[0], "%s",accountname[accountactive]);
 				startx[0]=5;
 				starty[0]=400;
-				endx[0]=startx[0]+strlen(menustring[0])*10;
+				endx[0]=startx[0]+(int)strlen(menustring[0])*10;
 				endy[0]=starty[0]+20;
 				movex[0]=0;
 				movey[0]=0;
@@ -2639,7 +2635,7 @@ int Game::DrawGLScene(void)
 				sprintf (menustring[1], "Tutorial");
 				startx[1]=5;
 				starty[1]=300;
-				endx[1]=startx[1]+strlen(menustring[1])*10;
+				endx[1]=startx[1]+(int)strlen(menustring[1])*10;
 				endy[1]=starty[1]+20;
 				movex[1]=0;
 				movey[1]=0;
@@ -2647,7 +2643,7 @@ int Game::DrawGLScene(void)
 				sprintf (menustring[2], "Challenge");
 				startx[2]=5;
 				starty[2]=240;
-				endx[2]=startx[2]+strlen(menustring[2])*10;
+				endx[2]=startx[2]+(int)strlen(menustring[2])*10;
 				endy[2]=starty[2]+20;
 				movex[2]=0;
 				movey[2]=0;
@@ -2655,7 +2651,7 @@ int Game::DrawGLScene(void)
 				sprintf (menustring[3], "Delete User");
 				startx[3]=400;
 				starty[3]=10;
-				endx[3]=startx[3]+strlen(menustring[3])*10;
+				endx[3]=startx[3]+(int)strlen(menustring[3])*10;
 				endy[3]=starty[3]+20;
 				movex[3]=0;
 				movey[3]=0;
@@ -2663,14 +2659,14 @@ int Game::DrawGLScene(void)
 				sprintf (menustring[4], "Main Menu");
 				startx[4]=5;
 				starty[4]=10;
-				endx[4]=startx[4]+strlen(menustring[4])*10;
+				endx[4]=startx[4]+(int)strlen(menustring[4])*10;
 				endy[4]=starty[4]+20;
 				movex[4]=0;
 				movey[4]=0;
 
 				sprintf (menustring[5], "Change User");
 				startx[5]=5;
-				endx[5]=startx[5]+strlen(menustring[5])*10;
+				endx[5]=startx[5]+(int)strlen(menustring[5])*10;
 				starty[5]=180;
 				endy[5]=starty[5]+20;
 				movex[5]=0;
@@ -2755,7 +2751,7 @@ int Game::DrawGLScene(void)
 				sprintf (menustring[0], "Are you sure you want to delete this user?");
 				startx[0]=10;
 				starty[0]=400;
-				endx[0]=startx[0]+strlen(menustring[0])*10;
+				endx[0]=startx[0]+(int)strlen(menustring[0])*10;
 				endy[0]=starty[0]+20;
 				movex[0]=0;
 				movey[0]=0;
@@ -2763,7 +2759,7 @@ int Game::DrawGLScene(void)
 				sprintf (menustring[1], "Yes");
 				startx[1]=10;
 				starty[1]=360;
-				endx[1]=startx[1]+strlen(menustring[1])*10;
+				endx[1]=startx[1]+(int)strlen(menustring[1])*10;
 				endy[1]=starty[1]+20;
 				movex[1]=0;
 				movey[1]=0;
@@ -2771,7 +2767,7 @@ int Game::DrawGLScene(void)
 				sprintf (menustring[2], "No");
 				startx[2]=10;
 				starty[2]=320;
-				endx[2]=startx[2]+strlen(menustring[2])*10;
+				endx[2]=startx[2]+(int)strlen(menustring[2])*10;
 				endy[2]=starty[2]+20;
 				movex[2]=0;
 				movey[2]=0;
@@ -2779,7 +2775,7 @@ int Game::DrawGLScene(void)
 				sprintf (menustring[3], "Extra 4");
 				startx[3]=10;
 				starty[3]=280;
-				endx[3]=startx[3]+strlen(menustring[3])*10;
+				endx[3]=startx[3]+(int)strlen(menustring[3])*10;
 				endy[3]=starty[3]+20;
 				movex[3]=0;
 				movey[3]=0;
@@ -2787,14 +2783,14 @@ int Game::DrawGLScene(void)
 				sprintf (menustring[4], "Extra 5");
 				startx[4]=10;
 				starty[4]=240;
-				endx[4]=startx[4]+strlen(menustring[4])*10;
+				endx[4]=startx[4]+(int)strlen(menustring[4])*10;
 				endy[4]=starty[4]+20;
 				movex[4]=0;
 				movey[4]=0;
 
 				sprintf (menustring[5], "Back");
 				startx[5]=10;
-				endx[5]=startx[5]+strlen(menustring[5])*10;
+				endx[5]=startx[5]+(int)strlen(menustring[5])*10;
 				starty[5]=10;
 				endy[5]=starty[5]+20;
 				movex[5]=0;
@@ -2812,7 +2808,7 @@ int Game::DrawGLScene(void)
 					sprintf (menustring[0], "No More Users");
 				startx[0]=10;
 				starty[0]=400;
-				endx[0]=startx[0]+strlen(menustring[0])*10;
+				endx[0]=startx[0]+(int)strlen(menustring[0])*10;
 				endy[0]=starty[0]+20;
 				movex[0]=0;
 				movey[0]=0;
@@ -2826,7 +2822,7 @@ int Game::DrawGLScene(void)
 						sprintf (menustring[num], "%s",accountname[i]);
 						startx[num]=10;
 						starty[num]=360-20-20*num;
-						endx[num]=startx[num]+strlen(menustring[num])*10;
+						endx[num]=startx[num]+(int)strlen(menustring[num])*10;
 						endy[num]=starty[num]+20;
 						movex[num]=0;
 						movey[num]=0;
@@ -2836,7 +2832,7 @@ int Game::DrawGLScene(void)
 
 					sprintf (menustring[num], "Back");
 					startx[num]=10;
-					endx[num]=startx[num]+strlen(menustring[num])*10;
+					endx[num]=startx[num]+(int)strlen(menustring[num])*10;
 					starty[num]=10;
 					endy[num]=starty[num]+20;
 					movex[num]=0;
@@ -2848,7 +2844,7 @@ int Game::DrawGLScene(void)
 				sprintf (menustring[0], "Easier");
 				startx[0]=10;
 				starty[0]=400;
-				endx[0]=startx[0]+strlen(menustring[0])*10;
+				endx[0]=startx[0]+(int)strlen(menustring[0])*10;
 				endy[0]=starty[0]+20;
 				movex[0]=0;
 				movey[0]=0;
@@ -2856,7 +2852,7 @@ int Game::DrawGLScene(void)
 				sprintf (menustring[1], "Difficult");
 				startx[1]=10;
 				starty[1]=360;
-				endx[1]=startx[1]+strlen(menustring[1])*10;
+				endx[1]=startx[1]+(int)strlen(menustring[1])*10;
 				endy[1]=starty[1]+20;
 				movex[1]=0;
 				movey[1]=0;
@@ -2864,13 +2860,13 @@ int Game::DrawGLScene(void)
 				sprintf (menustring[2], "Insane");
 				startx[2]=10;
 				starty[2]=320;
-				endx[2]=startx[2]+strlen(menustring[2])*10;
+				endx[2]=startx[2]+(int)strlen(menustring[2])*10;
 				endy[2]=starty[2]+20;
 				movex[2]=0;
 				movey[2]=0;
 			}
 			if(mainmenu==9){			
-				int tempncl;
+				//int tempncl;
 				//tempncl=numchallengelevels;
 				//numchallengelevels=9;
 				nummenuitems=2+numchallengelevels;
@@ -2894,7 +2890,7 @@ int Game::DrawGLScene(void)
 
 					startx[j]=10;
 					starty[j]=400-j*25;
-					endx[j]=startx[j]+strlen(menustring[j])*10;
+					endx[j]=startx[j]+(int)strlen(menustring[j])*10;
 					endy[j]=starty[j]+20;
 					movex[j]=0;
 					movey[j]=0;
@@ -2902,7 +2898,7 @@ int Game::DrawGLScene(void)
 
 				sprintf (menustring[numchallengelevels], "Back");
 				startx[numchallengelevels]=10;
-				endx[numchallengelevels]=startx[numchallengelevels]+strlen(menustring[numchallengelevels])*10;
+				endx[numchallengelevels]=startx[numchallengelevels]+(int)strlen(menustring[numchallengelevels])*10;
 				starty[numchallengelevels]=10;
 				endy[numchallengelevels]=starty[numchallengelevels]+20;
 				movex[numchallengelevels]=0;
@@ -2911,7 +2907,7 @@ int Game::DrawGLScene(void)
 				sprintf (menustring[numchallengelevels+1], "             High Score      Best Time");
 				startx[numchallengelevels+1]=10;
 				starty[numchallengelevels+1]=440;
-				endx[numchallengelevels+1]=startx[numchallengelevels+1]+strlen(menustring[numchallengelevels+1])*10;
+				endx[numchallengelevels+1]=startx[numchallengelevels+1]+(int)strlen(menustring[numchallengelevels+1])*10;
 				endy[numchallengelevels+1]=starty[numchallengelevels+1]+20;
 				movex[numchallengelevels+1]=0;
 				movey[numchallengelevels+1]=0;
@@ -2941,7 +2937,7 @@ int Game::DrawGLScene(void)
 
 					startx[j]=10;
 					starty[j]=360-j*40;
-					endx[j]=startx[j]+strlen(menustring[j])*10;
+					endx[j]=startx[j]+(int)strlen(menustring[j])*10;
 					endy[j]=starty[j]+20;
 					movex[j]=0;
 					movey[j]=0;
@@ -2949,7 +2945,7 @@ int Game::DrawGLScene(void)
 
 				sprintf (menustring[numchallengelevels], "Back");
 				startx[numchallengelevels]=10;
-				endx[numchallengelevels]=startx[numchallengelevels]+strlen(menustring[numchallengelevels])*10;
+				endx[numchallengelevels]=startx[numchallengelevels]+(int)strlen(menustring[numchallengelevels])*10;
 				starty[numchallengelevels]=10;
 				endy[numchallengelevels]=starty[numchallengelevels]+20;
 				movex[numchallengelevels]=0;
@@ -2958,7 +2954,7 @@ int Game::DrawGLScene(void)
 				sprintf (menustring[numchallengelevels+1], "             High Score      Best Time");
 				startx[numchallengelevels+1]=10;
 				starty[numchallengelevels+1]=400;
-				endx[numchallengelevels+1]=startx[numchallengelevels+1]+strlen(menustring[numchallengelevels+1])*10;
+				endx[numchallengelevels+1]=startx[numchallengelevels+1]+(int)strlen(menustring[numchallengelevels+1])*10;
 				endy[numchallengelevels+1]=starty[numchallengelevels+1]+20;
 				movex[numchallengelevels+1]=0;
 				movey[numchallengelevels+1]=0;
@@ -2971,7 +2967,7 @@ int Game::DrawGLScene(void)
 				sprintf (menustring[0], "Congratulations!");
 				startx[0]=220;
 				starty[0]=330;
-				endx[0]=startx[0]+strlen(menustring[0])*10;
+				endx[0]=startx[0]+(int)strlen(menustring[0])*10;
 				endy[0]=starty[0]+20;
 				movex[0]=0;
 				movey[0]=0;
@@ -2979,7 +2975,7 @@ int Game::DrawGLScene(void)
 				sprintf (menustring[1], "You have avenged your family and");
 				startx[1]=140;
 				starty[1]=300;
-				endx[1]=startx[1]+strlen(menustring[1])*10;
+				endx[1]=startx[1]+(int)strlen(menustring[1])*10;
 				endy[1]=starty[1]+20;
 				movex[1]=0;
 				movey[1]=0;
@@ -2987,14 +2983,14 @@ int Game::DrawGLScene(void)
 				sprintf (menustring[2], "restored peace to the island of Lugaru.");
 				startx[2]=110;
 				starty[2]=270;
-				endx[2]=startx[2]+strlen(menustring[2])*10;
+				endx[2]=startx[2]+(int)strlen(menustring[2])*10;
 				endy[2]=starty[2]+20;
 				movex[2]=0;
 				movey[2]=0;
 
 				sprintf (menustring[3], "Back");
 				startx[3]=10;
-				endx[3]=startx[3]+strlen(menustring[3])*10;
+				endx[3]=startx[3]+(int)strlen(menustring[3])*10;
 				starty[3]=10;
 				endy[3]=starty[3]+20;
 				movex[3]=0;
@@ -3008,7 +3004,7 @@ int Game::DrawGLScene(void)
 				sprintf (temp, "%d",(int)accountcampaignscore[accountactive]);
 				strcat(menustring[4],temp);
 				startx[4]=190;
-				endx[4]=startx[4]+strlen(menustring[4])*10;
+				endx[4]=startx[4]+(int)strlen(menustring[4])*10;
 				starty[4]=200;
 				endy[4]=starty[4]+20;
 				movex[4]=0;
@@ -3022,7 +3018,7 @@ int Game::DrawGLScene(void)
 				sprintf (temp, "%d",(int)accountcampaigntime[accountactive]);
 				strcat(menustring[5],temp);
 				startx[5]=200;
-				endx[5]=startx[5]+strlen(menustring[5])*10;
+				endx[5]=startx[5]+(int)strlen(menustring[5])*10;
 				starty[5]=180;
 				endy[5]=starty[5]+20;
 				movex[5]=0;
@@ -3036,7 +3032,7 @@ int Game::DrawGLScene(void)
 				sprintf (temp, "%d",(int)accountcampaignhighscore[accountactive]);
 				strcat(menustring[5],temp);
 				startx[5]=190;
-				endx[5]=startx[5]+strlen(menustring[5])*10;
+				endx[5]=startx[5]+(int)strlen(menustring[5])*10;
 				starty[5]=180;
 				endy[5]=starty[5]+20;
 				movex[5]=0;
@@ -3050,7 +3046,7 @@ int Game::DrawGLScene(void)
 				sprintf (temp, "%d",(int)accountcampaignfasttime[accountactive]);
 				strcat(menustring[7],temp);
 				startx[7]=200;
-				endx[7]=startx[7]+strlen(menustring[7])*10;
+				endx[7]=startx[7]+(int)strlen(menustring[7])*10;
 				starty[7]=130;
 				endy[7]=starty[7]+20;
 				movex[7]=0;
@@ -3060,12 +3056,11 @@ int Game::DrawGLScene(void)
 
 		if(mainmenu==13){	
 			nummenuitems=2;
-			char temp[255];
 
 			sprintf (menustring[0], "Please enter your name:");
 			startx[0]=50;
 			starty[0]=250;
-			endx[0]=startx[0]+strlen(menustring[0])*10;
+			endx[0]=startx[0]+(int)strlen(menustring[0])*10;
 			endy[0]=starty[0]+20;
 			movex[0]=0;
 			movey[0]=0;
@@ -3073,7 +3068,7 @@ int Game::DrawGLScene(void)
 			sprintf (menustring[1], "Please enter your name:");
 			startx[1]=290;
 			starty[1]=250;
-			endx[1]=startx[1]+strlen(menustring[1])*10;
+			endx[1]=startx[1]+(int)strlen(menustring[1])*10;
 			endy[1]=starty[1]+20;
 			movex[1]=0;
 			movey[1]=0;
@@ -3551,9 +3546,9 @@ int Game::DrawGLScene(void)
 															lineend.y=(starty[j+1]+endy[j+1])/2;
 															offset=lineend-linestart;
 															fac=offset;
-															Normalise(&fac);
+															Normalise(fac);
 															offset=DoRotation(offset,0,0,90);
-															Normalise(&offset);
+															Normalise(offset);
 															glDisable(GL_TEXTURE_2D);							
 
 															if(j<6+accountcampaignchoicesmade[accountactive]){

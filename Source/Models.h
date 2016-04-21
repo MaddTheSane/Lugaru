@@ -57,18 +57,26 @@ public:
 
 #define max_model_decals 300
 
-#define nothing 0
-#define normaltype 4
-#define notextype 1
-#define rawtype 2
-#define decalstype 3
+typedef enum ModelType : int ModelType; enum ModelType : int {
+	ModelTypeNothing = 0,
+	ModelTypeNoTexture,
+	ModelTypeRaw,
+	ModelTypeDecals,
+	ModelTypeNormal,
+};
+
+#define nothing ModelTypeNothing
+#define normaltype ModelTypeNormal
+#define notextype ModelTypeNoTexture
+#define rawtype ModelTypeRaw
+#define decalstype ModelTypeDecals
 
 class Model{
 public:
 	short	vertexNum,TriangleNum;
 	bool hastexture;
 
-	int type,oldtype;
+	ModelType type,oldtype;
 
 	int* possible;
 	int* owner;

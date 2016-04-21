@@ -461,7 +461,9 @@ bool Model::loadnotex(const char *filename )
 	vArray = (GLfloat*)malloc(sizeof(GLfloat)*TriangleNum*24);
 
 	for(i=0;i<vertexNum;i++){
-		funpackf(tfile, "Bf Bf Bf", &vertex[i].x,&vertex[i].y,&vertex[i].z);
+		float tmpx, tmpy, tmpz;
+		funpackf(tfile, "Bf Bf Bf", &tmpx,&tmpy,&tmpz);
+		vertex[i] = XYZ{tmpx, tmpy, tmpz};
 	}
 
 	for(i=0;i<TriangleNum;i++){
@@ -548,7 +550,9 @@ bool Model::load(const char *filename,bool texture )
 	vArray = (GLfloat*)malloc(sizeof(GLfloat)*TriangleNum*24);
 
 	for(i=0;i<vertexNum;i++){
-		funpackf(tfile, "Bf Bf Bf", &vertex[i].x,&vertex[i].y,&vertex[i].z);
+		float tmpx, tmpy, tmpz;
+		funpackf(tfile, "Bf Bf Bf", &tmpx,&tmpy,&tmpz);
+		vertex[i] = XYZ{tmpx, tmpy, tmpz};
 	}
 
 	for(i=0;i<TriangleNum;i++){
@@ -637,7 +641,9 @@ bool Model::loaddecal(const char *filename,bool texture )
 
 
 	for(i=0;i<vertexNum;i++){
-		funpackf(tfile, "Bf Bf Bf", &vertex[i].x,&vertex[i].y,&vertex[i].z);
+		float tmpx, tmpy, tmpz;
+		funpackf(tfile, "Bf Bf Bf", &tmpx,&tmpy,&tmpz);
+		vertex[i] = XYZ{tmpx, tmpy, tmpz};
 	}
 
 	for(i=0;i<TriangleNum;i++){
@@ -741,7 +747,9 @@ bool Model::loadraw(char *filename )
 
 
 	for(i=0;i<vertexNum;i++){
-		funpackf(tfile, "Bf Bf Bf", &vertex[i].x,&vertex[i].y,&vertex[i].z);
+		float tmpx, tmpy, tmpz;
+		funpackf(tfile, "Bf Bf Bf", &tmpx,&tmpy,&tmpz);
+		vertex[i] = XYZ{tmpx, tmpy, tmpz};
 	}
 
 	for(i=0;i<TriangleNum;i++){
@@ -921,10 +929,10 @@ void Model::CalculateNormals(bool facenormalise)
 		normals[Triangles[i].vertex[2]].x+=facenormals[i].x;
 		normals[Triangles[i].vertex[2]].y+=facenormals[i].y;
 		normals[Triangles[i].vertex[2]].z+=facenormals[i].z;
-		if(facenormalise)Normalise(&facenormals[i]);
+		if(facenormalise)Normalise(facenormals[i]);
 	}
 	for(i=0; i<vertexNum; i++){
-		Normalise(&normals[i]);
+		Normalise(normals[i]);
 		normals[i]*=-1;
 	}
 	UpdateVertexArrayNoTex();
@@ -1057,8 +1065,7 @@ void Model::drawdecals(GLuint shadowtexture,GLuint bloodtexture,GLuint bloodtext
 {
 	if(decals){
 		if(type!=decalstype)return;
-		static int i,j;
-		static float distancemult;
+		static int i;
 		static int lasttype;
 		static float viewdistsquared;
 		static bool blend;
@@ -1518,7 +1525,7 @@ Model::Model()
 	vertexNum = 0,TriangleNum = 0;
 	hastexture = 0;
 
-	type = 0,oldtype = 0;
+	type = ModelTypeNothing,oldtype = ModelTypeNothing;
 
 	possible=0;
 	owner=0;

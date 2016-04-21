@@ -184,7 +184,7 @@ void Sprites::Draw()
 			glTranslatef(position[i].x,position[i].y,position[i].z);
 			if((type[i]==flamesprite||type[i]==weaponflamesprite||type[i]==weaponshinesprite)){
 				difference=viewer-position[i];
-				Normalise(&difference);
+				Normalise(difference);
 				glTranslatef(difference.x*size[i]/4, difference.y*size[i]/4, difference.z*size[i]/4);
 			}
 			if(type[i]==snowsprite){
@@ -260,7 +260,7 @@ void Sprites::Draw()
 			else{
 				XYZ slowdown;
 				slowdown=velocity[i]*-1;
-				Normalise(&slowdown);
+				Normalise(slowdown);
 				slowdown*=multiplier;
 				velocity[i]+=slowdown;
 			}

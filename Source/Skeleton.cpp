@@ -99,7 +99,7 @@ void Muscle::DoConstraint(bool spinny)
 	//Find vector from midpoint to second vector
 	vel=parent2->position-midp;
 	//Change to unit vector
-	Normalise(&vel);
+	Normalise(vel);
 	//Apply velocity change
 	newpoint1=midp-vel*length*(parent2->mass/(parent1->mass+parent2->mass));
 	newpoint2=midp+vel*length*(parent1->mass/(parent1->mass+parent2->mass));
@@ -121,10 +121,10 @@ void Skeleton::FindForwardsfirst()
 {
 	//Find forward vectors
 	CrossProduct(joints[forwardjoints[1]].position-joints[forwardjoints[0]].position,joints[forwardjoints[2]].position-joints[forwardjoints[0]].position,&forward);
-	Normalise(&forward);
+	Normalise(forward);
 
 	CrossProduct(joints[lowforwardjoints[1]].position-joints[lowforwardjoints[0]].position,joints[lowforwardjoints[2]].position-joints[lowforwardjoints[0]].position,&lowforward);
-	Normalise(&lowforward);
+	Normalise(lowforward);
 
 	//Special forwards
 	specialforward[0]=forward;
@@ -138,10 +138,10 @@ void Skeleton::FindForwards()
 {
 	//Find forward vectors
 	CrossProduct(joints[forwardjoints[1]].position-joints[forwardjoints[0]].position,joints[forwardjoints[2]].position-joints[forwardjoints[0]].position,&forward);
-	Normalise(&forward);
+	Normalise(forward);
 
 	CrossProduct(joints[lowforwardjoints[1]].position-joints[lowforwardjoints[0]].position,joints[lowforwardjoints[2]].position-joints[lowforwardjoints[0]].position,&lowforward);
-	Normalise(&lowforward);
+	Normalise(lowforward);
 
 	//Special forwards
 	specialforward[0]=forward;
@@ -149,20 +149,20 @@ void Skeleton::FindForwards()
 	specialforward[1]=joints[jointlabels[rightshoulder]].position+joints[jointlabels[rightwrist]].position;
 	specialforward[1]=joints[jointlabels[rightelbow]].position-specialforward[1]/2;
 	specialforward[1]+=forward*.4;
-	Normalise(&specialforward[1]);
+	Normalise(specialforward[1]);
 	specialforward[2]=joints[jointlabels[leftshoulder]].position+joints[jointlabels[leftwrist]].position;
 	specialforward[2]=joints[jointlabels[leftelbow]].position-specialforward[2]/2;
 	specialforward[2]+=forward*.4;
-	Normalise(&specialforward[2]);
+	Normalise(specialforward[2]);
 
 	specialforward[3]=joints[jointlabels[righthip]].position+joints[jointlabels[rightankle]].position;
 	specialforward[3]=specialforward[3]/2-joints[jointlabels[rightknee]].position;
 	specialforward[3]+=lowforward*.4;
-	Normalise(&specialforward[3]);
+	Normalise(specialforward[3]);
 	specialforward[4]=joints[jointlabels[lefthip]].position+joints[jointlabels[leftankle]].position;
 	specialforward[4]=specialforward[4]/2-joints[jointlabels[leftknee]].position;
 	specialforward[4]+=lowforward*.4;
-	Normalise(&specialforward[4]);
+	Normalise(specialforward[4]);
 }
 
 float Skeleton::DoConstraints(XYZ *coords,float *scale)
@@ -261,7 +261,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 			temp=joints[jointlabels[head]].position*(*scale)+*coords;
 			if(objects.model[k].SphereCheck(&temp, 0.06, &start, &objects.position[k], &objects.rotation[k])!=-1){
 			//temp=(joints[jointlabels[head]].position*(*scale)+*coords)-start;
-			//Normalise(&temp);
+			//Normalise(temp);
 			//joints[jointlabels[head]].position=((temp*.2+start)-*coords)/(*scale);
 			joints[jointlabels[head]].position=(temp-*coords)/(*scale);
 			}
@@ -364,7 +364,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 			if(1-friction*frictionness>0)joints[jointlabels[head]].velocity*=1-friction*frictionness;
 			else joints[jointlabels[head]].velocity=0;
 			if(findLengthfast(&bounceness)>2500){
-			Normalise(&bounceness);
+			Normalise(bounceness);
 			bounceness=bounceness*50;
 			}
 			joints[jointlabels[head]].velocity+=bounceness*elasticity;
@@ -491,7 +491,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 							}
 
 							if(findLengthfast(&bounceness)>2500){
-								Normalise(&bounceness);
+								Normalise(bounceness);
 								bounceness=bounceness*50;
 							}
 
@@ -639,7 +639,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 											if(1-friction*frictionness>0)joints[i].velocity*=1-friction*frictionness;
 											else joints[i].velocity=0;
 											if(findLengthfast(&bounceness)>2500){
-												Normalise(&bounceness);
+												Normalise(bounceness);
 												bounceness=bounceness*50;
 											}
 											joints[i].velocity+=bounceness*elasticity;
@@ -1014,6 +1014,7 @@ void Animation::Load(char *filename, int aheight, int aattack)
 	static int i,j;
 	static XYZ startoffset,endoffset;
 	static int howmany;
+	float tmpx, tmpy, tmpz;
 
 	LOGFUNC;
 
@@ -1081,7 +1082,8 @@ void Animation::Load(char *filename, int aheight, int aattack)
 
 		for(i=0;i<numframes;i++){
 			for(j=0;j<joints;j++){
-				funpackf(tfile, "Bf Bf Bf", &position[j][i].x,&position[j][i].y,&position[j][i].z);
+				funpackf(tfile, "Bf Bf Bf", &tmpx,&tmpy,&tmpz);
+				position[j][i] = {tmpx, tmpy, tmpz};
 			}
 			for(j=0;j<joints;j++){
 				funpackf(tfile, "Bf", &twist[j][i]);
@@ -1103,7 +1105,8 @@ void Animation::Load(char *filename, int aheight, int aattack)
 		}
 		funpackf(tfile, "Bi", &weapontargetnum);
 		for(i=0;i<numframes;i++){
-			funpackf(tfile, "Bf Bf Bf", &weapontarget[i].x,&weapontarget[i].y,&weapontarget[i].z);
+			funpackf(tfile, "Bf Bf Bf", &tmpx,&tmpy,&tmpz);
+			weapontarget[i] = {tmpx, tmpy, tmpz};
 		}
 
 		fclose(tfile);
@@ -1209,13 +1212,15 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 
 	tfile=fopen( ConvertFileName(filename), "rb" );
 	if(1){
+		float tmpx, tmpy, tmpz;
 		funpackf(tfile, "Bi", &num_joints);
 		//joints.resize(num_joints);
 		if(joints) delete [] joints; //dealloc2(joints);
 		joints=(Joint*)new Joint[num_joints]; //malloc(sizeof(Joint)*num_joints);
 
 		for(i=0;i<num_joints;i++){
-			funpackf(tfile, "Bf Bf Bf Bf Bf", &joints[i].position.x, &joints[i].position.y, &joints[i].position.z, &joints[i].length,&joints[i].mass);
+			funpackf(tfile, "Bf Bf Bf Bf Bf", &tmpx, &tmpy, &tmpz, &joints[i].length,&joints[i].mass);
+			joints[i].position = {tmpx, tmpy, tmpz};
 			funpackf(tfile, "Bb Bb", &joints[i].hasparent,&joints[i].locked);
 			funpackf(tfile, "Bi", &joints[i].modelnum);
 			funpackf(tfile, "Bb Bb", &joints[i].visible,&joints[i].sametwist);

@@ -258,7 +258,7 @@ void	Weapons::DoStuff(){
 									if(bloodtoggle&&tutoriallevel!=1)sprites.MakeSprite(cloudimpactsprite, footpoint,footvel, 1,0,0, .8, .3);
 									if(tutoriallevel==1)sprites.MakeSprite(cloudimpactsprite, footpoint,footvel, 1,1,1, .8, .3);
 									footvel=tippoint[i]-position[i];
-									Normalise(&footvel);
+									Normalise(footvel);
 									if(bloodtoggle&&tutoriallevel!=1)sprites.MakeSprite(bloodflamesprite, footpoint,footvel*-1, 1,0,0, .6, 1);
 
 									if(tutoriallevel!=1){
@@ -416,7 +416,7 @@ void	Weapons::DoStuff(){
 				//Length constrain
 				midp=(position[i]*mass[i]+tippoint[i]*tipmass[i])/(mass[i]+tipmass[i]);
 				vel=tippoint[i]-midp;
-				Normalise(&vel);
+				Normalise(vel);
 				newpoint1=midp-vel*length[i]*(tipmass[i]/(mass[i]+tipmass[i]));
 				newpoint2=midp+vel*length[i]*(mass[i]/(mass[i]+tipmass[i]));
 				if(!freeze){
@@ -443,7 +443,7 @@ void	Weapons::DoStuff(){
 									if(whichhit!=-1){
 										XYZ diff;
 										diff=(colpoint-tippoint[i]);
-										Normalise(&diff);
+										Normalise(diff);
 										hitsomething[i]=1;
 
 										position[i]+=(colpoint-tippoint[i])+diff*.05;
@@ -459,7 +459,7 @@ void	Weapons::DoStuff(){
 									if(whichhit!=-1){
 										XYZ diff;
 										diff=(colpoint-position[i]);
-										Normalise(&diff);
+										Normalise(diff);
 										hitsomething[i]=1;
 
 										tippoint[i]+=(colpoint-position[i])+diff*.05;

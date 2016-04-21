@@ -1,0 +1,18 @@
+//
+//  Lugaru.pch
+//  Lugaru
+//
+//  Created by C.W. Betts on 4/21/16.
+//  Copyright © 2016 Wolfire. All rights reserved.
+//
+
+#ifndef Lugaru_pch
+#define Lugaru_pch
+
+#include <stdbool.h>
+#include "binio.h"
+#ifdef __cplusplus
+#include "PhysicsMath.h"
+#endif
+
+#endif /* Lugaru_pch */

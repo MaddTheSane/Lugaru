@@ -126,7 +126,7 @@ void Person::CheckKick(){
 			if(findDistancefast(&coords,&victim->coords)<1.2){
 				if(!victim->skeleton.free){
 					relative=velocity;
-					Normalise(&relative);
+					Normalise(relative);
 					relative=coords+relative*1;
 					if(animation[victim->targetanimation].height!=lowheight){
 						victim->spurt=1;
@@ -148,7 +148,7 @@ void Person::CheckKick(){
 						victim->RagDoll(0);
 						relative=velocity;
 						relative.y=0;
-						Normalise(&relative);
+						Normalise(relative);
 						for(i=0;i<victim->skeleton.num_joints;i++){
 							victim->skeleton.joints[i].velocity+=relative*120*damagemult;
 						}
@@ -1306,7 +1306,7 @@ void Person::Reverse(){
 
 						XYZ rotatetarget;
 						rotatetarget=coords-victim->coords;
-						Normalise(&rotatetarget);
+						Normalise(rotatetarget);
 						victim->targetrotation=-asin(0-rotatetarget.x);
 						victim->targetrotation*=360/6.28;
 						if(rotatetarget.z<0)victim->targetrotation=180-victim->targetrotation;
@@ -1325,7 +1325,7 @@ void Person::Reverse(){
 
 						XYZ rotatetarget;
 						rotatetarget=coords-victim->coords;
-						Normalise(&rotatetarget);
+						Normalise(rotatetarget);
 						victim->targetrotation=-asin(0-rotatetarget.x);
 						victim->targetrotation*=360/6.28;
 						if(rotatetarget.z<0)victim->targetrotation=180-victim->targetrotation;
@@ -2300,7 +2300,7 @@ void	Person::DoAnimations(){
 														XYZ relative;
 														relative=0;
 														relative.y=10;
-														Normalise(&relative);
+														Normalise(relative);
 														XYZ footvel,footpoint;
 														footvel=0;
 														footpoint=weapons.position[i];
@@ -2380,7 +2380,7 @@ void	Person::DoAnimations(){
 
 							if((currentanimation==walljumprightkickanim&&targetanimation==walljumprightkickanim)||(currentanimation==walljumpleftkickanim&&targetanimation==walljumpleftkickanim)){
 								XYZ rotatetarget=DoRotation(skeleton.forward,0,rotation,0);
-								Normalise(&rotatetarget);
+								Normalise(rotatetarget);
 								targetrotation=-asin(0-rotatetarget.x);
 								targetrotation*=360/6.28;
 								if(rotatetarget.z<0)targetrotation=180-targetrotation;
@@ -2419,7 +2419,7 @@ void	Person::DoAnimations(){
 								closestid=-1;
 								XYZ targetloc;
 								targetloc=velocity;
-								Normalise(&targetloc);
+								Normalise(targetloc);
 								targetloc+=coords;
 								for(i=0;i<numplayers;i++){
 									if(i!=id)
@@ -2440,7 +2440,7 @@ void	Person::DoAnimations(){
 										XYZ rotatetarget;
 										if(coords.z!=victim->coords.z||coords.x!=victim->coords.x){
 											rotatetarget=coords-victim->coords;
-											Normalise(&rotatetarget);
+											Normalise(rotatetarget);
 											targetrotation=-asin(0-rotatetarget.x);
 											targetrotation*=360/6.28;
 											if(rotatetarget.z<0)targetrotation=180-targetrotation;
@@ -2504,7 +2504,7 @@ void	Person::DoAnimations(){
 										XYZ relative;
 										relative=victim->coords-coords;
 										relative.y=0;
-										Normalise(&relative);
+										Normalise(relative);
 										relative=DoRotation(relative,0,-90,0);
 										for(i=0;i<victim->skeleton.num_joints;i++){
 											victim->skeleton.joints[i].velocity+=relative*damagemult*40;
@@ -2552,9 +2552,9 @@ void	Person::DoAnimations(){
 										XYZ relative;
 										relative=victim->coords-coords;
 										relative.y=0;
-										Normalise(&relative);
+										Normalise(relative);
 										relative.y-=1;
-										Normalise(&relative);
+										Normalise(relative);
 										relative=DoRotation(relative,0,90,0);
 										for(i=0;i<victim->skeleton.num_joints;i++){
 											victim->skeleton.joints[i].velocity+=relative*damagemult*20;
@@ -2598,7 +2598,7 @@ void	Person::DoAnimations(){
 										XYZ relative;
 										relative=facing;
 										relative.y=0;
-										Normalise(&relative);
+										Normalise(relative);
 										relative=DoRotation(relative,0,-90,0);
 										for(i=0;i<victim->skeleton.num_joints;i++){
 											victim->skeleton.joints[i].velocity+=relative*damagemult*40;
@@ -2653,7 +2653,7 @@ void	Person::DoAnimations(){
 										XYZ relative;
 										relative=facing;
 										relative.y=0;
-										Normalise(&relative);
+										Normalise(relative);
 										relative=DoRotation(relative,0,90,0);
 										for(i=0;i<victim->skeleton.num_joints;i++){
 											victim->skeleton.joints[i].velocity+=relative*damagemult*40;
@@ -2700,7 +2700,7 @@ void	Person::DoAnimations(){
 										XYZ relative;
 										relative=victim->coords-coords;
 										relative.y=0;
-										Normalise(&relative);
+										Normalise(relative);
 										for(i=0;i<victim->skeleton.num_joints;i++){
 											victim->skeleton.joints[i].velocity+=relative*damagemult*30;
 										}
@@ -2748,7 +2748,7 @@ void	Person::DoAnimations(){
 										XYZ relative;
 										relative=0;
 										relative.y=1;
-										Normalise(&relative);
+										Normalise(relative);
 										for(i=0;i<victim->skeleton.num_joints;i++){
 											victim->skeleton.joints[i].velocity.y=relative.y*10;
 											victim->skeleton.joints[i].position.y+=relative.y*.3;
@@ -2781,7 +2781,7 @@ void	Person::DoAnimations(){
 										XYZ relative;
 										relative=victim->coords-coords;
 										relative.y=0;
-										Normalise(&relative);
+										Normalise(relative);
 										for(i=0;i<victim->skeleton.num_joints;i++){
 											victim->skeleton.joints[i].velocity+=relative*damagemult*90;
 										}
@@ -2826,9 +2826,9 @@ void	Person::DoAnimations(){
 										}
 										XYZ relative;
 										relative=victim->coords-coords;
-										Normalise(&relative);
+										Normalise(relative);
 										relative.y+=.3;
-										Normalise(&relative);
+										Normalise(relative);
 										for(i=0;i<victim->skeleton.num_joints;i++){
 											victim->skeleton.joints[i].velocity+=relative*damagemult*20;
 										}
@@ -3041,7 +3041,7 @@ void	Person::DoAnimations(){
 												XYZ relative;
 												relative=0;
 												relative.y=10;
-												Normalise(&relative);
+												Normalise(relative);
 												//victim->Puff(abdomen);
 												if(bloodtoggle)sprites.MakeSprite(cloudimpactsprite, footpoint,footvel, 1,0,0, .8, .3);
 
@@ -3099,7 +3099,7 @@ void	Person::DoAnimations(){
 										XYZ relative;
 										relative=victim->coords-coords;
 										relative.y=0;
-										Normalise(&relative);
+										Normalise(relative);
 										for(i=0;i<victim->skeleton.num_joints;i++){
 											victim->skeleton.joints[i].velocity=relative*30;
 										}
@@ -3165,9 +3165,9 @@ void	Person::DoAnimations(){
 										XYZ relative;
 										relative=victim->coords-coords;
 										relative.y=0;
-										Normalise(&relative);
+										Normalise(relative);
 										relative.y=.3;
-										Normalise(&relative);
+										Normalise(relative);
 										for(i=0;i<victim->skeleton.num_joints;i++){
 											victim->skeleton.joints[i].velocity=relative*5;
 										}
@@ -3249,7 +3249,7 @@ void	Person::DoAnimations(){
 										XYZ aim;
 										weapons.owner[weaponids[0]]=-1;
 										aim=victim->coords+DoRotation(victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].position,0,victim->rotation,0)*victim->scale+victim->velocity*findDistance(&victim->coords,&coords)/50-(coords+DoRotation(skeleton.joints[skeleton.jointlabels[righthand]].position,0,rotation,0)*scale);
-										Normalise(&aim);
+										Normalise(aim);
 										/*if(victim->targetanimation==jumpupanim||victim->targetanimation==jumpdownanim){
 										aim=DoRotation(aim,(float)abs(Random()%15)-7,(float)abs(Random()%15)-7,0);
 										}*/
@@ -3491,10 +3491,10 @@ void	Person::DoAnimations(){
 										XYZ relative;
 										relative=victim->coords-coords;
 										relative.y=0;
-										Normalise(&relative);
+										Normalise(relative);
 										relative=DoRotation(relative,0,90,0);
 										relative.y-=1;
-										Normalise(&relative);
+										Normalise(relative);
 										for(i=0;i<victim->skeleton.num_joints;i++){
 											victim->skeleton.joints[i].velocity+=relative*damagemult*60;
 										}
@@ -3540,7 +3540,7 @@ void	Person::DoAnimations(){
 										XYZ relative;
 										relative=victim->coords-coords;
 										relative.y=0;
-										Normalise(&relative);
+										Normalise(relative);
 										relative=DoRotation(relative,0,-90,0);
 										for(i=0;i<victim->skeleton.num_joints;i++){
 											victim->skeleton.joints[i].velocity+=relative*damagemult*40;
@@ -3597,10 +3597,10 @@ void	Person::DoAnimations(){
 										relative=0;
 										/*relative=victim->coords-coords;
 										relative.y=0;
-										Normalise(&relative);
+										Normalise(relative);
 										relative=DoRotation(relative,0,90,0);*/
 										relative.y=-1;
-										Normalise(&relative);
+										Normalise(relative);
 										if(!victim->dead){
 											for(i=0;i<victim->skeleton.num_joints;i++){
 												victim->skeleton.joints[i].velocity=relative*damagemult*40;
@@ -3644,7 +3644,7 @@ void	Person::DoAnimations(){
 										XYZ relative;
 										relative=victim->coords-coords;
 										relative.y=0;
-										Normalise(&relative);
+										Normalise(relative);
 
 										if(id==0){
 											SolidHitBonus();
@@ -3730,7 +3730,7 @@ void	Person::DoAnimations(){
 										XYZ relative;
 										relative=victim->coords-coords;
 										relative.y=0;
-										Normalise(&relative);
+										Normalise(relative);
 
 										if(animation[victim->targetanimation].height==middleheight||animation[victim->currentanimation].height==middleheight||victim->damage>=victim->damagetolerance-40){
 											victim->RagDoll(0);
@@ -3814,7 +3814,7 @@ void	Person::DoAnimations(){
 									XYZ relative;
 									relative=victim->coords-oldcoords;
 									relative.y=0;
-									Normalise(&relative);
+									Normalise(relative);
 									//relative=DoRotation(relative,0,-90,0);
 									for(i=0;i<victim->skeleton.num_joints;i++){
 										victim->skeleton.joints[i].velocity+=relative*damagemult*40;
@@ -3874,7 +3874,7 @@ void	Person::DoAnimations(){
 									XYZ relative;
 									relative=victim->coords-oldcoords;
 									relative.y=0;
-									Normalise(&relative);
+									Normalise(relative);
 									//relative=DoRotation(relative,0,-90,0);
 									for(i=0;i<victim->skeleton.num_joints;i++){
 										victim->skeleton.joints[i].velocity+=relative*damagemult*30;
@@ -3923,7 +3923,7 @@ void	Person::DoAnimations(){
 									XYZ relative;
 									relative=victim->coords-oldcoords;
 									relative.y=0;
-									Normalise(&relative);
+									Normalise(relative);
 									//relative=DoRotation(relative,0,-90,0);
 									for(i=0;i<victim->skeleton.num_joints;i++){
 										victim->skeleton.joints[i].velocity+=relative*damagemult*30;
@@ -3940,7 +3940,7 @@ void	Person::DoAnimations(){
 									XYZ relative;
 									relative=facing;
 									relative.y=0;
-									Normalise(&relative);
+									Normalise(relative);
 									//relative*=-1;
 									relative.y-=.1;
 									for(i=0;i<victim->skeleton.num_joints;i++){
@@ -4005,7 +4005,7 @@ void	Person::DoAnimations(){
 									XYZ relative;
 									relative=facing;
 									relative.y=0;
-									Normalise(&relative);
+									Normalise(relative);
 									//relative*=-1;
 									relative.y-=.1;
 									for(i=0;i<victim->skeleton.num_joints;i++){
@@ -4071,7 +4071,7 @@ void	Person::DoAnimations(){
 									XYZ relative;
 									relative=victim->coords-oldcoords;
 									relative.y=0;
-									Normalise(&relative);
+									Normalise(relative);
 									relative=DoRotation(relative,0,-90,0);
 									for(i=0;i<victim->skeleton.num_joints;i++){
 										victim->skeleton.joints[i].velocity+=relative*damagemult*40;
@@ -4095,7 +4095,7 @@ void	Person::DoAnimations(){
 									XYZ relative;
 									relative=facing*-1;
 									relative.y=-3;
-									Normalise(&relative);
+									Normalise(relative);
 									if(victim->id==0)relative/=30;
 									for(i=0;i<victim->skeleton.num_joints;i++){
 										victim->skeleton.joints[i].velocity+=relative*damagemult*40;
@@ -4382,10 +4382,10 @@ void	Person::DoAnimations(){
 									//relative=victim->coords-oldcoords;
 									relative=facing*-1;
 									relative.y=0;
-									Normalise(&relative);
+									Normalise(relative);
 									relative=DoRotation(relative,0,90,0);
 									relative.y=.5;
-									Normalise(&relative);
+									Normalise(relative);
 									for(i=0;i<victim->skeleton.num_joints;i++){
 										victim->skeleton.joints[i].velocity+=relative*damagemult*20;
 									}
@@ -4402,10 +4402,10 @@ void	Person::DoAnimations(){
 									//relative=victim->coords-oldcoords;
 									relative=facing*-1;
 									relative.y=0;
-									Normalise(&relative);
+									Normalise(relative);
 									relative=DoRotation(relative,0,90,0);
 									relative.y=.5;
-									Normalise(&relative);
+									Normalise(relative);
 									for(i=0;i<victim->skeleton.num_joints;i++){
 										victim->skeleton.joints[i].velocity+=relative*damagemult*20;
 									}
@@ -4573,7 +4573,7 @@ void	Person::DoAnimations(){
 												targetanimation=walljumprightkickanim;
 												targetframe=0;
 												XYZ rotatetarget=victim->coords-coords;
-												Normalise(&rotatetarget);
+												Normalise(rotatetarget);
 												rotation=-asin(0-rotatetarget.x);
 												rotation*=360/6.28;
 												if(rotatetarget.z<0)rotation=180-rotation;
@@ -4628,7 +4628,7 @@ void	Person::DoAnimations(){
 												targetanimation=walljumpleftkickanim;
 												targetframe=0;
 												XYZ rotatetarget=victim->coords-coords;
-												Normalise(&rotatetarget);
+												Normalise(rotatetarget);
 												rotation=-asin(0-rotatetarget.x);
 												rotation*=360/6.28;
 												if(rotatetarget.z<0)rotation=180-rotation;
@@ -5854,7 +5854,7 @@ void	Person::DoStuff(){
 					terrainnormal=skeleton.joints[skeleton.jointlabels[groin]].position-skeleton.joints[skeleton.jointlabels[neck]].position;
 					middle=(skeleton.joints[skeleton.jointlabels[groin]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2;
 				}
-				Normalise(&terrainnormal);
+				Normalise(terrainnormal);
 
 				targetrotation=-asin(0-terrainnormal.x);
 				targetrotation*=360/6.28;
@@ -5909,7 +5909,7 @@ void	Person::DoStuff(){
 					terrainnormal=skeleton.joints[skeleton.jointlabels[groin]].position-skeleton.joints[skeleton.jointlabels[neck]].position;
 					middle=(skeleton.joints[skeleton.jointlabels[groin]].position+skeleton.joints[skeleton.jointlabels[neck]].position)/2;
 				}
-				Normalise(&terrainnormal);
+				Normalise(terrainnormal);
 
 				targetrotation=-asin(0-terrainnormal.x);
 				targetrotation*=360/6.28;
@@ -5991,7 +5991,7 @@ void	Person::DoStuff(){
 			if(velocity.y>-30){
 				XYZ tempvelocity;
 				tempvelocity=velocity;
-				Normalise(&tempvelocity);
+				Normalise(tempvelocity);
 				targetrotation=-asin(0-tempvelocity.x);
 				targetrotation*=360/6.28;
 				if(velocity.z<0)targetrotation=180-targetrotation;
@@ -6450,7 +6450,7 @@ void	Person::DoStuff(){
 					flatfacing=DoRotation(flatfacing,0,rotation,0);
 					facing=flatfacing;
 					ReflectVector(&facing,terrainnormal);
-					Normalise(&facing);
+					Normalise(facing);
 
 					if(isRun()||targetanimation==sneakanim||targetanimation==rollanim||targetanimation==walkanim){
 						if(onterrain)targettilt2=-facing.y*20;
@@ -6802,7 +6802,7 @@ void	Person::DoStuff(){
 
 					if(animation[targetanimation].attack==normalattack&&targetanimation!=rabbitkickanim&&!victim->skeleton.free){
 						terrainnormal=victim->coords-coords;
-						Normalise(&terrainnormal);
+						Normalise(terrainnormal);
 						targetrotation=-asin(0-terrainnormal.x);
 						targetrotation*=360/6.28;
 						if(terrainnormal.z<0)targetrotation=180-targetrotation;
@@ -6826,7 +6826,7 @@ void	Person::DoStuff(){
 				XYZ tempposit;
 				tempposit=coords-midterrain;
 				tempposit.y=0;
-				Normalise(&tempposit);
+				Normalise(tempposit);
 				tempposit*=(terrain.size*terrain.scale/2-viewdistance);
 				coords.x=tempposit.x+midterrain.x;
 				coords.z=tempposit.z+midterrain.z;
@@ -7409,13 +7409,13 @@ int Person::DrawSkeleton(){
 						vec1=(skeleton.joints[skeleton.jointlabels[rightwrist]].position-skeleton.joints[skeleton.jointlabels[rightelbow]].position);
 						vec2=(skeleton.joints[skeleton.jointlabels[rightwrist]].position-skeleton.joints[skeleton.jointlabels[rightshoulder]].position);
 						CrossProduct(&vec1,&vec2,&tempnormthing);
-						Normalise(&tempnormthing);
+						Normalise(tempnormthing);
 						if(targetanimation!=staffhitanim&&currentanimation!=staffhitanim&&targetanimation!=staffgroundsmashanim&&currentanimation!=staffgroundsmashanim&&targetanimation!=staffspinhitanim&&currentanimation!=staffspinhitanim)weaponpoint+=tempnormthing*.1-skeleton.specialforward[1]*.3+(skeleton.joints[skeleton.jointlabels[rightwrist]].position-skeleton.joints[skeleton.jointlabels[rightelbow]].position);
 						/*if(targetanimation==staffhitanim||currentanimation==staffhitanim){
 						XYZ weaptargnorm;
 						weaptargnorm=DoRotation(weapons.tippoint[i]-weapons.position[i],0,-rotation,0);
 						//weaptargnorm=animation[currentanimation].weapontarget[currentframe]*(1-target)+animation[targetanimation].weapontarget[targetframe]*(target);
-						Normalise(&weaptargnorm);
+						Normalise(weaptargnorm);
 						weaponpoint-=weaptargnorm*2;
 						}*/
 					}

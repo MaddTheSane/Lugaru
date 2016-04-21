@@ -698,13 +698,12 @@ void Objects::DoStuff()
 
 void Objects::DoShadows()
 {
-	int i,j,k,l,todivide;
-	static float brightness, total;
+	int i,j,k,l;
 	static XYZ testpoint,testpoint2, terrainpoint,lightloc,col;
 	lightloc=light.location;
 	if(!skyboxtexture)lightloc=0;
 	lightloc.y+=10;
-	Normalise(&lightloc);
+	Normalise(lightloc);
 	int patchx,patchz;
 
 	if(numobjects>0)
@@ -730,7 +729,7 @@ void Objects::DoShadows()
 							}
 							if(shadowed[i]>0){
 								col=model[i].normals[j]-DoRotation(lightloc*shadowed[i],0,-rotation[i],0);
-								Normalise(&col);
+								Normalise(col);
 								for(k=0;k<model[i].TriangleNum;k++){
 									if(model[i].Triangles[k].vertex[0]==j){
 										l=k*24;

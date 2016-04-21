@@ -57,6 +57,9 @@ typedef simd::float4 quaternion;
 //	float x, y, z, w;
 //};
 
+typedef simd::float3 XYZ;
+
+#if 0
 class XYZ{
 public:
 	float x;
@@ -77,6 +80,7 @@ public:
 	inline void vec(Vector add);
 	inline bool operator==(XYZ add);
 };
+#endif
 
 /*********************> Quaternion Function definition <********/
 quaternion To_Quat(int Degree_Flag, euler Euler);
@@ -88,7 +92,7 @@ XYZ Quat2Vector(quaternion Quat);
 
 inline void CrossProduct(XYZ *P, XYZ *Q, XYZ *V);
 inline void CrossProduct(XYZ P, XYZ Q, XYZ *V);
-inline void Normalise(XYZ *vectory);
+inline void Normalise(XYZ &vectory);
 inline float normaldotproduct(XYZ point1, XYZ point2);
 inline float fast_sqrt (register float arg);
 bool PointInTriangle(const XYZ *p, const XYZ normal, const XYZ *p1, const XYZ *p2, const XYZ *p3);
@@ -119,15 +123,11 @@ bool sphere_line_intersection (
 inline bool DistancePointLine( XYZ *Point, XYZ *LineStart, XYZ *LineEnd, float *Distance, XYZ *Intersection );
 
 
-inline void Normalise(XYZ *vectory) {
-	static float d;
-	d = fast_sqrt(vectory->x*vectory->x+vectory->y*vectory->y+vectory->z*vectory->z);
-	if(d==0){return;}
-	vectory->x /= d;
-	vectory->y /= d;
-	vectory->z /= d;
+inline void Normalise(XYZ &vectory) {
+	vectory = vector_normalize(vectory);
 }
 
+#if 0
 inline XYZ XYZ::operator+(XYZ add){
 	static XYZ ne;
 	ne=add;
@@ -216,6 +216,7 @@ inline bool XYZ::operator==(XYZ add){
 	if(x==add.x&&y==add.y&&z==add.z)return 1;
 	return 0;
 }
+#endif
 
 inline void CrossProduct(XYZ *P, XYZ *Q, XYZ *V){
 	V->x = P->y * Q->z - P->z * Q->y;
@@ -253,8 +254,8 @@ inline float fast_sqrt (register float arg)
 
 inline float normaldotproduct(XYZ point1, XYZ point2){
 	static GLfloat returnvalue;
-	Normalise(&point1);
-	Normalise(&point2);
+	Normalise(point1);
+	Normalise(point2);
 	returnvalue=(point1.x*point2.x+point1.y*point2.y+point1.z*point2.z);
 	return returnvalue;
 }
@@ -371,8 +372,7 @@ inline bool sphere_line_intersection (
 	// This function returns a pointer array which first index indicates
 	// the number of intersection point, followed by coordinate pairs.
 
-	static float x , y , z;
-	static float a, b, c, mu, i ;
+	static float a, b, c, i ;
 
 	if(x1>x3+r&&x2>x3+r)return(0);
 	if(x1<x3-r&&x2<x3-r)return(0);
@@ -410,8 +410,7 @@ inline bool sphere_line_intersection (
 	// This function returns a pointer array which first index indicates
 	// the number of intersection point, followed by coordinate pairs.
 
-	static float x , y , z;
-	static float a, b, c, mu, i ;
+	static float a, b, c, i ;
 
 	if(p1->x>p3->x+*r&&p2->x>p3->x+*r)return(0);
 	if(p1->x<p3->x-*r&&p2->x<p3->x-*r)return(0);
@@ -438,8 +437,8 @@ inline bool sphere_line_intersection (
 }
 
 inline XYZ DoRotationRadian(XYZ thePoint, float xang, float yang, float zang){
-	static XYZ newpoint;
-	static XYZ oldpoint;
+	XYZ newpoint;
+	XYZ oldpoint;
 
 	oldpoint=thePoint;
 

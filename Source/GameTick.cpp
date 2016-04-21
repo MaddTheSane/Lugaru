@@ -293,7 +293,7 @@ static void ch_map(Game *game, const char *args)
 static void ch_save(Game *game, const char *args)
 {
   char buf[64];
-  int i, j, k, l, m, templength;
+  size_t templength;
   float headprop, bodyprop, armprop, legprop;
   snprintf(buf, 63, ":Data:Maps:%s", args);
 
@@ -310,7 +310,7 @@ static void ch_save(Game *game, const char *args)
   fpackf(tfile, "Bf Bf Bf", skyboxlightr, skyboxlightg, skyboxlightb);
   fpackf(tfile, "Bf Bf Bf Bf Bf Bi", player[0].coords.x, player[0].coords.y, player[0].coords.z, player[0].rotation, player[0].targetrotation, player[0].num_weapons);
   if(player[0].num_weapons>0&&player[0].num_weapons<5)
-    for(j=0;j<player[0].num_weapons;j++){
+    for(size_t j=0;j<player[0].num_weapons;j++){
       fpackf(tfile, "Bi", weapons.type[player[0].weaponids[j]]);
     }
 
@@ -325,15 +325,15 @@ static void ch_save(Game *game, const char *args)
 
   fpackf(tfile, "Bi", numdialogues);
   if(numdialogues)
-    for(k=0;k<numdialogues;k++){
+    for(size_t k=0;k<numdialogues;k++){
       fpackf(tfile, "Bi", numdialogueboxes[k]);
       fpackf(tfile, "Bi", dialoguetype[k]);
-      for(l=0;l<10;l++){
+      for(size_t l=0;l<10;l++){
 	fpackf(tfile, "Bf Bf Bf", participantlocation[k][l].x, participantlocation[k][l].y, participantlocation[k][l].z);
 	fpackf(tfile, "Bf", participantrotation[k][l]);
       }
       if(numdialogueboxes)
-	for(l=0;l<numdialogueboxes[k];l++){
+	for(size_t l=0;l<numdialogueboxes[k];l++){
 	  fpackf(tfile, "Bi", dialogueboxlocation[k][l]);
 	  fpackf(tfile, "Bf", dialogueboxcolor[k][l][0]);
 	  fpackf(tfile, "Bf", dialogueboxcolor[k][l][1]);
@@ -342,14 +342,14 @@ static void ch_save(Game *game, const char *args)
 
 	  templength=strlen(dialoguetext[k][l]);
 	  fpackf(tfile, "Bi",(templength));
-	  for(m=0;m<templength;m++){
+	  for(size_t m=0;m<templength;m++){
 	    fpackf(tfile, "Bb", dialoguetext[k][l][m]);
 	    if(dialoguetext[k][l][m]=='\0')break;
 	  }
 
 	  templength=strlen(dialoguename[k][l]);
 	  fpackf(tfile, "Bi",templength);
-	  for(m=0;m<templength;m++){
+	  for(size_t m=0;m<templength;m++){
 	    fpackf(tfile, "Bb", dialoguename[k][l][m]);
 	    if(dialoguename[k][l][m]=='\0')break;
 	  }
@@ -358,7 +358,7 @@ static void ch_save(Game *game, const char *args)
 	  fpackf(tfile, "Bi", participantfocus[k][l]);
 	  fpackf(tfile, "Bi", participantaction[k][l]);
 
-	  for(m=0;m<10;m++)
+	  for(size_t m=0;m<10;m++)
 	    fpackf(tfile, "Bf Bf Bf", participantfacing[k][l][m].x, participantfacing[k][l][m].y, participantfacing[k][l][m].z);
 
 	  fpackf(tfile, "Bf Bf",dialoguecamerarotation[k][l],dialoguecamerarotation2[k][l]);
@@ -366,10 +366,10 @@ static void ch_save(Game *game, const char *args)
     }
 
   if(player[0].numclothes)
-    for(k=0;k<player[0].numclothes;k++){
+    for(size_t k=0;k<player[0].numclothes;k++){
       templength=strlen(player[0].clothes[k]);
       fpackf(tfile, "Bi", templength);
-      for(l=0;l<templength;l++)
+      for(size_t l=0;l<templength;l++)
 	fpackf(tfile, "Bb", player[0].clothes[k][l]);
       fpackf(tfile, "Bf Bf Bf", player[0].clothestintr[k], player[0].clothestintg[k], player[0].clothestintb[k]);
     }
@@ -379,31 +379,31 @@ static void ch_save(Game *game, const char *args)
   fpackf(tfile, "Bi", objects.numobjects);
 
   if(objects.numobjects)
-    for(k=0;k<objects.numobjects;k++){
+    for(size_t k=0;k<objects.numobjects;k++){
       fpackf(tfile, "Bi Bf Bf Bf Bf Bf Bf", objects.type[k], objects.rotation[k], objects.rotation2[k], objects.position[k].x, objects.position[k].y, objects.position[k].z, objects.scale[k]);
     }
 
   fpackf(tfile, "Bi", numhotspots);
   if(numhotspots)
-    for(i=0;i<numhotspots;i++){
+    for(size_t i=0;i<numhotspots;i++){
       fpackf(tfile, "Bi Bf Bf Bf Bf", hotspottype[i],hotspotsize[i],hotspot[i].x,hotspot[i].y,hotspot[i].z);
       templength=strlen(hotspottext[i]);
       fpackf(tfile, "Bi",templength);
-      for(l=0;l<templength;l++)
+      for(size_t l=0;l<templength;l++)
 	fpackf(tfile, "Bb", hotspottext[i][l]);
     }
 
   fpackf(tfile, "Bi", numplayers);
   if(numplayers>1&&numplayers<maxplayers)
-    for(j=1;j<numplayers;j++){
+    for(size_t j=1;j<numplayers;j++){
       fpackf(tfile, "Bi Bi Bf Bf Bf Bi Bi Bf Bb Bf", player[j].whichskin, player[j].creature, player[j].coords.x, player[j].coords.y, player[j].coords.z, player[j].num_weapons, player[j].howactive, player[j].scale, player[j].immobile, player[j].rotation);
       if(player[j].num_weapons>0&&player[j].num_weapons<5)
-	for(k=0;k<player[j].num_weapons;k++){
+	for(size_t k=0;k<player[j].num_weapons;k++){
 	  fpackf(tfile, "Bi", weapons.type[player[j].weaponids[k]]);
 	}
       if(player[j].numwaypoints<30){
 	fpackf(tfile, "Bi", player[j].numwaypoints);
-	for(k=0;k<player[j].numwaypoints;k++){
+	for(size_t k=0;k<player[j].numwaypoints;k++){
 	  fpackf(tfile, "Bf", player[j].waypoints[k].x);
 	  fpackf(tfile, "Bf", player[j].waypoints[k].y);
 	  fpackf(tfile, "Bf", player[j].waypoints[k].z);
@@ -442,11 +442,11 @@ static void ch_save(Game *game, const char *args)
 
       fpackf(tfile, "Bi", player[j].numclothes);
       if(player[j].numclothes)
-	for(k=0;k<player[j].numclothes;k++){
-	  int templength;
+	for(size_t k=0;k<player[j].numclothes;k++){
+	  size_t templength;
 	  templength=strlen(player[j].clothes[k]);
 	  fpackf(tfile, "Bi", templength);
-	  for(l=0;l<templength;l++)
+	  for(size_t l=0;l<templength;l++)
 	    fpackf(tfile, "Bb", player[j].clothes[k][l]);
 	  fpackf(tfile, "Bf Bf Bf", player[j].clothestintr[k], player[j].clothestintg[k], player[j].clothestintb[k]);
 	}
@@ -454,9 +454,9 @@ static void ch_save(Game *game, const char *args)
 
   fpackf(tfile, "Bi", game->numpathpoints);
   if(game->numpathpoints)
-    for(j=0;j<game->numpathpoints;j++){
+    for(size_t j=0;j<game->numpathpoints;j++){
       fpackf(tfile, "Bf Bf Bf Bi", game->pathpoint[j].x, game->pathpoint[j].y, game->pathpoint[j].z, game->numpathpointconnect[j]);
-      for(k=0;k<game->numpathpointconnect[j];k++){
+      for(size_t k=0;k<game->numpathpointconnect[j];k++){
 	fpackf(tfile, "Bi", game->pathpointconnect[j][k]);
       }
     }
@@ -1039,7 +1039,7 @@ static void ch_play(Game *game, const char *args)
   XYZ temppos;
   temppos=player[participantfocus[whichdialogue][indialogue]].coords;
   temppos=temppos-viewer;
-  Normalise(&temppos);
+  Normalise(temppos);
   temppos+=viewer;
 
   gLoc[0]=temppos.x;
@@ -1798,11 +1798,11 @@ return context.hex_digest();
 
 
 void	Game::Loadlevel(char *name){
+	float tmpx, tmpy, tmpz;
 	int i,j,k,l,m;
 	static int oldlevel;
 	int templength;
 	float lamefloat;
-	int lameint;
 
 	float headprop,legprop,armprop,bodyprop;
 
@@ -1976,8 +1976,13 @@ void	Game::Loadlevel(char *name){
 			skyboxlightg=skyboxg;
 			skyboxlightb=skyboxb;
 		}
-		if(!stealthloading)funpackf(tfile, "Bf Bf Bf Bf Bf Bi", &player[0].coords.x,&player[0].coords.y,&player[0].coords.z,&player[0].rotation,&player[0].targetrotation, &player[0].num_weapons);
-		if(stealthloading)funpackf(tfile, "Bf Bf Bf Bf Bf Bi", &lamefloat,&lamefloat,&lamefloat,&lamefloat,&lamefloat, &player[0].num_weapons);
+		if(!stealthloading){
+			funpackf(tfile, "Bf Bf Bf Bf Bf Bi", &tmpx,&tmpy,&tmpz,&player[0].rotation,&player[0].targetrotation, &player[0].num_weapons);
+			player[0].coords = XYZ{tmpx, tmpy, tmpz};
+		}
+		if(stealthloading){
+			funpackf(tfile, "Bf Bf Bf Bf Bf Bi", &lamefloat,&lamefloat,&lamefloat,&lamefloat,&lamefloat, &player[0].num_weapons);
+		}
 		player[0].originalcoords=player[0].coords;
 		if(player[0].num_weapons>0&&player[0].num_weapons<5)
 		{
@@ -2035,11 +2040,13 @@ void	Game::Loadlevel(char *name){
 			{
 				for(k=0;k<numdialogues;k++)
 				{
+					float tmpx, tmpy, tmpz;
 					funpackf(tfile, "Bi", &numdialogueboxes[k]);
 					funpackf(tfile, "Bi", &dialoguetype[k]);
 					for(l=0;l<10;l++)
 					{
-						funpackf(tfile, "Bf Bf Bf", &participantlocation[k][l].x, &participantlocation[k][l].y, &participantlocation[k][l].z);
+						funpackf(tfile, "Bf Bf Bf", &tmpx, &tmpy, &tmpz);
+						participantlocation[k][l] = XYZ{tmpx, tmpy, tmpz};
 						funpackf(tfile, "Bf", &participantrotation[k][l]);
 					}
 					if(numdialogueboxes)
@@ -2069,12 +2076,15 @@ void	Game::Loadlevel(char *name){
 									break;
 								}
 							}
-							funpackf(tfile, "Bf Bf Bf", &dialoguecamera[k][l].x, &dialoguecamera[k][l].y, &dialoguecamera[k][l].z);
+							funpackf(tfile, "Bf Bf Bf", &tmpx, &tmpy, &tmpz);
+							dialoguecamera[k][l] = XYZ{tmpx, tmpy, tmpz};
 							funpackf(tfile, "Bi", &participantfocus[k][l]);
 							funpackf(tfile, "Bi", &participantaction[k][l]);
 
-							for(m=0;m<10;m++)
-								funpackf(tfile, "Bf Bf Bf", &participantfacing[k][l][m].x, &participantfacing[k][l][m].y, &participantfacing[k][l][m].z);
+							for(m=0;m<10;m++) {
+								funpackf(tfile, "Bf Bf Bf", &tmpx, &tmpy, &tmpz);
+								participantfacing[k][l][m] = XYZ{tmpx, tmpy, tmpz};
+							}
 
 							funpackf(tfile, "Bf Bf",&dialoguecamerarotation[k][l],&dialoguecamerarotation2[k][l]);
 						}
@@ -2103,7 +2113,8 @@ void	Game::Loadlevel(char *name){
 		{
 			for(i=0;i<objects.numobjects;i++)
 			{
-				funpackf(tfile, "Bi Bf Bf Bf Bf Bf Bf", &objects.type[i],&objects.rotation[i],&objects.rotation2[i], &objects.position[i].x, &objects.position[i].y, &objects.position[i].z,&objects.scale[i]);
+				funpackf(tfile, "Bi Bf Bf Bf Bf Bf Bf", &objects.type[i],&objects.rotation[i],&objects.rotation2[i], &tmpx, &tmpy, &tmpz,&objects.scale[i]);
+				objects.position[i] = XYZ{tmpx, tmpy, tmpz};
 				if(objects.type[i]==treeleavestype)objects.scale[i]=objects.scale[i-1];
 			}
 		}
@@ -2115,7 +2126,8 @@ void	Game::Loadlevel(char *name){
 			{
 				for(i=0;i<numhotspots;i++)
 				{
-					funpackf(tfile, "Bi Bf Bf Bf Bf", &hotspottype[i],&hotspotsize[i],&hotspot[i].x,&hotspot[i].y,&hotspot[i].z);
+					funpackf(tfile, "Bi Bf Bf Bf Bf", &hotspottype[i],&hotspotsize[i],&tmpx,&tmpy,&tmpz);
+					hotspot[i] = XYZ{tmpx, tmpy, tmpz};
 					funpackf(tfile, "Bi", &templength);
 					if(templength)
 						for(l=0;l<templength;l++)
@@ -2170,7 +2182,8 @@ void	Game::Loadlevel(char *name){
 				if(visibleloading){loadscreencolor=4; LoadingScreen();}
 				removeanother=0;
 
-				funpackf(tfile, "Bi Bi Bf Bf Bf Bi",&player[i-howmanyremoved].whichskin,&player[i-howmanyremoved].creature, &player[i-howmanyremoved].coords.x,&player[i-howmanyremoved].coords.y,&player[i-howmanyremoved].coords.z,&player[i-howmanyremoved].num_weapons);
+				funpackf(tfile, "Bi Bi Bf Bf Bf Bi",&player[i-howmanyremoved].whichskin,&player[i-howmanyremoved].creature, &tmpx,&tmpy,&tmpz,&player[i-howmanyremoved].num_weapons);
+				player[i-howmanyremoved].coords = XYZ{tmpx, tmpy, tmpz};
 				if(mapvers>=5)funpackf(tfile, "Bi", &player[i-howmanyremoved].howactive);
 				else player[i-howmanyremoved].howactive=typeactive;
 				if(mapvers>=3)funpackf(tfile, "Bf",&player[i-howmanyremoved].scale);
@@ -2200,9 +2213,11 @@ void	Game::Loadlevel(char *name){
 					//player[i-howmanyremoved].numwaypoints=10;
 					for(j=0;j<player[i-howmanyremoved].numwaypoints;j++)
 					{
-						funpackf(tfile, "Bf", &player[i-howmanyremoved].waypoints[j].x);
-						funpackf(tfile, "Bf", &player[i-howmanyremoved].waypoints[j].y);
-						funpackf(tfile, "Bf", &player[i-howmanyremoved].waypoints[j].z);
+						funpackf(tfile, "Bf", &tmpx);
+						funpackf(tfile, "Bf", &tmpy);
+						funpackf(tfile, "Bf", &tmpz);
+						player[i-howmanyremoved].waypoints[j] = XYZ{tmpx, tmpy, tmpz};
+
 						if(mapvers>=5)funpackf(tfile, "Bi", &player[i-howmanyremoved].waypointtype[j]);
 						else player[i-howmanyremoved].waypointtype[j] = wpkeepwalking;
 					}
@@ -2266,7 +2281,8 @@ void	Game::Loadlevel(char *name){
 		{
 			for(j=0;j<numpathpoints;j++)
 			{
-				funpackf(tfile, "Bf Bf Bf Bi", &pathpoint[j].x,&pathpoint[j].y,&pathpoint[j].z,&numpathpointconnect[j]);
+				funpackf(tfile, "Bf Bf Bf Bi", &tmpx,&tmpy,&tmpz,&numpathpointconnect[j]);
+				pathpoint[j] = XYZ{tmpx, tmpy, tmpz};
 				for(k=0;k<numpathpointconnect[j];k++){
 					funpackf(tfile, "Bi", &pathpointconnect[j][k]);
 				}
@@ -2274,7 +2290,8 @@ void	Game::Loadlevel(char *name){
 		}
 		if(visibleloading){loadscreencolor=4; LoadingScreen();}
 
-		funpackf(tfile, "Bf Bf Bf Bf", &mapcenter.x,&mapcenter.y,&mapcenter.z,&mapradius);
+		funpackf(tfile, "Bf Bf Bf Bf", &tmpx,&tmpy,&tmpz,&mapradius);
+		mapcenter = XYZ{tmpx, tmpy, tmpz};
 
 		SetUpLighting();
 		if(environment!=oldenvironment)Setenvironment(environment);
@@ -4368,7 +4385,7 @@ void	Game::Tick()
 									XYZ temppos;
 									temppos=player[participantfocus[whichdialogue][indialogue]].coords;
 									temppos=temppos-viewer;
-									Normalise(&temppos);
+									Normalise(temppos);
 									temppos+=viewer;
 
 									gLoc[0]=temppos.x;
@@ -5509,7 +5526,7 @@ void	Game::Tick()
 												XYZ temppos;
 												temppos=player[participantfocus[whichdialogue][indialogue]].coords;
 												temppos=temppos-viewer;
-												Normalise(&temppos);
+												Normalise(temppos);
 												temppos+=viewer;
 
 												gLoc[0]=temppos.x;
@@ -5599,7 +5616,7 @@ void	Game::Tick()
 													XYZ temppos;
 													temppos=player[participantfocus[whichdialogue][indialogue]].coords;
 													temppos=temppos-viewer;
-													Normalise(&temppos);
+													Normalise(temppos);
 													temppos+=viewer;
 
 													gLoc[0]=temppos.x;
@@ -6129,7 +6146,7 @@ void	Game::Tick()
 										flatvelocity2.y+=(float)(abs(Random()%100)-50)/10;
 										flatvelocity2.z+=(float)(abs(Random()%100)-50)/10;
 										headspurtdirection=player[closest].skeleton.joints[player[closest].skeleton.jointlabels[head]].position-player[closest].skeleton.joints[player[closest].skeleton.jointlabels[neck]].position;
-										Normalise(&headspurtdirection);
+										Normalise(headspurtdirection);
 										sprites.MakeSprite(bloodflamesprite, flatfacing2,flatvelocity2, 1,1,1, .6, 1);
 										flatvelocity2+=headspurtdirection*8;
 										sprites.MakeSprite(bloodsprite, flatfacing2,flatvelocity2/2, 1,1,1, .16, 1);
@@ -6264,7 +6281,7 @@ void	Game::Tick()
 													temppos=player[j].skeleton.joints[i].position+player[j].coords;
 													if(findDistancefast(&temppos,&player[closest].coords)<25){
 														flatvelocity2=temppos-player[closest].coords;
-														Normalise(&flatvelocity2);
+														Normalise(flatvelocity2);
 														player[j].skeleton.joints[i].velocity+=flatvelocity2*((20-findDistancefast(&temppos,&player[closest].coords))*20);
 													}
 												}
@@ -6844,7 +6861,7 @@ void	Game::Tick()
 												player[k].target=0;
 												player[k].targetframe=0;
 												rotatetarget=player[i].coords-player[k].coords;
-												Normalise(&rotatetarget);
+												Normalise(rotatetarget);
 												player[k].targetrotation=-asin(0-rotatetarget.x);
 												player[k].targetrotation*=360/6.28;
 												if(rotatetarget.z<0)player[k].targetrotation=180-player[k].targetrotation;
@@ -6960,7 +6977,7 @@ void	Game::Tick()
 														//player[k].velocity=0;
 
 														rotatetarget=player[i].coords-player[k].coords;
-														Normalise(&rotatetarget);
+														Normalise(rotatetarget);
 														player[k].targetrotation=-asin(0-rotatetarget.x);
 														player[k].targetrotation*=360/6.28;
 														if(rotatetarget.z<0)player[k].targetrotation=180-player[k].targetrotation;
@@ -6976,7 +6993,7 @@ void	Game::Tick()
 													}
 													if(player[k].targetanimation==knifefollowanim&&player[k].victim==&player[i]){
 														rotatetarget=player[i].coords-player[k].coords;
-														Normalise(&rotatetarget);
+														Normalise(rotatetarget);
 														player[k].targetrotation=-asin(0-rotatetarget.x);
 														player[k].targetrotation*=360/6.28;
 														if(rotatetarget.z<0)player[k].targetrotation=180-player[k].targetrotation;
@@ -7070,7 +7087,7 @@ void	Game::Tick()
 																if(player[k].targetanimation==crouchstabanim||player[k].targetanimation==swordgroundstabanim||player[k].targetanimation==staffgroundsmashanim){
 																	rotatetarget=(player[i].coords+(player[i].skeleton.joints[player[i].skeleton.jointlabels[abdomen]].position+player[i].skeleton.joints[player[i].skeleton.jointlabels[neck]].position)/2*player[i].scale)-player[k].coords;
 																}
-																Normalise(&rotatetarget);
+																Normalise(rotatetarget);
 																player[k].targetrotation=-asin(0-rotatetarget.x);
 																player[k].targetrotation*=360/6.28;
 																if(rotatetarget.z<0)player[k].targetrotation=180-player[k].targetrotation;
@@ -7251,7 +7268,7 @@ void	Game::Tick()
 																											if(player[i].skeleton.oldfree==0&&player[k].skeleton.oldfree==0){
 																												if(findDistancefast(&player[k].coords,&player[i].coords)<.5*((player[i].scale+player[k].scale)*2.5)*((player[i].scale+player[k].scale)*2.5)){
 																													rotatetarget=player[k].coords-player[i].coords;
-																													Normalise(&rotatetarget);
+																													Normalise(rotatetarget);
 																													player[k].coords=(player[k].coords+player[i].coords)/2;
 																													player[i].coords=player[k].coords-rotatetarget*fast_sqrt(.6)/2*((player[i].scale+player[k].scale)*2.5)*((player[i].scale+player[k].scale)*2.5);
 																													player[k].coords+=rotatetarget*fast_sqrt(.6)/2*((player[i].scale+player[k].scale)*2.5)*((player[i].scale+player[k].scale)*2.5);
@@ -7577,7 +7594,7 @@ void	Game::Tick()
 									}
 									if(indialogue!=-1){
 										rotatetarget=participantfacing[whichdialogue][indialogue][i];
-										Normalise(&rotatetarget);
+										Normalise(rotatetarget);
 										player[i].targetheadrotation=-asin(0-rotatetarget.x);
 										player[i].targetheadrotation*=360/6.28;
 										if(rotatetarget.z<0)player[i].targetheadrotation=180-player[i].targetheadrotation;
@@ -7740,7 +7757,7 @@ void	Game::Tick()
 											player[i].losupdatedelay-=multiplier;
 
 											rotatetarget=pathpoint[player[i].targetpathfindpoint]-player[i].coords;
-											Normalise(&rotatetarget);
+											Normalise(rotatetarget);
 											player[i].targetrotation=-asin(0-rotatetarget.x);
 											player[i].targetrotation*=360/6.28;
 											if(rotatetarget.z<0)player[i].targetrotation=180-player[i].targetrotation;
@@ -7820,7 +7837,7 @@ void	Game::Tick()
 											if(player[i].aiupdatedelay<0){
 												if(player[i].numwaypoints>1&&player[i].howactive==typeactive&&player[i].pausetime<=0){
 													rotatetarget=player[i].waypoints[player[i].waypoint]-player[i].coords;
-													Normalise(&rotatetarget);
+													Normalise(rotatetarget);
 													player[i].targetrotation=-asin(0-rotatetarget.x);
 													player[i].targetrotation*=360/6.28;
 													if(rotatetarget.z<0)player[i].targetrotation=180-player[i].targetrotation;
@@ -7912,7 +7929,7 @@ void	Game::Tick()
 																smelldistance=100;
 															}
 															windsmell=windvector;
-															Normalise(&windsmell);
+															Normalise(windsmell);
 															windsmell=windsmell*2+player[j].coords;
 															if(findDistancefast(&player[i].coords,&windsmell)<smelldistance&&!editorenabled)
 																player[i].aitype=attacktypecutoff;
@@ -7991,7 +8008,7 @@ void	Game::Tick()
 											}
 											if(player[i].aiupdatedelay<0){
 												rotatetarget=player[i].lastseen-player[i].coords;
-												Normalise(&rotatetarget);
+												Normalise(rotatetarget);
 												player[i].targetrotation=-asin(0-rotatetarget.x);
 												player[i].targetrotation*=360/6.28;
 												if(rotatetarget.z<0)player[i].targetrotation=180-player[i].targetrotation;
@@ -8117,7 +8134,7 @@ void	Game::Tick()
 
 												if(player[i].ally>0){
 													rotatetarget=player[player[i].ally].coords-player[i].coords;
-													Normalise(&rotatetarget);
+													Normalise(rotatetarget);
 													player[i].targetrotation=-asin(0-rotatetarget.x);
 													player[i].targetrotation*=360/6.28;
 													if(rotatetarget.z<0)player[i].targetrotation=180-player[i].targetrotation;
@@ -8203,7 +8220,7 @@ void	Game::Tick()
 																player[i].lastseentime=1;
 															}
 															rotatetarget=weapons.position[player[i].ally]-player[i].coords;
-															Normalise(&rotatetarget);
+															Normalise(rotatetarget);
 															player[i].targetrotation=-asin(0-rotatetarget.x);
 															player[i].targetrotation*=360/6.28;
 															if(rotatetarget.z<0)player[i].targetrotation=180-player[i].targetrotation;
@@ -8348,7 +8365,7 @@ void	Game::Tick()
 																if(findDistancefast(&player[player[i].aitarget].coords,&player[i].coords)<findDistancefast(&rotatetarget,&player[i].coords))
 																	rotatetarget=player[player[i].aitarget].coords+player[player[i].aitarget].velocity*findDistance(&player[player[i].aitarget].coords,&player[i].coords)/findLength(&player[i].velocity)-player[i].coords;
 																else rotatetarget=player[player[i].aitarget].coords-player[i].coords;
-																Normalise(&rotatetarget);
+																Normalise(rotatetarget);
 																player[i].targetrotation=-asin(0-rotatetarget.x);
 																player[i].targetrotation*=360/6.28;
 																if(rotatetarget.z<0)player[i].targetrotation=180-player[i].targetrotation;
@@ -8473,7 +8490,7 @@ void	Game::Tick()
 
 										if(player[i].aitype==attacktypecutoff){
 											rotatetarget=player[0].coords-player[i].coords;
-											Normalise(&rotatetarget);
+											Normalise(rotatetarget);
 											player[i].targetheadrotation=-asin(0-rotatetarget.x);
 											player[i].targetheadrotation*=360/6.28;
 											if(rotatetarget.z<0)player[i].targetheadrotation=180-player[i].targetheadrotation;
@@ -8497,7 +8514,7 @@ void	Game::Tick()
 												player[i].headtarget+=player[i].facing*1.5;
 											}
 											rotatetarget=player[i].headtarget-player[i].coords;
-											Normalise(&rotatetarget);
+											Normalise(rotatetarget);
 											player[i].targetheadrotation=-asin(0-rotatetarget.x);
 											player[i].targetheadrotation*=360/6.28;
 											if(rotatetarget.z<0)player[i].targetheadrotation=180-player[i].targetheadrotation;
@@ -8561,7 +8578,7 @@ void	Game::Tick()
 																player[i].target=0;
 																player[i].targetframe=0;
 																rotatetarget=weapons.position[j]-player[i].coords;
-																Normalise(&rotatetarget);
+																Normalise(rotatetarget);
 																player[i].targetrotation=-asin(0-rotatetarget.x);
 																player[i].targetrotation*=360/6.28;
 																if(rotatetarget.z<0)player[i].targetrotation=180-player[i].targetrotation;
@@ -8609,7 +8626,7 @@ void	Game::Tick()
 																player[i].target=0;
 																player[i].targetframe=0;
 																rotatetarget=weapons.position[j]-player[i].coords;
-																Normalise(&rotatetarget);
+																Normalise(rotatetarget);
 																player[i].targetrotation=-asin(0-rotatetarget.x);
 																player[i].targetrotation*=360/6.28;
 																if(rotatetarget.z<0)player[i].targetrotation=180-player[i].targetrotation;
@@ -8664,7 +8681,7 @@ void	Game::Tick()
 																		player[i].target=0;
 																		player[i].targetframe=0;
 																		rotatetarget=player[j].coords-player[i].coords;
-																		Normalise(&rotatetarget);
+																		Normalise(rotatetarget);
 																		player[i].targetrotation=-asin(0-rotatetarget.x);
 																		player[i].targetrotation*=360/6.28;
 																		if(rotatetarget.z<0)player[i].targetrotation=180-player[i].targetrotation;
@@ -8722,7 +8739,7 @@ void	Game::Tick()
 																				XYZ relative;
 																				relative=0;
 																				relative.y=10;
-																				Normalise(&relative);
+																				Normalise(relative);
 																				XYZ footvel,footpoint;
 																				footvel=0;
 																				footpoint=weapons.position[k];
@@ -8777,7 +8794,7 @@ void	Game::Tick()
 																				player[i].target=0;
 																				player[i].targetframe=0;
 																				rotatetarget=player[j].coords-player[i].coords;
-																				Normalise(&rotatetarget);
+																				Normalise(rotatetarget);
 																				player[i].targetrotation=-asin(0-rotatetarget.x);
 																				player[i].targetrotation*=360/6.28;
 																				if(rotatetarget.z<0)player[i].targetrotation=180-player[i].targetrotation;
@@ -8791,7 +8808,7 @@ void	Game::Tick()
 																					XYZ aim;
 																					weapons.owner[player[i].weaponids[0]]=-1;
 																					aim=player[i].victim->coords+DoRotation(player[i].victim->skeleton.joints[player[i].victim->skeleton.jointlabels[abdomen]].position,0,player[i].victim->rotation,0)*player[i].victim->scale+player[i].victim->velocity*findDistance(&player[i].victim->coords,&player[i].coords)/50-(player[i].coords+DoRotation(player[i].skeleton.joints[player[i].skeleton.jointlabels[righthand]].position,0,player[i].rotation,0)*player[i].scale);
-																					Normalise(&aim);
+																					Normalise(aim);
 
 																					aim=DoRotation(aim,(float)abs(Random()%30)-15,(float)abs(Random()%30)-15,0);
 
@@ -9778,13 +9795,13 @@ void	Game::TickOnceAfter(){
 							}
 						}
 
-						if(campaign)
+						if(campaign) {
 							if(mainmenu==0&&winfreeze&&(campaignchoosenext[campaignchoicewhich[whichchoice]])==1){
 								if(campaignnumnext[campaignchoicewhich[whichchoice]]==0){
 									endgame=1;
 								}
 							}
-							else if(mainmenu==0&&winfreeze){
+						} else if(mainmenu==0&&winfreeze){
 								if(campaignchoosenext[campaignchoicewhich[whichchoice]]==2)
 									stealthloading=1;
 								else stealthloading=0;
@@ -9948,7 +9965,7 @@ void	Game::TickOnceAfter(){
 			coltarget=target-cameraloc;
 			if(findLengthfast(&coltarget)<multiplier*multiplier*400)cameraloc=target;
 			else {
-				Normalise(&coltarget);
+				Normalise(coltarget);
 				if(player[0].targetanimation!=hanganim&&player[0].targetanimation!=climbanim&&player[0].currentanimation!=climbanim&&player[0].currentoffset.x==0)cameraloc=cameraloc+coltarget*multiplier*cameraspeed;
 				else cameraloc=cameraloc+coltarget*multiplier*8;
 			}
@@ -9994,7 +10011,7 @@ void	Game::TickOnceAfter(){
 			if(findLengthfast(&coltarget)<multiplier*multiplier*400)cameraloc=target;
 			else if(findLengthfast(&coltarget)>1)
 			{
-				Normalise(&coltarget);
+				Normalise(coltarget);
 				if(player[0].targetanimation!=hanganim&&player[0].targetanimation!=climbanim&&player[0].currentanimation!=climbanim&&player[0].currentoffset.x==0)cameraloc=cameraloc+coltarget*multiplier*cameraspeed;
 				else cameraloc=cameraloc+coltarget*multiplier*8;
 			}
