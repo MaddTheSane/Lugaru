@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		550AE98018DFC1CE00F0C197 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 550AE97F18DFC1CE00F0C197 /* libz.dylib */; };
 		550AE9A318DFC22800F0C197 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 550AE9A218DFC22800F0C197 /* SDL2.framework */; };
-		550AE9A518DFC24700F0C197 /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 550AE9A218DFC22800F0C197 /* SDL2.framework */; };
+		550AE9A518DFC24700F0C197 /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 550AE9A218DFC22800F0C197 /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		550AE9A718DFC29A00F0C197 /* Data in Resources */ = {isa = PBXBuildFile; fileRef = 550AE9A618DFC29A00F0C197 /* Data */; };
 		550AE9A918DFC8B700F0C197 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 550AE9A818DFC8B700F0C197 /* Images.xcassets */; };
 		565AD00C11990D7600DF867A /* Frustum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 565ACFF111990D7600DF867A /* Frustum.cpp */; };
@@ -356,7 +356,7 @@
 			isa = PBXGroup;
 			children = (
 				56B7BBB311990A5900D910BE /* Lugaru Sources */,
-				565AD02F11990DC100DF867A /* Middleware */,
+				565AD02F11990DC100DF867A /* Vendor */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
@@ -390,7 +390,20 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		565AD02F11990DC100DF867A /* Middleware */ = {
+		55AFA19C1CC877C500A2E222 /* Pack */ = {
+			isa = PBXGroup;
+			children = (
+				565AD00811990D7600DF867A /* unpack_private.c */,
+				550AE99E18DFC20600F0C197 /* unpack_private.h */,
+				565AD00911990D7600DF867A /* unpack.c */,
+				565ACFFC11990D7600DF867A /* pack_private.c */,
+				550AE99118DFC20600F0C197 /* pack_private.h */,
+				565ACFFD11990D7600DF867A /* pack.c */,
+			);
+			name = Pack;
+			sourceTree = "<group>";
+		};
+		565AD02F11990DC100DF867A /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
 				565AD03511990DEB00DF867A /* libvorbis */,
@@ -399,7 +412,7 @@
 				565AD03211990DD400DF867A /* libjpeg */,
 				565AD03011990DCA00DF867A /* libpng */,
 			);
-			name = Middleware;
+			name = Vendor;
 			path = ../Dependencies;
 			sourceTree = "<group>";
 		};
@@ -536,65 +549,60 @@
 			isa = PBXGroup;
 			children = (
 				550AE98118DFC20600F0C197 /* alstubs.h */,
+				565ACFFA11990D7600DF867A /* openal_wrapper.cpp */,
+				550AE99018DFC20600F0C197 /* openal_wrapper.h */,
 				550AE98218DFC20600F0C197 /* binio.h */,
 				550AE98318DFC20600F0C197 /* ConsoleCmds.h */,
 				550AE98418DFC20600F0C197 /* Constants.h */,
+				565ACFF111990D7600DF867A /* Frustum.cpp */,
 				550AE98518DFC20600F0C197 /* Frustum.h */,
 				550AE98618DFC20600F0C197 /* Game.h */,
-				550AE98718DFC20600F0C197 /* gamegl.h */,
-				550AE98818DFC20600F0C197 /* glstubs.h */,
-				550AE98918DFC20600F0C197 /* Lights.h */,
-				550AE98A18DFC20600F0C197 /* LinkedList.h */,
-				550AE98B18DFC20600F0C197 /* MacCompatibility.h */,
-				550AE98C18DFC20600F0C197 /* mmgr.h */,
-				550AE98D18DFC20600F0C197 /* Models.h */,
-				550AE98E18DFC20600F0C197 /* nommgr.h */,
-				550AE98F18DFC20600F0C197 /* Objects.h */,
-				550AE99018DFC20600F0C197 /* openal_wrapper.h */,
-				550AE99118DFC20600F0C197 /* pack_private.h */,
-				550AE99218DFC20600F0C197 /* Person.h */,
-				550AE99318DFC20600F0C197 /* PhysicsMath.h */,
-				550AE99418DFC20600F0C197 /* Pointer.h */,
-				550AE99518DFC20600F0C197 /* private.h */,
-				550AE99618DFC20600F0C197 /* Quaternions.h */,
-				550AE99718DFC20600F0C197 /* Random.h */,
-				550AE99818DFC20600F0C197 /* Skeleton.h */,
-				550AE99918DFC20600F0C197 /* Skybox.h */,
-				550AE99A18DFC20600F0C197 /* Sprites.h */,
-				550AE99B18DFC20600F0C197 /* Terrain.h */,
-				550AE99C18DFC20600F0C197 /* Text.h */,
-				550AE99D18DFC20600F0C197 /* TGALoader.h */,
-				550AE99E18DFC20600F0C197 /* unpack_private.h */,
-				550AE99F18DFC20600F0C197 /* Weapons.h */,
-				550AE9A018DFC20600F0C197 /* WinDefs.h */,
-				550AE9A118DFC20600F0C197 /* WinInput.h */,
-				565ACFF111990D7600DF867A /* Frustum.cpp */,
 				565ACFF211990D7600DF867A /* GameDraw.cpp */,
+				550AE98718DFC20600F0C197 /* gamegl.h */,
 				565ACFF311990D7600DF867A /* GameInitDispose.cpp */,
 				565ACFF411990D7600DF867A /* GameTick.cpp */,
 				565ACFF511990D7600DF867A /* Globals.cpp */,
+				550AE98818DFC20600F0C197 /* glstubs.h */,
 				565ACFF611990D7600DF867A /* Lights.cpp */,
+				550AE98918DFC20600F0C197 /* Lights.h */,
+				550AE98A18DFC20600F0C197 /* LinkedList.h */,
 				565ACFF711990D7600DF867A /* MacCompatibility.cpp */,
+				550AE98B18DFC20600F0C197 /* MacCompatibility.h */,
+				550AE98C18DFC20600F0C197 /* mmgr.h */,
 				565ACFF811990D7600DF867A /* Models.cpp */,
+				550AE98D18DFC20600F0C197 /* Models.h */,
+				550AE98E18DFC20600F0C197 /* nommgr.h */,
 				565ACFF911990D7600DF867A /* Objects.cpp */,
-				565ACFFA11990D7600DF867A /* openal_wrapper.cpp */,
+				550AE98F18DFC20600F0C197 /* Objects.h */,
 				565ACFFB11990D7600DF867A /* OpenGL_Windows.cpp */,
-				565ACFFC11990D7600DF867A /* pack_private.c */,
-				565ACFFD11990D7600DF867A /* pack.c */,
+				55AFA19C1CC877C500A2E222 /* Pack */,
 				565ACFFE11990D7600DF867A /* Person.cpp */,
+				550AE99218DFC20600F0C197 /* Person.h */,
+				550AE99318DFC20600F0C197 /* PhysicsMath.h */,
+				550AE99418DFC20600F0C197 /* Pointer.h */,
 				565ACFFF11990D7600DF867A /* private.c */,
+				550AE99518DFC20600F0C197 /* private.h */,
 				565AD00011990D7600DF867A /* Quaternions.cpp */,
+				550AE99618DFC20600F0C197 /* Quaternions.h */,
 				565AD00111990D7600DF867A /* Random.c */,
+				550AE99718DFC20600F0C197 /* Random.h */,
 				565AD00211990D7600DF867A /* Skeleton.cpp */,
+				550AE99818DFC20600F0C197 /* Skeleton.h */,
 				565AD00311990D7600DF867A /* Skybox.cpp */,
+				550AE99918DFC20600F0C197 /* Skybox.h */,
 				565AD00411990D7600DF867A /* Sprites.cpp */,
+				550AE99A18DFC20600F0C197 /* Sprites.h */,
 				565AD00511990D7600DF867A /* Terrain.cpp */,
+				550AE99B18DFC20600F0C197 /* Terrain.h */,
 				565AD00611990D7600DF867A /* Text.cpp */,
+				550AE99C18DFC20600F0C197 /* Text.h */,
 				565AD00711990D7600DF867A /* TGALoader.cpp */,
-				565AD00811990D7600DF867A /* unpack_private.c */,
-				565AD00911990D7600DF867A /* unpack.c */,
+				550AE99D18DFC20600F0C197 /* TGALoader.h */,
 				565AD00A11990D7600DF867A /* Weapons.cpp */,
+				550AE99F18DFC20600F0C197 /* Weapons.h */,
+				550AE9A018DFC20600F0C197 /* WinDefs.h */,
 				565AD00B11990D7600DF867A /* WinInput.cpp */,
+				550AE9A118DFC20600F0C197 /* WinInput.h */,
 			);
 			name = "Lugaru Sources";
 			path = ../Source;
@@ -628,7 +636,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = Wolfire;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Lugaru" */;
@@ -814,6 +822,7 @@
 					"\"$(SRCROOT)/..\"",
 					"\"$(SRCROOT)/../Dependencies/SDL12/lib/macosx\"",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.wolfire.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = Lugaru;
 			};
 			name = Debug;
@@ -838,6 +847,7 @@
 					"\"$(SRCROOT)/..\"",
 					"\"$(SRCROOT)/../Dependencies/SDL12/lib/macosx\"",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.wolfire.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = Lugaru;
 			};
 			name = Release;
@@ -852,9 +862,13 @@
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"USE_SDL=1",
@@ -883,7 +897,7 @@
 					"$(SRCROOT)/../Dependencies/libogg/include",
 					"$(SRCROOT)/../Dependencies/libvorbis/include",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
@@ -899,9 +913,12 @@
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"USE_SDL=1",
 					"USE_OPENAL=1",
@@ -929,7 +946,7 @@
 					"$(SRCROOT)/../Dependencies/libogg/include",
 					"$(SRCROOT)/../Dependencies/libvorbis/include",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				SDKROOT = macosx;
 			};
 			name = Release;
