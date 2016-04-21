@@ -16,6 +16,27 @@
 		55A13CF91CC961210070DECF /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A13CEF1CC960190070DECF /* libogg.a */; };
 		55A13CFA1CC961210070DECF /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A13CD41CC95FFE0070DECF /* libpng.a */; };
 		55A13CFB1CC961210070DECF /* libvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A13CE71CC960180070DECF /* libvorbis.a */; };
+		55A13D041CC971420070DECF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A13D031CC971420070DECF /* AppDelegate.swift */; };
+		55A13D061CC971420070DECF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55A13D051CC971420070DECF /* Assets.xcassets */; };
+		55A13D091CC971430070DECF /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55A13D071CC971430070DECF /* MainMenu.xib */; };
+		55A13D0E1CC9714F0070DECF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 550AE9A818DFC8B700F0C197 /* Images.xcassets */; };
+		55A13D0F1CC9716F0070DECF /* Data in Resources */ = {isa = PBXBuildFile; fileRef = 550AE9A618DFC29A00F0C197 /* Data */; };
+		55A13D101CC9718D0070DECF /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A13CDF1CC960160070DECF /* libjpeg.a */; };
+		55A13D111CC9718D0070DECF /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A13CEF1CC960190070DECF /* libogg.a */; };
+		55A13D121CC9718D0070DECF /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A13CD41CC95FFE0070DECF /* libpng.a */; };
+		55A13D131CC9718D0070DECF /* libvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A13CE71CC960180070DECF /* libvorbis.a */; };
+		55A13D151CC971940070DECF /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A13D141CC971940070DECF /* libz.tbd */; };
+		55A13D161CC972090070DECF /* openal_wrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 565ACFFA11990D7600DF867A /* openal_wrapper.cpp */; };
+		55A13D171CC972140070DECF /* private.c in Sources */ = {isa = PBXBuildFile; fileRef = 565ACFFF11990D7600DF867A /* private.c */; };
+		55A13D181CC972190070DECF /* unpack_private.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD00811990D7600DF867A /* unpack_private.c */; };
+		55A13D191CC972190070DECF /* unpack.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD00911990D7600DF867A /* unpack.c */; };
+		55A13D1A1CC972190070DECF /* pack_private.c in Sources */ = {isa = PBXBuildFile; fileRef = 565ACFFC11990D7600DF867A /* pack_private.c */; };
+		55A13D1B1CC972190070DECF /* pack.c in Sources */ = {isa = PBXBuildFile; fileRef = 565ACFFD11990D7600DF867A /* pack.c */; };
+		55A13D1C1CC972370070DECF /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 565AD1141199144400DF867A /* OpenAL.framework */; };
+		55A13D1E1CC9728B0070DECF /* CmdLine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55A13D1D1CC9728B0070DECF /* CmdLine.cpp */; };
+		55A13D211CC974200070DECF /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A13D201CC974200070DECF /* Model.swift */; };
+		55A13D231CC975850070DECF /* MacCompatibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A13D221CC975850070DECF /* MacCompatibility.swift */; };
+		55A13D251CC9778A0070DECF /* NSURLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A13D241CC9778A0070DECF /* NSURLAdditions.swift */; };
 		565AD00C11990D7600DF867A /* Frustum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 565ACFF111990D7600DF867A /* Frustum.cpp */; };
 		565AD00D11990D7600DF867A /* GameDraw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 565ACFF211990D7600DF867A /* GameDraw.cpp */; };
 		565AD00E11990D7600DF867A /* GameInitDispose.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 565ACFF311990D7600DF867A /* GameInitDispose.cpp */; };
@@ -229,6 +250,17 @@
 		55A13CDF1CC960160070DECF /* libjpeg.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libjpeg.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		55A13CE71CC960180070DECF /* libvorbis.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libvorbis.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		55A13CEF1CC960190070DECF /* libogg.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libogg.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		55A13D011CC971420070DECF /* SwiftLugaru.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftLugaru.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		55A13D031CC971420070DECF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		55A13D051CC971420070DECF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		55A13D081CC971430070DECF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		55A13D0A1CC971430070DECF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		55A13D141CC971940070DECF /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		55A13D1D1CC9728B0070DECF /* CmdLine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CmdLine.cpp; sourceTree = "<group>"; };
+		55A13D1F1CC9735D0070DECF /* SwiftLugaru-Bridging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SwiftLugaru-Bridging.h"; sourceTree = "<group>"; };
+		55A13D201CC974200070DECF /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		55A13D221CC975850070DECF /* MacCompatibility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacCompatibility.swift; sourceTree = "<group>"; };
+		55A13D241CC9778A0070DECF /* NSURLAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSURLAdditions.swift; sourceTree = "<group>"; };
 		565ACFF111990D7600DF867A /* Frustum.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Frustum.cpp; sourceTree = "<group>"; };
 		565ACFF211990D7600DF867A /* GameDraw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameDraw.cpp; sourceTree = "<group>"; };
 		565ACFF311990D7600DF867A /* GameInitDispose.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameInitDispose.cpp; sourceTree = "<group>"; };
@@ -378,6 +410,19 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		55A13CFE1CC971420070DECF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				55A13D151CC971940070DECF /* libz.tbd in Frameworks */,
+				55A13D101CC9718D0070DECF /* libjpeg.a in Frameworks */,
+				55A13D111CC9718D0070DECF /* libogg.a in Frameworks */,
+				55A13D1C1CC972370070DECF /* OpenAL.framework in Frameworks */,
+				55A13D121CC9718D0070DECF /* libpng.a in Frameworks */,
+				55A13D131CC9718D0070DECF /* libvorbis.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D11072E0486CEB800E47090 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -408,6 +453,7 @@
 				55A13CDF1CC960160070DECF /* libjpeg.a */,
 				55A13CE71CC960180070DECF /* libvorbis.a */,
 				55A13CEF1CC960190070DECF /* libogg.a */,
+				55A13D011CC971420070DECF /* SwiftLugaru.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -418,6 +464,7 @@
 				56B7BBB311990A5900D910BE /* Lugaru Sources */,
 				565AD02F11990DC100DF867A /* Vendor */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
+				55A13D021CC971420070DECF /* SwiftLugaru */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
@@ -438,6 +485,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				55A13D141CC971940070DECF /* libz.tbd */,
 				550AE9A218DFC22800F0C197 /* SDL2.framework */,
 				565AD10E1199144400DF867A /* Carbon.framework */,
 				565AD1101199144400DF867A /* Cocoa.framework */,
@@ -480,6 +528,26 @@
 			);
 			name = "OpenAL wrappers";
 			sourceTree = "<group>";
+		};
+		55A13D021CC971420070DECF /* SwiftLugaru */ = {
+			isa = PBXGroup;
+			children = (
+				55A13D031CC971420070DECF /* AppDelegate.swift */,
+				55A13D201CC974200070DECF /* Model.swift */,
+				55A13D221CC975850070DECF /* MacCompatibility.swift */,
+				55A13D241CC9778A0070DECF /* NSURLAdditions.swift */,
+				55A13D051CC971420070DECF /* Assets.xcassets */,
+				55A13D071CC971430070DECF /* MainMenu.xib */,
+				55A13D0A1CC971430070DECF /* Info.plist */,
+				55A13D1D1CC9728B0070DECF /* CmdLine.cpp */,
+				55A13D1F1CC9735D0070DECF /* SwiftLugaru-Bridging.h */,
+			);
+			indentWidth = 4;
+			path = SwiftLugaru;
+			sourceTree = "<group>";
+			tabWidth = 4;
+			usesTabs = 1;
+			wrapsLines = 1;
 		};
 		55AFA19C1CC877C500A2E222 /* Pack */ = {
 			isa = PBXGroup;
@@ -785,6 +853,23 @@
 			productReference = 55A13CEF1CC960190070DECF /* libogg.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		55A13D001CC971420070DECF /* SwiftLugaru */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 55A13D0B1CC971430070DECF /* Build configuration list for PBXNativeTarget "SwiftLugaru" */;
+			buildPhases = (
+				55A13CFD1CC971420070DECF /* Sources */,
+				55A13CFE1CC971420070DECF /* Frameworks */,
+				55A13CFF1CC971420070DECF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SwiftLugaru;
+			productName = SwiftLugaru;
+			productReference = 55A13D011CC971420070DECF /* SwiftLugaru.app */;
+			productType = "com.apple.product-type.application";
+		};
 		8D1107260486CEB800E47090 /* Lugaru */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Lugaru" */;
@@ -814,10 +899,14 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0730;
 				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = Wolfire;
 				TargetAttributes = {
 					55A13CD31CC95FFE0070DECF = {
+						CreatedOnToolsVersion = 7.3;
+					};
+					55A13D001CC971420070DECF = {
 						CreatedOnToolsVersion = 7.3;
 					};
 				};
@@ -828,6 +917,7 @@
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* Lugaru */;
 			projectDirPath = "";
@@ -838,11 +928,23 @@
 				55A13CD81CC960160070DECF /* jpeg */,
 				55A13CE01CC960180070DECF /* vorbis */,
 				55A13CE81CC960190070DECF /* ogg */,
+				55A13D001CC971420070DECF /* SwiftLugaru */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		55A13CFF1CC971420070DECF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				55A13D0E1CC9714F0070DECF /* Images.xcassets in Resources */,
+				55A13D061CC971420070DECF /* Assets.xcassets in Resources */,
+				55A13D0F1CC9716F0070DECF /* Data in Resources */,
+				55A13D091CC971430070DECF /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D1107290486CEB800E47090 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -965,6 +1067,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		55A13CFD1CC971420070DECF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				55A13D231CC975850070DECF /* MacCompatibility.swift in Sources */,
+				55A13D211CC974200070DECF /* Model.swift in Sources */,
+				55A13D1E1CC9728B0070DECF /* CmdLine.cpp in Sources */,
+				55A13D191CC972190070DECF /* unpack.c in Sources */,
+				55A13D161CC972090070DECF /* openal_wrapper.cpp in Sources */,
+				55A13D251CC9778A0070DECF /* NSURLAdditions.swift in Sources */,
+				55A13D1A1CC972190070DECF /* pack_private.c in Sources */,
+				55A13D181CC972190070DECF /* unpack_private.c in Sources */,
+				55A13D041CC971420070DECF /* AppDelegate.swift in Sources */,
+				55A13D1B1CC972190070DECF /* pack.c in Sources */,
+				55A13D171CC972140070DECF /* private.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D11072C0486CEB800E47090 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1024,6 +1144,17 @@
 		};
 /* End PBXTargetDependency section */
 
+/* Begin PBXVariantGroup section */
+		55A13D071CC971430070DECF /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				55A13D081CC971430070DECF /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
 		55A13CD61CC95FFE0070DECF /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -1059,6 +1190,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				EXECUTABLE_PREFIX = lib;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -1101,6 +1233,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				EXECUTABLE_PREFIX = lib;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -1143,6 +1276,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				EXECUTABLE_PREFIX = lib;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -1185,11 +1319,68 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				EXECUTABLE_PREFIX = lib;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		55A13D0C1CC971430070DECF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = lugaru;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = SwiftLugaru/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.maddthesane.SwiftLugaru;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "SwiftLugaru/SwiftLugaru-Bridging.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		55A13D0D1CC971430070DECF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = lugaru;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = SwiftLugaru/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.maddthesane.SwiftLugaru;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "SwiftLugaru/SwiftLugaru-Bridging.h";
 			};
 			name = Release;
 		};
@@ -1227,6 +1418,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = lugaru;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1385,6 +1577,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		55A13D0B1CC971430070DECF /* Build configuration list for PBXNativeTarget "SwiftLugaru" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				55A13D0C1CC971430070DECF /* Debug */,
+				55A13D0D1CC971430070DECF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Lugaru" */ = {
 			isa = XCConfigurationList;
