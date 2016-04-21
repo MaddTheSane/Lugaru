@@ -45,6 +45,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //#include <stdbool.h>
 //#include <QuickTime.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**> DATA STRUCTURES <**/
 typedef struct TGAImageRec
 {
@@ -57,7 +61,11 @@ typedef struct TGAImageRec
 bool upload_image(const unsigned char* filePath, bool hasalpha);
 
 /**> FUNCTION PROTOTYPES <**/
-TGAImageRec*	LoadTGA( char *filename );
+TGAImageRec*	LoadTGA( const char *filename );
+
+#ifdef __cplusplus
+}
+#endif
 
 
 #endif

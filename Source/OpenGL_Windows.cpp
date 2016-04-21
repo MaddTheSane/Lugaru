@@ -1629,10 +1629,19 @@ static bool load_image(const char *file_name, TGAImageRec &tex)
     const char *ptr = strrchr((char *)file_name, '.');
     if (ptr)
     {
-        if (strcasecmp(ptr+1, "png") == 0)
+		if (strcasecmp(ptr+1, "png") == 0) {
             return load_png(file_name, tex);
-        else if (strcasecmp(ptr+1, "jpg") == 0)
+		} else if (strcasecmp(ptr+1, "jpg") == 0) {
             return load_jpg(file_name, tex);
+		} else if (strcasecmp(ptr+1, "tga") == 0) {
+			TGAImageRec *tmpTex = LoadTGA(file_name);
+			if (tmpTex) {
+				tex = *tmpTex;
+				return true;
+			} else {
+				return false;
+			}
+		}
     }
 
     STUBBED("Unsupported image type");

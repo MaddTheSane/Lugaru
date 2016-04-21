@@ -627,8 +627,9 @@
 		56B7BBB311990A5900D910BE /* Lugaru Sources */ = {
 			isa = PBXGroup;
 			children = (
-				55A13CBC1CC953C40070DECF /* Lugaru.pch */,
 				55A13CFC1CC9626D0070DECF /* OpenAL wrappers */,
+				55AFA19C1CC877C500A2E222 /* Pack */,
+				55A13CBC1CC953C40070DECF /* Lugaru.pch */,
 				550AE98318DFC20600F0C197 /* ConsoleCmds.h */,
 				550AE98418DFC20600F0C197 /* Constants.h */,
 				565ACFF111990D7600DF867A /* Frustum.cpp */,
@@ -652,7 +653,6 @@
 				565ACFF911990D7600DF867A /* Objects.cpp */,
 				550AE98F18DFC20600F0C197 /* Objects.h */,
 				565ACFFB11990D7600DF867A /* OpenGL_Windows.cpp */,
-				55AFA19C1CC877C500A2E222 /* Pack */,
 				565ACFFE11990D7600DF867A /* Person.cpp */,
 				550AE99218DFC20600F0C197 /* Person.h */,
 				550AE99318DFC20600F0C197 /* PhysicsMath.h */,

@@ -182,7 +182,7 @@ bool upload_image(const unsigned char* filePath, bool hasalpha)
 }
 
 
-TGAImageRec*	LoadTGA( char *filename )
+TGAImageRec*	LoadTGA(const char *filename )
 {    
 	GLubyte			TGAheader[12]={0,0,2,0,0,0,0,0,0,0,0,0};	// Uncompressed TGA Header
 	GLubyte			TGAcompare[12];								// Used To Compare TGA Header
