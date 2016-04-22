@@ -226,6 +226,7 @@
 		550AE9A218DFC22800F0C197 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = /Library/Frameworks/SDL2.framework; sourceTree = "<absolute>"; };
 		550AE9A618DFC29A00F0C197 /* Data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Data; path = ../Data; sourceTree = SOURCE_ROOT; };
 		550AE9A818DFC8B700F0C197 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		551C714D1CCA8F6C0098D893 /* Lugaru.exp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.exports; path = Lugaru.exp; sourceTree = "<group>"; };
 		55A13CBC1CC953C40070DECF /* Lugaru.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Lugaru.pch; path = ../Xcode/Lugaru.pch; sourceTree = "<group>"; };
 		55A13CC21CC95F480070DECF /* ogg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ogg.h; sourceTree = "<group>"; };
 		55A13CC31CC95F480070DECF /* os_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = os_types.h; sourceTree = "<group>"; };
@@ -442,6 +443,7 @@
 				565AD18D1199303700DF867A /* lugaru.icns */,
 				550AE9A818DFC8B700F0C197 /* Images.xcassets */,
 				8D1107310486CEB800E47090 /* Lugaru-Info.plist */,
+				551C714D1CCA8F6C0098D893 /* Lugaru.exp */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1225,6 +1227,7 @@
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
+				EXPORTED_SYMBOLS_FILE = Lugaru.exp;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
@@ -1253,6 +1256,7 @@
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
+				EXPORTED_SYMBOLS_FILE = Lugaru.exp;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",

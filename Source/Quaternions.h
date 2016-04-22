@@ -125,7 +125,7 @@ inline float fast_sqrt (register float arg)
 
 	return result * arg;
 #else
-	return sqrtf( arg);
+	return sqrt( arg);
 #endif
 }
 
@@ -185,24 +185,24 @@ inline XYZ DoRotation(XYZ thePoint, float xang, float yang, float zang){
 
 
 	if(yang){
-		newpoint.z=thePoint.z*cosf(yang)-thePoint.x*sinf(yang);
-		newpoint.x=thePoint.z*sinf(yang)+thePoint.x*cosf(yang);
+		newpoint.z=thePoint.z*cos(yang)-thePoint.x*sin(yang);
+		newpoint.x=thePoint.z*sin(yang)+thePoint.x*cos(yang);
 		thePoint.z=newpoint.z;
 		thePoint.x=newpoint.x;
 	}
 
 	if(zang){
-		newpoint.x=thePoint.x*cosf(zang)-thePoint.y*sinf(zang);
-		newpoint.y=thePoint.y*cosf(zang)+thePoint.x*sinf(zang);
+		newpoint.x=thePoint.x*cos(zang)-thePoint.y*sin(zang);
+		newpoint.y=thePoint.y*cos(zang)+thePoint.x*sin(zang);
 		thePoint.x=newpoint.x;
 		thePoint.y=newpoint.y;
 	}
 
 	if(xang){
-		newpoint.y=thePoint.y*cosf(xang)-thePoint.z*sinf(xang);
-		newpoint.z=thePoint.y*sinf(xang)+thePoint.z*cosf(xang);
+		newpoint.y=thePoint.y*cos(xang)-thePoint.z*sin(xang);
+		newpoint.z=thePoint.y*sin(xang)+thePoint.z*cos(xang);
 		thePoint.z=newpoint.z;
-		thePoint.y=newpoint.y;	
+		thePoint.y=newpoint.y;
 	}
 
 	return thePoint;
@@ -224,30 +224,36 @@ inline bool sphere_line_intersection (
 	// This function returns a pointer array which first index indicates
 	// the number of intersection point, followed by coordinate pairs.
 
-	static float a, b, c, i ;
+	float a, b, c, i ;
 
-	if(x1>x3+r&&x2>x3+r)return(0);
-	if(x1<x3-r&&x2<x3-r)return(0);
-	if(y1>y3+r&&y2>y3+r)return(0);
-	if(y1<y3-r&&y2<y3-r)return(0);
-	if(z1>z3+r&&z2>z3+r)return(0);
-	if(z1<z3-r&&z2<z3-r)return(0);
+	if(x1>x3+r&&x2>x3+r)
+		return false;
+	if(x1<x3-r&&x2<x3-r)
+		return false;
+	if(y1>y3+r&&y2>y3+r)
+		return false;
+	if(y1<y3-r&&y2<y3-r)
+		return false;
+	if(z1>z3+r&&z2>z3+r)
+		return false;
+	if(z1<z3-r&&z2<z3-r)
+		return false;
 	a =  square(x2 - x1) + square(y2 - y1) + square(z2 - z1);
 	b =  2* ( (x2 - x1)*(x1 - x3)
 		+ (y2 - y1)*(y1 - y3)
-		+ (z2 - z1)*(z1 - z3) ) ;
+		+ (z2 - z1)*(z1 - z3) );
 	c =  square(x3) + square(y3) +
 		square(z3) + square(x1) +
 		square(y1) + square(z1) -
-		2* ( x3*x1 + y3*y1 + z3*z1 ) - square(r) ;
-	i =   b * b - 4 * a * c ;
+		2* ( x3*x1 + y3*y1 + z3*z1 ) - square(r);
+	i =   b * b - 4 * a * c;
 
 	if ( i < 0.0 )
 	{
 		// no intersection
-		return(0);
+		return false;
 	}
-	return(1);
+	return true;
 }
 
 inline bool sphere_line_intersection (
@@ -264,12 +270,18 @@ inline bool sphere_line_intersection (
 
 	float a, b, c, i ;
 
-	if(p1.x>p3.x+r&&p2.x>p3.x+r)return(0);
-	if(p1.x<p3.x-r&&p2.x<p3.x-r)return(0);
-	if(p1.y>p3.y+r&&p2.y>p3.y+r)return(0);
-	if(p1.y<p3.y-r&&p2.y<p3.y-r)return(0);
-	if(p1.z>p3.z+r&&p2.z>p3.z+r)return(0);
-	if(p1.z<p3.z-r&&p2.z<p3.z-r)return(0);
+	if(p1.x>p3.x+r&&p2.x>p3.x+r)
+		return false;
+	if(p1.x<p3.x-r&&p2.x<p3.x-r)
+		return false;
+	if(p1.y>p3.y+r&&p2.y>p3.y+r)
+		return false;
+	if(p1.y<p3.y-r&&p2.y<p3.y-r)
+		return false;
+	if(p1.z>p3.z+r&&p2.z>p3.z+r)
+		return false;
+	if(p1.z<p3.z-r&&p2.z<p3.z-r)
+		return false;
 	a =  square(p2.x - p1.x) + square(p2.y - p1.y) + square(p2.z - p1.z);
 	b =  2* ( (p2.x - p1.x)*(p1.x - p3.x)
 		+ (p2.y - p1.y)*(p1.y - p3.y)
@@ -283,34 +295,32 @@ inline bool sphere_line_intersection (
 	if ( i < 0.0 )
 	{
 		// no intersection
-		return(false);
+		return false;
 	}
-	return(true);
+	return true;
 }
 
 inline XYZ DoRotationRadian(XYZ thePoint, float xang, float yang, float zang){
 	XYZ newpoint;
-	XYZ oldpoint;
-
-	oldpoint=thePoint;
+	XYZ oldpoint = thePoint;
 
 	if(yang!=0){
-		newpoint.z=oldpoint.z*cosf(yang)-oldpoint.x*sinf(yang);
-		newpoint.x=oldpoint.z*sinf(yang)+oldpoint.x*cosf(yang);
+		newpoint.z=oldpoint.z*cos(yang)-oldpoint.x*sin(yang);
+		newpoint.x=oldpoint.z*sin(yang)+oldpoint.x*cos(yang);
 		oldpoint.z=newpoint.z;
 		oldpoint.x=newpoint.x;
 	}
 
 	if(zang!=0){
-		newpoint.x=oldpoint.x*cosf(zang)-oldpoint.y*sinf(zang);
-		newpoint.y=oldpoint.y*cosf(zang)+oldpoint.x*sinf(zang);
+		newpoint.x=oldpoint.x*cos(zang)-oldpoint.y*sin(zang);
+		newpoint.y=oldpoint.y*cos(zang)+oldpoint.x*sin(zang);
 		oldpoint.x=newpoint.x;
 		oldpoint.y=newpoint.y;
 	}
 
 	if(xang!=0){
-		newpoint.y=oldpoint.y*cosf(xang)-oldpoint.z*sinf(xang);
-		newpoint.z=oldpoint.y*sinf(xang)+oldpoint.z*cosf(xang);
+		newpoint.y=oldpoint.y*cos(xang)-oldpoint.z*sin(xang);
+		newpoint.z=oldpoint.y*sin(xang)+oldpoint.z*cos(xang);
 		oldpoint.z=newpoint.z;
 		oldpoint.y=newpoint.y;	
 	}
@@ -321,10 +331,9 @@ inline XYZ DoRotationRadian(XYZ thePoint, float xang, float yang, float zang){
 
 inline bool DistancePointLine( XYZ *Point, XYZ *LineStart, XYZ *LineEnd, float *Distance, XYZ *Intersection )
 {
-	float LineMag;
 	float U;
 
-	LineMag = simd::distance( *LineEnd, *LineStart );
+	float LineMag = simd::distance( *LineEnd, *LineStart );
 
 	U = ( ( ( Point->x - LineStart->x ) * ( LineEnd->x - LineStart->x ) ) +
 		( ( Point->y - LineStart->y ) * ( LineEnd->y - LineStart->y ) ) +
@@ -332,7 +341,7 @@ inline bool DistancePointLine( XYZ *Point, XYZ *LineStart, XYZ *LineEnd, float *
 		( LineMag * LineMag );
 
 	if( U < 0.0f || U > 1.0f )
-		return 0;   // closest point does not fall within the line segment
+		return false;   // closest point does not fall within the line segment
 
 	Intersection->x = LineStart->x + U * ( LineEnd->x - LineStart->x );
 	Intersection->y = LineStart->y + U * ( LineEnd->y - LineStart->y );
@@ -340,7 +349,7 @@ inline bool DistancePointLine( XYZ *Point, XYZ *LineStart, XYZ *LineEnd, float *
 
 	*Distance = simd::distance( *Point, *Intersection );
 
-	return 1;
+	return true;
 }
 
 #endif
