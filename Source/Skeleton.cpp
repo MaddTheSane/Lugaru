@@ -1128,27 +1128,30 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 	static int parentID;
 	FILE *tfile;
 	float lSize;
-	int i,j,tempmuscle;
-	int newload;
+	int tempmuscle;
+	int newload = 0;
 	int edit;
 
 	LOGFUNC;
 
-
-	newload=0;
-
 	num_models=7;
-
 	clothes=aclothes;
 
-	for(i=0;i<num_models;i++){
-		if(i==0)model[i].loadnotex(modelfilename);
-		if(i==1)model[i].loadnotex(model2filename);
-		if(i==2)model[i].loadnotex(model3filename);
-		if(i==3)model[i].loadnotex(model4filename);
-		if(i==4)model[i].loadnotex(model5filename);
-		if(i==5)model[i].loadnotex(model6filename);
-		if(i==6)model[i].loadnotex(model7filename);
+	for (int i = 0; i < num_models; i++) {
+		if(i==0)
+			model[i].loadnotex(modelfilename);
+		if(i==1)
+			model[i].loadnotex(model2filename);
+		if(i==2)
+			model[i].loadnotex(model3filename);
+		if(i==3)
+			model[i].loadnotex(model4filename);
+		if(i==4)
+			model[i].loadnotex(model5filename);
+		if(i==5)
+			model[i].loadnotex(model6filename);
+		if(i==6)
+			model[i].loadnotex(model7filename);
 		model[i].Rotate(180,0,0);
 		model[i].Scale(.04,.04,.04);
 		model[i].CalculateNormals(0);
@@ -1158,8 +1161,10 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 	drawmodel.Rotate(180,0,0);
 	drawmodel.Scale(.04,.04,.04);
 	drawmodel.FlipTexCoords();
-	if(tutoriallevel==1&&id!=0)drawmodel.UniformTexCoords();
-	if(tutoriallevel==1&&id!=0)drawmodel.ScaleTexCoords(0.1);
+	if (tutoriallevel == 1 && id != 0)
+		drawmodel.UniformTexCoords();
+	if (tutoriallevel == 1 && id != 0)
+		drawmodel.ScaleTexCoords(0.1);
 	drawmodel.CalculateNormals(0);
 
 	modellow.loadnotex(modellowfilename);
@@ -1171,11 +1176,13 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 	drawmodellow.Rotate(180,0,0);
 	drawmodellow.Scale(.04,.04,.04);
 	drawmodellow.FlipTexCoords();
-	if(tutoriallevel==1&&id!=0)drawmodellow.UniformTexCoords();
-	if(tutoriallevel==1&&id!=0)drawmodellow.ScaleTexCoords(0.1);
+	if (tutoriallevel == 1 && id != 0)
+		drawmodellow.UniformTexCoords();
+	if (tutoriallevel == 1 && id != 0)
+		drawmodellow.ScaleTexCoords(0.1);
 	drawmodellow.CalculateNormals(0);
 
-	if(clothes){
+	if (clothes) {
 		modelclothes.loadnotex(modelclothesfilename);
 		modelclothes.Rotate(180,0,0);
 		modelclothes.Scale(.041,.04,.041);
@@ -1189,33 +1196,36 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 	}
 
 	tfile=fopen( ConvertFileName(filename), "rb" );
-	if(1){
+	if (1) {
 		float tmpx, tmpy, tmpz;
 		funpackf(tfile, "Bi", &num_joints);
 		//joints.resize(num_joints);
-		if(joints) delete [] joints; //dealloc2(joints);
+		if(joints)
+			delete [] joints; //dealloc2(joints);
 		joints=(Joint*)new Joint[num_joints]; //malloc(sizeof(Joint)*num_joints);
 
-		for(i=0;i<num_joints;i++){
+		for (int i = 0; i < num_joints; i++) {
 			funpackf(tfile, "Bf Bf Bf Bf Bf", &tmpx, &tmpy, &tmpz, &joints[i].length,&joints[i].mass);
 			joints[i].position = {tmpx, tmpy, tmpz};
-			funpackf(tfile, "Bb Bb", &joints[i].hasparent,&joints[i].locked);
+			funpackf(tfile, "Bb Bb", &joints[i].hasparent, &joints[i].locked);
 			funpackf(tfile, "Bi", &joints[i].modelnum);
-			funpackf(tfile, "Bb Bb", &joints[i].visible,&joints[i].sametwist);
-			funpackf(tfile, "Bi Bi", &joints[i].label,&joints[i].hasgun);
+			funpackf(tfile, "Bb Bb", &joints[i].visible, &joints[i].sametwist);
+			funpackf(tfile, "Bi Bi", &joints[i].label, &joints[i].hasgun);
 			funpackf(tfile, "Bb", &joints[i].lower);
 			funpackf(tfile, "Bi", &parentID);
-			if(joints[i].hasparent)joints[i].parent=&joints[parentID];
+			if(joints[i].hasparent)
+				joints[i].parent=&joints[parentID];
 			joints[i].velocity=0;
-			joints[i].oldposition=joints[i].position;
+			joints[i].oldposition = joints[i].position;
 		}
 		tempmuscle=num_muscles;
 		funpackf(tfile, "Bi", &num_muscles);
 		//muscles.clear();
-		if(muscles) delete [] muscles; //dealloc2(muscles);
+		if(muscles)
+			delete [] muscles; //dealloc2(muscles);
 		muscles=(Muscle*)new Muscle[num_muscles]; //malloc(sizeof(Muscle)*num_muscles);
-		newload=1;
-		for(i=0;i<num_muscles;i++){
+		newload = 1;
+		for (int i = 0; i < num_muscles; i++) {
 			tempmuscle=muscles[i].numvertices;
 			funpackf(tfile, "Bf Bf Bf Bf Bf Bi Bi", &muscles[i].length, &muscles[i].targetlength,&muscles[i].minlength, &muscles[i].maxlength,&muscles[i].strength,&muscles[i].type,&muscles[i].numvertices);
 			//muscles[i].vertices.clear();
@@ -1223,10 +1233,10 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 			//if(muscles[i].vertices)dealloc2(muscles[i].vertices);
 			muscles[i].vertices=(int*)malloc(sizeof(int)*muscles[i].numvertices);
 
-			edit=0;
-			for(j=0;j<muscles[i].numvertices-edit;j++){
+			edit = 0;
+			for (int j = 0; j < muscles[i].numvertices - edit; j++) {
 				funpackf(tfile, "Bi", &muscles[i].vertices[j+edit]);
-				if(muscles[i].vertices[j+edit]>=model[0].vertexNum){
+				if(muscles[i].vertices[j+edit] >= model[0].vertexNum) {
 					muscles[i].numvertices--;
 					edit--;
 				}
@@ -1236,28 +1246,28 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 			funpackf(tfile, "Bi", &parentID);
 			muscles[i].parent2=&joints[parentID];
 		}
-		for(j=0;j<3;j++){
+		for (int j = 0; j < 3; j++) {
 			funpackf(tfile, "Bi", &forwardjoints[j]);
 		}
-		for(j=0;j<3;j++){
+		for (int j = 0; j < 3; j++) {
 			funpackf(tfile, "Bi", &lowforwardjoints[j]);
 		}
-		for(j=0;j<num_muscles;j++){
-			for(i=0;i<muscles[j].numvertices;i++){
-				for(int k=0;k<num_models;k++){
+		for (int j = 0; j < num_muscles; j++) {
+			for (int i = 0; i < muscles[j].numvertices; i++) {
+				for (int k = 0; k < num_models; k++) {
 					if(muscles[j].numvertices&&muscles[j].vertices[i]<model[k].vertexNum)model[k].owner[muscles[j].vertices[i]]=j;
 				}
 			}
 		}
 		FindForwards();
-		for(i=0;i<num_joints;i++){
+		for (int i = 0; i < num_joints; i++) {
 			joints[i].startpos=joints[i].position;
 		}
-		for(i=0;i<num_muscles;i++){
+		for (int i = 0; i < num_muscles; i++) {
 			FindRotationMuscle(i,-1);
 		}
-		for(int k=0;k<num_models;k++){
-			for(i=0;i<model[k].vertexNum;i++){
+		for (int k = 0; k < num_models; k++) {
+			for (int i = 0; i < model[k].vertexNum; i++) {
 				model[k].vertex[i]=model[k].vertex[i]-(muscles[model[k].owner[i]].parent1->position+muscles[model[k].owner[i]].parent2->position)/2;
 				glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 				glPushMatrix();
@@ -1278,13 +1288,13 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 	fclose(tfile);
 
 	tfile=fopen( ConvertFileName(lowfilename), "rb" );
-	if(1){
+	if (1) {
 		lSize=sizeof(num_joints);
 		fseek ( tfile, lSize, SEEK_CUR);
 		//joints = new Joint[num_joints];
 		//jointlabels = new int[num_joints];
-		for(i=0;i<num_joints;i++){
-			lSize=12;//sizeof(XYZ);
+		for (int i = 0; i < num_joints; i++) {
+			lSize=sizeof(float)*3;//sizeof(XYZ);
 			fseek ( tfile, lSize, SEEK_CUR);
 			lSize=sizeof(float);
 			fseek ( tfile, lSize, SEEK_CUR);
@@ -1314,7 +1324,7 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 		}
 		funpackf(tfile, "Bi", &num_muscles);
 		//muscles = new Muscle[num_muscles];
-		for(i=0;i<num_muscles;i++){
+		for (int i = 0; i < num_muscles; i++){
 			lSize=sizeof(float);
 			fseek ( tfile, lSize, SEEK_CUR);
 			lSize=sizeof(float);
@@ -1327,15 +1337,15 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 			fseek ( tfile, lSize, SEEK_CUR);
 			lSize=sizeof(int);
 			fseek ( tfile, lSize, SEEK_CUR);
-			tempmuscle=muscles[i].numverticeslow;
+			tempmuscle = muscles[i].numverticeslow;
 			funpackf(tfile, "Bi", &muscles[i].numverticeslow);
-			if(muscles[i].numverticeslow){
+			if (muscles[i].numverticeslow) {
 				//muscles[i].verticeslow.clear();
 				//muscles[i].verticeslow.resize(muscles[i].numverticeslow);
 				//if(muscles[i].verticeslow)dealloc2(muscles[i].verticeslow);
-				muscles[i].verticeslow=(int*)calloc(sizeof(int),muscles[i].numverticeslow);
+				muscles[i].verticeslow = (int*)calloc(sizeof(int),muscles[i].numverticeslow);
 				edit=0;
-				for(j=0;j<muscles[i].numverticeslow-edit;j++){
+				for (int j = 0; j < muscles[i].numverticeslow-edit; j++) {
 					funpackf(tfile, "Bi", &muscles[i].verticeslow[j+edit]);
 					if(muscles[i].verticeslow[j+edit]>=modellow.vertexNum){
 						muscles[i].numverticeslow--;
@@ -1352,9 +1362,9 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 			fseek ( tfile, lSize, SEEK_CUR);
 		}
 		lSize=sizeof(int);
-		for(j=0;j<num_muscles;j++){
-			for(i=0;i<muscles[j].numverticeslow;i++){
-				if(muscles[j].numverticeslow && muscles[j].verticeslow[i] < modellow.vertexNum)
+		for (int j = 0; j < num_muscles; j++) {
+			for (int i = 0; i < muscles[j].numverticeslow; i++) {
+				if (muscles[j].numverticeslow && muscles[j].verticeslow[i] < modellow.vertexNum)
 					modellow.owner[muscles[j].verticeslow[i]] = j;
 			}
 		}
@@ -1365,8 +1375,8 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 		for(i=0;i<num_muscles;i++){
 		FindRotationMuscle(i,-1);
 		}*/
-		for(i=0;i<modellow.vertexNum;i++){
-			modellow.vertex[i]=modellow.vertex[i]-(muscles[modellow.owner[i]].parent1->position+muscles[modellow.owner[i]].parent2->position)/2;
+		for(int i = 0; i < modellow.vertexNum; i++) {
+			modellow.vertex[i] = modellow.vertex[i] - (muscles[modellow.owner[i]].parent1->position + muscles[modellow.owner[i]].parent2->position) / 2;
 			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 			glPushMatrix();
 				glLoadIdentity();
@@ -1383,14 +1393,14 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 		modellow.CalculateNormals(0);
 	}
 
-	if(clothes){
+	if (clothes) {
 		tfile=fopen( ConvertFileName(clothesfilename), "rb" );
 		lSize=sizeof(num_joints);
 		fseek ( tfile, lSize, SEEK_CUR);
 		//joints = new Joint[num_joints];
 		//jointlabels = new int[num_joints];
-		for(i=0;i<num_joints;i++){
-			lSize=12;//sizeof(XYZ);;
+		for(int i = 0; i < num_joints; i++) {
+			lSize=sizeof(float)*3;//sizeof(XYZ);
 			fseek ( tfile, lSize, SEEK_CUR);
 			lSize=sizeof(float);
 			fseek ( tfile, lSize, SEEK_CUR);
@@ -1414,13 +1424,14 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 			fseek ( tfile, lSize, SEEK_CUR);
 			lSize=sizeof(int);
 			fseek ( tfile, lSize, SEEK_CUR);
-			if(joints[i].hasparent)joints[i].parent=&joints[parentID];
+			if(joints[i].hasparent)
+				joints[i].parent=&joints[parentID];
 			joints[i].velocity=0;
 			joints[i].oldposition=joints[i].position;
 		}
 		funpackf(tfile, "Bi", &num_muscles);
 		//muscles = new Muscle[num_muscles];
-		for(i=0;i<num_muscles;i++){
+		for (int i = 0; i < num_muscles; i++) {
 			lSize=sizeof(float);
 			fseek ( tfile, lSize, SEEK_CUR);
 			lSize=sizeof(float);
@@ -1435,15 +1446,15 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 			fseek ( tfile, lSize, SEEK_CUR);
 			tempmuscle=muscles[i].numverticesclothes;
 			funpackf(tfile, "Bi", &muscles[i].numverticesclothes);
-			if(muscles[i].numverticesclothes){
+			if (muscles[i].numverticesclothes) {
 				//muscles[i].verticesclothes.clear();
 				//muscles[i].verticesclothes.resize(muscles[i].numverticesclothes);
 				//if(muscles[i].verticesclothes)dealloc2(muscles[i].verticesclothes);
 				muscles[i].verticesclothes=(int*)malloc(sizeof(int)*muscles[i].numverticesclothes);
 				edit=0;
-				for(j=0;j<muscles[i].numverticesclothes-edit;j++){
+				for (int j = 0; j < muscles[i].numverticesclothes - edit; j++) {
 					funpackf(tfile, "Bi", &muscles[i].verticesclothes[j+edit]);
-					if(muscles[i].verticesclothes[j+edit]>=modelclothes.vertexNum){
+					if (muscles[i].verticesclothes[j+edit]>=modelclothes.vertexNum) {
 						muscles[i].numverticesclothes--;
 						edit--;
 					}
@@ -1456,9 +1467,10 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 			fseek ( tfile, lSize, SEEK_CUR);
 		}
 		lSize=sizeof(int);
-		for(j=0;j<num_muscles;j++){
-			for(i=0;i<muscles[j].numverticesclothes;i++){
-				if(muscles[j].numverticesclothes&&muscles[j].verticesclothes[i]<modelclothes.vertexNum)modelclothes.owner[muscles[j].verticesclothes[i]]=j;
+		for (int j = 0; j < num_muscles; j++) {
+			for (int i = 0; i < muscles[j].numverticesclothes; i++) {
+				if (muscles[j].numverticesclothes&&muscles[j].verticesclothes[i]<modelclothes.vertexNum)
+					modelclothes.owner[muscles[j].verticesclothes[i]]=j;
 			}
 		}
 		/*FindForwards();
@@ -1468,8 +1480,8 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 		for(i=0;i<num_muscles;i++){
 		FindRotationMuscle(i,-1);
 		}*/
-		for(i=0;i<modelclothes.vertexNum;i++){
-			modelclothes.vertex[i]=modelclothes.vertex[i]-(muscles[modelclothes.owner[i]].parent1->position+muscles[modelclothes.owner[i]].parent2->position)/2;
+		for (int i = 0; i < modelclothes.vertexNum; i++) {
+			modelclothes.vertex[i] = modelclothes.vertex[i] - (muscles[modelclothes.owner[i]].parent1->position + muscles[modelclothes.owner[i]].parent2->position) / 2;
 			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 			glPushMatrix();
 				glLoadIdentity();
@@ -1487,13 +1499,15 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 	}
 	fclose(tfile);
 
-	for(i=0;i<num_joints;i++){
-		for(j=0;j<num_joints;j++){
-			if(joints[i].label==j)jointlabels[j]=i;
+	for (int i = 0; i < num_joints; i++){
+		for (int j = 0; j < num_joints; j++){
+			if (joints[i].label == j) {
+				jointlabels[j]=i;
+			}
 		}
 	}
 
-	free=0;
+	free = 0;
 }
 
 Animation::Animation()
