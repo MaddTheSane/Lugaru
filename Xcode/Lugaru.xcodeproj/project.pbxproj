@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5500E41B1CC994A8007F8554 /* Data in CopyFiles */ = {isa = PBXBuildFile; fileRef = 550AE9A618DFC29A00F0C197 /* Data */; };
+		5500E41D1CC9CDD3007F8554 /* Data in CopyFiles */ = {isa = PBXBuildFile; fileRef = 550AE9A618DFC29A00F0C197 /* Data */; };
 		550AE98018DFC1CE00F0C197 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 550AE97F18DFC1CE00F0C197 /* libz.dylib */; };
 		550AE9A318DFC22800F0C197 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 550AE9A218DFC22800F0C197 /* SDL2.framework */; };
 		550AE9A518DFC24700F0C197 /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 550AE9A218DFC22800F0C197 /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
@@ -165,13 +165,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		5500E41A1CC9949A007F8554 /* CopyFiles */ = {
+		5500E41C1CC9CDC3007F8554 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 1;
 			files = (
-				5500E41B1CC994A8007F8554 /* Data in CopyFiles */,
+				5500E41D1CC9CDD3007F8554 /* Data in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -803,7 +803,7 @@
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
 				550AE9A418DFC23800F0C197 /* Copy Frameworks */,
-				5500E41A1CC9949A007F8554 /* CopyFiles */,
+				5500E41C1CC9CDC3007F8554 /* CopyFiles */,
 			);
 			buildRules = (
 			);
