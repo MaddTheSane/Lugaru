@@ -63,11 +63,14 @@ typedef simd::float3 Vector;
 
 
 // triple scalar product (u dot (v cross w))
-inline	float TripleScalarProduct(Vector u, Vector v, Vector w)
+inline float TripleScalarProduct(Vector u, Vector v, Vector w)
 {
+	return simd::dot(u, simd::cross(v, w));
+	/*
 	return float(	(u.x * (v.y*w.z - v.z*w.y)) +
 		(u.y * (-v.x*w.z + v.z*w.x)) +
 		(u.z * (v.x*w.y - v.y*w.x)) );
+	 */
 	//return u*(v^w);
 
 }
@@ -93,7 +96,7 @@ public:
 	{
 		n = 0;
 		v.x = 0;
-		v.y =  0;
+		v.y = 0;
 		v.z = 0;
 	}
 	inline Quaternion(float e0, float e1, float e2, float e3)

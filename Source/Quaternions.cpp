@@ -52,7 +52,7 @@ quaternion To_Quat(Matrix_t m)
 	double Tr = m[0][0] + m[1][1] + m[2][2] + 1.0, fourD;
 	double q[4];
 
-	static int i,j,k;
+	int i,j,k;
 	if (Tr >= 1.0)
 	{
 		fourD = 2.0*fast_sqrt(Tr);

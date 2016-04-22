@@ -47,45 +47,45 @@ extern int tutoriallevel;
 
 int Terrain::lineTerrain(XYZ p1,XYZ p2, XYZ *p)
 {
-	static int i,j,k;
-	static float distance;
-	static float olddistance;
-	static int intersecting;
-	static int firstintersecting;
-	static XYZ point;
-	static int startx,starty;
-	static float slope;
-	static int endx,endy;
-	static int numtris=(size-1)*(size-1)*2;
-	static float highest,lowest;
-
-	firstintersecting=-1;
-	olddistance=10000;
-	distance=1;
+	float distance = 1;
+	float olddistance = 10000;
+	int intersecting;
+	int firstintersecting = -1;
+	XYZ point;
+	//static float slope;
+	//static int numtris=(size-1)*(size-1)*2;
 
 	XYZ triangles[3];
 
-	p1/=scale;
-	p2/=scale;
+	p1 /= scale;
+	p2 /= scale;
 
-	startx=p1.x;
-	starty=p1.z;
-	endx=p2.x;
-	endy=p2.z;
+	int startx=p1.x;
+	int starty=p1.z;
+	int endx=p2.x;
+	int endy=p2.z;
 
-	if(startx>endx){i=endx;endx=startx;startx=i;}
-	if(starty>endy){i=endy;endy=starty;starty=i;}
+	if(startx>endx){
+		std::swap(endx, startx);
+	}
+	if(starty>endy){
+		std::swap(endy, starty);
+	}
 
-	if(startx<0)startx=0;
-	if(starty<0)starty=0;
-	if(endx>size-1)endx=size-1;
-	if(endy>size-1)endy=size-1;
+	if(startx<0)
+		startx=0;
+	if(starty<0)
+		starty=0;
+	if(endx>size-1)
+		endx=size-1;
+	if(endy>size-1)
+		endy=size-1;
 
-	for(i=startx;i<=endx;i++){
-		for(j=starty;j<=endy;j++){
-			highest=-1000;
-			lowest=1000;
-			for(k=0;k<2;k++){
+	for(int i=startx;i<=endx;i++){
+		for(int j=starty;j<=endy;j++){
+			float highest=-1000;
+			float lowest=1000;
+			for(int k=0;k<2;k++){
 				if(heightmap[i+k][j]>highest)highest=heightmap[i+k][j];
 				if(heightmap[i+k][j]<lowest)lowest=heightmap[i+k][j];
 				if(heightmap[i+k][j+1]>highest)highest=heightmap[i+k][j+1];
@@ -130,36 +130,30 @@ int Terrain::lineTerrain(XYZ p1,XYZ p2, XYZ *p)
 }
 
 void Terrain::UpdateTransparency(int whichx, int whichy){
-	static XYZ vertex;
-	static int i,j,a,b,c,d,patch_size,stepsize;
-	static float distance;
+	const float viewdistsquared = viewdistance*viewdistance;
+	const int patch_size=size/subdivision;
+	const int stepsize=1;
+	const int c=whichx*patch_elements+whichy*patch_elements*subdivision;
 
-	static float viewdistsquared;
-
-	viewdistsquared=viewdistance*viewdistance;
-	patch_size=size/subdivision;
-
-	stepsize=1;
-	c=whichx*patch_elements+whichy*patch_elements*subdivision;
-
-	for(i=patch_size*whichx;i<patch_size*(whichx+1)+1;i+=stepsize){
-		for(j=patch_size*whichy;j<patch_size*(whichy+1)+1;j+=stepsize){
+	for(int i=patch_size*whichx;i<patch_size*(whichx+1)+1;i+=stepsize){
+		for(int j=patch_size*whichy;j<patch_size*(whichy+1)+1;j+=stepsize){
 			if(i<size&&j<size){
+				XYZ vertex;
 				vertex.x=i*scale;
 				vertex.z=j*scale;
 				vertex.y=heightmap[i][j]*scale;
-				distance=findDistancefast(&viewer,&vertex);
+				int distance=findDistancefast(&viewer,&vertex);
 				if(distance>viewdistsquared)distance=viewdistsquared;
 				colors[i][j][3]=(viewdistsquared-(distance-(viewdistsquared*fadestart))*(1/(1-fadestart)))/viewdistsquared;
 			}
 		}
 	}
 
-	for(i=patch_size*whichx;i<patch_size*(whichx+1);i+=stepsize){
-		for(j=patch_size*whichy;j<patch_size*(whichy+1);j+=stepsize){
-			a=(i-(patch_size*whichx))/stepsize;
-			b=(j-(patch_size*whichy))/stepsize;
-			d=(a*54)+(b*54*patch_size/stepsize);
+	for(int i=patch_size*whichx;i<patch_size*(whichx+1);i+=stepsize){
+		for(int j=patch_size*whichy;j<patch_size*(whichy+1);j+=stepsize){
+			int a=(i-(patch_size*whichx))/stepsize;
+			int b=(j-(patch_size*whichy))/stepsize;
+			int d=(a*54)+(b*54*patch_size/stepsize);
 			vArray[d+c+6]=colors[i][j][3];
 
 			vArray[d+c+15]=colors[i][j+stepsize][3];
@@ -176,20 +170,15 @@ void Terrain::UpdateTransparency(int whichx, int whichy){
 }
 
 void Terrain::UpdateTransparencyother(int whichx, int whichy){
-	static XYZ vertex;
-	static int i,j,a,b,c,d,patch_size,stepsize;
-	static float distance;
+	const int patch_size=size/subdivision;
+	const int stepsize=1;
+	const int c=whichx*patch_elements+whichy*patch_elements*subdivision;
 
-	patch_size=size/subdivision;
-
-	stepsize=1;
-	c=whichx*patch_elements+whichy*patch_elements*subdivision;
-
-	for(i=patch_size*whichx;i<patch_size*(whichx+1);i+=stepsize){
-		for(j=patch_size*whichy;j<patch_size*(whichy+1);j+=stepsize){
-			a=(i-(patch_size*whichx))/stepsize;
-			b=(j-(patch_size*whichy))/stepsize;
-			d=(a*54)+(b*54*patch_size/stepsize);
+	for(int i=patch_size*whichx;i<patch_size*(whichx+1);i+=stepsize){
+		for(int j=patch_size*whichy;j<patch_size*(whichy+1);j+=stepsize){
+			const int a=(i-(patch_size*whichx))/stepsize;
+			const int b=(j-(patch_size*whichy))/stepsize;
+			const int d=(a*54)+(b*54*patch_size/stepsize);
 			vArray[d+c+6]=colors[i][j][3]*opacityother[i][j];
 
 			vArray[d+c+15]=colors[i][j+stepsize][3]*opacityother[i][j+stepsize];
@@ -252,15 +241,15 @@ void Terrain::UpdateTransparencyotherother(int whichx, int whichy){
 }
 
 void Terrain::UpdateVertexArray(int whichx, int whichy){
-	static int i,j,a,b,c,patch_size,stepsize;
+	static int i,j,a,b;
 
 
 	numtris[whichx][whichy]=0;
 
-	patch_size=size/subdivision;
+	const int patch_size=size/subdivision;
 
-	stepsize=1;
-	c=whichx*patch_elements+whichy*patch_elements*subdivision;
+	const int stepsize=1;
+	const int c=whichx*patch_elements+whichy*patch_elements*subdivision;
 	for(i=patch_size*whichx;i<patch_size*(whichx+1);i+=stepsize){
 		for(j=patch_size*whichy;j<patch_size*(whichy+1);j+=stepsize){
 			a=(i-((float)size/subdivision*(float)whichx))/stepsize;
@@ -617,20 +606,19 @@ bool Terrain::load(const char *fileName)
 
 void Terrain::CalculateNormals()
 {
-	static int i,j;
-	static XYZ facenormal;
-	static XYZ p,q,a,b,c;
+	XYZ facenormal;
+	XYZ p,q,a,b,c;
 
-	for(i=0; i<size; i++){
-		for(j=0; j<size; j++){
+	for(int i=0; i<size; i++){
+		for(int j=0; j<size; j++){
 			normals[i][j].x=0;
 			normals[i][j].y=0;
 			normals[i][j].z=0;
 		}
 	}
 
-	for(i=0;i<size-1;i++){
-		for(j=0;j<size-1;j++){
+	for(int i=0;i<size-1;i++){
+		for(int j=0;j<size-1;j++){
 			a.x=i;
 			a.y=heightmap[i][j];
 			a.z=j;
@@ -684,8 +672,8 @@ void Terrain::CalculateNormals()
 		}
 	}
 
-	for(i=0; i<size; i++){
-		for(j=0; j<size; j++){
+	for(int i=0; i<size; i++){
+		for(int j=0; j<size; j++){
 			Normalise(normals[i][j]);
 			normals[i][j]=normals[i][j];
 		}
@@ -770,14 +758,15 @@ void Terrain::drawpatchotherother(int whichx, int whichy, float opacity){
 
 float Terrain::getHeight(float pointx, float pointz)
 {
-	static float height1,height2;
-	static int tilex,tiley;
-	static XYZ startpoint,endpoint,intersect,triangle[3],average;
+	float height1,height2;
+	int tilex,tiley;
+	XYZ startpoint,endpoint,intersect,triangle[3],average;
 
-	pointx/=scale;
-	pointz/=scale;
+	pointx /= scale;
+	pointz /= scale;
 
-	if(pointx>=size-1||pointz>=size-1||pointx<=0||pointz<=0)return 0;
+	if (pointx>=size-1||pointz>=size-1||pointx<=0||pointz<=0)
+		return 0;
 
 	startpoint.x=pointx;
 	startpoint.y=-1000;
@@ -825,17 +814,19 @@ float Terrain::getHeight(float pointx, float pointz)
 
 float Terrain::getHeightExtrude(float pointx, float pointz,float point2x, float point2z)
 {
-	static float height1,height2;
-	static int tilex,tiley;
-	static XYZ startpoint,endpoint,intersect,triangle[3],average;
+	float height1,height2;
+	int tilex,tiley;
+	XYZ startpoint,endpoint,intersect,triangle[3],average;
 
 	pointx/=scale;
 	pointz/=scale;
 	point2x/=scale;
 	point2z/=scale;
 
-	if(pointx>=size-1||pointz>=size-1||pointx<=0||pointz<=0)return 0;
-	if(point2x>=size-1||point2z>=size-1||point2x<=0||point2z<=0)return 0;
+	if(pointx>=size-1||pointz>=size-1||pointx<=0||pointz<=0)
+		return 0;
+	if(point2x>=size-1||point2z>=size-1||point2x<=0||point2z<=0)
+		return 0;
 
 	startpoint.x=point2x;
 	startpoint.y=-1000;
@@ -893,11 +884,11 @@ float Terrain::getHeightExtrude(float pointx, float pointz,float point2x, float 
 
 float Terrain::getOpacity(float pointx, float pointz)
 {
-	static float height1,height2;
-	static int tilex,tiley;
+	float height1,height2;
+	int tilex,tiley;
 
-	pointx/=scale;
-	pointz/=scale;
+	pointx /= scale;
+	pointz /= scale;
 
 	if(pointx>=size-1||pointz>=size-1||pointx<=0||pointz<=0)return 0;
 
@@ -912,8 +903,8 @@ float Terrain::getOpacity(float pointx, float pointz)
 
 XYZ Terrain::getNormal(float pointx, float pointz)
 {
-	static XYZ height1,height2,total;
-	static int tilex,tiley;
+	XYZ height1,height2,total;
+	int tilex,tiley;
 
 	pointx/=scale;
 	pointz/=scale;
@@ -932,14 +923,15 @@ XYZ Terrain::getNormal(float pointx, float pointz)
 
 XYZ Terrain::getLighting(float pointx, float pointz)
 {
-	static XYZ height1,height2;
-	static int tilex,tiley;
+	XYZ height1,height2;
+	int tilex,tiley;
 
-	pointx/=scale;
-	pointz/=scale;
+	pointx /= scale;
+	pointz /= scale;
 
 	height1=0;
-	if(pointx>=size-1||pointz>=size-1||pointx<=0||pointz<=0)return height1;
+	if(pointx>=size-1||pointz>=size-1||pointx<=0||pointz<=0)
+		return height1;
 	tilex=pointx;
 	tiley=pointz;
 
@@ -955,16 +947,16 @@ XYZ Terrain::getLighting(float pointx, float pointz)
 
 void Terrain::draw(int layer)
 {
-	static int i,j;
-	static float opacity;
-	static XYZ terrainpoint;
-	static float distance[subdivision][subdivision];
+	int i,j;
+	float opacity;
+	XYZ terrainpoint;
+	float distance[subdivision][subdivision];
 
-	static int beginx,endx;
-	static int beginz,endz;
+	int beginx,endx;
+	int beginz,endz;
 
-	static float patch_size=size/subdivision*scale;
-	static float viewdistsquared;
+	float patch_size=size/subdivision*scale;
+	float viewdistsquared;
 
 	viewdistsquared=viewdistance*viewdistance;
 
@@ -1017,16 +1009,13 @@ void Terrain::draw(int layer)
 void Terrain::drawdecals()
 {
 	if(decals){
-		static int i,j;
-		static float distancemult;
-		static int lasttype;
+		int i,j;
+		float distancemult;
+		int lasttype;
 
-		static float patch_size=size/subdivision*scale;
-		static float viewdistsquared;
-		static bool blend;
-
-		viewdistsquared=viewdistance*viewdistance;
-		blend=1;
+		float patch_size=size/subdivision*scale;
+		const float viewdistsquared = viewdistance*viewdistance;
+		bool blend = true;
 
 		lasttype=-1;
 		glEnable(GL_BLEND);
@@ -1189,8 +1178,8 @@ void Terrain::DeleteDecal(int which)
 void Terrain::MakeDecal(int type, XYZ where, float size, float opacity, float rotation){
 	if(decals){
 		if(opacity>0&&size>0){
-			static int patchx[4];
-			static int patchy[4];
+			int patchx[4];
+			int patchy[4];
 
 			decaltexcoords[numdecals][0][0]=1;
 			decaltexcoords[numdecals][0][1]=0;
@@ -1229,8 +1218,8 @@ void Terrain::MakeDecal(int type, XYZ where, float size, float opacity, float ro
 
 void Terrain::MakeDecalLock(int type, XYZ where,int whichx, int whichy, float size, float opacity, float rotation){
 	if(decals){
-		static float placex,placez;
-		static XYZ rot;
+		float placex,placez;
+		XYZ rot;
 
 		float decalbright;
 
@@ -1363,10 +1352,10 @@ void Terrain::MakeDecalLock(int type, XYZ where,int whichx, int whichy, float si
 
 void Terrain::DoLighting()
 {
-	static int i,j,k,todivide;
-	static float brightness, total;
-	static XYZ blank, terrainpoint,lightloc;
-	lightloc=light.location;
+	int i,j,k,todivide;
+	float brightness, total;
+	XYZ blank, terrainpoint;
+	XYZ lightloc=light.location;
 	Normalise(lightloc);
 	//Calculate shadows
 	for(i=0;i<size;i++){
@@ -1419,10 +1408,10 @@ void Terrain::DoLighting()
 
 void Terrain::DoShadows()
 {
-	static int i,j,k,l,todivide;
-	static float brightness, total;
-	static XYZ testpoint,testpoint2, terrainpoint,lightloc,col;
-	lightloc=light.location;
+	int i,j,k,l,todivide;
+	float brightness, total;
+	XYZ testpoint,testpoint2, terrainpoint,col;
+	XYZ lightloc=light.location;
 	if(!skyboxtexture){
 		lightloc.x=0;
 		lightloc.z=0;

@@ -42,24 +42,21 @@ extern Person player[maxplayers];
 
 void Sprites::Draw()
 {
-	static int i,j,k;
-	static float M[16];
-	static XYZ point;
-	static float distancemult;
-	static int lasttype;
-	static int lastspecial;
-	static int whichpatchx,whichpatchz;
-	static XYZ start,end,colpoint;
-	static bool check;
-	static bool blend;
-	static float tempmult;
-	static XYZ difference;
-	static float lightcolor[3];
-	static float viewdistsquared=viewdistance*viewdistance;
-	static XYZ tempviewer;
-
-	tempviewer=viewer+viewerfacing*6;
-	check=0;
+	int i,j,k;
+	float M[16];
+	XYZ point;
+	float distancemult;
+	int lasttype = -1;
+	int lastspecial = -1;
+	int whichpatchx,whichpatchz;
+	XYZ start,end,colpoint;
+	bool check = false;
+	bool blend = true;
+	float tempmult;
+	XYZ difference;
+	float lightcolor[3];
+	const float viewdistsquared=viewdistance*viewdistance;
+	XYZ tempviewer=viewer+viewerfacing*6;
 
 	lightcolor[0]=light.color[0]*.5+light.ambient[0];
 	lightcolor[1]=light.color[1]*.5+light.ambient[1];
@@ -72,8 +69,6 @@ void Sprites::Draw()
 		checkdelay=1;
 	}
 
-	lasttype=-1;
-	lastspecial=-1;
 	glEnable(GL_BLEND);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_CULL_FACE);
