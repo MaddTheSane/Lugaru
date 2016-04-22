@@ -1018,9 +1018,9 @@ Boolean SetUp (Game & game)
             }
         }
     }
-	SDL_GL_GetDrawableSize(sdlwindow, &kContextWidth, &kContextHeight);
 
     SDL_GLContext glctx = SDL_GL_CreateContext(sdlwindow);
+	SDL_GL_GetDrawableSize(sdlwindow, &kContextWidth, &kContextHeight);
     if (!glctx)
     {
         char buf[1024];
