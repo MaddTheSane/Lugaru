@@ -65,11 +65,6 @@ static bool stripfx(const char *str, const char *pfx)
   return !strncasecmp(str, pfx, strlen(pfx));
 }
 
-extern OPENAL_STREAM * strm[20];
-extern "C"	void PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
-extern "C" void PlayStreamEx(int chan, OPENAL_STREAM *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
-
-
 static const char *cmd_names[] = {
 #define DECLARE_COMMAND(cmd) #cmd " ",
 #include "ConsoleCmds.h"
@@ -144,7 +139,7 @@ static void ch_save(Game *game, const char *args)
 	fpackf(tfile, "Bf Bf Bf", participantlocation[k][l].x, participantlocation[k][l].y, participantlocation[k][l].z);
 	fpackf(tfile, "Bf", participantrotation[k][l]);
       }
-      if(numdialogueboxes)
+      //if(numdialogueboxes)
 	for(size_t l=0;l<numdialogueboxes[k];l++){
 	  fpackf(tfile, "Bi", dialogueboxlocation[k][l]);
 	  fpackf(tfile, "Bf", dialogueboxcolor[k][l][0]);
@@ -1866,7 +1861,7 @@ void	Game::Loadlevel(char *name){
 						participantlocation[k][l] = XYZ{tmpx, tmpy, tmpz};
 						funpackf(tfile, "Bf", &participantrotation[k][l]);
 					}
-					if(numdialogueboxes)
+					//if(numdialogueboxes)
 					{
 						for(l=0;l<numdialogueboxes[k];l++)
 						{
@@ -2579,86 +2574,7 @@ void	Game::Tick()
 				flashamount=1;
 				flashdelay=1;
 
-				if(newdetail>2)newdetail=detail;
-				if(newdetail<0)newdetail=detail;
-				if(newscreenwidth<0)newscreenwidth=screenwidth;
-				if(newscreenheight<0)newscreenheight=screenheight;
-
-				ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
-				opstream << "Screenwidth:\n";
-				opstream << newscreenwidth;
-				opstream << "\nScreenheight:\n";
-				opstream << newscreenheight;
-				opstream << "\nMouse sensitivity:\n";
-				opstream << usermousesensitivity;
-				opstream << "\nBlur(0,1):\n";
-				opstream << ismotionblur;
-				opstream << "\nOverall Detail(0,1,2) higher=better:\n";
-				opstream << newdetail;
-				opstream << "\nFloating jump:\n";
-				opstream << floatjump;
-				opstream << "\nMouse jump:\n";
-				opstream << mousejump;
-				opstream << "\nAmbient sound:\n";
-				opstream << ambientsound;
-				opstream << "\nBlood (0,1,2):\n";
-				opstream << bloodtoggle;
-				opstream << "\nAuto slomo:\n";
-				opstream << autoslomo;
-				opstream << "\nFoliage:\n";
-				opstream << foliage;
-				opstream << "\nMusic:\n";
-				opstream << musictoggle;
-				opstream << "\nTrilinear:\n";
-				opstream << trilinear;
-				opstream << "\nDecals(shadows,blood puddles,etc):\n";
-				opstream << decals;
-				opstream << "\nInvert mouse:\n";
-				opstream << invertmouse;
-				opstream << "\nGamespeed:\n";
-				if(oldgamespeed==0)oldgamespeed=1;
-				opstream << oldgamespeed;
-				opstream << "\nDifficulty(0,1,2) higher=harder:\n";
-				opstream << difficulty;
-				opstream << "\nDamage effects(blackout, doublevision):\n";
-				opstream << damageeffects;
-				opstream << "\nText:\n";
-				opstream << texttoggle;
-				opstream << "\nDebug:\n";
-				opstream << debugmode;
-				opstream << "\nVBL Sync:\n";
-				opstream << vblsync;
-				opstream << "\nShow Points:\n";
-				opstream << showpoints;
-				opstream << "\nAlways Blur:\n";
-				opstream << alwaysblur;
-				opstream << "\nImmediate mode (turn on on G5):\n";
-				opstream << immediate;
-				opstream << "\nVelocity blur:\n";
-				opstream << velocityblur;
-			    opstream << "\nVolume:\n";
-		        opstream << volume;
-				opstream << "\nForward key:\n";
-				opstream << KeyToChar(forwardkey);
-				opstream << "\nBack key:\n";
-				opstream << KeyToChar(backkey);
-				opstream << "\nLeft key:\n";
-				opstream << KeyToChar(leftkey);
-				opstream << "\nRight key:\n";
-				opstream << KeyToChar(rightkey);
-				opstream << "\nJump key:\n";
-				opstream << KeyToChar(jumpkey);
-				opstream << "\nCrouch key:\n";
-				opstream << KeyToChar(crouchkey);
-				opstream << "\nDraw key:\n";
-				opstream << KeyToChar(drawkey);
-				opstream << "\nThrow key:\n";
-				opstream << KeyToChar(throwkey);
-				opstream << "\nAttack key:\n";
-				opstream << KeyToChar(attackkey);
-				opstream << "\nChat key:\n";
-				opstream << KeyToChar(chatkey);
-				opstream.close();
+				writeSettings();
 			}
 			if(mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==9||mainmenu==13||mainmenu==10||mainmenu==11||mainmenu==100){
 				float gLoc[3]={0,0,0};
@@ -2973,87 +2889,7 @@ void	Game::Tick()
 				flashamount=1;
 				flashdelay=1;
 
-				if(newdetail>2)newdetail=detail;
-				if(newdetail<0)newdetail=detail;
-				if(newscreenwidth<0)newscreenwidth=screenwidth;
-				if(newscreenheight<0)newscreenheight=screenheight;
-
-
-				ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
-				opstream << "Screenwidth:\n";
-				opstream << newscreenwidth;
-				opstream << "\nScreenheight:\n";
-				opstream << newscreenheight;
-				opstream << "\nMouse sensitivity:\n";
-				opstream << usermousesensitivity;
-				opstream << "\nBlur(0,1):\n";
-				opstream << ismotionblur;
-				opstream << "\nOverall Detail(0,1,2) higher=better:\n";
-				opstream << newdetail;
-				opstream << "\nFloating jump:\n";
-				opstream << floatjump;
-				opstream << "\nMouse jump:\n";
-				opstream << mousejump;
-				opstream << "\nAmbient sound:\n";
-				opstream << ambientsound;
-				opstream << "\nBlood (0,1,2):\n";
-				opstream << bloodtoggle;
-				opstream << "\nAuto slomo:\n";
-				opstream << autoslomo;
-				opstream << "\nFoliage:\n";
-				opstream << foliage;
-				opstream << "\nMusic:\n";
-				opstream << musictoggle;
-				opstream << "\nTrilinear:\n";
-				opstream << trilinear;
-				opstream << "\nDecals(shadows,blood puddles,etc):\n";
-				opstream << decals;
-				opstream << "\nInvert mouse:\n";
-				opstream << invertmouse;
-				opstream << "\nGamespeed:\n";
-				if(oldgamespeed==0)oldgamespeed=1;
-				opstream << oldgamespeed;
-				opstream << "\nDifficulty(0,1,2) higher=harder:\n";
-				opstream << difficulty;
-				opstream << "\nDamage effects(blackout, doublevision):\n";
-				opstream << damageeffects;
-				opstream << "\nText:\n";
-				opstream << texttoggle;
-				opstream << "\nDebug:\n";
-				opstream << debugmode;
-				opstream << "\nVBL Sync:\n";
-				opstream << vblsync;
-				opstream << "\nShow Points:\n";
-				opstream << showpoints;
-				opstream << "\nAlways Blur:\n";
-				opstream << alwaysblur;
-				opstream << "\nImmediate mode (turn on on G5):\n";
-				opstream << immediate;
-				opstream << "\nVelocity blur:\n";
-				opstream << velocityblur;
-			    opstream << "\nVolume:\n";
-		        opstream << volume;
-				opstream << "\nForward key:\n";
-				opstream << KeyToChar(forwardkey);
-				opstream << "\nBack key:\n";
-				opstream << KeyToChar(backkey);
-				opstream << "\nLeft key:\n";
-				opstream << KeyToChar(leftkey);
-				opstream << "\nRight key:\n";
-				opstream << KeyToChar(rightkey);
-				opstream << "\nJump key:\n";
-				opstream << KeyToChar(jumpkey);
-				opstream << "\nCrouch key:\n";
-				opstream << KeyToChar(crouchkey);
-				opstream << "\nDraw key:\n";
-				opstream << KeyToChar(drawkey);
-				opstream << "\nThrow key:\n";
-				opstream << KeyToChar(throwkey);
-				opstream << "\nAttack key:\n";
-				opstream << KeyToChar(attackkey);
-				opstream << "\nChat key:\n";
-				opstream << KeyToChar(chatkey);
-				opstream.close();
+				writeSettings();
 
 				if(mainmenu==3&&gameon)mainmenu=2;
 				if(mainmenu==3&&!gameon)mainmenu=1;
@@ -3602,86 +3438,7 @@ void	Game::Tick()
 		if(IsKeyDown(theKeyMap, MAC_Q_KEY)&&IsKeyDown(theKeyMap, MAC_COMMAND_KEY)){
 			tryquit=1;
 			if(mainmenu==3){
-				if(newdetail>2)newdetail=detail;
-				if(newdetail<0)newdetail=detail;
-				if(newscreenwidth<0)newscreenwidth=screenwidth;
-				if(newscreenheight<0)newscreenheight=screenheight;
-
-				ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
-				opstream << "Screenwidth:\n";
-				opstream << newscreenwidth;
-				opstream << "\nScreenheight:\n";
-				opstream << newscreenheight;
-				opstream << "\nMouse sensitivity:\n";
-				opstream << usermousesensitivity;
-				opstream << "\nBlur(0,1):\n";
-				opstream << ismotionblur;
-				opstream << "\nOverall Detail(0,1,2) higher=better:\n";
-				opstream << newdetail;
-				opstream << "\nFloating jump:\n";
-				opstream << floatjump;
-				opstream << "\nMouse jump:\n";
-				opstream << mousejump;
-				opstream << "\nAmbient sound:\n";
-				opstream << ambientsound;
-				opstream << "\nBlood (0,1,2):\n";
-				opstream << bloodtoggle;
-				opstream << "\nAuto slomo:\n";
-				opstream << autoslomo;
-				opstream << "\nFoliage:\n";
-				opstream << foliage;
-				opstream << "\nMusic:\n";
-				opstream << musictoggle;
-				opstream << "\nTrilinear:\n";
-				opstream << trilinear;
-				opstream << "\nDecals(shadows,blood puddles,etc):\n";
-				opstream << decals;
-				opstream << "\nInvert mouse:\n";
-				opstream << invertmouse;
-				opstream << "\nGamespeed:\n";
-				if(oldgamespeed==0)oldgamespeed=1;
-				opstream << oldgamespeed;
-				opstream << "\nDifficulty(0,1,2) higher=harder:\n";
-				opstream << difficulty;
-				opstream << "\nDamage effects(blackout, doublevision):\n";
-				opstream << damageeffects;
-				opstream << "\nText:\n";
-				opstream << texttoggle;
-				opstream << "\nDebug:\n";
-				opstream << debugmode;
-				opstream << "\nVBL Sync:\n";
-				opstream << vblsync;
-				opstream << "\nShow Points:\n";
-				opstream << showpoints;
-				opstream << "\nAlways Blur:\n";
-				opstream << alwaysblur;
-				opstream << "\nImmediate mode (turn on on G5):\n";
-				opstream << immediate;
-				opstream << "\nVelocity blur:\n";
-				opstream << velocityblur;
-			    opstream << "\nVolume:\n";
-		        opstream << volume;
-				opstream << "\nForward key:\n";
-				opstream << KeyToChar(forwardkey);
-				opstream << "\nBack key:\n";
-				opstream << KeyToChar(backkey);
-				opstream << "\nLeft key:\n";
-				opstream << KeyToChar(leftkey);
-				opstream << "\nRight key:\n";
-				opstream << KeyToChar(rightkey);
-				opstream << "\nJump key:\n";
-				opstream << KeyToChar(jumpkey);
-				opstream << "\nCrouch key:\n";
-				opstream << KeyToChar(crouchkey);
-				opstream << "\nDraw key:\n";
-				opstream << KeyToChar(drawkey);
-				opstream << "\nThrow key:\n";
-				opstream << KeyToChar(throwkey);
-				opstream << "\nAttack key:\n";
-				opstream << KeyToChar(attackkey);
-				opstream << "\nChat key:\n";
-				opstream << KeyToChar(chatkey);
-				opstream.close();
+				writeSettings();
 			}
 		}
 
@@ -4037,86 +3794,7 @@ void	Game::Tick()
 		if(IsKeyDown(theKeyMap, MAC_Q_KEY)&&IsKeyDown(theKeyMap, MAC_COMMAND_KEY)){
 			tryquit=1;
 			if(mainmenu==3){
-				if(newdetail>2)newdetail=detail;
-				if(newdetail<0)newdetail=detail;
-				if(newscreenwidth<0)newscreenwidth=screenwidth;
-				if(newscreenheight<0)newscreenheight=screenheight;
-
-				ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
-				opstream << "Screenwidth:\n";
-				opstream << newscreenwidth;
-				opstream << "\nScreenheight:\n";
-				opstream << newscreenheight;
-				opstream << "\nMouse sensitivity:\n";
-				opstream << usermousesensitivity;
-				opstream << "\nBlur(0,1):\n";
-				opstream << ismotionblur;
-				opstream << "\nOverall Detail(0,1,2) higher=better:\n";
-				opstream << newdetail;
-				opstream << "\nFloating jump:\n";
-				opstream << floatjump;
-				opstream << "\nMouse jump:\n";
-				opstream << mousejump;
-				opstream << "\nAmbient sound:\n";
-				opstream << ambientsound;
-				opstream << "\nBlood (0,1,2):\n";
-				opstream << bloodtoggle;
-				opstream << "\nAuto slomo:\n";
-				opstream << autoslomo;
-				opstream << "\nFoliage:\n";
-				opstream << foliage;
-				opstream << "\nMusic:\n";
-				opstream << musictoggle;
-				opstream << "\nTrilinear:\n";
-				opstream << trilinear;
-				opstream << "\nDecals(shadows,blood puddles,etc):\n";
-				opstream << decals;
-				opstream << "\nInvert mouse:\n";
-				opstream << invertmouse;
-				opstream << "\nGamespeed:\n";
-				if(oldgamespeed==0)oldgamespeed=1;
-				opstream << oldgamespeed;
-				opstream << "\nDifficulty(0,1,2) higher=harder:\n";
-				opstream << difficulty;
-				opstream << "\nDamage effects(blackout, doublevision):\n";
-				opstream << damageeffects;
-				opstream << "\nText:\n";
-				opstream << texttoggle;
-				opstream << "\nDebug:\n";
-				opstream << debugmode;
-				opstream << "\nVBL Sync:\n";
-				opstream << vblsync;
-				opstream << "\nShow Points:\n";
-				opstream << showpoints;
-				opstream << "\nAlways Blur:\n";
-				opstream << alwaysblur;
-				opstream << "\nImmediate mode (turn on on G5):\n";
-				opstream << immediate;
-				opstream << "\nVelocity blur:\n";
-				opstream << velocityblur;
-			    opstream << "\nVolume:\n";
-		        opstream << volume;
-				opstream << "\nForward key:\n";
-				opstream << KeyToChar(forwardkey);
-				opstream << "\nBack key:\n";
-				opstream << KeyToChar(backkey);
-				opstream << "\nLeft key:\n";
-				opstream << KeyToChar(leftkey);
-				opstream << "\nRight key:\n";
-				opstream << KeyToChar(rightkey);
-				opstream << "\nJump key:\n";
-				opstream << KeyToChar(jumpkey);
-				opstream << "\nCrouch key:\n";
-				opstream << KeyToChar(crouchkey);
-				opstream << "\nDraw key:\n";
-				opstream << KeyToChar(drawkey);
-				opstream << "\nThrow key:\n";
-				opstream << KeyToChar(throwkey);
-				opstream << "\nAttack key:\n";
-				opstream << KeyToChar(attackkey);
-				opstream << "\nChat key:\n";
-				opstream << KeyToChar(chatkey);
-				opstream.close();
+				writeSettings();
 			}
 		}
 
@@ -8261,7 +7939,7 @@ void	Game::Tick()
 																flatfacing=player[0].coords;
 																facing.y+=player[i].skeleton.joints[player[i].skeleton.jointlabels[head]].position.y*player[i].scale;
 																flatfacing.y+=player[0].skeleton.joints[player[0].skeleton.jointlabels[head]].position.y*player[0].scale;
-																if(player[i].occluded>=2)
+																if(player[i].occluded>=2) {
 																	if(-1!=checkcollide(facing,flatfacing)){
 																		if(!player[i].pause)player[i].lastseentime-=.2;
 																		if(player[i].lastseentime<=0&&(player[i].creature!=wolftype||player[i].weaponstuck==-1)){
@@ -8272,6 +7950,7 @@ void	Game::Tick()
 																		}
 																	}
 																	else player[i].lastseentime=1;
+																}
 															}
 										}
 										if(animation[player[0].targetanimation].height==highheight&&(player[i].aitype==attacktypecutoff||player[i].aitype==searchtype)){
@@ -9600,7 +9279,8 @@ void	Game::TickOnceAfter(){
 
 								loading=3;
 							}
-							if(changedelay<=-999&&whichlevel!=-2&&!loading&&(player[0].dead||(alldead&&maptype==mapkilleveryone)||(winhotspot)||(killhotspot))&&!winfreeze)loading=1;
+							if(changedelay<=-999&&whichlevel!=-2&&!loading&&(player[0].dead||(alldead&&maptype==mapkilleveryone)||(winhotspot)||(killhotspot))&&!winfreeze)
+								loading=1;
 							if((player[0].dead||(alldead&&maptype==mapkilleveryone)||(winhotspot)||(windialogue)||(killhotspot))&&changedelay<=0){
                         {
 									if(whichlevel!=-2&&!loading&&!player[0].dead){
@@ -9612,7 +9292,7 @@ void	Game::TickOnceAfter(){
 							}
 						}
 
-						if(campaign)
+						if(campaign) {
 							if(mainmenu==0&&winfreeze&&(campaignchoosenext[campaignchoicewhich[whichchoice]])==1){
 								if(campaignnumnext[campaignchoicewhich[whichchoice]]==0){
 									endgame=1;
@@ -9746,7 +9426,7 @@ void	Game::TickOnceAfter(){
 
 									stealthloading=0;
 							}
-
+						}
 							if(loading==3)loading=0;
 
 					}
@@ -9879,3 +9559,91 @@ void	Game::TickOnceAfter(){
 		}
 	}
 }
+
+void Game::writeSettings()
+{
+	int oldScreenWidth, oldScreenHeight;
+	this->getWindowSize(oldScreenWidth, oldScreenHeight);
+	if(newdetail>2)newdetail=detail;
+	if(newdetail<0)newdetail=detail;
+	if(newscreenwidth<0)newscreenwidth=oldScreenWidth;
+	if(newscreenheight<0)newscreenheight=oldScreenHeight;
+	
+	ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
+	opstream << "Screenwidth:\n";
+	opstream << newscreenwidth;
+	opstream << "\nScreenheight:\n";
+	opstream << newscreenheight;
+	opstream << "\nMouse sensitivity:\n";
+	opstream << usermousesensitivity;
+	opstream << "\nBlur(0,1):\n";
+	opstream << ismotionblur;
+	opstream << "\nOverall Detail(0,1,2) higher=better:\n";
+	opstream << newdetail;
+	opstream << "\nFloating jump:\n";
+	opstream << floatjump;
+	opstream << "\nMouse jump:\n";
+	opstream << mousejump;
+	opstream << "\nAmbient sound:\n";
+	opstream << ambientsound;
+	opstream << "\nBlood (0,1,2):\n";
+	opstream << bloodtoggle;
+	opstream << "\nAuto slomo:\n";
+	opstream << autoslomo;
+	opstream << "\nFoliage:\n";
+	opstream << foliage;
+	opstream << "\nMusic:\n";
+	opstream << musictoggle;
+	opstream << "\nTrilinear:\n";
+	opstream << trilinear;
+	opstream << "\nDecals(shadows,blood puddles,etc):\n";
+	opstream << decals;
+	opstream << "\nInvert mouse:\n";
+	opstream << invertmouse;
+	opstream << "\nGamespeed:\n";
+	if(oldgamespeed==0)oldgamespeed=1;
+	opstream << oldgamespeed;
+	opstream << "\nDifficulty(0,1,2) higher=harder:\n";
+	opstream << difficulty;
+	opstream << "\nDamage effects(blackout, doublevision):\n";
+	opstream << damageeffects;
+	opstream << "\nText:\n";
+	opstream << texttoggle;
+	opstream << "\nDebug:\n";
+	opstream << debugmode;
+	opstream << "\nVBL Sync:\n";
+	opstream << vblsync;
+	opstream << "\nShow Points:\n";
+	opstream << showpoints;
+	opstream << "\nAlways Blur:\n";
+	opstream << alwaysblur;
+	opstream << "\nImmediate mode (turn on on G5):\n";
+	opstream << immediate;
+	opstream << "\nVelocity blur:\n";
+	opstream << velocityblur;
+	opstream << "\nVolume:\n";
+	opstream << volume;
+	opstream << "\nForward key:\n";
+	opstream << KeyToChar(forwardkey);
+	opstream << "\nBack key:\n";
+	opstream << KeyToChar(backkey);
+	opstream << "\nLeft key:\n";
+	opstream << KeyToChar(leftkey);
+	opstream << "\nRight key:\n";
+	opstream << KeyToChar(rightkey);
+	opstream << "\nJump key:\n";
+	opstream << KeyToChar(jumpkey);
+	opstream << "\nCrouch key:\n";
+	opstream << KeyToChar(crouchkey);
+	opstream << "\nDraw key:\n";
+	opstream << KeyToChar(drawkey);
+	opstream << "\nThrow key:\n";
+	opstream << KeyToChar(throwkey);
+	opstream << "\nAttack key:\n";
+	opstream << KeyToChar(attackkey);
+	opstream << "\nChat key:\n";
+	opstream << KeyToChar(chatkey);
+	opstream.close();
+
+}
+

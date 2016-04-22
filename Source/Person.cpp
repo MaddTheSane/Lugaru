@@ -1612,7 +1612,7 @@ void Person::RagDoll(bool checkcollision){
 void Person::FootLand(int which, float opacity){
 	static XYZ terrainlight;
 	static XYZ footvel,footpoint;
-	if(opacity>=1||skiddelay<=0)
+	if(opacity>=1||skiddelay<=0) {
 		if(opacity>1)
 		{
 			footvel=0;
@@ -1659,6 +1659,7 @@ void Person::FootLand(int which, float opacity){
 			//footpoint.y=coords.y;
 			if(findDistancefast(&footpoint,&viewer)<viewdistance*viewdistance/4)sprites.MakeSprite(cloudsprite, footpoint,footvel*.6, 1,1,1, .5, .2*opacity);
 		}
+	}
 }
 
 void Person::Puff(int whichlabel){
@@ -2989,7 +2990,7 @@ void	Person::DoAnimations(){
 										vel[1]=velocity.y;
 										vel[2]=velocity.z;
 										//if(!victim->isIdle()||victim->damage>victim->damagetolerance-60){
-										if(1==1){
+										if(/* DISABLES CODE */ (1)==1){
 											if(tutoriallevel!=1){
 												PlaySoundEx( heavyimpactsound, samp[heavyimpactsound], NULL, true);
 												OPENAL_3D_SetAttributes(channels[heavyimpactsound], gLoc, vel);

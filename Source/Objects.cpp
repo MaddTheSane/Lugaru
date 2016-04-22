@@ -318,7 +318,7 @@ void Objects::Draw()
 				if(hidden){
 					distance=1;
 					if(distance>0){
-						if(1==1||occluded[i]<6){
+						if(/* DISABLES CODE */ (1)==1||occluded[i]<6){
 							glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 							glPushMatrix();
 								glEnable(GL_LIGHTING);

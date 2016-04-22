@@ -24,21 +24,22 @@
 
 #include "SDL.h"
 
-#include "gamegl.h"
-#include "Quaternions.h"
-#include "Lights.h"
-#include "Skeleton.h"
-#include "Terrain.h"
-#include "Sprites.h"
-#include "Frustum.h"
-#include "Objects.h"
-#include "Weapons.h"
-#include "Person.h"
 #include "TGALoader.h"
 #include "openal_wrapper.h"
+#include "Quaternions.h"
 
 #include "Constants.h"
 
+class Terrain;
+class FRUSTUM;
+class Light;
+class Weapons;
+class Light;
+class Sprites;
+class Animation;
+class Person;
+class Skeleton;
+class Objects;
 
 extern bool visibleloading;
 extern OPENAL_SAMPLE *samp[100];
@@ -58,7 +59,6 @@ extern float fadestart;
 extern float screenwidth,screenheight;
 extern int kTextureSize;
 extern FRUSTUM frustum;
-extern Light light;
 extern Objects objects;
 extern int detail;
 extern float usermousesensitivity;
@@ -130,6 +130,8 @@ extern float hotspotsize[40];
 extern char hotspottext[40][256];
 extern int currenthotspot;
 
+#pragma mark user accounts
+
 extern int numaccounts;
 extern int accountactive;
 extern int accountdifficulty[10];
@@ -139,6 +141,15 @@ extern float accounthighscore[10][50];
 extern float accountfasttime[10][50];
 extern bool accountunlocked[10][60];
 extern char accountname[10][256];
+
+extern int accountcampaignchoicesmade[10];
+extern int accountcampaignchoices[10][5000];
+
+extern float accountcampaignhighscore[10];
+extern float accountcampaignfasttime[10];
+extern float accountcampaignscore[10];
+extern float accountcampaigntime[10];
+
 
 extern int numfalls;
 extern int numflipfail;
@@ -164,15 +175,6 @@ extern float menupulse;
 
 extern bool gamestart;
 
-extern int numdialogues;
-extern int numdialogueboxes[max_dialogues];
-extern int dialoguetype[max_dialogues];
-extern int dialogueboxlocation[max_dialogues][max_dialoguelength];
-extern float dialogueboxcolor[max_dialogues][max_dialoguelength][3];
-extern int dialogueboxsound[max_dialogues][max_dialoguelength];
-extern char dialoguetext[max_dialogues][max_dialoguelength][128];
-extern char dialoguename[max_dialogues][max_dialoguelength][64];
-extern XYZ dialoguecamera[max_dialogues][max_dialoguelength];
 extern XYZ participantlocation[max_dialogues][10];
 extern int participantfocus[max_dialogues][max_dialoguelength];
 extern int participantaction[max_dialogues][max_dialoguelength];
@@ -186,88 +188,42 @@ extern int directing;
 extern float dialoguetime;
 extern int dialoguegonethrough[20];
 
-extern int accountcampaignchoicesmade[10];
-extern int accountcampaignchoices[10][5000];
-
-extern float accountcampaignhighscore[10];
-extern float accountcampaignfasttime[10];
-extern float accountcampaignscore[10];
-extern float accountcampaigntime[10];
 
 extern bool gamestarted;
 
-
-extern "C" void PlaySoundEx(int chan, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
-extern "C" void PlayStreamEx(int chan, OPENAL_STREAM *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
+extern "C" {
+	void PlaySoundEx(int chan, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
+	void PlayStreamEx(int chan, OPENAL_STREAM *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
+}
 
 #pragma mark screen
 
-extern float screenwidth,screenheight;
-extern float viewdistance;
-extern XYZ viewer;
 extern XYZ lightlocation;
 extern float lightambient[3],lightbrightness[3];
-extern float fadestart;
-extern float texscale;
 extern float gravity;
-extern Light light;
 extern Animation animation[animation_count];
 extern Skeleton testskeleton;
 extern int numsounds;
-extern OPENAL_SAMPLE	*samp[100];
-extern int channels[100];
-extern Terrain terrain;
-extern Sprites sprites;
-extern int kTextureSize;
-extern float texdetail;
 extern float realtexdetail;
 extern float terraindetail;
-extern float volume;
-extern Objects objects;
-extern int detail;
-extern bool cellophane;
 extern GLubyte bloodText[512*512*3];
 extern GLubyte wolfbloodText[512*512*3];
-extern bool ismotionblur;
 extern bool trilinear;
-extern bool osx;
-extern bool musictoggle;
-extern Weapons weapons;
-extern Person player[maxplayers];
-extern int numplayers;
-extern int environment;
 extern bool ambientsound;
-extern float multiplier;
 extern int netdatanew;
 extern float mapinfo;
 extern bool stillloading;
 extern TGAImageRec texture;
 extern short vRefNum;
 extern long dirID;
-extern int mainmenu;
-extern int oldmainmenu;
-extern bool visibleloading;
 extern int loadscreencolor;
-extern float flashamount,flashr,flashg,flashb;
-extern int flashdelay;
 extern int whichjointstartarray[26];
 extern int whichjointendarray[26];
-extern int difficulty;
 extern float tintr,tintg,tintb;
 extern float slomospeed;
 extern char mapname[256];
-extern bool gamestarted;
 
-extern int numaccounts;
-extern int accountactive;
-extern int accountdifficulty[10];
-extern int accountprogress[10];
-extern float accountpoints[10];
-extern float accounthighscore[10][50];
-extern float accountfasttime[10][50];
-extern bool accountunlocked[10][60];
-extern char accountname[10][256];
-
+#pragma mark dialog
 extern int numdialogues;
 extern int numdialogueboxes[20];
 extern int dialoguetype[20];
@@ -282,16 +238,6 @@ extern float dialoguecamerarotation2[20][20];
 extern int indialogue;
 extern int whichdialogue;
 extern float dialoguetime;
-
-extern float accountcampaignhighscore[10];
-extern float accountcampaignfasttime[10];
-extern float accountcampaignscore[10];
-extern float accountcampaigntime[10];
-
-extern int accountcampaignchoicesmade[10];
-extern int accountcampaignchoices[10][5000];
-
-extern OPENAL_STREAM * strm[20];
 
 #pragma mark -
 
@@ -355,6 +301,8 @@ extern float oldgamespeed;
 
 extern float realmultiplier;
 extern GLubyte texturearray[512*512*3];
+typedef struct SDL_Window SDL_Window;
+extern SDL_Window *sdlwindow;
 
 
 #endif /* Globals_h */

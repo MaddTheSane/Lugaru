@@ -78,8 +78,6 @@ static bool save_png(const char * fname);
 #include "win-res/resource.h"
 #endif
 
-extern SDL_Window *sdlwindow;
-
 using namespace std;
 
 
@@ -614,13 +612,15 @@ Boolean SetUp (Game & game)
 	debugmode=0;
 
 	selectDetail(kContextWidth, kContextHeight, kBitsPerPixel, detail);
+	int winWidth, winHeight;
+	game.getWindowSize(winWidth, winHeight);
 
 	if(!ipstream) {
 		ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
 		opstream << "Screenwidth:\n";
-		opstream << kContextWidth;
+		opstream << winWidth;
 		opstream << "\nScreenheight:\n";
-		opstream << kContextHeight;
+		opstream << winHeight;
 		opstream << "\nMouse sensitivity:\n";
 		opstream << usermousesensitivity;
 		opstream << "\nBlur(0,1):\n";
@@ -1508,10 +1508,6 @@ int main(int argc, char **argv)
 		return res;
 	}
 
-	extern int channels[100];
-	extern OPENAL_SAMPLE * samp[100];
-	extern OPENAL_STREAM * strm[20];
-
 	extern "C" void PlaySoundEx(int chan, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused)
 	{
 		const OPENAL_SAMPLE * currSample = OPENAL_GetCurrentSample(channels[chan]);
@@ -1846,5 +1842,8 @@ save_png_done:
     return retval;
 }
 
-
+void Game::getWindowSize(int &width, int &height)
+{
+	SDL_GetWindowSize(sdlwindow, &width, &height);
+}
 
