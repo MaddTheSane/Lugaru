@@ -11,6 +11,7 @@
 
 #include <stdbool.h>
 #include <math.h>
+#include <tgmath.h>
 #include "binio.h"
 #include <simd/simd.h>
 #ifdef __cplusplus

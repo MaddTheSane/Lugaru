@@ -239,6 +239,7 @@
 		55A13CDF1CC960160070DECF /* libjpeg.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libjpeg.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		55A13CE71CC960180070DECF /* libvorbis.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libvorbis.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		55A13CEF1CC960190070DECF /* libogg.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libogg.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		55C148C61CCA0241007E238B /* Globals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Globals.h; sourceTree = "<group>"; };
 		565ACFF111990D7600DF867A /* Frustum.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Frustum.cpp; sourceTree = "<group>"; };
 		565ACFF211990D7600DF867A /* GameDraw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameDraw.cpp; sourceTree = "<group>"; };
 		565ACFF311990D7600DF867A /* GameInitDispose.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameInitDispose.cpp; sourceTree = "<group>"; };
@@ -650,6 +651,7 @@
 				565ACFF311990D7600DF867A /* GameInitDispose.cpp */,
 				565ACFF411990D7600DF867A /* GameTick.cpp */,
 				565ACFF511990D7600DF867A /* Globals.cpp */,
+				55C148C61CCA0241007E238B /* Globals.h */,
 				550AE98818DFC20600F0C197 /* glstubs.h */,
 				565ACFF611990D7600DF867A /* Lights.cpp */,
 				550AE98918DFC20600F0C197 /* Lights.h */,

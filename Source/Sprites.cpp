@@ -21,23 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Sprites.h"
 #include "Person.h"
-extern XYZ viewer;
-extern float viewdistance;
-extern float fadestart;
-extern int environment;
-extern float texscale;
-extern Light light;
-extern float multiplier;
-extern float gravity;
-extern Terrain terrain;
-extern Objects objects;
-extern int detail;
-extern XYZ viewerfacing;
-extern float terraindetail;
-extern int bloodtoggle;
-extern XYZ windvector;
-extern int numplayers;
-extern Person player[maxplayers];
+#include "Globals.h"
+
 //Functions
 
 void Sprites::Draw()

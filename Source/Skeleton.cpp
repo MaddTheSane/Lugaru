@@ -23,34 +23,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Game.h"
 #include "Skeleton.h"
 #include "openal_wrapper.h"
+#include "Globals.h"
 
-extern float multiplier;
-extern float gravity;
-extern Skeleton testskeleton;
-extern Terrain terrain;
-extern OPENAL_SAMPLE	*samp[100];
-extern int channels[100];
-extern Objects objects;
-extern Sprites sprites;
-extern int environment;
-extern float terraindetail;
-extern float camerashake;
-extern bool freeze;
-extern int detail;
-extern XYZ envsound[30];
-extern float envsoundvol[30];
-extern int numenvsounds;
-extern float envsoundlife[30];
-extern int bonus;
-extern float bonustime;
-extern int tutoriallevel;
-
-extern int whichjointstartarray[26];
-extern int whichjointendarray[26];
-
-extern Game * pgame;
-extern bool visibleloading;
-extern "C"	void PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 
 void dealloc2(void* param){
 	free(param);

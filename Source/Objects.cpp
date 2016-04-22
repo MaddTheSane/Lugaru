@@ -20,25 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include "Objects.h"
-extern XYZ viewer;
-extern float viewdistance;
-extern float lightambient[3],lightbrightness[3];
-extern float fadestart;
-extern int environment;
-extern float texscale;
-extern Light light;
-extern float multiplier;
-extern float gravity;
-extern FRUSTUM frustum;
-extern Terrain terrain;
-extern float terraindetail;
-extern bool foliage;
-extern int detail;
-extern float blurness;
-extern float windvar;
-extern float playerdist;
-extern bool skyboxtexture;
-extern Sprites sprites;
+#include "Globals.h"
 
 //Functions
 

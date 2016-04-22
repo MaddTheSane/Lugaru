@@ -22,44 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 /**> HEADER FILES <**/
 #include "Weapons.h"
 #include "openal_wrapper.h"
-
-extern float multiplier;
-extern Animation animation[animation_count];
-extern OPENAL_SAMPLE	*samp[100];
-extern int channels[100];
-extern Terrain terrain;
-extern float gravity;
-extern int environment;
-extern Sprites sprites;
-extern int detail;
-extern FRUSTUM frustum;
-extern XYZ viewer;
-extern float realmultiplier;
-extern int slomo;
-extern float slomodelay;
-extern bool cellophane;
-extern float texdetail;
-extern GLubyte bloodText[512*512*3];
-extern int bloodtoggle;
-extern Objects objects;
-extern bool osx;
-extern bool autoslomo;
-extern float camerashake;
-extern float woozy;
-extern float terraindetail;
-extern float viewdistance;
-extern float blackout;
-extern int difficulty;
-extern Person player[maxplayers];
-extern int numplayers;
-extern bool freeze;
-extern int bonus;
-extern float bonusvalue;
-extern float bonustotal;
-extern float bonustime;
-extern int tutoriallevel;
-extern int numthrowkill;
-extern "C"	void PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
+#include "Globals.h"
 
 void	Weapons::DoStuff(){
 	static int i,whichpatchx,whichpatchz,j,k,whichhit,m;

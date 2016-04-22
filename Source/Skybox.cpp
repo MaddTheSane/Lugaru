@@ -21,18 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Skybox.h"
 #include "Game.h"
+#include "Globals.h"
 
-extern float viewdistance;
-extern int detail;
-extern bool trilinear;
-extern float blurness;
-extern int environment;
-extern TGAImageRec texture;
-extern bool skyboxtexture;
-extern float skyboxr;
-extern float skyboxg;
-extern float skyboxb;
-extern int tutoriallevel;
 
 bool SkyBox::load( const char *ffront,const char *fleft,const char *fback,const char *fright,const char *fup,const char *fdown,const char *fcloud,const char *freflect)
 {

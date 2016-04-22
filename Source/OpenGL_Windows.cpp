@@ -53,6 +53,7 @@ static bool save_png(const char * fname);
 
 
 #include "openal_wrapper.h"
+#include "Globals.h"
 
 // ADDED GWC
 #ifdef _MSC_VER
@@ -61,53 +62,7 @@ static bool save_png(const char * fname);
 #pragma comment(lib, "glaux.lib")
 #endif
 
-extern bool buttons[3];
-extern float multiplier;
-extern float screenwidth,screenheight;
-extern float sps;
-extern float realmultiplier;
-extern int slomo;
-extern bool ismotionblur;
-extern float usermousesensitivity;
-extern int detail;
-extern bool floatjump;
-extern bool cellophane;
-// MODIFIED GWC
-//extern int terraindetail;
-//extern int texdetail;
-extern float terraindetail;
-extern float texdetail;
-extern int bloodtoggle;
-extern bool osx;
-extern bool autoslomo;
-extern bool foliage;
-extern bool musictoggle;
-extern bool trilinear;
-extern float gamespeed;
-extern int difficulty;
-extern bool damageeffects;
-extern int numplayers;
-extern bool decals;
-extern bool invertmouse;
-extern bool texttoggle;
-extern bool ambientsound;
-extern bool mousejump;
-extern bool freeze;
-extern Person player[maxplayers];
-extern bool vblsync;
-extern bool stillloading;
-extern bool showpoints;
-extern bool alwaysblur;
-extern bool immediate;
-extern bool velocityblur;
-extern bool debugmode;
-extern int mainmenu;
 /*extern*/ bool gameFocused = true;
-extern int kBitsPerPixel;
-extern float slomospeed;
-extern float slomofreq;
-extern float oldgamespeed;
-extern float volume;
 
 #include <math.h>
 #include <stdio.h>

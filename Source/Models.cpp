@@ -21,20 +21,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Game.h"
 #include "Models.h"
-//#include "altivec.h"
+#include "Globals.h"
 
 using namespace simd;
 
-extern float multiplier;
-extern float viewdistance;
-extern XYZ viewer;
-extern float fadestart;
-extern float texdetail;
-extern bool decals;
-extern int loadscreencolor;
-
-extern Game * pgame;
-extern bool visibleloading;
 //Functions
 void *allocate_aligned(size_t pointer_size, size_t byte_alignment)
 {
@@ -120,27 +110,25 @@ int Model::LineCheckSlide(XYZ &p1,XYZ &p2, XYZ &p, const XYZ &move, const float 
 
 int Model::LineCheckPossible(XYZ &p1,XYZ &p2, XYZ &p, const XYZ &move, const float rotate)
 {
-	float distance;
 	static float olddistance;
-	int intersecting;
-	int firstintersecting;
+	int firstintersecting = -1;
 	XYZ point;
 
 	p1=p1-move;
 	p2=p2-move;
-	if(!sphere_line_intersection(p1,p2,boundingspherecenter,
-		boundingsphereradius))return -1;
-	firstintersecting=-1;
-	if(rotate)
+	if(!sphere_line_intersection(p1,p2,boundingspherecenter, boundingsphereradius))
+		return -1;
+
+	if (rotate) {
 		p1=DoRotation(p1,0,-rotate,0);
-	if(rotate)
 		p2=DoRotation(p2,0,-rotate,0);
+	}
 
 	if(numpossible>0&&numpossible<TriangleNum)
 		for (int j=0;j<numpossible;j++){
 			if(possible[j]>=0&&possible[j]<TriangleNum){
-				intersecting=LineFacetd(p1,p2,vertex[Triangles[possible[j]].vertex[0]],vertex[Triangles[possible[j]].vertex[1]],vertex[Triangles[possible[j]].vertex[2]],facenormals[possible[j]],point);
-				distance= distance_squared(point, p1);
+				int intersecting=LineFacetd(p1,p2,vertex[Triangles[possible[j]].vertex[0]],vertex[Triangles[possible[j]].vertex[1]],vertex[Triangles[possible[j]].vertex[2]],facenormals[possible[j]],point);
+				float distance= distance_squared(point, p1);
 				if((distance<olddistance||firstintersecting==-1)&&intersecting) {
 					olddistance=distance;
 					firstintersecting=possible[j];
@@ -205,7 +193,7 @@ int Model::SphereCheck(XYZ &p1,const float radius, XYZ &p, const XYZ &move, cons
 	int firstintersecting = -1;
 	XYZ point;
 
-	XYZ oldp1=p1;
+	//XYZ oldp1=p1;
 	p1=p1-move;
 	if(rotate)
 		p1=DoRotation(p1,0,-rotate,0);
@@ -507,10 +495,9 @@ bool Model::loadnotex(const char *filename )
 		owner[i]=-1;
 	}
 
-	static int j;
 	boundingsphereradius=0;
 	for(i=0;i<vertexNum;i++){
-		for(j=0;j<vertexNum;j++){
+		for(int j=0;j<vertexNum;j++){
 			if(j!=i&&findDistancefast(&vertex[j],&vertex[i])/2>boundingsphereradius){
 				boundingsphereradius=findDistancefast(&vertex[j],&vertex[i])/2;
 				boundingspherecenter=(vertex[i]+vertex[j])/2;
@@ -598,10 +585,9 @@ bool Model::load(const char *filename, bool texture)
 		owner[i]=-1;
 	}
 
-	static int j;
 	boundingsphereradius=0;
-	for(i=0;i<vertexNum;i++){
-		for(j=0;j<vertexNum;j++){
+	for(long i=0;i<vertexNum;i++){
+		for(int j=0;j<vertexNum;j++){
 			if(j!=i&&findDistancefast(&vertex[j],&vertex[i])/2>boundingsphereradius){
 				boundingsphereradius=findDistancefast(&vertex[j],&vertex[i])/2;
 				boundingspherecenter=(vertex[i]+vertex[j])/2;
@@ -813,8 +799,7 @@ void Model::UniformTexCoords()
 
 void Model::FlipTexCoords()
 {
-	static int i;
-	for(i=0; i<TriangleNum; i++){
+	for(int i=0; i<TriangleNum; i++){
 		Triangles[i].gy[0]=-Triangles[i].gy[0];
 		Triangles[i].gy[1]=-Triangles[i].gy[1];
 		Triangles[i].gy[2]=-Triangles[i].gy[2];		
@@ -824,8 +809,7 @@ void Model::FlipTexCoords()
 
 void Model::ScaleTexCoords(float howmuch)
 {
-	static int i;
-	for(i=0; i<TriangleNum; i++){
+	for(int i=0; i<TriangleNum; i++){
 		Triangles[i].gx[0]*=howmuch;
 		Triangles[i].gx[1]*=howmuch;
 		Triangles[i].gx[2]*=howmuch;	
@@ -1070,23 +1054,20 @@ void Model::drawdiffteximmediate(GLuint texture)
 void Model::drawdecals(GLuint shadowtexture,GLuint bloodtexture,GLuint bloodtexture2,GLuint breaktexture)
 {
 	if(decals){
-		if(type!=decalstype)return;
-		static int i;
-		static int lasttype;
-		static float viewdistsquared;
-		static bool blend;
+		if(type!=decalstype)
+			return;
+		int lasttype = -1;
+		bool blend = true;
 
-		viewdistsquared=viewdistance*viewdistance;
-		blend=1;
+		//const float viewdistsquared=viewdistance*viewdistance;
 
-		lasttype=-1;
 		glEnable(GL_BLEND);
 		glDisable(GL_LIGHTING);
 		glDisable(GL_CULL_FACE);
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 		glDepthMask(0);
 		if(numdecals>max_model_decals)numdecals=max_model_decals;
-		for(i=0;i<numdecals;i++){
+		for(int i=0;i<numdecals;i++){
 			if(decaltype[i]==blooddecalfast&&decalalivetime[i]<2)decalalivetime[i]=2;
 
 			if(decaltype[i]==shadowdecal&&decaltype[i]!=lasttype){
@@ -1147,7 +1128,7 @@ void Model::drawdecals(GLuint shadowtexture,GLuint bloodtexture,GLuint bloodtext
 			glEnd();
 			glPopMatrix();
 		}
-		for(i=numdecals-1;i>=0;i--){
+		for(int i=numdecals-1;i>=0;i--){
 			decalalivetime[i]+=multiplier;
 			if(decaltype[i]==blooddecalslow)decalalivetime[i]-=multiplier*2/3;
 			if(decaltype[i]==blooddecalfast)decalalivetime[i]+=multiplier*4;

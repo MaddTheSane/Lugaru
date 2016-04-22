@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "openal_wrapper.h"
 
 #include "Constants.h"
+#include "Globals.h"
 
 bool visibleloading = 0;
 OPENAL_SAMPLE	*samp[100] = {0};

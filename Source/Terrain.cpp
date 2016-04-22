@@ -22,26 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Game.h"
 #include "Terrain.h"
 #include "Objects.h"
-extern XYZ viewer;
-extern float viewdistance;
-extern float lightambient[3],lightbrightness[3];
-extern float fadestart;
-extern int environment;
-extern float texscale;
-extern Light light;
-extern float multiplier;
-extern FRUSTUM frustum;
-extern float texdetail,terraindetail;
-extern int detail;
-extern bool decals;
-extern float blurness;
-extern float targetblurness;
-extern Objects objects;
-extern TGAImageRec texture;
-extern Game * pgame;
-extern bool visibleloading;
-extern bool skyboxtexture;
-extern int tutoriallevel;
+#include "Globals.h"
 
 //Functions
 
