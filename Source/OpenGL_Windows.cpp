@@ -117,6 +117,7 @@ typedef struct tagPOINT {
 #endif
 
 
+#ifndef LUGARU_USE_NATIVE_OPENGL
 
 #ifdef _MSC_VER
 #pragma warning(push)
@@ -161,6 +162,7 @@ static void GLAPIENTRY glDeleteTextures_doNothing(GLsizei n, const GLuint *textu
     // no-op.
 }
 
+#endif
 
 
 void sdlGetCursorPos(POINT *pt)
@@ -988,6 +990,7 @@ Boolean SetUp (Game & game)
 
     SDL_GL_MakeCurrent(sdlwindow, glctx);
 
+#ifndef LUGARU_USE_NATIVE_OPENGL
     if (!lookup_all_glsyms())
     {
         char buf[1024];
@@ -997,6 +1000,7 @@ Boolean SetUp (Game & game)
         SDL_Quit();
         return false;
     }
+#endif
 
     int dblbuf = 0;
     if ((SDL_GL_GetAttribute(SDL_GL_DOUBLEBUFFER, &dblbuf) == -1) || (!dblbuf))
@@ -1234,12 +1238,14 @@ void CleanUp (void)
 
 
     SDL_Quit();
+#ifndef LUGARU_USE_NATIVE_OPENGL
     #define GL_FUNC(ret,fn,params,call,rt) p##fn = NULL;
     #include "glstubs.h"
     #undef GL_FUNC
     // cheat here...static destructors are calling glDeleteTexture() after
     //  the context is destroyed and libGL unloaded by SDL_Quit().
     pglDeleteTextures = glDeleteTextures_doNothing;
+#endif
 
 }
 
