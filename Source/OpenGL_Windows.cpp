@@ -984,6 +984,9 @@ Boolean SetUp (Game & game)
         sdlflags |= SDL_WINDOW_FULLSCREEN;
     if (!cmdline("nomousegrab"))
         sdlflags |= SDL_WINDOW_INPUT_GRABBED;
+	if (cmdline("retina") && (sdlflags & SDL_WINDOW_FULLSCREEN) == 0) {
+		sdlflags |= SDL_WINDOW_ALLOW_HIGHDPI;
+	}
 
     sdlwindow = SDL_CreateWindow("Lugaru", SDL_WINDOWPOS_CENTERED_DISPLAY(displayIdx), SDL_WINDOWPOS_CENTERED_DISPLAY(displayIdx),
                                  kContextWidth, kContextHeight, sdlflags);
@@ -1015,6 +1018,7 @@ Boolean SetUp (Game & game)
             }
         }
     }
+	SDL_GL_GetDrawableSize(sdlwindow, &kContextWidth, &kContextHeight);
 
     SDL_GLContext glctx = SDL_GL_CreateContext(sdlwindow);
     if (!glctx)
