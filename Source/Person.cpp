@@ -7321,7 +7321,7 @@ int Person::DrawSkeleton(){
 						XYZ tempnormthing,vec1,vec2;
 						vec1=(skeleton.joints[skeleton.jointlabels[rightwrist]].position-skeleton.joints[skeleton.jointlabels[rightelbow]].position);
 						vec2=(skeleton.joints[skeleton.jointlabels[rightwrist]].position-skeleton.joints[skeleton.jointlabels[rightshoulder]].position);
-						CrossProduct(&vec1,&vec2,&tempnormthing);
+						tempnormthing = simd::cross(vec1, vec2);
 						Normalise(tempnormthing);
 						if(targetanimation!=staffhitanim&&currentanimation!=staffhitanim&&targetanimation!=staffgroundsmashanim&&currentanimation!=staffgroundsmashanim&&targetanimation!=staffspinhitanim&&currentanimation!=staffspinhitanim)weaponpoint+=tempnormthing*.1-skeleton.specialforward[1]*.3+(skeleton.joints[skeleton.jointlabels[rightwrist]].position-skeleton.joints[skeleton.jointlabels[rightelbow]].position);
 						/*if(targetanimation==staffhitanim||currentanimation==staffhitanim){

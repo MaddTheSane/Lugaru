@@ -587,9 +587,6 @@ bool Terrain::load(const char *fileName)
 
 void Terrain::CalculateNormals()
 {
-	XYZ facenormal;
-	XYZ p,q,a,b,c;
-
 	for(int i=0; i<size; i++){
 		for(int j=0; j<size; j++){
 			normals[i][j].x=0;
@@ -600,6 +597,7 @@ void Terrain::CalculateNormals()
 
 	for(int i=0;i<size-1;i++){
 		for(int j=0;j<size-1;j++){
+			XYZ a,b,c;
 			a.x=i;
 			a.y=heightmap[i][j];
 			a.z=j;
@@ -610,14 +608,10 @@ void Terrain::CalculateNormals()
 			c.y=heightmap[i+1][j];
 			c.z=j;
 
-			p.x=b.x-a.x;
-			p.y=b.y-a.y;
-			p.z=b.z-a.z;
-			q.x=c.x-a.x;
-			q.y=c.y-a.y;
-			q.z=c.z-a.z;
+			XYZ p = b - a;
+			XYZ q = c - a;
 
-			CrossProduct(&p,&q,&facenormal);
+			XYZ facenormal = simd::cross(p, q);
 
 			facenormals[i][j]=facenormal;
 
@@ -636,18 +630,14 @@ void Terrain::CalculateNormals()
 			c.y=heightmap[i+1][j+1];
 			c.z=j+1;
 
-			p.x=b.x-a.x;
-			p.y=b.y-a.y;
-			p.z=b.z-a.z;
-			q.x=c.x-a.x;
-			q.y=c.y-a.y;
-			q.z=c.z-a.z;
+			p = b - a;
+			q = c - a;
 
-			CrossProduct(&p,&q,&facenormal);
+			facenormal = simd::cross(p, q);
 
-			normals[i+1][j+1]=normals[i+1][j+1]+facenormal;
-			normals[i][j+1]=normals[i][j+1]+facenormal;
-			normals[i+1][j]=normals[i+1][j]+facenormal;
+			normals[i+1][j+1] += facenormal;
+			normals[i][j+1] += facenormal;
+			normals[i+1][j] += facenormal;
 
 			Normalise(facenormals[i][j]);
 		}

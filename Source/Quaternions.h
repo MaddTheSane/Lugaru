@@ -63,8 +63,6 @@ angle_axis Quat_2_AA(quaternion Quat);
 void Quat_2_Matrix(quaternion Quat, Matrix_t m);
 XYZ Quat2Vector(quaternion Quat);
 
-inline void CrossProduct(XYZ *P, XYZ *Q, XYZ *V);
-inline void CrossProduct(XYZ P, XYZ Q, XYZ *V);
 inline void Normalise(XYZ &vectory);
 inline float normaldotproduct(XYZ point1, XYZ point2);
 inline float fast_sqrt (register float arg);
@@ -82,6 +80,7 @@ inline float findLengthfast(XYZ *point1);
 inline float findDistancefast(XYZ *point1, XYZ *point2);
 inline float findDistancefast(const XYZ &point1, const XYZ &point2);
 inline float findDistancefastflat(XYZ *point1, XYZ *point2);
+inline float findDistancefastflat(const XYZ &point1, const XYZ &point2);
 bool sphere_line_intersection (
 							   float x1, float y1 , float z1,
 							   float x2, float y2 , float z2,
@@ -93,18 +92,6 @@ inline bool DistancePointLine( XYZ *Point, XYZ *LineStart, XYZ *LineEnd, float *
 
 inline void Normalise(XYZ &vectory) {
 	vectory = simd::normalize(vectory);
-}
-
-inline void CrossProduct(XYZ *P, XYZ *Q, XYZ *V){
-	V->x = P->y * Q->z - P->z * Q->y;
-	V->y = P->z * Q->x - P->x * Q->z;
-	V->z = P->x * Q->y - P->y * Q->x;
-}
-
-inline void CrossProduct(XYZ P, XYZ Q, XYZ *V){
-	V->x = P.y * Q.z - P.z * Q.y;
-	V->y = P.z * Q.x - P.x * Q.z;
-	V->z = P.x * Q.y - P.y * Q.x;
 }
 
 inline float fast_sqrt (register float arg)
@@ -125,7 +112,7 @@ inline float fast_sqrt (register float arg)
 
 	return result * arg;
 #else
-	return sqrt( arg);
+	return sqrt(arg);
 #endif
 }
 
@@ -157,7 +144,7 @@ inline float findLengthfast(XYZ *point1){
 }
 
 inline float findDistancefast(XYZ *point1, XYZ *point2){
-	return((point1->x-point2->x)*(point1->x-point2->x)+(point1->y-point2->y)*(point1->y-point2->y)+(point1->z-point2->z)*(point1->z-point2->z));
+	return findDistancefast(*point1, *point2);
 }
 
 inline float findDistancefast(const XYZ &point1, const XYZ &point2){
@@ -165,7 +152,11 @@ inline float findDistancefast(const XYZ &point1, const XYZ &point2){
 }
 
 inline float findDistancefastflat(XYZ *point1, XYZ *point2){
-	return((point1->x-point2->x)*(point1->x-point2->x)+(point1->z-point2->z)*(point1->z-point2->z));
+	return findDistancefastflat(*point1, *point2);
+}
+
+inline float findDistancefastflat(const XYZ &point1, const XYZ &point2) {
+	return (point1.x-point2.x)*(point1.x-point2.x)+(point1.z-point2.z)*(point1.z-point2.z);
 }
 
 inline XYZ DoRotation(XYZ thePoint, float xang, float yang, float zang){
