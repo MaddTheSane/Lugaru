@@ -801,7 +801,7 @@ float Terrain::getHeight(float pointx, float pointz)
 	triangle[2].z=tiley+1;
 	triangle[2].y=heightmap[tilex][tiley+1];
 
-	if(!LineFacetd(&startpoint,&endpoint,&triangle[0],&triangle[1],&triangle[2],&intersect)){
+	if(!LineFacetd(startpoint,endpoint,triangle[0],triangle[1],triangle[2],&intersect)){
 		triangle[0].x=tilex+1;
 		triangle[0].z=tiley;
 		triangle[0].y=heightmap[tilex+1][tiley];
@@ -813,7 +813,7 @@ float Terrain::getHeight(float pointx, float pointz)
 		triangle[2].x=tilex;
 		triangle[2].z=tiley+1;
 		triangle[2].y=heightmap[tilex][tiley+1];
-		LineFacetd(&startpoint,&endpoint,&triangle[0],&triangle[1],&triangle[2],&intersect);
+		LineFacetd(startpoint,endpoint,triangle[0],triangle[1],triangle[2],&intersect);
 	}
 	return intersect.y*scale+getOpacity(pointx*scale,pointz*scale)/8;
 
@@ -1377,7 +1377,7 @@ void Terrain::DoLighting()
 			/*brightness=0;
 			if(lineTerrain(lightlocation*10+terrainpoint,terrainpoint,&blank)==-1)
 			*/
-			brightness=dotproduct(lightloc,normals[i][j]);
+			brightness=simd::dot(lightloc,normals[i][j]);
 
 			if(brightness>1)brightness=1;
 			if(brightness<0)brightness=0;
@@ -1451,13 +1451,13 @@ void Terrain::DoShadows()
 						testpoint=terrainpoint;
 						testpoint2=terrainpoint+lightloc*50*(1-shadowed);
 						if(objects.model[l].LineCheck(testpoint,testpoint2,col,objects.position[l],objects.rotation[l])!=-1){
-							shadowed=1-(findDistance(terrainpoint,col)/50);	
+							shadowed=1-(simd::distance(terrainpoint,col)/50);	
 						}
 					}
 				}
 				if(visibleloading)pgame->LoadingScreen();
 			}
-			brightness=dotproduct(lightloc,normals[i][j]);
+			brightness=simd::dot(lightloc,normals[i][j]);
 			if(shadowed)brightness*=1-shadowed;
 
 			if(brightness>1)brightness=1;

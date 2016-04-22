@@ -58,7 +58,7 @@ using namespace std;
 
 /* !!! FIXME: until we replace logger better. --ryan. */
 #define LOGFUNC
-void LOG(const std::string &fmt, ...);
+void LOG(const std::string fmt, ...);
 
 #endif
 

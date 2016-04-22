@@ -723,7 +723,7 @@ void Objects::DoShadows()
 									testpoint=terrainpoint;
 									testpoint2=terrainpoint+lightloc*50*(1-shadowed[i]);
 									if(model[l].LineCheck(testpoint,testpoint2,col,position[l],rotation[l])!=-1){
-										shadowed[i]=1-(findDistance(terrainpoint,col)/50);
+										shadowed[i]=1-(simd::distance(terrainpoint,col)/50);
 									}
 								}
 							}

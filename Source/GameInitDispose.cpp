@@ -116,8 +116,15 @@ extern OPENAL_STREAM * strm[20];
 extern "C"	void PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 extern "C" void PlayStreamEx(int chan, OPENAL_STREAM *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 
-void LOG(const std::string &fmt, ...)
+void LOG(const std::string fmt, ...)
 {
+	char cStr[512] = {0};
+	va_list list;
+	va_start(list, fmt);
+	vsprintf(cStr, fmt.c_str(), list);
+	cerr << std::string(cStr) << std::endl;
+
+	va_end(list);
     // !!! FIXME: write me.
 }
 

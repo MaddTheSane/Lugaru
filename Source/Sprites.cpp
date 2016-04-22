@@ -256,7 +256,7 @@ void Sprites::Draw()
 		if(type[i]==breathsprite){
 			opacity[i]-=multiplier/2;
 			size[i]+=multiplier/2;
-			if(findLength(velocity[i])<=multiplier)velocity[i]=0;
+			if(simd::length(velocity[i])<=multiplier)velocity[i]=0;
 			else{
 				XYZ slowdown;
 				slowdown=velocity[i]*-1;

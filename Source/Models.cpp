@@ -23,6 +23,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Models.h"
 //#include "altivec.h"
 
+using namespace simd;
+
 extern float multiplier;
 extern float viewdistance;
 extern XYZ viewer;
@@ -73,7 +75,7 @@ int Model::LineCheck(XYZ &p1,XYZ &p2, XYZ &p, const XYZ &move, const float rotat
 
 	for (int j=0;j<TriangleNum;j++){
 		intersecting=LineFacetd(p1,p2,vertex[Triangles[j].vertex[0]],vertex[Triangles[j].vertex[1]],vertex[Triangles[j].vertex[2]],facenormals[j],point);
-		distance= vector_distance_squared(point, p1);
+		distance= distance_squared(point, p1);
 		if((distance<olddistance||firstintersecting==-1)&&intersecting){olddistance=distance; firstintersecting=j; p=point;}
 	}
 
@@ -103,7 +105,7 @@ int Model::LineCheckSlide(XYZ &p1,XYZ &p2, XYZ &p, const XYZ &move, const float 
 
 	for (int j=0;j<TriangleNum;j++){
 		intersecting=LineFacetd(p1,p2,vertex[Triangles[j].vertex[0]],vertex[Triangles[j].vertex[1]],vertex[Triangles[j].vertex[2]],facenormals[j],point);
-		distance= vector_distance_squared(point, p1);
+		distance= distance_squared(point, p1);
 		if((distance<olddistance||firstintersecting==-1)&&intersecting){olddistance=distance; firstintersecting=j;}
 	}
 
@@ -138,7 +140,7 @@ int Model::LineCheckPossible(XYZ &p1,XYZ &p2, XYZ &p, const XYZ &move, const flo
 		for (int j=0;j<numpossible;j++){
 			if(possible[j]>=0&&possible[j]<TriangleNum){
 				intersecting=LineFacetd(p1,p2,vertex[Triangles[possible[j]].vertex[0]],vertex[Triangles[possible[j]].vertex[1]],vertex[Triangles[possible[j]].vertex[2]],facenormals[possible[j]],point);
-				distance= vector_distance_squared(point, p1);
+				distance= distance_squared(point, p1);
 				if((distance<olddistance||firstintersecting==-1)&&intersecting) {
 					olddistance=distance;
 					firstintersecting=possible[j];
@@ -175,7 +177,7 @@ int Model::LineCheckSlidePossible(XYZ &p1,XYZ &p2, XYZ &p, const XYZ &move, cons
 		for (int j=0;j<numpossible;j++){
 			if(possible[j]>=0&&possible[j]<TriangleNum){
 				intersecting=LineFacetd(p1,p2,vertex[Triangles[possible[j]].vertex[0]],vertex[Triangles[possible[j]].vertex[1]],vertex[Triangles[possible[j]].vertex[2]],facenormals[possible[j]],point);
-				distance= vector_distance_squared(point, p1);
+				distance= distance_squared(point, p1);
 				if((distance<olddistance||firstintersecting==-1)&&intersecting) {
 					olddistance=distance;
 					firstintersecting=possible[j];
@@ -926,7 +928,7 @@ void Model::CalculateNormals(bool facenormalise)
 	for(short i=0;i<TriangleNum;i++){
 		XYZ l_vect_b1 = vertex[Triangles[i].vertex[1]] - vertex[Triangles[i].vertex[0]];
 		XYZ l_vect_b2 = vertex[Triangles[i].vertex[2]] - vertex[Triangles[i].vertex[0]];
-		facenormals[i] = vector_cross(l_vect_b1, l_vect_b2);
+		facenormals[i] = cross(l_vect_b1, l_vect_b2);
 		
 		normals[Triangles[i].vertex[0]] += facenormals[i];
 		normals[Triangles[i].vertex[1]] += facenormals[i];

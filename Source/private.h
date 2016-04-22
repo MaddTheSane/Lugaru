@@ -67,7 +67,7 @@ typedef double             float64_t;
 #endif
 
 #ifndef BinIO_BYTE_ORDER
-#if defined(__ppc__) || defined(__POWERPC__)
+#if defined(__ppc__) || defined(__POWERPC__) || __BIG_ENDIAN__
 #define BinIO_BYTE_ORDER BinIO_BIG_ENDIAN_BYTE_ORDER
 #else
 #define BinIO_BYTE_ORDER BinIO_LITTLE_ENDIAN_BYTE_ORDER

@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "openal_wrapper.h"
 
 using namespace std;
+using namespace simd;
 
 extern float multiplier;
 extern XYZ viewer;
@@ -332,7 +333,7 @@ static void ch_save(Game *game, const char *args)
 	fpackf(tfile, "Bf Bf Bf", participantlocation[k][l].x, participantlocation[k][l].y, participantlocation[k][l].z);
 	fpackf(tfile, "Bf", participantrotation[k][l]);
       }
-      //if(numdialogueboxes)
+      if(numdialogueboxes)
 	for(size_t l=0;l<numdialogueboxes[k];l++){
 	  fpackf(tfile, "Bi", dialogueboxlocation[k][l]);
 	  fpackf(tfile, "Bf", dialogueboxcolor[k][l][0]);
@@ -1562,7 +1563,11 @@ int Game::checkcollide(XYZ startpoint,XYZ endpoint,int what){
 		}
 	}
 
-	if(what==1000)if(terrain.lineTerrain(startpoint,endpoint,&colpoint)!=-1)return 1000;
+	if(what==1000) {
+		if(terrain.lineTerrain(startpoint,endpoint,&colpoint)!=-1) {
+			return 1000;
+		}
+	}
 
 	return -1;
 }
@@ -5343,7 +5348,7 @@ void	Game::Tick()
 																							}
 																							if(j!=100&&(/*j>25||(player[k].isRun()||player[k].targetanimation==sneakanim||player[k].targetanimation==walkanim)||*/player[k].targetanimation==jumpupanim||player[k].targetanimation==jumpdownanim)){
 																								lowpoint=DoRotation(objects.model[i].facenormals[whichhit],0,objects.rotation[k],0);
-																								if(1==1/*dotproduct(&player[k].velocity,&lowpoint)>0||player[k].aitype!=playercontrolled||(player[k].isRun()||player[k].targetanimation==sneakanim||player[k].targetanimation==walkanim||player[k].targetanimation==jumpupanim)*/){
+																								if(1==1/*dot(&player[k].velocity,&lowpoint)>0||player[k].aitype!=playercontrolled||(player[k].isRun()||player[k].targetanimation==sneakanim||player[k].targetanimation==walkanim||player[k].targetanimation==jumpupanim)*/){
 																									lowpoint=player[k].coords;
 																									lowpoint.y+=(float)j/13;
 																									lowpointtarget=lowpoint+facing*1.3;
@@ -5842,7 +5847,7 @@ void	Game::Tick()
 
 							hawkcalldelay=16+abs(Random()%8);
 						}
-						static float temptexdetail;
+						//static float temptexdetail;
 
 
 						if(IsKeyDown(theKeyMap, MAC_H_KEY)&&debugmode){
@@ -7684,7 +7689,7 @@ void	Game::Tick()
 														for(k=0;k<numpathpointconnect[j];k++){
 															DistancePointLine(&player[i].finalfinaltarget, &pathpoint[j], &pathpoint[pathpointconnect[j][k]], &tempdist,&colpoint );
 															if(tempdist*tempdist<closestdistance){
-																if(findDistance(colpoint,pathpoint[j])+findDistance(colpoint,pathpoint[pathpointconnect[j][k]])<findDistance(pathpoint[j],pathpoint[pathpointconnect[j][k]])+.1){
+																if(distance(colpoint,pathpoint[j])+distance(colpoint,pathpoint[pathpointconnect[j][k]])<distance(pathpoint[j],pathpoint[pathpointconnect[j][k]])+.1){
 																	closestdistance=tempdist*tempdist;
 																	closest=j;
 																	player[i].finaltarget=colpoint;
@@ -7717,7 +7722,7 @@ void	Game::Tick()
 																for(k=0;k<numpathpointconnect[j];k++){
 																	DistancePointLine(&player[i].coords, &pathpoint[j], &pathpoint[pathpointconnect[j][k]], &tempdist,&colpoint );
 																	if(tempdist*tempdist<closestdistance){
-																		if(findDistance(colpoint,pathpoint[j])+findDistance(colpoint,pathpoint[pathpointconnect[j][k]])<findDistance(pathpoint[j],pathpoint[pathpointconnect[j][k]])+.1){
+																		if(distance(colpoint,pathpoint[j])+distance(colpoint,pathpoint[pathpointconnect[j][k]])<distance(pathpoint[j],pathpoint[pathpointconnect[j][k]])+.1){
 																			//if(findDistancefast(&player[i].finaltarget,&colpoint)<findDistancefast(&player[i].finaltarget,&player[i].coords)){
 																			closestdistance=tempdist*tempdist;
 																			closest=j;
@@ -8364,7 +8369,7 @@ void	Game::Tick()
 																player[i].rabbitkickenabled=Random()%2;
 																rotatetarget=player[player[i].aitarget].coords+player[player[i].aitarget].velocity;
 																if(findDistancefast(&player[player[i].aitarget].coords,&player[i].coords)<findDistancefast(&rotatetarget,&player[i].coords))
-																	rotatetarget=player[player[i].aitarget].coords+player[player[i].aitarget].velocity*findDistance(player[player[i].aitarget].coords,player[i].coords)/findLength(player[i].velocity)-player[i].coords;
+																	rotatetarget=player[player[i].aitarget].coords+player[player[i].aitarget].velocity*distance(player[player[i].aitarget].coords,player[i].coords)/length(player[i].velocity)-player[i].coords;
 																else rotatetarget=player[player[i].aitarget].coords-player[i].coords;
 																Normalise(rotatetarget);
 																player[i].targetrotation=-asin(0-rotatetarget.x);
@@ -8808,7 +8813,7 @@ void	Game::Tick()
 																					player[i].victim=&player[j];
 																					XYZ aim;
 																					weapons.owner[player[i].weaponids[0]]=-1;
-																					aim=player[i].victim->coords+DoRotation(player[i].victim->skeleton.joints[player[i].victim->skeleton.jointlabels[abdomen]].position,0,player[i].victim->rotation,0)*player[i].victim->scale+player[i].victim->velocity*findDistance(player[i].victim->coords,player[i].coords)/50-(player[i].coords+DoRotation(player[i].skeleton.joints[player[i].skeleton.jointlabels[righthand]].position,0,player[i].rotation,0)*player[i].scale);
+																					aim=player[i].victim->coords+DoRotation(player[i].victim->skeleton.joints[player[i].victim->skeleton.jointlabels[abdomen]].position,0,player[i].victim->rotation,0)*player[i].victim->scale+player[i].victim->velocity*distance(player[i].victim->coords,player[i].coords)/50-(player[i].coords+DoRotation(player[i].skeleton.joints[player[i].skeleton.jointlabels[righthand]].position,0,player[i].rotation,0)*player[i].scale);
 																					Normalise(aim);
 
 																					aim=DoRotation(aim,(float)abs(Random()%30)-15,(float)abs(Random()%30)-15,0);
@@ -9796,13 +9801,13 @@ void	Game::TickOnceAfter(){
 							}
 						}
 
-						if(campaign) {
+						if(campaign)
 							if(mainmenu==0&&winfreeze&&(campaignchoosenext[campaignchoicewhich[whichchoice]])==1){
 								if(campaignnumnext[campaignchoicewhich[whichchoice]]==0){
 									endgame=1;
 								}
 							}
-						} else if(mainmenu==0&&winfreeze){
+							else if(mainmenu==0&&winfreeze){
 								if(campaignchoosenext[campaignchoicewhich[whichchoice]]==2)
 									stealthloading=1;
 								else stealthloading=0;
@@ -9960,7 +9965,7 @@ void	Game::TickOnceAfter(){
 		if(player[0].skeleton.free!=2&&!autocam){
 			cameraspeed=20;
 			if(findLengthfast(&player[0].velocity)>400){
-				cameraspeed=20+(findLength(player[0].velocity)-20)*.96;
+				cameraspeed=20+(length(player[0].velocity)-20)*.96;
 			}
 			if(player[0].skeleton.free==0&&player[0].targetanimation!=hanganim&&player[0].targetanimation!=climbanim)target.y+=1.4;
 			coltarget=target-cameraloc;
@@ -9976,7 +9981,7 @@ void	Game::TickOnceAfter(){
 			viewer=cameraloc-facing*cameradist;
 			colviewer=viewer;
 			coltarget=cameraloc;
-			objects.SphereCheckPossible(&colviewer, findDistance(colviewer,coltarget));
+			objects.SphereCheckPossible(&colviewer, distance(colviewer,coltarget));
 			if(terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz])
 				for(j=0;j<terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz];j++){
 					i=terrain.patchobjects[player[0].whichpatchx][player[0].whichpatchz][j];
@@ -9992,7 +9997,7 @@ void	Game::TickOnceAfter(){
 							viewer=colviewer;
 						}
 					}
-					cameradist=findDistance(viewer,target);
+					cameradist=distance(viewer,target);
 					if(viewer.y<terrain.getHeight(viewer.x,viewer.z)+.6){
 						viewer.y=terrain.getHeight(viewer.x,viewer.z)+.6;
 					}
@@ -10003,7 +10008,7 @@ void	Game::TickOnceAfter(){
 		if(player[0].skeleton.free!=2&&autocam){
 			cameraspeed=20;
 			if(findLengthfast(&player[0].velocity)>400){
-				cameraspeed=20+(findLength(player[0].velocity)-20)*.96;
+				cameraspeed=20+(length(player[0].velocity)-20)*.96;
 			}
 			if(player[0].skeleton.free==0&&player[0].targetanimation!=hanganim&&player[0].targetanimation!=climbanim)target.y+=1.4;
 			cameradist+=multiplier*5;
@@ -10020,7 +10025,7 @@ void	Game::TickOnceAfter(){
 			viewer=cameraloc;
 			colviewer=viewer;
 			coltarget=cameraloc;
-			objects.SphereCheckPossible(&colviewer, findDistance(colviewer,coltarget));
+			objects.SphereCheckPossible(&colviewer, distance(colviewer,coltarget));
 			if(terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz])
 				for(j=0;j<terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz];j++){
 					i=terrain.patchobjects[player[0].whichpatchx][player[0].whichpatchz][j];
@@ -10036,7 +10041,7 @@ void	Game::TickOnceAfter(){
 							viewer=colviewer;
 						}
 					}
-					cameradist=findDistance(viewer,target);
+					cameradist=distance(viewer,target);
 					if(viewer.y<terrain.getHeight(viewer.x,viewer.z)+.6){
 						viewer.y=terrain.getHeight(viewer.x,viewer.z)+.6;
 					}

@@ -19,6 +19,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#include <cmath>
 #include "Quaternions.h"
 
 // Functions
@@ -89,6 +90,7 @@ quaternion To_Quat(Matrix_t m)
 	Quat.w = q[3];
 	return Quat;
 }
+
 void Quat_2_Matrix(quaternion Quat, Matrix_t m)
 {
 	// From the GLVelocity site (http://glvelocity.gamedev.net)
@@ -116,6 +118,7 @@ void Quat_2_Matrix(quaternion Quat, Matrix_t m)
 	m[2][3] = 0.0f;
 	m[3][3] = 1.0f;
 }
+
 quaternion To_Quat(angle_axis Ang_Ax)
 {
 	// From the Quaternion Powers article on gamedev.net
@@ -127,30 +130,29 @@ quaternion To_Quat(angle_axis Ang_Ax)
 	Quat.w = cos(Ang_Ax.angle / 2);
 	return Quat;
 }
+
 angle_axis Quat_2_AA(quaternion Quat)
 {
-	static angle_axis Ang_Ax;
-	static float scale, tw;
-	tw = (float)acosf(Quat.w) * 2;
+	angle_axis Ang_Ax;
+	float scale, tw;
+	tw = (float)acos(Quat.w) * 2;
 	scale = (float)sin(tw / 2.0);
 	Ang_Ax.x = Quat.x / scale;
 	Ang_Ax.y = Quat.y / scale;
 	Ang_Ax.z = Quat.z / scale;
 
-	Ang_Ax.angle = 2.0 * acosf(Quat.w)/(float)PI*180;
+	Ang_Ax.angle = 2.0 * acos(Quat.w)/(float)PI*180;
 	return Ang_Ax;
 }
 
 quaternion To_Quat(int In_Degrees, euler Euler)
 {
 	// From the gamasutra quaternion article
-	static quaternion Quat;
-	static float cr, cp, cy, sr, sp, sy, cpcy, spsy;
+	quaternion Quat;
+	float cr, cp, cy, sr, sp, sy, cpcy, spsy;
 	//If we are in Degree mode, convert to Radians
 	if (In_Degrees) {
-		Euler.x = Euler.x * (float)PI / 180;
-		Euler.y = Euler.y * (float)PI / 180;
-		Euler.z = Euler.z * (float)PI / 180;
+		Euler *= (float)PI / 180;
 	}
 	//Calculate trig identities
 	//Formerly roll, pitch, yaw
@@ -173,16 +175,7 @@ quaternion To_Quat(int In_Degrees, euler Euler)
 
 quaternion QNormalize(quaternion Quat)
 {
-	float norm;
-	norm =  Quat.x * Quat.x + 
-		Quat.y * Quat.y + 
-		Quat.z * Quat.z + 
-		Quat.w * Quat.w;
-	Quat.x = float(Quat.x / norm);
-	Quat.y = float(Quat.y / norm);
-	Quat.z = float(Quat.z / norm);
-	Quat.w = float(Quat.w / norm);
-	return Quat;
+	return simd::normalize(Quat);
 }
 
 XYZ Quat2Vector(quaternion Quat)
@@ -286,7 +279,7 @@ bool LineFacet(Vector p1,Vector p2,Vector pa,Vector pb,Vector pc,Vector *p)
 	n.x = (pb.y - pa.y)*(pc.z - pa.z) - (pb.z - pa.z)*(pc.y - pa.y);
 	n.y = (pb.z - pa.z)*(pc.x - pa.x) - (pb.x - pa.x)*(pc.z - pa.z);
 	n.z = (pb.x - pa.x)*(pc.y - pa.y) - (pb.y - pa.y)*(pc.x - pa.x);
-	n = vector_normalize(n);
+	n = simd::normalize(n);
 	d = - n.x * pa.x - n.y * pa.y - n.z * pa.z;
 
 	//Calculate the position on the line that intersects the plane 
@@ -376,7 +369,7 @@ bool PointInTriangle(const XYZ *p, const XYZ normal, const XYZ *p1, const XYZ *p
 	return bInter;
 }
 
-float LineFacetd(XYZ p1,XYZ p2,XYZ pa,XYZ pb,XYZ pc,XYZ *p)
+float LineFacetd(const XYZ &p1, const XYZ &p2, const XYZ &pa, const XYZ &pb,const XYZ &pc, XYZ *p)
 {
 	float d;
 	float denom,mu;
@@ -427,57 +420,3 @@ float LineFacetd(const XYZ &p1,const XYZ &p2,const XYZ &pa,const XYZ &pb,const X
 	if(!PointInTriangle( &p, n, &pa, &pb, &pc)){return 0;}
 	return 1;
 }
-
-float LineFacetd(XYZ *p1,XYZ *p2,XYZ *pa,XYZ *pb,XYZ *pc, XYZ *p)
-{
-	static float d;
-	static float denom,mu;
-	static XYZ n;
-
-	//Calculate the parameters for the plane 
-	n.x = (pb->y - pa->y)*(pc->z - pa->z) - (pb->z - pa->z)*(pc->y - pa->y);
-	n.y = (pb->z - pa->z)*(pc->x - pa->x) - (pb->x - pa->x)*(pc->z - pa->z);
-	n.z = (pb->x - pa->x)*(pc->y - pa->y) - (pb->y - pa->y)*(pc->x - pa->x);
-	Normalise(n);
-	d = - n.x * pa->x - n.y * pa->y - n.z * pa->z;
-
-
-	//Calculate the position on the line that intersects the plane 
-	denom = n.x * (p2->x - p1->x) + n.y * (p2->y - p1->y) + n.z * (p2->z - p1->z);
-	if (fabs(denom) < 0.0000001)        // Line and plane don't intersect 
-		return 0;
-	mu = - (d + n.x * p1->x + n.y * p1->y + n.z * p1->z) / denom;
-	p->x = p1->x + mu * (p2->x - p1->x);
-	p->y = p1->y + mu * (p2->y - p1->y);
-	p->z = p1->z + mu * (p2->z - p1->z);
-	if (mu < 0 || mu > 1)   // Intersection not along line segment 
-		return 0;
-
-	if(!PointInTriangle( p, n, pa, pb, pc)){return 0;}
-	return 1;
-}
-
-float LineFacetd(XYZ *p1,XYZ *p2,XYZ *pa,XYZ *pb,XYZ *pc, XYZ *n, XYZ *p)
-{
-	static float d;
-	static float denom,mu;
-
-	//Calculate the parameters for the plane 
-	d = - n->x * pa->x - n->y * pa->y - n->z * pa->z;
-
-	//Calculate the position on the line that intersects the plane 
-	denom = n->x * (p2->x - p1->x) + n->y * (p2->y - p1->y) + n->z * (p2->z - p1->z);
-	if (fabs(denom) < 0.0000001)        // Line and plane don't intersect 
-		return 0;
-	mu = - (d + n->x * p1->x + n->y * p1->y + n->z * p1->z) / denom;
-	p->x = p1->x + mu * (p2->x - p1->x);
-	p->y = p1->y + mu * (p2->y - p1->y);
-	p->z = p1->z + mu * (p2->z - p1->z);
-	if (mu < 0 || mu > 1)   // Intersection not along line segment 
-		return 0;
-
-	if(!PointInTriangle( p, *n, pa, pb, pc)){return 0;}
-	return 1;
-}
-
-

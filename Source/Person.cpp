@@ -739,9 +739,9 @@ bool Person::DoBloodBigWhere(float howmuch,int which, XYZ where){
 			/*
 			CrossProduct(p2-p1,p3-p1,&N);
 			CrossProduct(p0-p1,p3-p1,&temp);
-			s =  dotproduct(&temp,&N)/findLength(N);
+			s =  simd::dot(&temp,&N)/simd::length(N);
 			CrossProduct(p2-p1,p1-p0,&temp);
-			t = dotproduct(&temp,&N)/findLength(N);
+			t = simd::dot(&temp,&N)/simd::length(N);
 			r = 1 - (s + t);*/
 
 			bary.x=findDistancefast(&p0,&p1);
@@ -1905,7 +1905,7 @@ glTranslatef(	(skeleton.muscles[j].parent1->position.x+skeleton.muscles[j].paren
 glRotatef(-skeleton.muscles[j].rotate1+90,0,1,0);
 glRotatef(-skeleton.muscles[j].rotate2+90,0,0,1);
 glRotatef(-skeleton.muscles[j].rotate3,0,1,0);
-glScalef(1,findDistance(skeleton.muscles[j].parent1->position,skeleton.muscles[j].parent2->position),1);
+glScalef(1,simd::distance(skeleton.muscles[j].parent1->position,skeleton.muscles[j].parent2->position),1);
 glTranslatef(collisionpoint.x,collisionpoint.y,collisionpoint.z);
 glGetFloatv(GL_MODELVIEW_MATRIX,M);
 collisionpoint.x=M[12];
@@ -1949,7 +1949,7 @@ void	Person::DoAnimations(){
 
 			if(id==0){
 				OPENAL_3D_SetAttributes(channels[whooshsound], gLoc, vel);
-				OPENAL_SetVolume(channels[whooshsound], 64*findLength(velocity)/5);
+				OPENAL_SetVolume(channels[whooshsound], 64*simd::length(velocity)/5);
 			}
 			if(((velocity.y<-15)||(crouchkeydown&&velocity.y<-8))&&abs(velocity.y)*4>fast_sqrt(velocity.x*velocity.x*velocity.z*velocity.z))landhard=1;
 			if(!crouchkeydown&&velocity.y>=-15)landhard=0;
@@ -3248,7 +3248,7 @@ void	Person::DoAnimations(){
 										escapednum=0;
 										XYZ aim;
 										weapons.owner[weaponids[0]]=-1;
-										aim=victim->coords+DoRotation(victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].position,0,victim->rotation,0)*victim->scale+victim->velocity*findDistance(victim->coords,coords)/50-(coords+DoRotation(skeleton.joints[skeleton.jointlabels[righthand]].position,0,rotation,0)*scale);
+										aim=victim->coords+DoRotation(victim->skeleton.joints[victim->skeleton.jointlabels[abdomen]].position,0,victim->rotation,0)*victim->scale+victim->velocity*simd::distance(victim->coords,coords)/50-(coords+DoRotation(skeleton.joints[skeleton.jointlabels[righthand]].position,0,rotation,0)*scale);
 										Normalise(aim);
 										/*if(victim->targetanimation==jumpupanim||victim->targetanimation==jumpdownanim){
 										aim=DoRotation(aim,(float)abs(Random()%15)-7,(float)abs(Random()%15)-7,0);
@@ -5073,7 +5073,7 @@ void	Person::DoStuff(){
 		/*if(aitype!=playercontrolled)*/
 		deathbleeding=1;
 		if(burnt>.6)burnt=.6;
-		OPENAL_SetVolume(channels[stream_firesound], 256+256*findLength(velocity)/3);
+		OPENAL_SetVolume(channels[stream_firesound], 256+256*simd::length(velocity)/3);
 
 		if(targetanimation==jumpupanim||targetanimation==jumpdownanim||isFlip()){
 			float gLoc[3];
@@ -5087,7 +5087,7 @@ void	Person::DoStuff(){
 
 			if(id==0){
 				OPENAL_3D_SetAttributes(channels[whooshsound], gLoc, vel);
-				OPENAL_SetVolume(channels[whooshsound], 64*findLength(velocity)/5);
+				OPENAL_SetVolume(channels[whooshsound], 64*simd::length(velocity)/5);
 			}
 		}
 	}
@@ -5773,8 +5773,8 @@ void	Person::DoStuff(){
 		vel[1]=velocity.y;
 		vel[2]=velocity.z;
 
-		if(findLength(average)<10&&dead&&skeleton.free){
-			skeleton.longdead+=(2000-findLength(average))*multiplier+multiplier;
+		if(simd::length(average)<10&&dead&&skeleton.free){
+			skeleton.longdead+=(2000-simd::length(average))*multiplier+multiplier;
 			if(skeleton.longdead>2000){
 				if(skeleton.longdead>6000){
 					if(id==0)OPENAL_SetPaused(channels[whooshsound], true);
@@ -5887,8 +5887,8 @@ void	Person::DoStuff(){
 			}
 		}
 
-		if(findLength(average)<10&&!dead&&skeleton.free){
-			skeleton.longdead+=(2000-findLength(average))*multiplier+multiplier;
+		if(simd::length(average)<10&&!dead&&skeleton.free){
+			skeleton.longdead+=(2000-simd::length(average))*multiplier+multiplier;
 			if(skeleton.longdead>(damage+500)*1.5){
 				if(id==0)OPENAL_SetPaused(channels[whooshsound], true);
 				skeleton.free=0;
@@ -5998,7 +5998,7 @@ void	Person::DoStuff(){
 				//targetrotation+=180;
 
 				skeleton.free=0;
-				if(dotproduct(skeleton.forward,tempvelocity)<0){
+				if(simd::dot(skeleton.forward,tempvelocity)<0){
 					targetanimation=rollanim;
 					targetframe=2;
 				}
@@ -6109,19 +6109,19 @@ void	Person::DoStuff(){
 								vel[2]=velocity.z;
 								PlaySoundEx( bushrustle, samp[bushrustle], NULL, true);
 								OPENAL_3D_SetAttributes(channels[bushrustle], gLoc, vel);
-								OPENAL_SetVolume(channels[bushrustle], 40*findLength(velocity));
+								OPENAL_SetVolume(channels[bushrustle], 40*simd::length(velocity));
 								OPENAL_SetPaused(channels[bushrustle], false);
 
 								if(id==0){
 									envsound[numenvsounds]=coords;
-									envsoundvol[numenvsounds]=4*findLength(velocity);
+									envsoundvol[numenvsounds]=4*simd::length(velocity);
 									envsoundlife[numenvsounds]=.4;
 									numenvsounds++;
 								}
 
 								int howmany;
-								if(environment==grassyenvironment)howmany=findLength(velocity)*4;
-								if(environment==snowyenvironment)howmany=findLength(velocity)*2;
+								if(environment==grassyenvironment)howmany=simd::length(velocity)*4;
+								if(environment==snowyenvironment)howmany=simd::length(velocity)*2;
 								if(detail==2)
 									if(environment!=desertenvironment)
 										for(j=0;j<howmany;j++){
@@ -6136,7 +6136,7 @@ void	Person::DoStuff(){
 											sprites.MakeSprite(splintersprite, pos,tempvel*.5+velocity*float(abs(Random()%100))/100, 165/255+float(abs(Random()%100)-50)/400,0,0, .2+float(abs(Random()%100)-50)/1300, 1);
 											sprites.special[sprites.numsprites-1]=1;
 										}
-										howmany=findLength(velocity)*4;
+										howmany=simd::length(velocity)*4;
 										if(detail==2)
 											if(environment==snowyenvironment)
 												for(j=0;j<howmany;j++){
@@ -6197,19 +6197,19 @@ void	Person::DoStuff(){
 									vel[2]=velocity.z;
 									PlaySoundEx( bushrustle, samp[bushrustle], NULL, true);
 									OPENAL_3D_SetAttributes(channels[bushrustle], gLoc, vel);
-									OPENAL_SetVolume(channels[bushrustle], 40*findLength(velocity));
+									OPENAL_SetVolume(channels[bushrustle], 40*simd::length(velocity));
 									OPENAL_SetPaused(channels[bushrustle], false);
 
 									if(id==0){
 										envsound[numenvsounds]=coords;
-										envsoundvol[numenvsounds]=4*findLength(velocity);
+										envsoundvol[numenvsounds]=4*simd::length(velocity);
 										envsoundlife[numenvsounds]=.4;
 										numenvsounds++;
 									}
 
 									int howmany;
-									if(environment==grassyenvironment)howmany=findLength(velocity)*4;
-									if(environment==snowyenvironment)howmany=findLength(velocity)*2;
+									if(environment==grassyenvironment)howmany=simd::length(velocity)*4;
+									if(environment==snowyenvironment)howmany=simd::length(velocity)*2;
 									if(detail==2)
 										if(environment!=desertenvironment)
 											for(j=0;j<howmany;j++){
@@ -6225,7 +6225,7 @@ void	Person::DoStuff(){
 												sprites.MakeSprite(splintersprite, pos,tempvel*.5+velocity*float(abs(Random()%100))/100, 165/255+float(abs(Random()%100)-50)/400,0,0, .2+float(abs(Random()%100)-50)/1300, 1);
 												sprites.special[sprites.numsprites-1]=1;
 											}
-											howmany=findLength(velocity)*4;
+											howmany=simd::length(velocity)*4;
 											if(detail==2)
 												if(environment==snowyenvironment)
 													for(j=0;j<howmany;j++){
@@ -6461,7 +6461,7 @@ void	Person::DoStuff(){
 					if(targetanimation==jumpupanim||targetanimation==jumpdownanim||isFlip()){
 						flatvelocity=velocity;
 						flatvelocity.y=0;
-						flatvelspeed=findLength(flatvelocity);
+						flatvelspeed=simd::length(flatvelocity);
 						targettilt=flatvelspeed*fast_sqrt(abs(velocity.y)*.7)*normaldotproduct(DoRotation(flatfacing,0,-90,0),flatvelocity);
 						targettilt2=flatvelspeed*fast_sqrt(abs(velocity.y)*.7)*normaldotproduct(flatfacing,flatvelocity);
 						if(velocity.y<0)targettilt2*=-1;
@@ -6495,7 +6495,7 @@ void	Person::DoStuff(){
 					//if(!creature==wolftype||targetanimation==rabbitkickanim)
 					if(targetanimation==rabbittackleanim){
 						velocity+=facing*multiplier*speed*700*scale;
-						velspeed=findLength(velocity);
+						velspeed=simd::length(velocity);
 						if(velspeed>speed*65*scale){
 							velocity/=velspeed;
 							velspeed=speed*65*scale;
@@ -6503,13 +6503,13 @@ void	Person::DoStuff(){
 						}
 						velocity.y+=gravity*multiplier*20;
 						ReflectVector(&velocity,terrain.getNormal(coords.x,coords.z));
-						velspeed=findLength(velocity);
+						velspeed=simd::length(velocity);
 						velocity=flatfacing*velspeed;
 					}
 					if(targetanimation!=rabbitrunninganim&&targetanimation!=wolfrunninganim){
 						if(isRun()||targetanimation==rabbitkickanim){
 							velocity+=facing*multiplier*speed*700*scale;
-							velspeed=findLength(velocity);
+							velspeed=simd::length(velocity);
 							if(velspeed>speed*45*scale){
 								velocity/=velspeed;
 								velspeed=speed*45*scale;
@@ -6517,14 +6517,14 @@ void	Person::DoStuff(){
 							}
 							velocity.y+=gravity*multiplier*20;
 							ReflectVector(&velocity,terrain.getNormal(coords.x,coords.z));
-							velspeed=findLength(velocity);
+							velspeed=simd::length(velocity);
 							if(velspeed<speed*30*scale)velspeed=speed*30*scale;
 							velocity=flatfacing*velspeed;
 						}
 					}
 					else if(isRun()){
 						velocity+=facing*multiplier*speed*700*scale;
-						velspeed=findLength(velocity);
+						velspeed=simd::length(velocity);
 						if(creature==rabbittype){
 							if(velspeed>speed*55*scale){
 								velocity/=velspeed;
@@ -6541,14 +6541,14 @@ void	Person::DoStuff(){
 						}
 						velocity.y+=gravity*multiplier*20;
 						ReflectVector(&velocity,terrain.getNormal(coords.x,coords.z));
-						velspeed=findLength(velocity);
+						velspeed=simd::length(velocity);
 						velocity=flatfacing*velspeed;
 					}
 
 					/*if(creature==wolftype)
 					if(isRun()){
 					velocity+=facing*multiplier*speed*700*scale;
-					velspeed=findLength(velocity);
+					velspeed=simd::length(velocity);
 					if(velspeed>speed*55*scale){
 					velocity/=velspeed;
 					velspeed=speed*55*scale;
@@ -6556,13 +6556,13 @@ void	Person::DoStuff(){
 					}
 					velocity.y+=gravity*multiplier*20;
 					ReflectVector(&velocity,terrain.getNormal(coords.x,coords.z));
-					velspeed=findLength(velocity);
+					velspeed=simd::length(velocity);
 					velocity=flatfacing*velspeed;
 					}*/
 
 					if(targetanimation==rollanim&&animation[targetanimation].label[targetframe]!=6){
 						velocity+=facing*multiplier*speed*700*scale;
-						velspeed=findLength(velocity);
+						velspeed=simd::length(velocity);
 						if(velspeed>speed*45*scale){
 							velocity/=velspeed;
 							velspeed=speed*45*scale;
@@ -6570,14 +6570,14 @@ void	Person::DoStuff(){
 						}
 						velocity.y+=gravity*multiplier*20;
 						ReflectVector(&velocity,terrain.getNormal(coords.x,coords.z));
-						velspeed=findLength(velocity);
+						velspeed=simd::length(velocity);
 						velocity=flatfacing*velspeed;
 					}
 
 
 					/*if(currentanimation==rollanim&&(isCrouch()||isIdle())){
 					velocity+=facing*multiplier*speed*700*scale;
-					velspeed=findLength(velocity);
+					velspeed=simd::length(velocity);
 					if(velspeed>speed*25*scale){
 					velocity/=velspeed;
 					velspeed=speed*25*scale;
@@ -6585,13 +6585,13 @@ void	Person::DoStuff(){
 					}
 					velocity.y+=gravity*multiplier*20;
 					ReflectVector(&velocity,terrain.getNormal(coords.x,coords.z));
-					velspeed=findLength(velocity);
+					velspeed=simd::length(velocity);
 					velocity=flatfacing*velspeed;
 					}*/
 
 					if(targetanimation==sneakanim||targetanimation==walkanim){
 						velocity+=facing*multiplier*speed*700*scale;
-						velspeed=findLength(velocity);
+						velspeed=simd::length(velocity);
 						if(velspeed>speed*12*scale){
 							velocity/=velspeed;
 							velspeed=speed*12*scale;
@@ -6599,13 +6599,13 @@ void	Person::DoStuff(){
 						}
 						velocity.y+=gravity*multiplier*20;
 						ReflectVector(&velocity,terrain.getNormal(coords.x,coords.z));
-						velspeed=findLength(velocity);
+						velspeed=simd::length(velocity);
 						velocity=flatfacing*velspeed;
 					}
 
 					if((targetanimation==fightidleanim||targetanimation==knifefightidleanim)&&(currentanimation==bounceidleanim||currentanimation==hurtidleanim)){
 						velocity+=facing*multiplier*speed*700*scale;
-						velspeed=findLength(velocity);
+						velspeed=simd::length(velocity);
 						if(velspeed>speed*2*scale){
 							velocity/=velspeed;
 							velspeed=speed*2*scale;
@@ -6613,14 +6613,14 @@ void	Person::DoStuff(){
 						}
 						velocity.y+=gravity*multiplier*20;
 						ReflectVector(&velocity,terrain.getNormal(coords.x,coords.z));
-						velspeed=findLength(velocity);
+						velspeed=simd::length(velocity);
 						velocity=flatfacing*velspeed;
 					}
 
 
 					if((targetanimation==bounceidleanim||currentanimation==hurtidleanim)&&(currentanimation==fightidleanim||currentanimation==knifefightidleanim)){
 						velocity-=facing*multiplier*speed*700*scale;
-						velspeed=findLength(velocity);
+						velspeed=simd::length(velocity);
 						if(velspeed>speed*2*scale){
 							velocity/=velspeed;
 							velspeed=speed*2*scale;
@@ -6628,13 +6628,13 @@ void	Person::DoStuff(){
 						}
 						velocity.y+=gravity*multiplier*20;
 						ReflectVector(&velocity,terrain.getNormal(coords.x,coords.z));
-						velspeed=findLength(velocity);
+						velspeed=simd::length(velocity);
 						velocity=flatfacing*velspeed*-1;
 					}
 
 					if(targetanimation==fightsidestep){
 						velocity+=DoRotation(facing*multiplier*speed*700*scale,0,-90,0);
-						velspeed=findLength(velocity);
+						velspeed=simd::length(velocity);
 						if(velspeed>speed*12*scale){
 							velocity/=velspeed;
 							velspeed=speed*12*scale;
@@ -6642,7 +6642,7 @@ void	Person::DoStuff(){
 						}
 						velocity.y+=gravity*multiplier*20;
 						ReflectVector(&velocity,terrain.getNormal(coords.x,coords.z));
-						velspeed=findLength(velocity);
+						velspeed=simd::length(velocity);
 						velocity=DoRotation(flatfacing*velspeed,0,-90,0);
 					}
 
@@ -6658,7 +6658,7 @@ void	Person::DoStuff(){
 					if(targetanimation==backhandspringanim){
 						//coords-=facing*multiplier*50*scale;
 						velocity+=facing*multiplier*speed*700*scale*-1;
-						velspeed=findLength(velocity);
+						velspeed=simd::length(velocity);
 						if(velspeed>speed*50*scale){
 							velocity/=velspeed;
 							velspeed=speed*50*scale;
@@ -6666,13 +6666,13 @@ void	Person::DoStuff(){
 						}
 						velocity.y+=gravity*multiplier*20;
 						ReflectVector(&velocity,terrain.getNormal(coords.x,coords.z));
-						velspeed=findLength(velocity);
+						velspeed=simd::length(velocity);
 						velocity=flatfacing*velspeed*-1;
 					}
 					if(targetanimation==dodgebackanim){
 						//coords-=facing*multiplier*50*scale;
 						velocity+=facing*multiplier*speed*700*scale*-1;
-						velspeed=findLength(velocity);
+						velspeed=simd::length(velocity);
 						if(velspeed>speed*60*scale){
 							velocity/=velspeed;
 							velspeed=speed*60*scale;
@@ -6680,12 +6680,12 @@ void	Person::DoStuff(){
 						}
 						velocity.y+=gravity*multiplier*20;
 						ReflectVector(&velocity,terrain.getNormal(coords.x,coords.z));
-						velspeed=findLength(velocity);
+						velspeed=simd::length(velocity);
 						velocity=flatfacing*velspeed*-1;
 					}
 
 					if(targetanimation==jumpupanim||targetanimation==jumpdownanim||isFlip()){
-						velspeed=findLength(velocity);
+						velspeed=simd::length(velocity);
 					}
 
 
@@ -6741,7 +6741,7 @@ void	Person::DoStuff(){
 
 
 					if(isIdle()||targetanimation==drawrightanim||targetanimation==drawleftanim||targetanimation==crouchdrawrightanim||targetanimation==crouchstabanim||targetanimation==swordgroundstabanim||isStop()||targetanimation==removeknifeanim||targetanimation==crouchremoveknifeanim||isLanding()||isCrouch()||animation[targetanimation].attack||(targetanimation==rollanim&&animation[targetanimation].label[targetframe]==6)){
-						velspeed=findLength(velocity);
+						velspeed=simd::length(velocity);
 						velocity.y=0;
 						if(velspeed<multiplier*300*scale){
 							velocity=0;
@@ -6758,7 +6758,7 @@ void	Person::DoStuff(){
 					}
 
 					if(isLandhard()){
-						velspeed=findLength(velocity);
+						velspeed=simd::length(velocity);
 						velocity.y=0;
 						if(velspeed<multiplier*600*scale){
 							velocity=0;
@@ -7240,7 +7240,7 @@ int Person::DrawSkeleton(){
 			}
 		}
 		framemult=.01;
-		updatedelaychange=-framemult*4*(45-findDistance(viewer,coords)*1);
+		updatedelaychange=-framemult*4*(45-simd::distance(viewer,coords)*1);
 		if(updatedelaychange>-realmultiplier*30)updatedelaychange=-realmultiplier*30;
 		if(updatedelaychange>-framemult*4)updatedelaychange=-framemult*4;
 		if(skeleton.free==1)updatedelaychange*=6;
@@ -7470,12 +7470,12 @@ int Person::DrawSkeleton(){
 
 							temppoint1=skeleton.joints[skeleton.jointlabels[righthand]].position;
 							temppoint2=animation[currentanimation].weapontarget[currentframe]*(1-target)+animation[targetanimation].weapontarget[targetframe]*(target);
-							distance=findDistance(temppoint1,temppoint2);
+							distance=simd::distance(temppoint1,temppoint2);
 							weapons.rotation2[i]=asin((temppoint1.y-temppoint2.y)/distance);
 							weapons.rotation2[i]*=360/6.28;
 							temppoint1.y=0;
 							temppoint2.y=0;
-							weapons.rotation1[i]=acos((temppoint1.z-temppoint2.z)/findDistance(temppoint1,temppoint2));
+							weapons.rotation1[i]=acos((temppoint1.z-temppoint2.z)/simd::distance(temppoint1,temppoint2));
 							weapons.rotation1[i]*=360/6.28;
 							weapons.rotation3[i]=0;
 							weapons.smallrotation[i]=-90;
@@ -7488,12 +7488,12 @@ int Person::DrawSkeleton(){
 
 							temppoint1=skeleton.joints[skeleton.jointlabels[righthand]].position;
 							temppoint2=animation[currentanimation].weapontarget[currentframe]*(1-target)+animation[targetanimation].weapontarget[targetframe]*(target);
-							distance=findDistance(temppoint1,temppoint2);
+							distance=simd::distance(temppoint1,temppoint2);
 							weapons.rotation2[i]=asin((temppoint1.y-temppoint2.y)/distance);
 							weapons.rotation2[i]*=360/6.28;
 							temppoint1.y=0;
 							temppoint2.y=0;
-							weapons.rotation1[i]=acos((temppoint1.z-temppoint2.z)/findDistance(temppoint1,temppoint2));
+							weapons.rotation1[i]=acos((temppoint1.z-temppoint2.z)/simd::distance(temppoint1,temppoint2));
 							weapons.rotation1[i]*=360/6.28;
 							weapons.rotation3[i]=0;
 							weapons.smallrotation[i]=90;
@@ -7531,12 +7531,12 @@ int Person::DrawSkeleton(){
 
 							temppoint1=animation[currentanimation].position[skeleton.jointlabels[righthand]][currentframe]*(1-target)+animation[targetanimation].position[skeleton.jointlabels[righthand]][targetframe]*(target); //skeleton.joints[skeleton.jointlabels[righthand]].position;
 							temppoint2=animation[currentanimation].weapontarget[currentframe]*(1-target)+animation[targetanimation].weapontarget[targetframe]*(target);
-							distance=findDistance(temppoint1,temppoint2);
+							distance=simd::distance(temppoint1,temppoint2);
 							weapons.rotation2[i]=asin((temppoint1.y-temppoint2.y)/distance);
 							weapons.rotation2[i]*=360/6.28;
 							temppoint1.y=0;
 							temppoint2.y=0;
-							weapons.rotation1[i]=acos((temppoint1.z-temppoint2.z)/findDistance(temppoint1,temppoint2));
+							weapons.rotation1[i]=acos((temppoint1.z-temppoint2.z)/simd::distance(temppoint1,temppoint2));
 							weapons.rotation1[i]*=360/6.28;
 							weapons.rotation3[i]=0;
 							weapons.smallrotation[i]=90;
@@ -7553,12 +7553,12 @@ int Person::DrawSkeleton(){
 
 							temppoint1=animation[currentanimation].position[skeleton.jointlabels[righthand]][currentframe]*(1-target)+animation[targetanimation].position[skeleton.jointlabels[righthand]][targetframe]*(target); //skeleton.joints[skeleton.jointlabels[righthand]].position;
 							temppoint2=animation[currentanimation].weapontarget[currentframe]*(1-target)+animation[targetanimation].weapontarget[targetframe]*(target);
-							distance=findDistance(temppoint1,temppoint2);
+							distance=simd::distance(temppoint1,temppoint2);
 							weapons.rotation2[i]=asin((temppoint1.y-temppoint2.y)/distance);
 							weapons.rotation2[i]*=360/6.28;
 							temppoint1.y=0;
 							temppoint2.y=0;
-							weapons.rotation1[i]=acos((temppoint1.z-temppoint2.z)/findDistance(temppoint1,temppoint2));
+							weapons.rotation1[i]=acos((temppoint1.z-temppoint2.z)/simd::distance(temppoint1,temppoint2));
 							weapons.rotation1[i]*=360/6.28;
 							weapons.rotation3[i]=0;
 							weapons.smallrotation[i]=90;
@@ -7639,7 +7639,7 @@ int Person::SphereCheck(XYZ *p1,float radius, XYZ *p, XYZ *move, float *rotate, 
 																		   model->vertex[model->Triangles[j].vertex[2]],
 																		   *p1, radius);
 					end=*p1-point;
-					if(dotproduct(model->facenormals[j],end)>0&&intersecting){
+					if(simd::dot(model->facenormals[j],end)>0&&intersecting){
 						start=*p1;
 						end=*p1;
 						end.y-=radius;
@@ -7707,10 +7707,10 @@ int Person::SphereCheck(XYZ *p1,float radius, XYZ *p, XYZ *move, float *rotate, 
 						model->vertex[model->Triangles[j].vertex[2]].x,model->vertex[model->Triangles[j].vertex[2]].y,model->vertex[model->Triangles[j].vertex[2]].z,
 						p1->x, p1->y, p1->z, radius/2);
 					end=*p1-point;
-					if(dotproduct(model->facenormals[j],end)>0&&intersecting){
+					if(simd::dot(model->facenormals[j],end)>0&&intersecting){
 						if((targetanimation==jumpdownanim||targetanimation==jumpupanim||isFlip())){
 							start=velocity;
-							velocity-=DoRotation(model->facenormals[j],0,*rotate,0)*findLength(velocity)*abs(normaldotproduct(velocity,DoRotation(model->facenormals[j],0,*rotate,0)));//(distance-radius*.5)/multiplier;
+							velocity-=DoRotation(model->facenormals[j],0,*rotate,0)*simd::length(velocity)*abs(normaldotproduct(velocity,DoRotation(model->facenormals[j],0,*rotate,0)));//(distance-radius*.5)/multiplier;
 							if(findLengthfast(&start)<findLengthfast(&velocity))velocity=start;
 						}
 						*p1+=model->facenormals[j]*(distance-radius*.5);

@@ -162,12 +162,12 @@ void	Weapons::DoStuff(){
 
 								temppoint1=0;
 								temppoint2=normalrot;
-								distance=findDistance(temppoint1,temppoint2);
+								distance=simd::distance(temppoint1,temppoint2);
 								rotation2[i]=asin((temppoint1.y-temppoint2.y)/distance);
 								rotation2[i]*=360/6.28;
 								temppoint1.y=0;
 								temppoint2.y=0;
-								rotation1[i]=acos((temppoint1.z-temppoint2.z)/findDistance(temppoint1,temppoint2));
+								rotation1[i]=acos((temppoint1.z-temppoint2.z)/simd::distance(temppoint1,temppoint2));
 								rotation1[i]*=360/6.28;
 								if(temppoint1.x>temppoint2.x)rotation1[i]=360-rotation1[i];
 
@@ -380,12 +380,12 @@ void	Weapons::DoStuff(){
 
 						temppoint1=0;
 						temppoint2=velocity[i];
-						distance=findDistance(temppoint1,temppoint2);
+						distance=simd::distance(temppoint1,temppoint2);
 						rotation2[i]=asin((temppoint1.y-temppoint2.y)/distance);
 						rotation2[i]*=360/6.28;
 						temppoint1.y=0;
 						temppoint2.y=0;
-						rotation1[i]=acos((temppoint1.z-temppoint2.z)/findDistance(temppoint1,temppoint2));
+						rotation1[i]=acos((temppoint1.z-temppoint2.z)/simd::distance(temppoint1,temppoint2));
 						rotation1[i]*=360/6.28;
 						rotation3[i]=0;
 						smallrotation[i]=90;
@@ -476,7 +476,7 @@ void	Weapons::DoStuff(){
 								ReflectVector(&velocity[i],&terrainnormal);
 								position[i]+=terrainnormal*.002;
 
-								bounceness=terrainnormal*findLength(velocity[i])*(abs(normaldotproduct(velocity[i],terrainnormal)));
+								bounceness=terrainnormal*simd::length(velocity[i])*(abs(normaldotproduct(velocity[i],terrainnormal)));
 								if(findLengthfast(&velocity[i])<findLengthfast(&bounceness))bounceness=0;
 								frictionness=abs(normaldotproduct(velocity[i],terrainnormal));
 								velocity[i]-=bounceness;
@@ -512,7 +512,7 @@ void	Weapons::DoStuff(){
 								ReflectVector(&tipvelocity[i],&terrainnormal);
 								tippoint[i]+=terrainnormal*.002;
 
-								bounceness=terrainnormal*findLength(tipvelocity[i])*(abs(normaldotproduct(tipvelocity[i],terrainnormal)));
+								bounceness=terrainnormal*simd::length(tipvelocity[i])*(abs(normaldotproduct(tipvelocity[i],terrainnormal)));
 								if(findLengthfast(&tipvelocity[i])<findLengthfast(&bounceness))bounceness=0;
 								frictionness=abs(normaldotproduct(tipvelocity[i],terrainnormal));
 								tipvelocity[i]-=bounceness;
@@ -555,7 +555,7 @@ void	Weapons::DoStuff(){
 										terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
 										ReflectVector(&velocity[i],&terrainnormal);
 
-										bounceness=terrainnormal*findLength(velocity[i])*(abs(normaldotproduct(velocity[i],terrainnormal)));
+										bounceness=terrainnormal*simd::length(velocity[i])*(abs(normaldotproduct(velocity[i],terrainnormal)));
 										if(findLengthfast(&velocity[i])<findLengthfast(&bounceness))bounceness=0;
 										frictionness=abs(normaldotproduct(velocity[i],terrainnormal));
 										velocity[i]-=bounceness;
@@ -596,7 +596,7 @@ void	Weapons::DoStuff(){
 										terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
 										ReflectVector(&tipvelocity[i],&terrainnormal);
 
-										bounceness=terrainnormal*findLength(tipvelocity[i])*(abs(normaldotproduct(tipvelocity[i],terrainnormal)));
+										bounceness=terrainnormal*simd::length(tipvelocity[i])*(abs(normaldotproduct(tipvelocity[i],terrainnormal)));
 										if(findLengthfast(&tipvelocity[i])<findLengthfast(&bounceness))bounceness=0;
 										frictionness=abs(normaldotproduct(tipvelocity[i],terrainnormal));
 										tipvelocity[i]-=bounceness;
@@ -678,7 +678,7 @@ void	Weapons::DoStuff(){
 						terrainnormal=terrain.getNormal(position[i].x,position[i].z);
 						ReflectVector(&velocity[i],&terrainnormal);
 						position[i]+=terrainnormal*.002;
-						bounceness=terrainnormal*findLength(velocity[i])*(abs(normaldotproduct(velocity[i],terrainnormal)));
+						bounceness=terrainnormal*simd::length(velocity[i])*(abs(normaldotproduct(velocity[i],terrainnormal)));
 						if(findLengthfast(&velocity[i])<findLengthfast(&bounceness))bounceness=0;
 						frictionness=abs(normaldotproduct(velocity[i],terrainnormal));
 						velocity[i]-=bounceness;
@@ -731,7 +731,7 @@ void	Weapons::DoStuff(){
 						terrainnormal=terrain.getNormal(tippoint[i].x,tippoint[i].z);
 						ReflectVector(&tipvelocity[i],&terrainnormal);
 						tippoint[i]+=terrainnormal*.002;
-						bounceness=terrainnormal*findLength(tipvelocity[i])*(abs(normaldotproduct(tipvelocity[i],terrainnormal)));
+						bounceness=terrainnormal*simd::length(tipvelocity[i])*(abs(normaldotproduct(tipvelocity[i],terrainnormal)));
 						if(findLengthfast(&tipvelocity[i])<findLengthfast(&bounceness))bounceness=0;
 						frictionness=abs(normaldotproduct(tipvelocity[i],terrainnormal));
 						tipvelocity[i]-=bounceness;
@@ -790,7 +790,7 @@ void	Weapons::DoStuff(){
 						terrainnormal=terrain.getNormal(mid.x,mid.z);
 						ReflectVector(&velocity[i],&terrainnormal);
 						//mid+=terrainnormal*.002;
-						bounceness=terrainnormal*findLength(velocity[i])*(abs(normaldotproduct(velocity[i],terrainnormal)));
+						bounceness=terrainnormal*simd::length(velocity[i])*(abs(normaldotproduct(velocity[i],terrainnormal)));
 						if(findLengthfast(&velocity[i])<findLengthfast(&bounceness))bounceness=0;
 						frictionness=abs(normaldotproduct(velocity[i],terrainnormal));
 						velocity[i]-=bounceness;
@@ -834,7 +834,7 @@ void	Weapons::DoStuff(){
 						terrainnormal=terrain.getNormal(mid.x,mid.z);
 						ReflectVector(&tipvelocity[i],&terrainnormal);
 						//mid+=terrainnormal*.002;
-						bounceness=terrainnormal*findLength(tipvelocity[i])*(abs(normaldotproduct(tipvelocity[i],terrainnormal)));
+						bounceness=terrainnormal*simd::length(tipvelocity[i])*(abs(normaldotproduct(tipvelocity[i],terrainnormal)));
 						if(findLengthfast(&tipvelocity[i])<findLengthfast(&bounceness))bounceness=0;
 						frictionness=abs(normaldotproduct(tipvelocity[i],terrainnormal));
 						tipvelocity[i]-=bounceness;
@@ -876,7 +876,7 @@ void	Weapons::DoStuff(){
 					terrainnormal=terrain.getNormal(mid.x,mid.z);
 					ReflectVector(&velocity[i],&terrainnormal);
 					position[i]+=terrainnormal*.002;
-					bounceness=terrainnormal*findLength(velocity[i])*(abs(normaldotproduct(velocity[i],terrainnormal)));
+					bounceness=terrainnormal*simd::length(velocity[i])*(abs(normaldotproduct(velocity[i],terrainnormal)));
 					if(findLengthfast(&velocity[i])<findLengthfast(&bounceness))bounceness=0;
 					frictionness=abs(normaldotproduct(velocity[i],terrainnormal));
 					velocity[i]-=bounceness;
@@ -915,7 +915,7 @@ void	Weapons::DoStuff(){
 					terrainnormal=terrain.getNormal(mid.x,mid.z);
 					ReflectVector(&tipvelocity[i],&terrainnormal);
 					tippoint[i]+=terrainnormal*.002;
-					bounceness=terrainnormal*findLength(tipvelocity[i])*(abs(normaldotproduct(tipvelocity[i],terrainnormal)));
+					bounceness=terrainnormal*simd::length(tipvelocity[i])*(abs(normaldotproduct(tipvelocity[i],terrainnormal)));
 					if(findLengthfast(&tipvelocity[i])<findLengthfast(&bounceness))bounceness=0;
 					frictionness=abs(normaldotproduct(tipvelocity[i],terrainnormal));
 					tipvelocity[i]-=bounceness;
@@ -991,7 +991,7 @@ void	Weapons::DoStuff(){
 					whichhit=terrain.lineTerrain(end,start,&closestswordpoint);
 					if(whichhit!=-1){
 					colpoint=(closestswordpoint*terrain.scale+colpoint*terrain.scale)/2;
-					proportion=findDistance(&tippoint[i],&colpoint)/findDistance(&position[i],&tippoint[i]);
+					proportion=simd::distance(&tippoint[i],&colpoint)/simd::distance(&position[i],&tippoint[i]);
 					if(proportion<=1){
 					while(whichhit!=-1){
 					position[i].y+=.1*proportion;
@@ -1034,12 +1034,12 @@ void	Weapons::DoStuff(){
 
 					temppoint1=position[i];
 					temppoint2=tippoint[i];
-					distance=findDistance(temppoint1,temppoint2);
+					distance=simd::distance(temppoint1,temppoint2);
 					rotation2[i]=asin((temppoint1.y-temppoint2.y)/distance);
 					rotation2[i]*=360/6.28;
 					temppoint1.y=0;
 					temppoint2.y=0;
-					rotation1[i]=acos((temppoint1.z-temppoint2.z)/findDistance(temppoint1,temppoint2));
+					rotation1[i]=acos((temppoint1.z-temppoint2.z)/simd::distance(temppoint1,temppoint2));
 					rotation1[i]*=360/6.28;
 					rotation3[i]=0;
 					smallrotation[i]=90;
@@ -1111,7 +1111,7 @@ void	Weapons::DoStuff(){
 				if(Random()%50==0&&findDistancefast(&position[i],&viewer)>80){
 					XYZ shinepoint;
 					shinepoint=position[i]+(tippoint[i]-position[i])*(((float)abs(Random()%100))/100);
-					sprites.MakeSprite(weaponshinesprite, shinepoint,normalrot, 1,1,1, (.1+(float)abs(Random()%100)/200-.25)*1/3*fast_sqrt(findDistance(shinepoint,viewer)), 1);
+					sprites.MakeSprite(weaponshinesprite, shinepoint,normalrot, 1,1,1, (.1+(float)abs(Random()%100)/200-.25)*1/3*fast_sqrt(simd::distance(shinepoint,viewer)), 1);
 					sprites.speed[sprites.numsprites-1]=4;
 					sprites.alivetime[sprites.numsprites-1]=.3;
 				}
@@ -1202,7 +1202,7 @@ int Weapons::Draw()
 						}
 						/*if(type[i]==knife){
 						if(owner[i]==-1){
-						if(!physics[i]&&findDistance(&position[i],&oldposition[i])*5>1)glScalef(1,1,findDistance(&position[i],&oldposition[i])*5);
+						if(!physics[i]&&simd::distance(&position[i],&oldposition[i])*5>1)glScalef(1,1,simd::distance(&position[i],&oldposition[i])*5);
 						}
 						}*/
 

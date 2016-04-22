@@ -68,7 +68,7 @@ void Muscle::DoConstraint(bool spinny)
 
 	oldlength=length;
 
-	if(type!=boneconnect)relaxlength=findDistance(parent1->position,parent2->position);
+	if(type!=boneconnect)relaxlength=simd::distance(parent1->position,parent2->position);
 
 	if(type==boneconnect)strength=1;
 	if(type==constraint)strength=0;
@@ -322,7 +322,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 
 			terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
 			if(terrainnormal.y>.8)freefall=0;
-			bounceness=terrainnormal*findLength(joints[jointlabels[head]].velocity)*(abs(normaldotproduct(joints[jointlabels[head]].velocity,terrainnormal)));
+			bounceness=terrainnormal*simd::length(joints[jointlabels[head]].velocity)*(abs(normaldotproduct(joints[jointlabels[head]].velocity,terrainnormal)));
 			if(findLengthfast(&joints[jointlabels[head]].velocity)>findLengthfast(&joints[jointlabels[head]].oldvelocity)){
 			bounceness=0;
 			joints[jointlabels[head]].velocity=joints[jointlabels[head]].oldvelocity;
@@ -359,7 +359,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 			}
 			if(!joints[jointlabels[head]].locked)damage+=findLengthfast(&bounceness)/2500;
 			ReflectVector(&joints[jointlabels[head]].velocity,&terrainnormal);
-			frictionness=abs(normaldotproduct(joints[jointlabels[head]].velocity,terrainnormal));//findLength(bounceness)/findLength(joints[jointlabels[head]].velocity);
+			frictionness=abs(normaldotproduct(joints[jointlabels[head]].velocity,terrainnormal));//simd::length(bounceness)/simd::length(joints[jointlabels[head]].velocity);
 			joints[jointlabels[head]].velocity-=bounceness;
 			if(1-friction*frictionness>0)joints[jointlabels[head]].velocity*=1-friction*frictionness;
 			else joints[jointlabels[head]].velocity=0;
@@ -455,10 +455,10 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 
 						terrainnormal=terrain.getNormal(joints[i].position.x*(*scale)+coords->x,joints[i].position.z*(*scale)+coords->z);
 						ReflectVector(&joints[i].velocity,&terrainnormal);
-						bounceness=terrainnormal*findLength(joints[i].velocity)*(abs(normaldotproduct(joints[i].velocity,terrainnormal)));
+						bounceness=terrainnormal*simd::length(joints[i].velocity)*(abs(normaldotproduct(joints[i].velocity,terrainnormal)));
 						if(!joints[i].locked)damage+=findLengthfast(&bounceness)/4000;
 						if(findLengthfast(&joints[i].velocity)<findLengthfast(&bounceness))bounceness=0;
-						frictionness=abs(normaldotproduct(joints[i].velocity,terrainnormal));//findLength(bounceness)/findLength(joints[i].velocity);
+						frictionness=abs(normaldotproduct(joints[i].velocity,terrainnormal));//simd::length(bounceness)/simd::length(joints[i].velocity);
 						joints[i].velocity-=bounceness;
 						if(1-friction*frictionness>0)joints[i].velocity*=1-friction*frictionness;
 						else joints[i].velocity=0;
@@ -577,7 +577,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 
 										terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
 										if(terrainnormal.y>.8)freefall=0;
-										bounceness=terrainnormal*findLength(joints[i].velocity)*(abs(normaldotproduct(joints[i].velocity,terrainnormal)));
+										bounceness=terrainnormal*simd::length(joints[i].velocity)*(abs(normaldotproduct(joints[i].velocity,terrainnormal)));
 										if(findLengthfast(&joints[i].velocity)>findLengthfast(&joints[i].oldvelocity)){
 											bounceness=0;
 											joints[i].velocity=joints[i].oldvelocity;
@@ -612,8 +612,8 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 												/*int howmany;
 												XYZ tempvel;
 												XYZ pos;
-												if(environment==grassyenvironment)howmany=findLength(joints[i].velocity)*4/10;
-												if(environment==snowyenvironment)howmany=findLength(joints[i].velocity)*1/10;
+												if(environment==grassyenvironment)howmany=simd::length(joints[i].velocity)*4/10;
+												if(environment==snowyenvironment)howmany=simd::length(joints[i].velocity)*1/10;
 												if(environment!=desertenvironment)
 												for(j=0;j<howmany;j++){
 												tempvel.x=float(abs(Random()%100)-50)/20;
@@ -634,7 +634,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 											}
 											if(!joints[i].locked)damage+=findLengthfast(&bounceness)/2500;
 											ReflectVector(&joints[i].velocity,&terrainnormal);
-											frictionness=abs(normaldotproduct(joints[i].velocity,terrainnormal));//findLength(bounceness)/findLength(joints[i].velocity);
+											frictionness=abs(normaldotproduct(joints[i].velocity,terrainnormal));//simd::length(bounceness)/simd::length(joints[i].velocity);
 											joints[i].velocity-=bounceness;
 											if(1-friction*frictionness>0)joints[i].velocity*=1-friction*frictionness;
 											else joints[i].velocity=0;
@@ -734,7 +734,7 @@ void Skeleton::Draw(int  muscleview)
 	//Calc motionblur-ness
 	for(int i=0; i<num_joints; i++){
 		joints[i].oldposition=joints[i].position;
-		joints[i].blurred=findDistance(joints[i].position,joints[i].oldposition)*100;
+		joints[i].blurred=simd::distance(joints[i].position,joints[i].oldposition)*100;
 		if(joints[i].blurred<1)joints[i].blurred=1;
 	}
 
@@ -838,7 +838,7 @@ void Skeleton::AddJoint(float x, float y, float z, int which)
 		/*if(which<num_joints&&which>=0){
 		joints[num_joints].parent=&joints[which];
 		joints[num_joints].hasparent=1;
-		joints[num_joints].length=findDistance(joints[num_joints].position,joints[num_joints].parent->position);
+		joints[num_joints].length=simd::distance(joints[num_joints].position,joints[num_joints].parent->position);
 		}*/
 		num_joints++;
 		if(which<num_joints&&which>=0)AddMuscle(num_joints-1,which,0,10,boneconnect);
@@ -906,7 +906,7 @@ void Skeleton::SetJoint(float x, float y, float z, int which, int whichjoint)
 		if(which<num_joints&&which>=0){
 			joints[whichjoint].parent=&joints[which];
 			joints[whichjoint].hasparent=1;
-			joints[whichjoint].length=findDistance(joints[whichjoint].position,joints[whichjoint].parent->position);
+			joints[whichjoint].length=simd::distance(joints[whichjoint].position,joints[whichjoint].parent->position);
 		}
 	}
 }
@@ -916,8 +916,8 @@ void Skeleton::AddMuscle(int attach1,int attach2,float minlength,float maxlength
 	if(num_muscles<max_muscles-1&&attach1<num_joints&&attach1>=0&&attach2<num_joints&&attach2>=0&&attach1!=attach2){
 		muscles[num_muscles].parent1=&joints[attach1];
 		muscles[num_muscles].parent2=&joints[attach2];
-		muscles[num_muscles].length=findDistance(muscles[num_muscles].parent1->position,muscles[num_muscles].parent2->position);
-		muscles[num_muscles].targetlength=findDistance(muscles[num_muscles].parent1->position,muscles[num_muscles].parent2->position);
+		muscles[num_muscles].length=simd::distance(muscles[num_muscles].parent1->position,muscles[num_muscles].parent2->position);
+		muscles[num_muscles].targetlength=simd::distance(muscles[num_muscles].parent1->position,muscles[num_muscles].parent2->position);
 		muscles[num_muscles].strength=.7;
 		muscles[num_muscles].type=type;
 		muscles[num_muscles].minlength=minlength;
@@ -930,7 +930,7 @@ void Skeleton::AddMuscle(int attach1,int attach2,float minlength,float maxlength
 void Skeleton::MusclesSet()
 {
 	for(int i=0;i<num_muscles;i++){
-		muscles[i].length=findDistance(muscles[i].parent1->position,muscles[i].parent2->position);
+		muscles[i].length=simd::distance(muscles[i].parent1->position,muscles[i].parent2->position);
 	}
 }
 
