@@ -2366,7 +2366,7 @@ int Game::DrawGLScene(void)
 				movex[7]=0;
 				movey[7]=0;
 
-				if(newdetail==detail&&newscreenheight==(int)screenheight&&newscreenwidth==(int)screenwidth)sprintf (menustring[8], "Back");
+				if(newdetail==detail&&newscreenheight==(int)windowHeight&&newscreenwidth==(int)windowWidth)sprintf (menustring[8], "Back");
 				else sprintf (menustring[8], "Back (some changes take effect next time Lugaru is opened)");
 				startx[8]=10;
 				endx[8]=startx[8]+(int)strlen(menustring[8])*10;

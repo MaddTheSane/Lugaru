@@ -57,6 +57,7 @@ extern float sps;
 extern float viewdistance;
 extern float fadestart;
 extern float screenwidth,screenheight;
+extern float windowWidth,windowHeight;
 extern int kTextureSize;
 extern FRUSTUM frustum;
 extern Objects objects;

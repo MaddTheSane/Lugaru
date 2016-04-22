@@ -2706,10 +2706,10 @@ void	Game::Tick()
 
 				if(newdetail>2)newdetail=detail;
 				if(newdetail<0)newdetail=detail;
-				if(newscreenwidth>3000)newscreenwidth=screenwidth;
-				if(newscreenwidth<0)newscreenwidth=screenwidth;
-				if(newscreenheight>3000)newscreenheight=screenheight;
-				if(newscreenheight<0)newscreenheight=screenheight;
+				if(newscreenwidth>3000)newscreenwidth=windowWidth;
+				if(newscreenwidth<0)newscreenwidth=windowWidth;
+				if(newscreenheight>3000)newscreenheight=windowHeight;
+				if(newscreenheight<0)newscreenheight=windowHeight;
 			}
 
 			if(Button()&&!oldbutton&&selected==3){
@@ -2967,12 +2967,7 @@ void	Game::Tick()
 
 				mainmenu=3;
 
-				if(newdetail>2)newdetail=detail;
-				if(newdetail<0)newdetail=detail;
-				if(newscreenwidth>3000)newscreenwidth=screenwidth;
-				if(newscreenwidth<0)newscreenwidth=screenwidth;
-				if(newscreenheight>3000)newscreenheight=screenheight;
-				if(newscreenheight<0)newscreenheight=screenheight;
+				validateDisplaySettings();
 			}
 		}
 
@@ -9562,12 +9557,10 @@ void	Game::TickOnceAfter(){
 
 void Game::writeSettings()
 {
-	int oldScreenWidth, oldScreenHeight;
-	this->getWindowSize(oldScreenWidth, oldScreenHeight);
 	if(newdetail>2)newdetail=detail;
 	if(newdetail<0)newdetail=detail;
-	if(newscreenwidth<0)newscreenwidth=oldScreenWidth;
-	if(newscreenheight<0)newscreenheight=oldScreenHeight;
+	if(newscreenwidth<0)newscreenwidth=windowWidth;
+	if(newscreenheight<0)newscreenheight=windowHeight;
 	
 	ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
 	opstream << "Screenwidth:\n";
@@ -9644,6 +9637,13 @@ void Game::writeSettings()
 	opstream << "\nChat key:\n";
 	opstream << KeyToChar(chatkey);
 	opstream.close();
-
 }
 
+void Game::validateDisplaySettings() {
+	if(newdetail>2)newdetail=detail;
+	if(newdetail<0)newdetail=detail;
+	if(newscreenwidth>3000)newscreenwidth=windowWidth;
+	if(newscreenwidth<0)newscreenwidth=windowWidth;
+	if(newscreenheight>3000)newscreenheight=windowHeight;
+	if(newscreenheight<0)newscreenheight=windowHeight;
+}

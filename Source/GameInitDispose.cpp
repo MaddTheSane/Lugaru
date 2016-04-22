@@ -1234,8 +1234,8 @@ void Game::InitGame()
 	oldmainmenu=0;
 
 	newdetail=detail;
-	newscreenwidth=screenwidth;
-	newscreenheight=screenheight;
+	newscreenwidth=windowWidth;
+	newscreenheight=windowHeight;
 
 
 

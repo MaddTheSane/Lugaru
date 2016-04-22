@@ -976,7 +976,9 @@ Boolean SetUp (Game & game)
         }
     }
 
-    SDL_GLContext glctx = SDL_GL_CreateContext(sdlwindow);
+	windowWidth = kContextWidth;
+	windowHeight = kContextHeight;
+	SDL_GLContext glctx = SDL_GL_CreateContext(sdlwindow);
 	SDL_GL_GetDrawableSize(sdlwindow, &kContextWidth, &kContextHeight);
     if (!glctx)
     {
