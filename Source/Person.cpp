@@ -6032,7 +6032,7 @@ void	Person::DoStuff(){
 									numenvsounds++;
 								}
 
-								int howmany;
+								int howmany = 0;
 								if(environment==grassyenvironment)howmany=simd::length(velocity)*4;
 								if(environment==snowyenvironment)howmany=simd::length(velocity)*2;
 								if(detail==2)
@@ -6120,7 +6120,7 @@ void	Person::DoStuff(){
 										numenvsounds++;
 									}
 
-									int howmany;
+									int howmany = 0;
 									if(environment==grassyenvironment)howmany=simd::length(velocity)*4;
 									if(environment==snowyenvironment)howmany=simd::length(velocity)*2;
 									if(detail==2)

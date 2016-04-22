@@ -48,7 +48,7 @@ void dealloc(void* param){
 int Model::LineCheck(XYZ &p1,XYZ &p2, XYZ &p, const XYZ &move, const float rotate)
 {
 	float distance;
-	float olddistance;
+	static float olddistance;
 	int intersecting;
 	int firstintersecting;
 	XYZ point;
@@ -66,7 +66,11 @@ int Model::LineCheck(XYZ &p1,XYZ &p2, XYZ &p, const XYZ &move, const float rotat
 	for (int j=0;j<TriangleNum;j++){
 		intersecting=LineFacetd(p1,p2,vertex[Triangles[j].vertex[0]],vertex[Triangles[j].vertex[1]],vertex[Triangles[j].vertex[2]],facenormals[j],point);
 		distance= distance_squared(point, p1);
-		if((distance<olddistance||firstintersecting==-1)&&intersecting){olddistance=distance; firstintersecting=j; p=point;}
+		if((distance<olddistance||firstintersecting==-1)&&intersecting) {
+			olddistance=distance;
+			firstintersecting=j;
+			p=point;
+		}
 	}
 
 	if(rotate)
@@ -439,9 +443,9 @@ bool Model::loadnotex(const char *filename )
 	FILE			*tfile;
 	long				i;
 
-	int oldvertexNum,oldTriangleNum;
-	oldvertexNum=vertexNum;
-	oldTriangleNum=TriangleNum;
+	//int oldvertexNum,oldTriangleNum;
+	//oldvertexNum=vertexNum;
+	//oldTriangleNum=TriangleNum;
 
 	type=notextype;
 	color=0;
@@ -524,9 +528,9 @@ bool Model::load(const char *filename, bool texture)
 		pgame->LoadingScreen();
 	}
 
-	int oldvertexNum,oldTriangleNum;
-	oldvertexNum=vertexNum;
-	oldTriangleNum=TriangleNum;
+	//int oldvertexNum,oldTriangleNum;
+	//oldvertexNum=vertexNum;
+	//oldTriangleNum=TriangleNum;
 
 	type = normaltype;
 	color=0;
@@ -611,9 +615,9 @@ bool Model::loaddecal(const char *filename,bool texture )
 
 	LOG(std::string("Loading decal...") + FixedFN);
 
-	int oldvertexNum,oldTriangleNum;
-	oldvertexNum=vertexNum;
-	oldTriangleNum=TriangleNum;
+	//int oldvertexNum,oldTriangleNum;
+	//oldvertexNum=vertexNum;
+	//oldTriangleNum=TriangleNum;
 
 	type = decalstype;
 	numdecals=0;
@@ -721,9 +725,9 @@ bool Model::loadraw(char *filename )
 
 	LOG(std::string("Loading raw...") + filename);
 
-	int oldvertexNum,oldTriangleNum;
-	oldvertexNum=vertexNum;
-	oldTriangleNum=TriangleNum;
+	//int oldvertexNum,oldTriangleNum;
+	//oldvertexNum=vertexNum;
+	//oldTriangleNum=TriangleNum;
 
 	type = rawtype;
 	color=0;

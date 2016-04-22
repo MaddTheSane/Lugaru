@@ -1330,7 +1330,7 @@ char *calcBaseDir(const char *argv0)
     char *retval;
     char *envr;
 
-    const char *ptr = strrchr((char *)argv0, '/');
+    //const char *ptr = strrchr((char *)argv0, '/');
     if (strchr(argv0, '/'))
     {
         retval = strdup(argv0);

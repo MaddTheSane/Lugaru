@@ -984,7 +984,7 @@ void Terrain::drawdecals()
 		float distancemult;
 		int lasttype;
 
-		float patch_size=size/subdivision*scale;
+		//float patch_size=size/subdivision*scale;
 		const float viewdistsquared = viewdistance*viewdistance;
 		bool blend = true;
 

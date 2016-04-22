@@ -101,7 +101,7 @@ static void ch_save(Game *game, const char *args)
 {
   char buf[64];
   size_t templength;
-  float headprop, bodyprop, armprop, legprop;
+  float headprop = 0, bodyprop = 0, armprop = 0, legprop = 0;
   snprintf(buf, 63, ":Data:Maps:%s", args);
 
 
