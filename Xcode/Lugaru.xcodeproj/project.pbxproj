@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5500E41D1CC9CDD3007F8554 /* Data in CopyFiles */ = {isa = PBXBuildFile; fileRef = 550AE9A618DFC29A00F0C197 /* Data */; };
 		550AE98018DFC1CE00F0C197 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 550AE97F18DFC1CE00F0C197 /* libz.dylib */; };
 		550AE9A318DFC22800F0C197 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 550AE9A218DFC22800F0C197 /* SDL2.framework */; };
 		550AE9A518DFC24700F0C197 /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 550AE9A218DFC22800F0C197 /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		550AE9A718DFC29A00F0C197 /* Data in Resources */ = {isa = PBXBuildFile; fileRef = 550AE9A618DFC29A00F0C197 /* Data */; };
 		550AE9A918DFC8B700F0C197 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 550AE9A818DFC8B700F0C197 /* Images.xcassets */; };
 		565AD00C11990D7600DF867A /* Frustum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 565ACFF111990D7600DF867A /* Frustum.cpp */; };
 		565AD00D11990D7600DF867A /* GameDraw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 565ACFF211990D7600DF867A /* GameDraw.cpp */; };
@@ -142,6 +142,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		5500E41C1CC9CDC3007F8554 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 1;
+			files = (
+				5500E41D1CC9CDD3007F8554 /* Data in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		550AE9A418DFC23800F0C197 /* Copy Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -619,6 +629,7 @@
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
 				550AE9A418DFC23800F0C197 /* Copy Frameworks */,
+				5500E41C1CC9CDC3007F8554 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -661,7 +672,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				550AE9A918DFC8B700F0C197 /* Images.xcassets in Resources */,
-				550AE9A718DFC29A00F0C197 /* Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

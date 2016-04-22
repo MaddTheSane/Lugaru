@@ -1481,8 +1481,15 @@ int main(int argc, char **argv)
 						DoUpdate(game);
 					}
 
+					game.deltah = 0;
+					game.deltav = 0;
+					SDL_Event e;
+					
 					// game is not in focus, give CPU time to other apps by waiting for messages instead of 'peeking'
-                    STUBBED("give up CPU but sniff the event queue");
+					STUBBED("give up CPU but sniff the event queue");
+					while (SDL_PollEvent(&e)) {
+						
+					}
 				}
 			}
 
