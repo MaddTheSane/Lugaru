@@ -59,14 +59,12 @@ void dealloc2(void* param){
 
 void Muscle::DoConstraint(bool spinny)
 {
-	static XYZ vel;
-	static XYZ midp;
-	static XYZ newpoint1,newpoint2;
+	XYZ vel;
+	XYZ midp;
+	XYZ newpoint1,newpoint2;
 
-	static float oldlength;
-	static float relaxlength;
-
-	oldlength=length;
+	float oldlength = length;
+	static float relaxlength = 0;
 
 	if(type!=boneconnect)relaxlength=simd::distance(parent1->position,parent2->position);
 
@@ -170,27 +168,26 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 	static float friction=1.5;
 	static float elasticity=.3;
 	static XYZ bounceness;
-	static XYZ oldpos[100];
+	//static XYZ oldpos[100];
 	static int numrepeats=3;
 	static float groundlevel=.15;
-	static float soundvolume;
+	//static float soundvolume;
 	static int i,j,k,l,m;
 	static XYZ temp,start,end;
 	static XYZ terrainnormal;
-	static float r=.05;
-	static float r2=.08;
+	static const float r=.05;
+	//static float r2=.08;
 	static int whichhit;
 	//static int whichjointstart,whichjointend;
-	static float distance;
+	//static float distance;
 	static float frictionness;
 	static XYZ terrainlight;
 	static int whichpatchx;
 	static int whichpatchz;
-	static float damage;
+	float damage = 0;
 	static bool freely;
 	static float tempmult;
-	static bool breaking;
-	breaking=0;
+	bool breaking = false;
 
 	damage=0;
 

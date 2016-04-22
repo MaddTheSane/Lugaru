@@ -47,10 +47,10 @@ quaternion Quat_Mult(quaternion q1, quaternion q2)
 quaternion To_Quat(Matrix_t m)
 {
 	// From Jason Shankel, (C) 2000.
-	static quaternion Quat;
+	quaternion Quat;
 
-	static double Tr = m[0][0] + m[1][1] + m[2][2] + 1.0, fourD;
-	static double q[4];
+	double Tr = m[0][0] + m[1][1] + m[2][2] + 1.0, fourD;
+	double q[4];
 
 	static int i,j,k;
 	if (Tr >= 1.0)
@@ -122,7 +122,7 @@ void Quat_2_Matrix(quaternion Quat, Matrix_t m)
 quaternion To_Quat(angle_axis Ang_Ax)
 {
 	// From the Quaternion Powers article on gamedev.net
-	static quaternion Quat;
+	quaternion Quat;
 
 	Quat.x = Ang_Ax.x * sin(Ang_Ax.angle / 2);
 	Quat.y = Ang_Ax.y * sin(Ang_Ax.angle / 2);
@@ -198,19 +198,17 @@ XYZ Quat2Vector(quaternion Quat)
 
 bool PointInTriangle(Vector *p, Vector normal, float p11, float p12, float p13, float p21, float p22, float p23, float p31, float p32, float p33)
 {
-	static float u0, u1, u2;
-	static float v0, v1, v2;
-	static float a, b;
-	static float max;
-	static int i, j;
-	static bool bInter;
-	static float pointv[3];
-	static float p1v[3];
-	static float p2v[3];
-	static float p3v[3];
-	static float normalv[3];
-
-	bInter=0;
+	float u0, u1, u2;
+	float v0, v1, v2;
+	float a, b;
+	float max;
+	int i, j;
+	bool bInter = false;
+	float pointv[3];
+	float p1v[3];
+	float p2v[3];
+	float p3v[3];
+	float normalv[3];
 
 	pointv[0]=p->x;
 	pointv[1]=p->y;
@@ -271,9 +269,9 @@ bool PointInTriangle(Vector *p, Vector normal, float p11, float p12, float p13, 
 
 bool LineFacet(Vector p1,Vector p2,Vector pa,Vector pb,Vector pc,Vector *p)
 {
-	static float d;
-	static float denom,mu;
-	static Vector n;
+	float d;
+	float denom,mu;
+	Vector n;
 
 	//Calculate the parameters for the plane
 	n.x = (pb.y - pa.y)*(pc.z - pa.z) - (pb.z - pa.z)*(pc.y - pa.y);
@@ -300,17 +298,17 @@ bool LineFacet(Vector p1,Vector p2,Vector pa,Vector pb,Vector pc,Vector *p)
 
 bool PointInTriangle(const XYZ *p, const XYZ normal, const XYZ *p1, const XYZ *p2, const XYZ *p3)
 {
-	static float u0, u1, u2;
-	static float v0, v1, v2;
-	static float a, b;
-	static float max;
-	static int i, j;
+	float u0, u1, u2;
+	float v0, v1, v2;
+	float a, b;
+	float max;
+	int i, j;
 	bool bInter = false;
-	static float pointv[3];
-	static float p1v[3];
-	static float p2v[3];
-	static float p3v[3];
-	static float normalv[3];
+	float pointv[3];
+	float p1v[3];
+	float p2v[3];
+	float p3v[3];
+	float normalv[3];
 
 	pointv[0]=p->x;
 	pointv[1]=p->y;
@@ -400,8 +398,8 @@ float LineFacetd(const XYZ &p1, const XYZ &p2, const XYZ &pa, const XYZ &pb,cons
 
 float LineFacetd(const XYZ &p1,const XYZ &p2,const XYZ &pa,const XYZ &pb,const XYZ &pc, const XYZ &n, XYZ &p)
 {
-	static float d;
-	static float denom,mu;
+	float d;
+	float denom,mu;
 
 	//Calculate the parameters for the plane 
 	d = - n.x * pa.x - n.y * pa.y - n.z * pa.z;
