@@ -18,6 +18,6 @@ private func getPrefPath() -> NSURL {
 	return appSupURL
 }
 
-func ConvertFileName(orgfilename: UnsafePointer<Int8>, mode: String = "rb") {
-	
+func ConvertFileName(orgfilename: UnsafePointer<Int8>, mode: String = "rb") -> [Int8] {
+	return Array(UnsafeBufferPointer(start: orgfilename, count: Int(strlen(orgfilename) + 1)))
 }

@@ -15,6 +15,7 @@
 		554B1EE61CCBE6EF005CE5BC /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 554B1EE51CCBE6EF005CE5BC /* Constants.swift */; };
 		554B1EE81CCBFA3D005CE5BC /* Terrain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 554B1EE71CCBFA3D005CE5BC /* Terrain.swift */; };
 		554B1EEA1CCBFAE8005CE5BC /* Quaternions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 554B1EE91CCBFAE8005CE5BC /* Quaternions.swift */; };
+		554B1EEF1CCC1A90005CE5BC /* Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 554B1EEE1CCC1A90005CE5BC /* Globals.swift */; };
 		55A13CF81CC961210070DECF /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A13CDF1CC960160070DECF /* libjpeg.a */; };
 		55A13CF91CC961210070DECF /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A13CEF1CC960190070DECF /* libogg.a */; };
 		55A13CFA1CC961210070DECF /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A13CD41CC95FFE0070DECF /* libpng.a */; };
@@ -250,6 +251,7 @@
 		554B1EE51CCBE6EF005CE5BC /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		554B1EE71CCBFA3D005CE5BC /* Terrain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Terrain.swift; sourceTree = "<group>"; };
 		554B1EE91CCBFAE8005CE5BC /* Quaternions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Quaternions.swift; sourceTree = "<group>"; };
+		554B1EEE1CCC1A90005CE5BC /* Globals.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Globals.swift; sourceTree = "<group>"; };
 		55A13CBC1CC953C40070DECF /* Lugaru.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Lugaru.pch; path = ../Xcode/Lugaru.pch; sourceTree = "<group>"; };
 		55A13CC21CC95F480070DECF /* ogg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ogg.h; sourceTree = "<group>"; };
 		55A13CC31CC95F480070DECF /* os_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = os_types.h; sourceTree = "<group>"; };
@@ -547,6 +549,7 @@
 				55A13D031CC971420070DECF /* AppDelegate.swift */,
 				554B1EE91CCBFAE8005CE5BC /* Quaternions.swift */,
 				55A13D201CC974200070DECF /* Model.swift */,
+				554B1EEE1CCC1A90005CE5BC /* Globals.swift */,
 				554B1EE71CCBFA3D005CE5BC /* Terrain.swift */,
 				55A13D221CC975850070DECF /* MacCompatibility.swift */,
 				55A13D241CC9778A0070DECF /* NSURLAdditions.swift */,
@@ -1095,6 +1098,7 @@
 				55A13D161CC972090070DECF /* openal_wrapper.cpp in Sources */,
 				55A13D251CC9778A0070DECF /* NSURLAdditions.swift in Sources */,
 				55A13D1A1CC972190070DECF /* pack_private.c in Sources */,
+				554B1EEF1CCC1A90005CE5BC /* Globals.swift in Sources */,
 				55A13D181CC972190070DECF /* unpack_private.c in Sources */,
 				55A13D041CC971420070DECF /* AppDelegate.swift in Sources */,
 				55A13D1B1CC972190070DECF /* pack.c in Sources */,

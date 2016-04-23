@@ -92,3 +92,7 @@ func distance(point Point: float3, lineStart LineStart: float3, lineEnd LineEnd:
 	return (Distance, Intersection);
 }
 
+func findDistancefast(point1: float3, _ point2: float3) -> Float {
+	return((point1.x-point2.x)*(point1.x-point2.x)+(point1.y-point2.y)*(point1.y-point2.y)+(point1.z-point2.z)*(point1.z-point2.z));
+}
+
