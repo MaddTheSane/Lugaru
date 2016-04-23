@@ -10,5 +10,6 @@
 #define SwiftLugaru_Bridging_h
 
 #include "binio.h"
+#include "openal_wrapper.h"
 
 #endif /* SwiftLugaru_Bridging_h */

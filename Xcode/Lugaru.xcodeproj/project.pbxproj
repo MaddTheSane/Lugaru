@@ -12,6 +12,9 @@
 		550AE9A318DFC22800F0C197 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 550AE9A218DFC22800F0C197 /* SDL2.framework */; };
 		550AE9A518DFC24700F0C197 /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 550AE9A218DFC22800F0C197 /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		550AE9A918DFC8B700F0C197 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 550AE9A818DFC8B700F0C197 /* Images.xcassets */; };
+		554B1EE61CCBE6EF005CE5BC /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 554B1EE51CCBE6EF005CE5BC /* Constants.swift */; };
+		554B1EE81CCBFA3D005CE5BC /* Terrain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 554B1EE71CCBFA3D005CE5BC /* Terrain.swift */; };
+		554B1EEA1CCBFAE8005CE5BC /* Quaternions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 554B1EE91CCBFAE8005CE5BC /* Quaternions.swift */; };
 		55A13CF81CC961210070DECF /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A13CDF1CC960160070DECF /* libjpeg.a */; };
 		55A13CF91CC961210070DECF /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A13CEF1CC960190070DECF /* libogg.a */; };
 		55A13CFA1CC961210070DECF /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A13CD41CC95FFE0070DECF /* libpng.a */; };
@@ -244,6 +247,9 @@
 		550AE9A618DFC29A00F0C197 /* Data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Data; path = ../Data; sourceTree = SOURCE_ROOT; };
 		550AE9A818DFC8B700F0C197 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		551C714D1CCA8F6C0098D893 /* Lugaru.exp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.exports; path = Lugaru.exp; sourceTree = "<group>"; };
+		554B1EE51CCBE6EF005CE5BC /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		554B1EE71CCBFA3D005CE5BC /* Terrain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Terrain.swift; sourceTree = "<group>"; };
+		554B1EE91CCBFAE8005CE5BC /* Quaternions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Quaternions.swift; sourceTree = "<group>"; };
 		55A13CBC1CC953C40070DECF /* Lugaru.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Lugaru.pch; path = ../Xcode/Lugaru.pch; sourceTree = "<group>"; };
 		55A13CC21CC95F480070DECF /* ogg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ogg.h; sourceTree = "<group>"; };
 		55A13CC31CC95F480070DECF /* os_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = os_types.h; sourceTree = "<group>"; };
@@ -533,14 +539,18 @@
 			);
 			name = "OpenAL wrappers";
 			sourceTree = "<group>";
+			usesTabs = 0;
 		};
 		55A13D021CC971420070DECF /* SwiftLugaru */ = {
 			isa = PBXGroup;
 			children = (
 				55A13D031CC971420070DECF /* AppDelegate.swift */,
+				554B1EE91CCBFAE8005CE5BC /* Quaternions.swift */,
 				55A13D201CC974200070DECF /* Model.swift */,
+				554B1EE71CCBFA3D005CE5BC /* Terrain.swift */,
 				55A13D221CC975850070DECF /* MacCompatibility.swift */,
 				55A13D241CC9778A0070DECF /* NSURLAdditions.swift */,
+				554B1EE51CCBE6EF005CE5BC /* Constants.swift */,
 				55A13D051CC971420070DECF /* Assets.xcassets */,
 				55A13D071CC971430070DECF /* MainMenu.xib */,
 				55A13D0A1CC971430070DECF /* Info.plist */,
@@ -1078,6 +1088,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				55A13D231CC975850070DECF /* MacCompatibility.swift in Sources */,
+				554B1EE81CCBFA3D005CE5BC /* Terrain.swift in Sources */,
 				55A13D211CC974200070DECF /* Model.swift in Sources */,
 				55A13D1E1CC9728B0070DECF /* CmdLine.cpp in Sources */,
 				55A13D191CC972190070DECF /* unpack.c in Sources */,
@@ -1087,7 +1098,9 @@
 				55A13D181CC972190070DECF /* unpack_private.c in Sources */,
 				55A13D041CC971420070DECF /* AppDelegate.swift in Sources */,
 				55A13D1B1CC972190070DECF /* pack.c in Sources */,
+				554B1EEA1CCBFAE8005CE5BC /* Quaternions.swift in Sources */,
 				55A13D171CC972140070DECF /* private.c in Sources */,
+				554B1EE61CCBE6EF005CE5BC /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1356,11 +1369,21 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
+					"LUGARU_SWIFT=1",
 					"$(inherited)",
 				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				HEADER_SEARCH_PATHS = (
+					/Library/Frameworks/SDL2.framework/Headers,
+					"$(SRCROOT)/../Dependencies/OpenGL",
+					"$(SRCROOT)/../Dependencies/OpenGL/GL",
+					"$(SRCROOT)/../Dependencies/libpng",
+					"$(SRCROOT)/../Dependencies/libjpeg",
+					"$(SRCROOT)/../Dependencies/OpenAL/include/AL",
+					"$(SRCROOT)/../Dependencies/libogg/include",
+					"$(SRCROOT)/../Dependencies/libvorbis/include",
+				);
 				INFOPLIST_FILE = SwiftLugaru/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
@@ -1369,6 +1392,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "SwiftLugaru/SwiftLugaru-Bridging.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/..";
 			};
 			name = Debug;
 		};
@@ -1386,8 +1410,22 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_NS_ASSERTIONS = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"LUGARU_SWIFT=1",
+					"$(inherited)",
+				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				HEADER_SEARCH_PATHS = (
+					/Library/Frameworks/SDL2.framework/Headers,
+					"$(SRCROOT)/../Dependencies/OpenGL",
+					"$(SRCROOT)/../Dependencies/OpenGL/GL",
+					"$(SRCROOT)/../Dependencies/libpng",
+					"$(SRCROOT)/../Dependencies/libjpeg",
+					"$(SRCROOT)/../Dependencies/OpenAL/include/AL",
+					"$(SRCROOT)/../Dependencies/libogg/include",
+					"$(SRCROOT)/../Dependencies/libvorbis/include",
+				);
 				INFOPLIST_FILE = SwiftLugaru/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
@@ -1395,6 +1433,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.maddthesane.SwiftLugaru;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "SwiftLugaru/SwiftLugaru-Bridging.h";
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/..";
 			};
 			name = Release;
 		};
@@ -1603,6 +1642,7 @@
 				55A13D0D1CC971430070DECF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Lugaru" */ = {
 			isa = XCConfigurationList;

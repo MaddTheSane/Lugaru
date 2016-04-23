@@ -11,7 +11,9 @@
 #include "ogg/ogg.h"
 #include "vorbis/vorbisfile.h"
 
+#ifndef LUGARU_SWIFT
 #include "MacCompatibility.h"
+#endif
 
 #if 0 /* this should only be enable if OPENAL doesn't provide AL_API on all platforms */
 #if (!defined(WIN32) && !defined(_WIN32) && !defined(__WIN32__) && !defined(_WIN64) && !defined(_WIN32_WCE) && !defined(_XBOX)) || (defined(__GNUC__) && defined(WIN32))

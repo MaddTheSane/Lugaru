@@ -10,6 +10,12 @@ import Foundation
 import simd
 import OpenGL.GL
 
+//MARK: - preferences
+var decalsEnabled = true
+
+//MARK: -
+let max_model_decals = 300
+
 class Model {
 	private(set) var modelType = Type.Nothing
 	private var oldType = Type.Nothing
@@ -18,13 +24,13 @@ class Model {
 	var TriangleNum: Int16 = 0
 	var hastexture = false
 	
-	var possible = [Int32]()
-	var owner = [Int32]()
-	var vertex = [float3]()
-	var normals = [float3]()
-	var facenormals = [float3]()
-	var Triangles = [TexturedTriangle]()
-	var vArray = [GLfloat]()
+	var possible = [Int32](count: maxModelVertex, repeatedValue: 0)
+	var owner = [Int32](count: maxTexturedTriangle, repeatedValue: 0)
+	var vertex = [float3](count: maxModelVertex, repeatedValue: float3(0))
+	var normals = [float3](count: maxModelVertex, repeatedValue: float3(0))
+	var facenormals = [float3](count: maxTexturedTriangle, repeatedValue: float3(0))
+	var Triangles = [TexturedTriangle](count: maxTexturedTriangle, repeatedValue: TexturedTriangle())
+	var vArray = [GLfloat](count: maxTexturedTriangle * 24, repeatedValue: 0)
 	
 	/*int possible[max_model_vertex];
 	int owner[max_textured_triangle];
@@ -42,21 +48,40 @@ class Model {
 	var boundingspherecenter = float3()
 	var boundingsphereradius = Float(0)
 	
-	var decalTexCoords = [[[Float]]]()
-	var decalVertex = [float3]()
-	var decalType = [Int32]()
-	var decalOpacity = [Float]()
-	var decalRotation = [Float]()
-	var decalAliveTime = [Float]()
-	var decalPosition = [float3]()
+	enum DecalType: Int {
+		case Shadow = 0
+		case Footprint
+		case Blood
+		case BloodFast
+		case PermanentShadow
+		case Break
+		case BloodSlow
+		case Bodyprint
+	}
 	
-	/*float decaltexcoords[max_model_decals][3][2];
-	XYZ decalvertex[max_model_decals][3];
-	int decaltype[max_model_decals];
-	float decalopacity[max_model_decals];
-	float decalrotation[max_model_decals];
-	float decalalivetime[max_model_decals];
-	XYZ decalposition[max_model_decals];*/
+	struct Decal {
+		var textureCoordinates = [[Float]](count: 3, repeatedValue: [Float](count: 2, repeatedValue: 0))
+		var decals = [float3](count: 3, repeatedValue: float3(0))
+		var type: Int32 = 0
+		var opacity: Float = 0
+		var rotation: Float = 0
+		var aliveTime: Float = 0
+		var decalPosition = float3(0)
+	}
+	var decals = [Decal]()
+	
+	func removeDecal(which: Int) {
+		if decalsEnabled {
+			if modelType != .Decals {
+				return
+			}
+			decals.removeAtIndex(which)
+		}
+	}
+	
+	func makeDecal() {
+		
+	}
 	
 	var numDecals = 0
 
@@ -79,9 +104,9 @@ class Model {
 	}
 	
 	struct TexturedTriangle {
-		var vertex: (Int16, Int16, Int16)
-		var gx: (Float, Float, Float)
-		var gy: (Float, Float, Float)
+		var vertex: (Int16, Int16, Int16) = (0,0,0)
+		var gx: (Float, Float, Float) = (0,0,0)
+		var gy: (Float, Float, Float) = (0,0,0)
 	}
 
 	deinit {
