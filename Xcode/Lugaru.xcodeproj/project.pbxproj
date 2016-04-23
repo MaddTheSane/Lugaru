@@ -122,12 +122,8 @@
 		565AD10B1199140000DF867A /* pngwrite.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD0FA1199140000DF867A /* pngwrite.c */; };
 		565AD10C1199140000DF867A /* pngwtran.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD0FB1199140000DF867A /* pngwtran.c */; };
 		565AD10D1199140000DF867A /* pngwutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD0FC1199140000DF867A /* pngwutil.c */; };
-		565AD10F1199144400DF867A /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 565AD10E1199144400DF867A /* Carbon.framework */; };
-		565AD1111199144400DF867A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 565AD1101199144400DF867A /* Cocoa.framework */; };
-		565AD1131199144400DF867A /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 565AD1121199144400DF867A /* IOKit.framework */; };
 		565AD1151199144400DF867A /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 565AD1141199144400DF867A /* OpenAL.framework */; };
 		565AD1171199144400DF867A /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 565AD1161199144400DF867A /* OpenGL.framework */; };
-		565AD1241199145D00DF867A /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 565AD1231199145D00DF867A /* CoreFoundation.framework */; };
 		56A5C960119BB09D00822AF6 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = 56A5C95D119BB09D00822AF6 /* jaricom.c */; };
 		56A5C961119BB09D00822AF6 /* jcarith.c in Sources */ = {isa = PBXBuildFile; fileRef = 56A5C95E119BB09D00822AF6 /* jcarith.c */; };
 		56A5C962119BB09D00822AF6 /* jdarith.c in Sources */ = {isa = PBXBuildFile; fileRef = 56A5C95F119BB09D00822AF6 /* jdarith.c */; };
@@ -400,12 +396,8 @@
 				55A13CFB1CC961210070DECF /* libvorbis.a in Frameworks */,
 				550AE9A318DFC22800F0C197 /* SDL2.framework in Frameworks */,
 				550AE98018DFC1CE00F0C197 /* libz.dylib in Frameworks */,
-				565AD10F1199144400DF867A /* Carbon.framework in Frameworks */,
-				565AD1111199144400DF867A /* Cocoa.framework in Frameworks */,
-				565AD1131199144400DF867A /* IOKit.framework in Frameworks */,
 				565AD1151199144400DF867A /* OpenAL.framework in Frameworks */,
 				565AD1171199144400DF867A /* OpenGL.framework in Frameworks */,
-				565AD1241199145D00DF867A /* CoreFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
