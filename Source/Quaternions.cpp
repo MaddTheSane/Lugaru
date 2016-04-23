@@ -22,6 +22,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cmath>
 #include "Quaternions.h"
 
+using namespace simd;
+
 // Functions
 quaternion Quat_Mult(quaternion q1, quaternion q2)
 {
@@ -134,9 +136,8 @@ quaternion To_Quat(angle_axis Ang_Ax)
 angle_axis Quat_2_AA(quaternion Quat)
 {
 	angle_axis Ang_Ax;
-	float scale, tw;
-	tw = (float)acos(Quat.w) * 2;
-	scale = (float)sin(tw / 2.0);
+	float tw = (float)acos(Quat.w) * 2;
+	float scale = (float)sin(tw / 2.0);
 	Ang_Ax.x = Quat.x / scale;
 	Ang_Ax.y = Quat.y / scale;
 	Ang_Ax.z = Quat.z / scale;
@@ -175,12 +176,12 @@ quaternion To_Quat(int In_Degrees, euler Euler)
 
 quaternion QNormalize(quaternion Quat)
 {
-	return simd::normalize(Quat);
+	return normalize(Quat);
 }
 
 XYZ Quat2Vector(quaternion Quat)
 {
-	QNormalize(Quat);
+	Quat = normalize(Quat);
 
 	float fW = Quat.w;
 	float fX = Quat.x;
@@ -198,8 +199,6 @@ XYZ Quat2Vector(quaternion Quat)
 
 bool PointInTriangle(Vector *p, Vector normal, float p11, float p12, float p13, float p21, float p22, float p23, float p31, float p32, float p33)
 {
-	float u0, u1, u2;
-	float v0, v1, v2;
 	float a, b;
 	float max;
 	int i, j;
@@ -231,17 +230,17 @@ bool PointInTriangle(Vector *p, Vector normal, float p11, float p12, float p13, 
 	normalv[1]=normal.y;
 	normalv[2]=normal.z;
 
-	max = std::max(std::max(fabs(normalv[0]), fabs(normalv[1])), fabs(normalv[2]));
-	if (max == fabs(normalv[0])) {i = 1; j = 2;} // y, z
-	if (max == fabs(normalv[1])) {i = 0; j = 2;} // x, z
-	if (max == fabs(normalv[2])) {i = 0; j = 1;} // x, y
+	max = std::max(std::max(abs(normalv[0]), abs(normalv[1])), abs(normalv[2]));
+	if (max == abs(normalv[0])) {i = 1; j = 2;} // y, z
+	if (max == abs(normalv[1])) {i = 0; j = 2;} // x, z
+	if (max == abs(normalv[2])) {i = 0; j = 1;} // x, y
 
-	u0 = pointv[i] - p1v[i];
-	v0 = pointv[j] - p1v[j];
-	u1 = p2v[i] - p1v[i];
-	v1 = p2v[j] - p1v[j];
-	u2 = p3v[i] - p1v[i];
-	v2 = p3v[j] - p1v[j];
+	float u0 = pointv[i] - p1v[i];
+	float v0 = pointv[j] - p1v[j];
+	float u1 = p2v[i] - p1v[i];
+	float v1 = p2v[j] - p1v[j];
+	float u2 = p3v[i] - p1v[i];
+	float v2 = p3v[j] - p1v[j];
 
 	if (u1 > -1.0e-05f && u1 < 1.0e-05f)// == 0.0f)
 	{
@@ -250,7 +249,7 @@ bool PointInTriangle(Vector *p, Vector normal, float p11, float p12, float p13, 
 		{
 			a = (v0 - b * v2) / v1;
 			if ((a >= 0.0f) && (( a + b ) <= 1.0f))
-				bInter = 1;
+				bInter = true;
 		}
 	}
 	else
@@ -260,7 +259,7 @@ bool PointInTriangle(Vector *p, Vector normal, float p11, float p12, float p13, 
 		{
 			a = (u0 - b * u2) / u1;
 			if ((a >= 0.0f) && (( a + b ) <= 1.0f ))
-				bInter = 1;
+				bInter = true;
 		}
 	}
 
@@ -277,23 +276,25 @@ bool LineFacet(Vector p1,Vector p2,Vector pa,Vector pb,Vector pc,Vector *p)
 	n.x = (pb.y - pa.y)*(pc.z - pa.z) - (pb.z - pa.z)*(pc.y - pa.y);
 	n.y = (pb.z - pa.z)*(pc.x - pa.x) - (pb.x - pa.x)*(pc.z - pa.z);
 	n.z = (pb.x - pa.x)*(pc.y - pa.y) - (pb.y - pa.y)*(pc.x - pa.x);
-	n = simd::normalize(n);
+	n = normalize(n);
 	d = - n.x * pa.x - n.y * pa.y - n.z * pa.z;
 
 	//Calculate the position on the line that intersects the plane 
 	denom = n.x * (p2.x - p1.x) + n.y * (p2.y - p1.y) + n.z * (p2.z - p1.z);
-	if (fabs(denom) < 0.0000001)        // Line and plane don't intersect 
-		return 0;
+	if (abs(denom) < 0.0000001)        // Line and plane don't intersect 
+		return true;
 	mu = - (d + n.x * p1.x + n.y * p1.y + n.z * p1.z) / denom;
 	p->x = p1.x + mu * (p2.x - p1.x);
 	p->y = p1.y + mu * (p2.y - p1.y);
 	p->z = p1.z + mu * (p2.z - p1.z);
 	if (mu < 0 || mu > 1)   // Intersection not along line segment 
-		return 0;
+		return false;
 
-	if(!PointInTriangle( p, n, pa.x, pa.y, pa.z, pb.x, pb.y, pb.z, pc.x, pc.y, pc.z)){return 0;}
+	if(!PointInTriangle( p, n, pa.x, pa.y, pa.z, pb.x, pb.y, pb.z, pc.x, pc.y, pc.z)) {
+		return false;
+	}
 
-	return 1;
+	return true;
 }
 
 bool PointInTriangle(const XYZ *p, const XYZ normal, const XYZ *p1, const XYZ *p2, const XYZ *p3)
@@ -382,7 +383,7 @@ float LineFacetd(const XYZ &p1, const XYZ &p2, const XYZ &pa, const XYZ &pb,cons
 
 	//Calculate the position on the line that intersects the plane 
 	denom = n.x * (p2.x - p1.x) + n.y * (p2.y - p1.y) + n.z * (p2.z - p1.z);
-	if (fabs(denom) < 0.0000001)        // Line and plane don't intersect 
+	if (abs(denom) < 0.0000001)        // Line and plane don't intersect
 		return 0;
 	mu = - (d + n.x * p1.x + n.y * p1.y + n.z * p1.z) / denom;
 	p->x = p1.x + mu * (p2.x - p1.x);
@@ -399,22 +400,24 @@ float LineFacetd(const XYZ &p1, const XYZ &p2, const XYZ &pa, const XYZ &pb,cons
 float LineFacetd(const XYZ &p1,const XYZ &p2,const XYZ &pa,const XYZ &pb,const XYZ &pc, const XYZ &n, XYZ &p)
 {
 	float d;
-	float denom,mu;
+	float denom;
 
 	//Calculate the parameters for the plane 
 	d = - n.x * pa.x - n.y * pa.y - n.z * pa.z;
 
 	//Calculate the position on the line that intersects the plane 
 	denom = n.x * (p2.x - p1.x) + n.y * (p2.y - p1.y) + n.z * (p2.z - p1.z);
-	if (fabs(denom) < 0.0000001)        // Line and plane don't intersect 
+	if (abs(denom) < 0.0000001)        // Line and plane don't intersect
 		return 0;
-	mu = - (d + n.x * p1.x + n.y * p1.y + n.z * p1.z) / denom;
+	float mu = - (d + n.x * p1.x + n.y * p1.y + n.z * p1.z) / denom;
 	p.x = p1.x + mu * (p2.x - p1.x);
 	p.y = p1.y + mu * (p2.y - p1.y);
 	p.z = p1.z + mu * (p2.z - p1.z);
 	if (mu < 0 || mu > 1)   // Intersection not along line segment 
 		return 0;
 
-	if(!PointInTriangle( &p, n, &pa, &pb, &pc)){return 0;}
+	if (!PointInTriangle( &p, n, &pa, &pb, &pc)) {
+		return 0;
+	}
 	return 1;
 }

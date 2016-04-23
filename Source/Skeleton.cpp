@@ -1685,13 +1685,10 @@ Muscle::~Muscle()
 
 Animation & Animation::operator = (const Animation & ani)
 {
-	int i = 0;
+	bool allocate = ((ani.numframes != numframes) || (ani.joints != joints));
 
-	bool allocate = true;
-
-	allocate = ((ani.numframes != numframes) || (ani.joints != joints));
-
-	if (allocate) deallocate();
+	if (allocate)
+		deallocate();
 
 	numframes = ani.numframes;
 	height = ani.height;
@@ -1700,43 +1697,54 @@ Animation & Animation::operator = (const Animation & ani)
 	weapontargetnum = ani.weapontargetnum;
 
 	if (allocate) position=(XYZ**)malloc(sizeof(XYZ*)*ani.joints);
-	for(i = 0; i < ani.joints; i++)
+	for(int i = 0; i < ani.joints; i++)
 	{
-		if (allocate) position[i] = (XYZ*)malloc(sizeof(XYZ)*ani.numframes);
+		if (allocate)
+			position[i] = (XYZ*)malloc(sizeof(XYZ)*ani.numframes);
 		memcpy(position[i], ani.position[i], sizeof(XYZ)*ani.numframes);
 	}
 
-	if (allocate) twist=(float**)malloc(sizeof(float*)*ani.joints);
-	for(i = 0; i < ani.joints; i++)
+	if (allocate)
+		twist=(float**)malloc(sizeof(float*)*ani.joints);
+	for(int i = 0; i < ani.joints; i++)
 	{
-		if (allocate) twist[i] = (float*)malloc(sizeof(float)*ani.numframes);
+		if (allocate)
+			twist[i] = (float*)malloc(sizeof(float)*ani.numframes);
 		memcpy(twist[i], ani.twist[i], sizeof(float)*ani.numframes);
 	}
 
-	if (allocate) twist2=(float**)malloc(sizeof(float*)*ani.joints);
-	for(i = 0; i < ani.joints; i++)
+	if (allocate)
+		twist2=(float**)malloc(sizeof(float*)*ani.joints);
+	for(int i = 0; i < ani.joints; i++)
 	{
-		if (allocate) twist2[i] = (float*)malloc(sizeof(float)*ani.numframes);
+		if (allocate)
+			twist2[i] = (float*)malloc(sizeof(float)*ani.numframes);
 		memcpy(twist2[i], ani.twist2[i], sizeof(float)*ani.numframes);
 	}
 
-	if (allocate) speed = (float*)malloc(sizeof(float)*ani.numframes);
+	if (allocate)
+		speed = (float*)malloc(sizeof(float)*ani.numframes);
 	memcpy(speed, ani.speed, sizeof(float)*ani.numframes);
 
-	if (allocate) onground=(bool**)malloc(sizeof(bool*)*ani.joints);
-	for(i = 0; i < ani.joints; i++)
+	if (allocate)
+		onground=(bool**)malloc(sizeof(bool*)*ani.joints);
+	for(int i = 0; i < ani.joints; i++)
 	{
-		if (allocate) onground[i] =(bool*)malloc(sizeof(bool)*ani.numframes);
+		if (allocate)
+			onground[i] =(bool*)malloc(sizeof(bool)*ani.numframes);
 		memcpy(onground[i], ani.onground[i], sizeof(bool)*ani.numframes);
 	}
 
-	if (allocate) forward = (XYZ*)malloc(sizeof(XYZ)*ani.numframes);
+	if (allocate)
+		forward = (XYZ*)malloc(sizeof(XYZ)*ani.numframes);
 	memcpy(forward, ani.forward, sizeof(XYZ)*ani.numframes);
 
-	if (allocate) weapontarget = (XYZ*)malloc(sizeof(XYZ)*ani.numframes);
+	if (allocate)
+		weapontarget = (XYZ*)malloc(sizeof(XYZ)*ani.numframes);
 	memcpy(weapontarget, ani.weapontarget, sizeof(XYZ)*ani.numframes);
 
-	if (allocate) label = (int*)malloc(sizeof(int)*ani.numframes);
+	if (allocate)
+		label = (int*)malloc(sizeof(int)*ani.numframes);
 	memcpy(label, ani.label, sizeof(int)*ani.numframes);
 
 	return (*this);
