@@ -66,9 +66,8 @@ void Objects::SphereCheckPossible(XYZ *p1,float radius)
 
 void Objects::Draw()
 {
-	static float distance;
-	static int i,j;
-	static XYZ moved,terrainlight;
+	float distance;
+	XYZ moved,terrainlight;
 	bool hidden;
 
 	for(int i=0;i<numobjects;i++){
@@ -310,7 +309,7 @@ void Objects::Draw()
 	}
 
 	glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, 0 );
-	for(i=0;i<numobjects;i++){
+	for (int i=0;i<numobjects;i++) {
 		if(type[i]==treeleavestype||type[i]==bushtype){
 			moved=DoRotation(model[i].boundingspherecenter,0,rotation[i],0);
 			if(frustum.SphereInFrustum(position[i].x+moved.x,position[i].y+moved.y,position[i].z+moved.z,model[i].boundingsphereradius)){   

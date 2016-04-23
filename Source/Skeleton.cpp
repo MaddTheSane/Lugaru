@@ -151,7 +151,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 {
 	float friction=1.5;
 	static const float elasticity=.3;
-	static XYZ bounceness;
+	XYZ bounceness;
 	//static XYZ oldpos[100];
 	static const int numrepeats=3;
 	static float groundlevel=.15;
@@ -396,8 +396,8 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 						if(joints[i].label==groin&&!joints[i].locked&&joints[i].delay<=0){
 							joints[i].locked=1;
 							joints[i].delay=1;
-							static float gLoc[3];
-							static float vel[3];
+							float gLoc[3];
+							float vel[3];
 							gLoc[0]=joints[i].position.x*(*scale)+coords->x;
 							gLoc[1]=joints[i].position.y*(*scale)+coords->y;
 							gLoc[2]=joints[i].position.z*(*scale)+coords->z;
@@ -416,8 +416,8 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 						if(joints[i].label==head&&!joints[i].locked&&joints[i].delay<=0){
 							joints[i].locked=1;
 							joints[i].delay=1;
-							static float gLoc[3];
-							static float vel[3];
+							float gLoc[3];
+							float vel[3];
 							gLoc[0]=joints[i].position.x*(*scale)+coords->x;
 							gLoc[1]=joints[i].position.y*(*scale)+coords->y;
 							gLoc[2]=joints[i].position.z*(*scale)+coords->z;
@@ -450,8 +450,8 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 								breaking=0;
 								camerashake+=.6;
 
-								static float gLoc[3];
-								static float vel[3];
+								float gLoc[3];
+								float vel[3];
 								gLoc[0]=joints[i].position.x*(*scale)+coords->x;
 								gLoc[1]=joints[i].position.y*(*scale)+coords->y;
 								gLoc[2]=joints[i].position.z*(*scale)+coords->z;
@@ -518,8 +518,8 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 										if(joints[i].label==groin&&!joints[i].locked&&joints[i].delay<=0){
 											joints[i].locked=1;
 											joints[i].delay=1;
-											static float gLoc[3];
-											static float vel[3];
+											float gLoc[3];
+											float vel[3];
 											gLoc[0]=joints[i].position.x*(*scale)+coords->x;
 											gLoc[1]=joints[i].position.y*(*scale)+coords->y;
 											gLoc[2]=joints[i].position.z*(*scale)+coords->z;
@@ -538,8 +538,8 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 										if(joints[i].label==head&&!joints[i].locked&&joints[i].delay<=0){
 											joints[i].locked=1;
 											joints[i].delay=1;
-											static float gLoc[3];
-											static float vel[3];
+											float gLoc[3];
+											float vel[3];
 											gLoc[0]=joints[i].position.x*(*scale)+coords->x;
 											gLoc[1]=joints[i].position.y*(*scale)+coords->y;
 											gLoc[2]=joints[i].position.z*(*scale)+coords->z;
@@ -568,8 +568,8 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 												breaking=0;
 												camerashake+=.6;
 
-												static float gLoc[3];
-												static float vel[3];
+												float gLoc[3];
+												float vel[3];
 												gLoc[0]=joints[i].position.x*(*scale)+coords->x;
 												gLoc[1]=joints[i].position.y*(*scale)+coords->y;
 												gLoc[2]=joints[i].position.z*(*scale)+coords->z;
