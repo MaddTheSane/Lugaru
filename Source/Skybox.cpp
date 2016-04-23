@@ -21,20 +21,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Skybox.h"
 #include "Game.h"
+#include "Globals.h"
 
-extern float viewdistance;
-extern int detail;
-extern bool trilinear;
-extern float blurness;
-extern int environment;
-extern TGAImageRec texture;
-extern bool skyboxtexture;
-extern float skyboxr;
-extern float skyboxg;
-extern float skyboxb;
-extern int tutoriallevel;
 
-bool	SkyBox::load( const char *ffront,const char *fleft,const char *fback,const char *fright,const char *fup,const char *fdown,const char *fcloud,const char *freflect)
+bool SkyBox::load( const char *ffront,const char *fleft,const char *fback,const char *fright,const char *fup,const char *fdown,const char *fcloud,const char *freflect)
 {
 /*	static GLuint		type;
 	unsigned char fileNamep[256];
@@ -253,11 +243,11 @@ bool	SkyBox::load( const char *ffront,const char *fleft,const char *fback,const 
 	return true;
 }
 
-void	SkyBox::draw()
+void SkyBox::draw()
 {
-	static float size=viewdistance/4;
+	const float size=viewdistance/4;
 	glPushMatrix();
-	static GLfloat M[16];
+	GLfloat M[16];
 	glGetFloatv(GL_MODELVIEW_MATRIX,M);
 	M[12]=0;
 	M[13]=0;

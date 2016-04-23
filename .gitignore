@@ -1,6 +1,6 @@
-**/.DS_Store
-**/project.xcworkspace/
-**/xcuserdata/
+.DS_Store
+project.xcworkspace/
+xcuserdata/
 ./lugaru*
 cmake_install.cmake
 cmake-build
@@ -10,4 +10,4 @@ Makefile
 *~
 bin
 run
-**/build
+build/

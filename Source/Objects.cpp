@@ -20,25 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include "Objects.h"
-extern XYZ viewer;
-extern float viewdistance;
-extern float lightambient[3],lightbrightness[3];
-extern float fadestart;
-extern int environment;
-extern float texscale;
-extern Light light;
-extern float multiplier;
-extern float gravity;
-extern FRUSTUM frustum;
-extern Terrain terrain;
-extern float terraindetail;
-extern bool foliage;
-extern int detail;
-extern float blurness;
-extern float windvar;
-extern float playerdist;
-extern bool skyboxtexture;
-extern Sprites sprites;
+#include "Globals.h"
 
 //Functions
 
@@ -55,7 +37,7 @@ bool 	Objects::checkcollide(XYZ startpoint,XYZ endpoint,int which){
 		if(type[i]!=treeleavestype&&type[i]!=treetrunktype&&type[i]!=bushtype&&type[i]!=firetype&&i!=which){
 			colviewer=startpoint;
 			coltarget=endpoint;
-			if(model[i].LineCheck(&colviewer,&coltarget,&colpoint,&position[i],&rotation[i])!=-1)return 1;	
+			if(model[i].LineCheck(colviewer,coltarget,colpoint,position[i],rotation[i])!=-1)return 1;	
 		}
 	}
 
@@ -76,7 +58,7 @@ void Objects::SphereCheckPossible(XYZ *p1,float radius)
 			for(j=0;j<terrain.patchobjectnum[whichpatchx][whichpatchz];j++){
 				i=terrain.patchobjects[whichpatchx][whichpatchz][j];
 				possible[i]=0;
-				if(model[i].SphereCheckPossible(p1, radius, &position[i], &rotation[i])!=-1){
+				if(model[i].SphereCheckPossible(*p1, radius, position[i], rotation[i])!=-1){
 					possible[i]=1;
 				}
 			}
@@ -84,12 +66,11 @@ void Objects::SphereCheckPossible(XYZ *p1,float radius)
 
 void Objects::Draw()
 {
-	static float distance;
-	static int i,j;
-	static XYZ moved,terrainlight;
+	float distance;
+	XYZ moved,terrainlight;
 	bool hidden;
 
-	for(i=0;i<numobjects;i++){
+	for(int i=0;i<numobjects;i++){
 		if(type[i]!=firetype){
 			moved=DoRotation(model[i].boundingspherecenter,0,rotation[i],0);
 			if(type[i]==tunneltype||frustum.SphereInFrustum(position[i].x+moved.x,position[i].y+moved.y,position[i].z+moved.z,model[i].boundingsphereradius)){   
@@ -328,7 +309,7 @@ void Objects::Draw()
 	}
 
 	glTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, 0 );
-	for(i=0;i<numobjects;i++){
+	for (int i=0;i<numobjects;i++) {
 		if(type[i]==treeleavestype||type[i]==bushtype){
 			moved=DoRotation(model[i].boundingspherecenter,0,rotation[i],0);
 			if(frustum.SphereInFrustum(position[i].x+moved.x,position[i].y+moved.y,position[i].z+moved.z,model[i].boundingsphereradius)){   
@@ -336,7 +317,7 @@ void Objects::Draw()
 				if(hidden){
 					distance=1;
 					if(distance>0){
-						if(1==1||occluded[i]<6){
+						if(/* DISABLES CODE */ (1)==1||occluded[i]<6){
 							glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 							glPushMatrix();
 								glEnable(GL_LIGHTING);
@@ -722,8 +703,8 @@ void Objects::DoShadows()
 								if(type[l]!=treetrunktype/*&&l!=i*/){
 									testpoint=terrainpoint;
 									testpoint2=terrainpoint+lightloc*50*(1-shadowed[i]);
-									if(model[l].LineCheck(&testpoint,&testpoint2,&col,&position[l],&rotation[l])!=-1){
-										shadowed[i]=1-(findDistance(&terrainpoint,&col)/50);	
+									if(model[l].LineCheck(testpoint,testpoint2,col,position[l],rotation[l])!=-1){
+										shadowed[i]=1-(simd::distance(terrainpoint,col)/50);
 									}
 								}
 							}

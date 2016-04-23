@@ -23,10 +23,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Lights.h"
 
 void SetUpLight(Light* whichsource, int whichlight){
-	static float qattenuation[]={0.0002f};
-	static float cattenuation[]={1.5f};
-	static float lattenuation[]={0.5f};
-	static float zattenuation[]={0.0f};
+	static const GLfloat qattenuation[]={0.0002f};
+	//static float cattenuation[]={1.5f};
+	//static float lattenuation[]={0.5f};
+	//static float zattenuation[]={0.0f};
 	
 	//Initialize lights
 	if(whichlight==0){
@@ -76,7 +76,7 @@ void SetUpLight(Light* whichsource, int whichlight){
 }
 
 void SetUpMainLight(Light* whichsource, int whichlight, float ambientr, float ambientg, float ambientb){
-	static float qattenuation[]={0.0f};
+	static const GLfloat qattenuation[]={0.0f};
 
 	//Initialize lights
 

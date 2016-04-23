@@ -21,45 +21,27 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Sprites.h"
 #include "Person.h"
-extern XYZ viewer;
-extern float viewdistance;
-extern float fadestart;
-extern int environment;
-extern float texscale;
-extern Light light;
-extern float multiplier;
-extern float gravity;
-extern Terrain terrain;
-extern Objects objects;
-extern int detail;
-extern XYZ viewerfacing;
-extern float terraindetail;
-extern int bloodtoggle;
-extern XYZ windvector;
-extern int numplayers;
-extern Person player[maxplayers];
+#include "Globals.h"
+
 //Functions
 
 void Sprites::Draw()
 {
-	static int i,j,k;
-	static float M[16];
-	static XYZ point;
-	static float distancemult;
-	static int lasttype;
-	static int lastspecial;
-	static int whichpatchx,whichpatchz;
-	static XYZ start,end,colpoint;
-	static bool check;
-	static bool blend;
-	static float tempmult;
-	static XYZ difference;
-	static float lightcolor[3];
-	static float viewdistsquared=viewdistance*viewdistance;
-	static XYZ tempviewer;
-
-	tempviewer=viewer+viewerfacing*6;
-	check=0;
+	int i,j,k;
+	float M[16];
+	XYZ point;
+	float distancemult;
+	int lasttype = -1;
+	int lastspecial = -1;
+	int whichpatchx,whichpatchz;
+	XYZ start,end,colpoint;
+	bool check = false;
+	bool blend = true;
+	float tempmult;
+	XYZ difference;
+	float lightcolor[3];
+	const float viewdistsquared=viewdistance*viewdistance;
+	XYZ tempviewer=viewer+viewerfacing*6;
 
 	lightcolor[0]=light.color[0]*.5+light.ambient[0];
 	lightcolor[1]=light.color[1]*.5+light.ambient[1];
@@ -72,8 +54,6 @@ void Sprites::Draw()
 		checkdelay=1;
 	}
 
-	lasttype=-1;
-	lastspecial=-1;
 	glEnable(GL_BLEND);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_CULL_FACE);
@@ -256,7 +236,7 @@ void Sprites::Draw()
 		if(type[i]==breathsprite){
 			opacity[i]-=multiplier/2;
 			size[i]+=multiplier/2;
-			if(findLength(&velocity[i])<=multiplier)velocity[i]=0;
+			if(simd::length(velocity[i])<=multiplier)velocity[i]=0;
 			else{
 				XYZ slowdown;
 				slowdown=velocity[i]*-1;
@@ -299,7 +279,7 @@ void Sprites::Draw()
 
 						movepoint=0;
 						rotationpoint=0;
-						whichtri=player[j].skeleton.drawmodel.LineCheck(&startpoint,&endpoint, &footpoint, &movepoint, &rotationpoint);
+						whichtri=player[j].skeleton.drawmodel.LineCheck(startpoint,endpoint, footpoint, movepoint, rotationpoint);
 						if(whichtri!=-1){
 							spritehit=1;
 							player[j].DoBloodBigWhere(0,160,oldposition[i]);
@@ -318,7 +298,7 @@ void Sprites::Draw()
 								start=oldposition[i];
 								end=position[i];
 								if(!spritehit)
-									if(objects.model[k].LineCheck(&start,&end,&colpoint,&objects.position[k],&objects.rotation[k])!=-1){
+									if(objects.model[k].LineCheck(start,end,colpoint,objects.position[k],objects.rotation[k])!=-1){
 										if(detail==2||(detail==1&&abs(Random()%4)==0)||(detail==0&&abs(Random()%8)==0))objects.model[k].MakeDecal(blooddecalfast,DoRotation(colpoint-objects.position[k],0,-objects.rotation[k],0),size[i]*1.6/*+abs((float)(Random()%100))/2400*/,.5,Random()%360);
 										DeleteSprite(i);
 										spritehit=1;

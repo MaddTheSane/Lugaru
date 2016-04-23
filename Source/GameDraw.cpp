@@ -21,163 +21,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Game.h"
 #include "openal_wrapper.h"
+#include "Globals.h"
 
 using namespace std;
-
-extern XYZ viewer;
-extern int environment;
-extern float texscale;
-extern Light light;
-extern Terrain terrain;
-extern Sprites sprites;
-extern float multiplier;
-extern float sps;
-extern float viewdistance;
-extern float fadestart;
-extern float screenwidth,screenheight;
-extern int kTextureSize;
-extern FRUSTUM frustum;
-extern Light light;
-extern Objects objects;
-extern int detail;
-extern float usermousesensitivity;
-extern bool osx;
-extern float camerashake;
-extern Weapons weapons;
-extern Person player[maxplayers];
-extern int slomo;
-extern float slomodelay;
-extern bool ismotionblur;
-extern float woozy;
-extern float blackout;
-extern bool damageeffects;
-extern float volume;
-extern int numplayers;
-extern bool texttoggle;
-extern float blurness;
-extern float targetblurness;
-extern float playerdist;
-extern bool cellophane;
-extern bool freeze;
-extern float flashamount,flashr,flashg,flashb;
-extern int flashdelay;
-extern int netstate;
-extern float motionbluramount;
-extern bool isclient;
-extern bool alwaysblur;
-extern int test;
-extern bool tilt2weird;
-extern bool tiltweird;
-extern bool midweird;
-extern bool proportionweird;
-extern bool vertexweird[6];
-extern bool velocityblur;
-extern bool buttons[3];
-extern bool debugmode;
-extern int mainmenu;
-extern int oldmainmenu;
-extern int bloodtoggle;
-extern int difficulty;
-extern bool decals;
-// MODIFIED GWC
-//extern int texdetail;
-extern float texdetail;
-extern bool musictoggle;
-extern int bonus;
-extern float bonusvalue;
-extern float bonustotal;
-extern float bonustime;
-extern int oldbonus;
-extern float startbonustotal;
-extern float bonusnum[100];
-extern int tutoriallevel;
-extern float smoketex;
-extern float tutorialstagetime;
-extern float tutorialmaxtime;
-extern int tutorialstage;
-extern bool againbonus;
-extern float damagedealt;
-extern float damagetaken;
-extern bool invertmouse;
-
-extern int numhotspots;
-extern int winhotspot;
-extern int killhotspot;
-extern XYZ hotspot[40];
-extern int hotspottype[40];
-extern float hotspotsize[40];
-extern char hotspottext[40][256];
-extern int currenthotspot;
-
-extern int numaccounts;
-extern int accountactive;
-extern int accountdifficulty[10];
-extern int accountprogress[10];
-extern float accountpoints[10];
-extern float accounthighscore[10][50];
-extern float accountfasttime[10][50];
-extern bool accountunlocked[10][60];
-extern char accountname[10][256];
-
-extern int numfalls;
-extern int numflipfail;
-extern int numseen;
-extern int numstaffattack;
-extern int numswordattack;
-extern int numknifeattack;
-extern int numunarmedattack;
-extern int numescaped;
-extern int numflipped;
-extern int numwallflipped;
-extern int numthrowkill;
-extern int numafterkill;
-extern int numreversals;
-extern int numattacks;
-extern int maxalarmed;
-extern int numresponded;
-
-extern bool campaign;
-extern bool winfreeze;
-
-extern float menupulse;
-
-extern bool gamestart;
-
-extern int numdialogues;
-extern int numdialogueboxes[max_dialogues];
-extern int dialoguetype[max_dialogues];
-extern int dialogueboxlocation[max_dialogues][max_dialoguelength];
-extern float dialogueboxcolor[max_dialogues][max_dialoguelength][3];
-extern int dialogueboxsound[max_dialogues][max_dialoguelength];
-extern char dialoguetext[max_dialogues][max_dialoguelength][128];
-extern char dialoguename[max_dialogues][max_dialoguelength][64];
-extern XYZ dialoguecamera[max_dialogues][max_dialoguelength];
-extern XYZ participantlocation[max_dialogues][10];
-extern int participantfocus[max_dialogues][max_dialoguelength];
-extern int participantaction[max_dialogues][max_dialoguelength];
-extern float participantrotation[max_dialogues][10];
-extern XYZ participantfacing[max_dialogues][max_dialoguelength][10];
-extern float dialoguecamerarotation[max_dialogues][max_dialoguelength];
-extern float dialoguecamerarotation2[max_dialogues][max_dialoguelength];
-extern int indialogue;
-extern int whichdialogue;
-extern int directing;
-extern float dialoguetime;
-extern int dialoguegonethrough[20];
-
-extern int accountcampaignchoicesmade[10];
-extern int accountcampaignchoices[10][5000];
-
-extern float accountcampaignhighscore[10];
-extern float accountcampaignfasttime[10];
-extern float accountcampaignscore[10];
-extern float accountcampaigntime[10];
-
-extern bool gamestarted;
-
-extern OPENAL_SAMPLE	*samp[100];
-extern int channels[100];
-extern "C" 	void PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
 
 /*********************> DrawGLScene() <*****/
 long long Game::MD5_string (char *string) {
@@ -399,7 +245,7 @@ int Game::DrawGLScene(void)
 										if(k!=0&&tutoriallevel==1){
 											opacity=.2+.2*sin(smoketex*6+i);
 										}
-										objects.model[j].MakeDecal(shadowdecal,&point,&size,&opacity,&rotation);
+										objects.model[j].MakeDecal(shadowdecal,&point,&size,&opacity,rotation);
 									}
 								}
 						}
@@ -427,7 +273,7 @@ int Game::DrawGLScene(void)
 												if(k!=0&&tutoriallevel==1){
 													opacity=.2+.2*sin(smoketex*6+i);
 												}
-												objects.model[j].MakeDecal(shadowdecal,&point,&size,&opacity,&rotation);
+												objects.model[j].MakeDecal(shadowdecal,&point,&size,&opacity,rotation);
 											}
 										}
 								}
@@ -446,7 +292,7 @@ int Game::DrawGLScene(void)
 											point=DoRotation(player[k].coords-objects.position[j],0,-objects.rotation[j],0);
 											size=.7;
 											opacity=.4f;
-											objects.model[j].MakeDecal(shadowdecal,&point,&size,&opacity,&rotation);
+											objects.model[j].MakeDecal(shadowdecal,&point,&size,&opacity,rotation);
 										}
 								}
 		}
@@ -2419,8 +2265,10 @@ int Game::DrawGLScene(void)
 
 			if(mainmenu==3){			
 				nummenuitems=12;
-				if((float)newscreenwidth>(float)newscreenheight*1.61||(float)newscreenwidth<(float)newscreenheight*1.59)sprintf (menustring[0], "Resolution: %d*%d",(int)newscreenwidth,(int)newscreenheight);
-				else sprintf (menustring[0], "Resolution: %d*%d (widescreen)",(int)newscreenwidth,(int)newscreenheight);
+				if((float)newscreenwidth>(float)newscreenheight*1.61||(float)newscreenwidth<(float)newscreenheight*1.59)
+					sprintf (menustring[0], "Resolution: %d*%d",(int)newscreenwidth,(int)newscreenheight);
+				else
+					sprintf (menustring[0], "Resolution: %d*%d (widescreen)",(int)newscreenwidth,(int)newscreenheight);
 				startx[0]=10+20;
 				starty[0]=440;
 				endx[0]=startx[0]+(int)strlen(menustring[0])*10;
@@ -2518,7 +2366,7 @@ int Game::DrawGLScene(void)
 				movex[7]=0;
 				movey[7]=0;
 
-				if(newdetail==detail&&newscreenheight==(int)screenheight&&newscreenwidth==(int)screenwidth)sprintf (menustring[8], "Back");
+				if(newdetail==detail&&newscreenheight==(int)windowHeight&&newscreenwidth==(int)windowWidth)sprintf (menustring[8], "Back");
 				else sprintf (menustring[8], "Back (some changes take effect next time Lugaru is opened)");
 				startx[8]=10;
 				endx[8]=startx[8]+(int)strlen(menustring[8])*10;

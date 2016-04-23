@@ -123,15 +123,15 @@ public:
 	bool flat;
 
 	void DeleteDecal(int which);
-	void MakeDecal(int atype, XYZ *where, float *size, float *opacity, float *rotation);
-	void MakeDecal(int atype, XYZ where, float size, float opacity, float rotation);
+	void MakeDecal(int atype, XYZ *where, float *size, float *opacity, const float rotation);
+	void MakeDecal(int atype, XYZ where, float size, float opacity, const float rotation);
 	void drawdecals(GLuint shadowtexture,GLuint bloodtexture,GLuint bloodtexture2,GLuint breaktexture);
-	int SphereCheck(XYZ *p1,float radius, XYZ *p, const XYZ *const move, float *rotate);
-	int SphereCheckPossible(XYZ *p1,float radius, const XYZ *const move, const float *const rotate);
-	int LineCheck(XYZ *p1,XYZ *p2, XYZ *p, const XYZ *const move, const float *const rotate);
-	int LineCheckSlide(XYZ *p1,XYZ *p2, XYZ *p, const XYZ *const move, const float *const rotate);
-	int LineCheckPossible(XYZ *p1,XYZ *p2, XYZ *p, const XYZ *const move, const float *const rotate);
-	int LineCheckSlidePossible(XYZ *p1,XYZ *p2, XYZ *p, const XYZ *const move, const float *const rotate);
+	int SphereCheck(XYZ &p1,const float radius, XYZ &p, const XYZ &move, const float rotate);
+	int SphereCheckPossible(XYZ &p1,const float radius, const XYZ &move, const float rotate);
+	int LineCheck(XYZ &p1,XYZ &p2, XYZ &p, const XYZ &move, const float rotate);
+	int LineCheckSlide(XYZ &p1,XYZ &p2, XYZ &p, const XYZ &move, const float rotate);
+	int LineCheckPossible(XYZ &p1,XYZ &p2, XYZ &p, const XYZ &move, const float rotate);
+	int LineCheckSlidePossible(XYZ &p1,XYZ &p2, XYZ &p, const XYZ &move, const float rotate);
 	void UpdateVertexArray();
 	void UpdateVertexArrayNoTex();
 	void UpdateVertexArrayNoTexNoNorm();

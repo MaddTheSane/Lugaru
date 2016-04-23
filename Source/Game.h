@@ -294,6 +294,10 @@ public:
 		Dispose();
 	}
 
+public:
+	void getWindowSize(int &width, int &height);
+	void writeSettings();
+	void validateDisplaySettings();
 };
 
 #ifndef __forceinline

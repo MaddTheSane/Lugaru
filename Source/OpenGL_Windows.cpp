@@ -53,6 +53,7 @@ static bool save_png(const char * fname);
 
 
 #include "openal_wrapper.h"
+#include "Globals.h"
 
 // ADDED GWC
 #ifdef _MSC_VER
@@ -61,53 +62,7 @@ static bool save_png(const char * fname);
 #pragma comment(lib, "glaux.lib")
 #endif
 
-extern bool buttons[3];
-extern float multiplier;
-extern float screenwidth,screenheight;
-extern float sps;
-extern float realmultiplier;
-extern int slomo;
-extern bool ismotionblur;
-extern float usermousesensitivity;
-extern int detail;
-extern bool floatjump;
-extern bool cellophane;
-// MODIFIED GWC
-//extern int terraindetail;
-//extern int texdetail;
-extern float terraindetail;
-extern float texdetail;
-extern int bloodtoggle;
-extern bool osx;
-extern bool autoslomo;
-extern bool foliage;
-extern bool musictoggle;
-extern bool trilinear;
-extern float gamespeed;
-extern int difficulty;
-extern bool damageeffects;
-extern int numplayers;
-extern bool decals;
-extern bool invertmouse;
-extern bool texttoggle;
-extern bool ambientsound;
-extern bool mousejump;
-extern bool freeze;
-extern Person player[maxplayers];
-extern bool vblsync;
-extern bool stillloading;
-extern bool showpoints;
-extern bool alwaysblur;
-extern bool immediate;
-extern bool velocityblur;
-extern bool debugmode;
-extern int mainmenu;
-/*extern*/ bool gameFocused;
-extern int kBitsPerPixel;
-extern float slomospeed;
-extern float slomofreq;
-extern float oldgamespeed;
-extern float volume;
+/*extern*/ bool gameFocused = true;
 
 #include <math.h>
 #include <stdio.h>
@@ -122,8 +77,6 @@ extern float volume;
 #include <shellapi.h>
 #include "win-res/resource.h"
 #endif
-
-extern SDL_Window *sdlwindow;
 
 using namespace std;
 
@@ -164,6 +117,7 @@ typedef struct tagPOINT {
 #endif
 
 
+#ifndef LUGARU_USE_NATIVE_OPENGL
 
 #ifdef _MSC_VER
 #pragma warning(push)
@@ -208,6 +162,7 @@ static void GLAPIENTRY glDeleteTextures_doNothing(GLsizei n, const GLuint *textu
     // no-op.
 }
 
+#endif
 
 
 void sdlGetCursorPos(POINT *pt)
@@ -659,13 +614,15 @@ Boolean SetUp (Game & game)
 	debugmode=0;
 
 	selectDetail(kContextWidth, kContextHeight, kBitsPerPixel, detail);
+	int winWidth, winHeight;
+	game.getWindowSize(winWidth, winHeight);
 
 	if(!ipstream) {
 		ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
 		opstream << "Screenwidth:\n";
-		opstream << kContextWidth;
+		opstream << winWidth;
 		opstream << "\nScreenheight:\n";
-		opstream << kContextHeight;
+		opstream << winHeight;
 		opstream << "\nMouse sensitivity:\n";
 		opstream << usermousesensitivity;
 		opstream << "\nBlur(0,1):\n";
@@ -984,6 +941,9 @@ Boolean SetUp (Game & game)
         sdlflags |= SDL_WINDOW_FULLSCREEN;
     if (!cmdline("nomousegrab"))
         sdlflags |= SDL_WINDOW_INPUT_GRABBED;
+	if (cmdline("retina") && (sdlflags & SDL_WINDOW_FULLSCREEN) == 0) {
+		sdlflags |= SDL_WINDOW_ALLOW_HIGHDPI;
+	}
 
     sdlwindow = SDL_CreateWindow("Lugaru", SDL_WINDOWPOS_CENTERED_DISPLAY(displayIdx), SDL_WINDOWPOS_CENTERED_DISPLAY(displayIdx),
                                  kContextWidth, kContextHeight, sdlflags);
@@ -1016,7 +976,10 @@ Boolean SetUp (Game & game)
         }
     }
 
-    SDL_GLContext glctx = SDL_GL_CreateContext(sdlwindow);
+	windowWidth = kContextWidth;
+	windowHeight = kContextHeight;
+	SDL_GLContext glctx = SDL_GL_CreateContext(sdlwindow);
+	SDL_GL_GetDrawableSize(sdlwindow, &kContextWidth, &kContextHeight);
     if (!glctx)
     {
         char buf[1024];
@@ -1029,6 +992,7 @@ Boolean SetUp (Game & game)
 
     SDL_GL_MakeCurrent(sdlwindow, glctx);
 
+#ifndef LUGARU_USE_NATIVE_OPENGL
     if (!lookup_all_glsyms())
     {
         char buf[1024];
@@ -1038,6 +1002,7 @@ Boolean SetUp (Game & game)
         SDL_Quit();
         return false;
     }
+#endif
 
     int dblbuf = 0;
     if ((SDL_GL_GetAttribute(SDL_GL_DOUBLEBUFFER, &dblbuf) == -1) || (!dblbuf))
@@ -1275,12 +1240,14 @@ void CleanUp (void)
 
 
     SDL_Quit();
+#ifndef LUGARU_USE_NATIVE_OPENGL
     #define GL_FUNC(ret,fn,params,call,rt) p##fn = NULL;
     #include "glstubs.h"
     #undef GL_FUNC
     // cheat here...static destructors are calling glDeleteTexture() after
     //  the context is destroyed and libGL unloaded by SDL_Quit().
     pglDeleteTextures = glDeleteTextures_doNothing;
+#endif
 
 }
 
@@ -1288,7 +1255,7 @@ void CleanUp (void)
 
 static bool IsFocused()
 {
-    return (SDL_GetWindowFlags(sdlwindow) & SDL_WINDOW_INPUT_FOCUS) != 0;
+    return (SDL_GetWindowFlags(sdlwindow) & SDL_WINDOW_INPUT_FOCUS) == SDL_WINDOW_INPUT_FOCUS;
 }
 
 
@@ -1371,7 +1338,7 @@ char *calcBaseDir(const char *argv0)
     char *retval;
     char *envr;
 
-    const char *ptr = strrchr((char *)argv0, '/');
+    //const char *ptr = strrchr((char *)argv0, '/');
     if (strchr(argv0, '/'))
     {
         retval = strdup(argv0);
@@ -1481,8 +1448,15 @@ int main(int argc, char **argv)
 						DoUpdate(game);
 					}
 
+					game.deltah = 0;
+					game.deltav = 0;
+					SDL_Event e;
+					
 					// game is not in focus, give CPU time to other apps by waiting for messages instead of 'peeking'
-                    STUBBED("give up CPU but sniff the event queue");
+					STUBBED("give up CPU but sniff the event queue");
+					while (SDL_PollEvent(&e)) {
+						
+					}
 				}
 			}
 
@@ -1541,10 +1515,6 @@ int main(int argc, char **argv)
 
 		return res;
 	}
-
-	extern int channels[100];
-	extern OPENAL_SAMPLE * samp[100];
-	extern OPENAL_STREAM * strm[20];
 
 	extern "C" void PlaySoundEx(int chan, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused)
 	{
@@ -1880,5 +1850,8 @@ save_png_done:
     return retval;
 }
 
-
+void Game::getWindowSize(int &width, int &height)
+{
+	SDL_GetWindowSize(sdlwindow, &width, &height);
+}
 

@@ -30,12 +30,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string.h>
 #endif
 
-extern bool keyboardfrozen;
-extern bool buttons[3];
+#include "Globals.h"
+
 /********************> IsKeyDown() <*****/
 Boolean	IsKeyDown( unsigned char *keyMap, unsigned short theKey )
 {
-	if(keyboardfrozen)return 0;
+	if(keyboardfrozen)
+		return false;
 	if(theKey< 0x80 /*1000*/){
 		static long	keyMapIndex;
 		static Boolean	isKeyDown;
@@ -58,7 +59,7 @@ Boolean	IsKeyDown( unsigned char *keyMap, unsigned short theKey )
 	else if(theKey==MAC_MOUSEBUTTON2)
 		return buttons[1];
 
-	return 0;
+	return false;
 }
 
 unsigned short 	CharToKey(const char* which)

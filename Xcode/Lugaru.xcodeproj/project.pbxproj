@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5500E41D1CC9CDD3007F8554 /* Data in CopyFiles */ = {isa = PBXBuildFile; fileRef = 550AE9A618DFC29A00F0C197 /* Data */; };
 		550AE98018DFC1CE00F0C197 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 550AE97F18DFC1CE00F0C197 /* libz.dylib */; };
 		550AE9A318DFC22800F0C197 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 550AE9A218DFC22800F0C197 /* SDL2.framework */; };
 		550AE9A518DFC24700F0C197 /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 550AE9A218DFC22800F0C197 /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		550AE9A718DFC29A00F0C197 /* Data in Resources */ = {isa = PBXBuildFile; fileRef = 550AE9A618DFC29A00F0C197 /* Data */; };
 		550AE9A918DFC8B700F0C197 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 550AE9A818DFC8B700F0C197 /* Images.xcassets */; };
 		55A13CF81CC961210070DECF /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A13CDF1CC960160070DECF /* libjpeg.a */; };
 		55A13CF91CC961210070DECF /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A13CEF1CC960190070DECF /* libogg.a */; };
@@ -143,12 +143,8 @@
 		565AD10B1199140000DF867A /* pngwrite.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD0FA1199140000DF867A /* pngwrite.c */; };
 		565AD10C1199140000DF867A /* pngwtran.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD0FB1199140000DF867A /* pngwtran.c */; };
 		565AD10D1199140000DF867A /* pngwutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD0FC1199140000DF867A /* pngwutil.c */; };
-		565AD10F1199144400DF867A /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 565AD10E1199144400DF867A /* Carbon.framework */; };
-		565AD1111199144400DF867A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 565AD1101199144400DF867A /* Cocoa.framework */; };
-		565AD1131199144400DF867A /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 565AD1121199144400DF867A /* IOKit.framework */; };
 		565AD1151199144400DF867A /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 565AD1141199144400DF867A /* OpenAL.framework */; };
 		565AD1171199144400DF867A /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 565AD1161199144400DF867A /* OpenGL.framework */; };
-		565AD1241199145D00DF867A /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 565AD1231199145D00DF867A /* CoreFoundation.framework */; };
 		56A5C960119BB09D00822AF6 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = 56A5C95D119BB09D00822AF6 /* jaricom.c */; };
 		56A5C961119BB09D00822AF6 /* jcarith.c in Sources */ = {isa = PBXBuildFile; fileRef = 56A5C95E119BB09D00822AF6 /* jcarith.c */; };
 		56A5C962119BB09D00822AF6 /* jdarith.c in Sources */ = {isa = PBXBuildFile; fileRef = 56A5C95F119BB09D00822AF6 /* jdarith.c */; };
@@ -186,6 +182,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		5500E41C1CC9CDC3007F8554 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 1;
+			files = (
+				5500E41D1CC9CDD3007F8554 /* Data in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		550AE9A418DFC23800F0C197 /* Copy Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -237,6 +243,7 @@
 		550AE9A218DFC22800F0C197 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = /Library/Frameworks/SDL2.framework; sourceTree = "<absolute>"; };
 		550AE9A618DFC29A00F0C197 /* Data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Data; path = ../Data; sourceTree = SOURCE_ROOT; };
 		550AE9A818DFC8B700F0C197 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		551C714D1CCA8F6C0098D893 /* Lugaru.exp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.exports; path = Lugaru.exp; sourceTree = "<group>"; };
 		55A13CBC1CC953C40070DECF /* Lugaru.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Lugaru.pch; path = ../Xcode/Lugaru.pch; sourceTree = "<group>"; };
 		55A13CC21CC95F480070DECF /* ogg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ogg.h; sourceTree = "<group>"; };
 		55A13CC31CC95F480070DECF /* os_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = os_types.h; sourceTree = "<group>"; };
@@ -261,6 +268,7 @@
 		55A13D201CC974200070DECF /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		55A13D221CC975850070DECF /* MacCompatibility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacCompatibility.swift; sourceTree = "<group>"; };
 		55A13D241CC9778A0070DECF /* NSURLAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSURLAdditions.swift; sourceTree = "<group>"; };
+		55C148C61CCA0241007E238B /* Globals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Globals.h; sourceTree = "<group>"; };
 		565ACFF111990D7600DF867A /* Frustum.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Frustum.cpp; sourceTree = "<group>"; };
 		565ACFF211990D7600DF867A /* GameDraw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameDraw.cpp; sourceTree = "<group>"; };
 		565ACFF311990D7600DF867A /* GameInitDispose.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameInitDispose.cpp; sourceTree = "<group>"; };
@@ -433,12 +441,8 @@
 				55A13CFB1CC961210070DECF /* libvorbis.a in Frameworks */,
 				550AE9A318DFC22800F0C197 /* SDL2.framework in Frameworks */,
 				550AE98018DFC1CE00F0C197 /* libz.dylib in Frameworks */,
-				565AD10F1199144400DF867A /* Carbon.framework in Frameworks */,
-				565AD1111199144400DF867A /* Cocoa.framework in Frameworks */,
-				565AD1131199144400DF867A /* IOKit.framework in Frameworks */,
 				565AD1151199144400DF867A /* OpenAL.framework in Frameworks */,
 				565AD1171199144400DF867A /* OpenGL.framework in Frameworks */,
-				565AD1241199145D00DF867A /* CoreFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -478,6 +482,7 @@
 				565AD18D1199303700DF867A /* lugaru.icns */,
 				550AE9A818DFC8B700F0C197 /* Images.xcassets */,
 				8D1107310486CEB800E47090 /* Lugaru-Info.plist */,
+				551C714D1CCA8F6C0098D893 /* Lugaru.exp */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -708,6 +713,7 @@
 				565ACFF311990D7600DF867A /* GameInitDispose.cpp */,
 				565ACFF411990D7600DF867A /* GameTick.cpp */,
 				565ACFF511990D7600DF867A /* Globals.cpp */,
+				55C148C61CCA0241007E238B /* Globals.h */,
 				550AE98818DFC20600F0C197 /* glstubs.h */,
 				565ACFF611990D7600DF867A /* Lights.cpp */,
 				550AE98918DFC20600F0C197 /* Lights.h */,
@@ -878,6 +884,7 @@
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
 				550AE9A418DFC23800F0C197 /* Copy Frameworks */,
+				5500E41C1CC9CDC3007F8554 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -950,7 +957,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				550AE9A918DFC8B700F0C197 /* Images.xcassets in Resources */,
-				550AE9A718DFC29A00F0C197 /* Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1170,6 +1176,7 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1192,6 +1199,7 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1213,6 +1221,7 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1235,6 +1244,7 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1256,6 +1266,7 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1278,6 +1289,7 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1299,6 +1311,7 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1321,6 +1334,7 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1389,8 +1403,10 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = lugaru;
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
+				EXPORTED_SYMBOLS_FILE = Lugaru.exp;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
@@ -1398,9 +1414,9 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Lugaru.pch;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = LUGARU_USE_NATIVE_OPENGL;
 				INFOPLIST_FILE = "Lugaru-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1417,9 +1433,10 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = lugaru;
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EXPORTED_SYMBOLS_FILE = Lugaru.exp;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
@@ -1427,6 +1444,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Lugaru.pch;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = LUGARU_USE_NATIVE_OPENGL;
 				INFOPLIST_FILE = "Lugaru-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",

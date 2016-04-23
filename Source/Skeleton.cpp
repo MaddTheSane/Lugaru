@@ -23,34 +23,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Game.h"
 #include "Skeleton.h"
 #include "openal_wrapper.h"
+#include "Globals.h"
 
-extern float multiplier;
-extern float gravity;
-extern Skeleton testskeleton;
-extern Terrain terrain;
-extern OPENAL_SAMPLE	*samp[100];
-extern int channels[100];
-extern Objects objects;
-extern Sprites sprites;
-extern int environment;
-extern float terraindetail;
-extern float camerashake;
-extern bool freeze;
-extern int detail;
-extern XYZ envsound[30];
-extern float envsoundvol[30];
-extern int numenvsounds;
-extern float envsoundlife[30];
-extern int bonus;
-extern float bonustime;
-extern int tutoriallevel;
-
-extern int whichjointstartarray[26];
-extern int whichjointendarray[26];
-
-extern Game * pgame;
-extern bool visibleloading;
-extern "C"	void PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
+using namespace simd;
 
 void dealloc2(void* param){
 	free(param);
@@ -59,32 +34,38 @@ void dealloc2(void* param){
 
 void Muscle::DoConstraint(bool spinny)
 {
-	static XYZ vel;
-	static XYZ midp;
-	static XYZ newpoint1,newpoint2;
+	XYZ vel;
+	XYZ midp;
+	XYZ newpoint1,newpoint2;
 
-	static float oldlength;
-	static float relaxlength;
+	float oldlength = length;
+	static float relaxlength = 0;
 
-	oldlength=length;
+	if(type!=boneconnect)relaxlength=distance(parent1->position,parent2->position);
 
-	if(type!=boneconnect)relaxlength=findDistance(&parent1->position,&parent2->position);
+	if(type==boneconnect)
+		strength=1;
+	if(type==constraint)
+		strength=0;
 
-	if(type==boneconnect)strength=1;
-	if(type==constraint)strength=0;
-
-	if(strength<0)strength=0;
-	if(strength>1)strength=1;
+	if(strength<0)
+		strength=0;
+	if(strength>1)
+		strength=1;
 
 	length-=(length-relaxlength)*(1-strength)*multiplier*10000;
 	length-=(length-targetlength)*(strength)*multiplier*10000;
-	if(strength==0)length=relaxlength;
+	if(strength==0)
+		length=relaxlength;
 
-	if((relaxlength-length>0&&relaxlength-oldlength<0)||(relaxlength-length<0&&relaxlength-oldlength>0))length=relaxlength;
+	if((relaxlength-length>0&&relaxlength-oldlength<0)||(relaxlength-length<0&&relaxlength-oldlength>0))
+		length = relaxlength;
 
 	//if(!broken){
-	if(length<minlength)length=minlength;
-	if(length>maxlength)length=maxlength;
+	if(length < minlength)
+		length = minlength;
+	if(length > maxlength)
+		length = maxlength;
 	//}
 	/*
 	if(broken){
@@ -92,7 +73,8 @@ void Muscle::DoConstraint(bool spinny)
 	if(length>maxlength*1.4)length=maxlength*1.4;
 	}
 	*/
-	if(length==relaxlength)return;
+	if(length==relaxlength)
+		return;
 
 	//Find midpoint
 	midp=(parent1->position*parent1->mass+parent2->position*parent2->mass)/(parent1->mass+parent2->mass);
@@ -120,10 +102,10 @@ void Muscle::DoConstraint(bool spinny)
 void Skeleton::FindForwardsfirst()
 {
 	//Find forward vectors
-	CrossProduct(joints[forwardjoints[1]].position-joints[forwardjoints[0]].position,joints[forwardjoints[2]].position-joints[forwardjoints[0]].position,&forward);
+	forward = cross(joints[forwardjoints[1]].position-joints[forwardjoints[0]].position, joints[forwardjoints[2]].position-joints[forwardjoints[0]].position);
 	Normalise(forward);
 
-	CrossProduct(joints[lowforwardjoints[1]].position-joints[lowforwardjoints[0]].position,joints[lowforwardjoints[2]].position-joints[lowforwardjoints[0]].position,&lowforward);
+	lowforward = cross(joints[lowforwardjoints[1]].position-joints[lowforwardjoints[0]].position, joints[lowforwardjoints[2]].position-joints[lowforwardjoints[0]].position);
 	Normalise(lowforward);
 
 	//Special forwards
@@ -137,10 +119,10 @@ void Skeleton::FindForwardsfirst()
 void Skeleton::FindForwards()
 {
 	//Find forward vectors
-	CrossProduct(joints[forwardjoints[1]].position-joints[forwardjoints[0]].position,joints[forwardjoints[2]].position-joints[forwardjoints[0]].position,&forward);
+	forward = cross(joints[forwardjoints[1]].position-joints[forwardjoints[0]].position, joints[forwardjoints[2]].position-joints[forwardjoints[0]].position);
 	Normalise(forward);
 
-	CrossProduct(joints[lowforwardjoints[1]].position-joints[lowforwardjoints[0]].position,joints[lowforwardjoints[2]].position-joints[lowforwardjoints[0]].position,&lowforward);
+	lowforward = cross(joints[lowforwardjoints[1]].position-joints[lowforwardjoints[0]].position, joints[lowforwardjoints[2]].position-joints[lowforwardjoints[0]].position);
 	Normalise(lowforward);
 
 	//Special forwards
@@ -167,32 +149,29 @@ void Skeleton::FindForwards()
 
 float Skeleton::DoConstraints(XYZ *coords,float *scale)
 {
-	static float friction=1.5;
-	static float elasticity=.3;
-	static XYZ bounceness;
-	static XYZ oldpos[100];
-	static int numrepeats=3;
+	float friction=1.5;
+	static const float elasticity=.3;
+	XYZ bounceness;
+	//static XYZ oldpos[100];
+	static const int numrepeats=3;
 	static float groundlevel=.15;
-	static float soundvolume;
-	static int i,j,k,l,m;
+	//static float soundvolume;
+	int i,j,k,m;
 	static XYZ temp,start,end;
 	static XYZ terrainnormal;
-	static float r=.05;
-	static float r2=.08;
-	static int whichhit;
+	static const float r=.05;
+	//static float r2=.08;
+	int whichhit;
 	//static int whichjointstart,whichjointend;
-	static float distance;
-	static float frictionness;
-	static XYZ terrainlight;
-	static int whichpatchx;
-	static int whichpatchz;
-	static float damage;
-	static bool freely;
-	static float tempmult;
-	static bool breaking;
-	breaking=0;
-
-	damage=0;
+	//static float distance;
+	float frictionness;
+	XYZ terrainlight;
+	int whichpatchx;
+	int whichpatchz;
+	float damage = 0;
+	bool freely;
+	float tempmult;
+	bool breaking = false;
 
 	if(free){
 		freetime+=multiplier;
@@ -224,7 +203,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 		for(j=0; j<numrepeats; j++){
 			if(!joints[jointlabels[rightknee]].locked&&!joints[jointlabels[righthip]].locked){
 				temp=joints[jointlabels[rightknee]].position-(joints[jointlabels[righthip]].position+joints[jointlabels[rightankle]].position)/2;
-				while(normaldotproduct(temp,lowforward)>-.1&&!sphere_line_intersection(&joints[jointlabels[righthip]].position,&joints[jointlabels[rightankle]].position,&joints[jointlabels[rightknee]].position,&r)){
+				while(normaldotproduct(temp,lowforward)>-.1&&!sphere_line_intersection(joints[jointlabels[righthip]].position,joints[jointlabels[rightankle]].position,joints[jointlabels[rightknee]].position,r)){
 					joints[jointlabels[rightknee]].position-=lowforward*.05;
 					if(spinny)joints[jointlabels[rightknee]].velocity-=lowforward*.05/multiplier/4;
 					else joints[jointlabels[rightknee]].velocity-=lowforward*.05;
@@ -239,7 +218,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 			}
 			if(!joints[jointlabels[leftknee]].locked&&!joints[jointlabels[righthip]].locked){
 				temp=joints[jointlabels[leftknee]].position-(joints[jointlabels[lefthip]].position+joints[jointlabels[leftankle]].position)/2;
-				while(normaldotproduct(temp,lowforward)>-.1&&!sphere_line_intersection(&joints[jointlabels[lefthip]].position,&joints[jointlabels[leftankle]].position,&joints[jointlabels[leftknee]].position,&r)){
+				while(normaldotproduct(temp,lowforward)>-.1&&!sphere_line_intersection(joints[jointlabels[lefthip]].position,joints[jointlabels[leftankle]].position,joints[jointlabels[leftknee]].position,r)){
 					joints[jointlabels[leftknee]].position-=lowforward*.05;
 					if(spinny)joints[jointlabels[leftknee]].velocity-=lowforward*.05/multiplier/4;
 					else joints[jointlabels[leftknee]].velocity-=lowforward*.05;
@@ -322,7 +301,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 
 			terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
 			if(terrainnormal.y>.8)freefall=0;
-			bounceness=terrainnormal*findLength(&joints[jointlabels[head]].velocity)*(abs(normaldotproduct(joints[jointlabels[head]].velocity,terrainnormal)));
+			bounceness=terrainnormal*length(joints[jointlabels[head]].velocity)*(abs(normaldotproduct(joints[jointlabels[head]].velocity,terrainnormal)));
 			if(findLengthfast(&joints[jointlabels[head]].velocity)>findLengthfast(&joints[jointlabels[head]].oldvelocity)){
 			bounceness=0;
 			joints[jointlabels[head]].velocity=joints[jointlabels[head]].oldvelocity;
@@ -359,7 +338,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 			}
 			if(!joints[jointlabels[head]].locked)damage+=findLengthfast(&bounceness)/2500;
 			ReflectVector(&joints[jointlabels[head]].velocity,&terrainnormal);
-			frictionness=abs(normaldotproduct(joints[jointlabels[head]].velocity,terrainnormal));//findLength(&bounceness)/findLength(&joints[jointlabels[head]].velocity);
+			frictionness=abs(normaldotproduct(joints[jointlabels[head]].velocity,terrainnormal));//length(bounceness)/length(joints[jointlabels[head]].velocity);
 			joints[jointlabels[head]].velocity-=bounceness;
 			if(1-friction*frictionness>0)joints[jointlabels[head]].velocity*=1-friction*frictionness;
 			else joints[jointlabels[head]].velocity=0;
@@ -417,8 +396,8 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 						if(joints[i].label==groin&&!joints[i].locked&&joints[i].delay<=0){
 							joints[i].locked=1;
 							joints[i].delay=1;
-							static float gLoc[3];
-							static float vel[3];
+							float gLoc[3];
+							float vel[3];
 							gLoc[0]=joints[i].position.x*(*scale)+coords->x;
 							gLoc[1]=joints[i].position.y*(*scale)+coords->y;
 							gLoc[2]=joints[i].position.z*(*scale)+coords->z;
@@ -437,8 +416,8 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 						if(joints[i].label==head&&!joints[i].locked&&joints[i].delay<=0){
 							joints[i].locked=1;
 							joints[i].delay=1;
-							static float gLoc[3];
-							static float vel[3];
+							float gLoc[3];
+							float vel[3];
 							gLoc[0]=joints[i].position.x*(*scale)+coords->x;
 							gLoc[1]=joints[i].position.y*(*scale)+coords->y;
 							gLoc[2]=joints[i].position.z*(*scale)+coords->z;
@@ -455,10 +434,10 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 
 						terrainnormal=terrain.getNormal(joints[i].position.x*(*scale)+coords->x,joints[i].position.z*(*scale)+coords->z);
 						ReflectVector(&joints[i].velocity,&terrainnormal);
-						bounceness=terrainnormal*findLength(&joints[i].velocity)*(abs(normaldotproduct(joints[i].velocity,terrainnormal)));
+						bounceness=terrainnormal*length(joints[i].velocity)*(abs(normaldotproduct(joints[i].velocity,terrainnormal)));
 						if(!joints[i].locked)damage+=findLengthfast(&bounceness)/4000;
 						if(findLengthfast(&joints[i].velocity)<findLengthfast(&bounceness))bounceness=0;
-						frictionness=abs(normaldotproduct(joints[i].velocity,terrainnormal));//findLength(&bounceness)/findLength(&joints[i].velocity);
+						frictionness=abs(normaldotproduct(joints[i].velocity,terrainnormal));//length(bounceness)/length(joints[i].velocity);
 						joints[i].velocity-=bounceness;
 						if(1-friction*frictionness>0)joints[i].velocity*=1-friction*frictionness;
 						else joints[i].velocity=0;
@@ -471,8 +450,8 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 								breaking=0;
 								camerashake+=.6;
 
-								static float gLoc[3];
-								static float vel[3];
+								float gLoc[3];
+								float vel[3];
 								gLoc[0]=joints[i].position.x*(*scale)+coords->x;
 								gLoc[1]=joints[i].position.y*(*scale)+coords->y;
 								gLoc[2]=joints[i].position.z*(*scale)+coords->z;
@@ -534,13 +513,13 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 									friction=objects.friction[k];
 									start=joints[i].realoldposition;
 									end=joints[i].position*(*scale)+*coords;
-									whichhit=objects.model[k].LineCheckPossible(&start,&end,&temp,&objects.position[k],&objects.rotation[k]);
+									whichhit=objects.model[k].LineCheckPossible(start,end,temp,objects.position[k],objects.rotation[k]);
 									if(whichhit!=-1){
 										if(joints[i].label==groin&&!joints[i].locked&&joints[i].delay<=0){
 											joints[i].locked=1;
 											joints[i].delay=1;
-											static float gLoc[3];
-											static float vel[3];
+											float gLoc[3];
+											float vel[3];
 											gLoc[0]=joints[i].position.x*(*scale)+coords->x;
 											gLoc[1]=joints[i].position.y*(*scale)+coords->y;
 											gLoc[2]=joints[i].position.z*(*scale)+coords->z;
@@ -559,8 +538,8 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 										if(joints[i].label==head&&!joints[i].locked&&joints[i].delay<=0){
 											joints[i].locked=1;
 											joints[i].delay=1;
-											static float gLoc[3];
-											static float vel[3];
+											float gLoc[3];
+											float vel[3];
 											gLoc[0]=joints[i].position.x*(*scale)+coords->x;
 											gLoc[1]=joints[i].position.y*(*scale)+coords->y;
 											gLoc[2]=joints[i].position.z*(*scale)+coords->z;
@@ -577,7 +556,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 
 										terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
 										if(terrainnormal.y>.8)freefall=0;
-										bounceness=terrainnormal*findLength(&joints[i].velocity)*(abs(normaldotproduct(joints[i].velocity,terrainnormal)));
+										bounceness=terrainnormal*length(joints[i].velocity)*(abs(normaldotproduct(joints[i].velocity,terrainnormal)));
 										if(findLengthfast(&joints[i].velocity)>findLengthfast(&joints[i].oldvelocity)){
 											bounceness=0;
 											joints[i].velocity=joints[i].oldvelocity;
@@ -589,8 +568,8 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 												breaking=0;
 												camerashake+=.6;
 
-												static float gLoc[3];
-												static float vel[3];
+												float gLoc[3];
+												float vel[3];
 												gLoc[0]=joints[i].position.x*(*scale)+coords->x;
 												gLoc[1]=joints[i].position.y*(*scale)+coords->y;
 												gLoc[2]=joints[i].position.z*(*scale)+coords->z;
@@ -612,8 +591,8 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 												/*int howmany;
 												XYZ tempvel;
 												XYZ pos;
-												if(environment==grassyenvironment)howmany=findLength(&joints[i].velocity)*4/10;
-												if(environment==snowyenvironment)howmany=findLength(&joints[i].velocity)*1/10;
+												if(environment==grassyenvironment)howmany=length(joints[i].velocity)*4/10;
+												if(environment==snowyenvironment)howmany=length(joints[i].velocity)*1/10;
 												if(environment!=desertenvironment)
 												for(j=0;j<howmany;j++){
 												tempvel.x=float(abs(Random()%100)-50)/20;
@@ -634,7 +613,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 											}
 											if(!joints[i].locked)damage+=findLengthfast(&bounceness)/2500;
 											ReflectVector(&joints[i].velocity,&terrainnormal);
-											frictionness=abs(normaldotproduct(joints[i].velocity,terrainnormal));//findLength(&bounceness)/findLength(&joints[i].velocity);
+											frictionness=abs(normaldotproduct(joints[i].velocity,terrainnormal));//length(bounceness)/length(joints[i].velocity);
 											joints[i].velocity-=bounceness;
 											if(1-friction*frictionness>0)joints[i].velocity*=1-friction*frictionness;
 											else joints[i].velocity=0;
@@ -670,7 +649,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 						//Make this less stupid
 						start=joints[jointlabels[whichjointstartarray[i]]].position*(*scale)+*coords;
 						end=joints[jointlabels[whichjointendarray[i]]].position*(*scale)+*coords;
-						whichhit=objects.model[k].LineCheckSlidePossible(&start,&end,&temp,&objects.position[k],&objects.rotation[k]);
+						whichhit=objects.model[k].LineCheckSlidePossible(start,end,temp,objects.position[k],objects.rotation[k]);
 						if(whichhit!=-1){
 							joints[jointlabels[whichjointendarray[i]]].position=(end-*coords)/(*scale);
 							for(j=0; j<num_muscles; j++){
@@ -708,15 +687,14 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 
 void Skeleton::DoGravity(float *scale)
 {
-	static int i;
-	for(i=0; i<num_joints; i++){
+	for(int i=0; i<num_joints; i++){
 		if(((joints[i].label!=leftknee&&joints[i].label!=rightknee)||lowforward.y>-.1||joints[i].mass<5)&&((joints[i].label!=rightelbow&&joints[i].label!=rightelbow)||forward.y<.3))joints[i].velocity.y+=gravity*multiplier/(*scale);
 	}
 }
 
-void Skeleton::Draw(int  muscleview)
+void Skeleton::Draw(int muscleview)
 {
-	static float jointcolor[4];
+	float jointcolor[4];
 
 	if(muscleview!=2){
 		jointcolor[0]=0;
@@ -734,7 +712,7 @@ void Skeleton::Draw(int  muscleview)
 	//Calc motionblur-ness
 	for(int i=0; i<num_joints; i++){
 		joints[i].oldposition=joints[i].position;
-		joints[i].blurred=findDistance(&joints[i].position,&joints[i].oldposition)*100;
+		joints[i].blurred=distance(joints[i].position,joints[i].oldposition)*100;
 		if(joints[i].blurred<1)joints[i].blurred=1;
 	}
 
@@ -838,7 +816,7 @@ void Skeleton::AddJoint(float x, float y, float z, int which)
 		/*if(which<num_joints&&which>=0){
 		joints[num_joints].parent=&joints[which];
 		joints[num_joints].hasparent=1;
-		joints[num_joints].length=findDistance(joints[num_joints].position,joints[num_joints].parent->position);
+		joints[num_joints].length=distance(joints[num_joints].position,joints[num_joints].parent->position);
 		}*/
 		num_joints++;
 		if(which<num_joints&&which>=0)AddMuscle(num_joints-1,which,0,10,boneconnect);
@@ -906,7 +884,7 @@ void Skeleton::SetJoint(float x, float y, float z, int which, int whichjoint)
 		if(which<num_joints&&which>=0){
 			joints[whichjoint].parent=&joints[which];
 			joints[whichjoint].hasparent=1;
-			joints[whichjoint].length=findDistance(&joints[whichjoint].position,&joints[whichjoint].parent->position);
+			joints[whichjoint].length=distance(joints[whichjoint].position,joints[whichjoint].parent->position);
 		}
 	}
 }
@@ -916,8 +894,8 @@ void Skeleton::AddMuscle(int attach1,int attach2,float minlength,float maxlength
 	if(num_muscles<max_muscles-1&&attach1<num_joints&&attach1>=0&&attach2<num_joints&&attach2>=0&&attach1!=attach2){
 		muscles[num_muscles].parent1=&joints[attach1];
 		muscles[num_muscles].parent2=&joints[attach2];
-		muscles[num_muscles].length=findDistance(&muscles[num_muscles].parent1->position,&muscles[num_muscles].parent2->position);
-		muscles[num_muscles].targetlength=findDistance(&muscles[num_muscles].parent1->position,&muscles[num_muscles].parent2->position);
+		muscles[num_muscles].length=distance(muscles[num_muscles].parent1->position,muscles[num_muscles].parent2->position);
+		muscles[num_muscles].targetlength=distance(muscles[num_muscles].parent1->position,muscles[num_muscles].parent2->position);
 		muscles[num_muscles].strength=.7;
 		muscles[num_muscles].type=type;
 		muscles[num_muscles].minlength=minlength;
@@ -930,7 +908,7 @@ void Skeleton::AddMuscle(int attach1,int attach2,float minlength,float maxlength
 void Skeleton::MusclesSet()
 {
 	for(int i=0;i<num_muscles;i++){
-		muscles[i].length=findDistance(&muscles[i].parent1->position,&muscles[i].parent2->position);
+		muscles[i].length=distance(muscles[i].parent1->position,muscles[i].parent2->position);
 	}
 }
 
@@ -949,12 +927,11 @@ void Skeleton::DoBalance()
 
 void Skeleton::FindRotationMuscle(int which, int animation)
 {
-	static XYZ temppoint1,temppoint2,tempforward;
-	static float distance;
+	XYZ tempforward;
 
-	temppoint1=muscles[which].parent1->position;
-	temppoint2=muscles[which].parent2->position;
-	distance=sqrt((temppoint1.x-temppoint2.x)*(temppoint1.x-temppoint2.x)+(temppoint1.y-temppoint2.y)*(temppoint1.y-temppoint2.y)+(temppoint1.z-temppoint2.z)*(temppoint1.z-temppoint2.z));
+	XYZ temppoint1=muscles[which].parent1->position;
+	XYZ temppoint2=muscles[which].parent2->position;
+	float distance=sqrt((temppoint1.x-temppoint2.x)*(temppoint1.x-temppoint2.x)+(temppoint1.y-temppoint2.y)*(temppoint1.y-temppoint2.y)+(temppoint1.z-temppoint2.z)*(temppoint1.z-temppoint2.z));
 	if((temppoint1.y-temppoint2.y)<=distance)muscles[which].rotate2=asin((temppoint1.y-temppoint2.y)/distance);
 	if((temppoint1.y-temppoint2.y)>distance)muscles[which].rotate2=asin(1.f);
 	muscles[which].rotate2*=360/6.28;
@@ -1000,20 +977,21 @@ void Skeleton::FindRotationMuscle(int which, int animation)
 	tempforward=DoRotation(tempforward,0,muscles[which].rotate1-90,0);
 	tempforward=DoRotation(tempforward,0,0,muscles[which].rotate2-90);
 	tempforward.y=0;
-	tempforward/=sqrt(tempforward.x*tempforward.x+tempforward.y*tempforward.y+tempforward.z*tempforward.z);
-	if(tempforward.z<=1&&tempforward.z>=-1)muscles[which].rotate3=acos(0-tempforward.z);
-	else muscles[which].rotate3=acos(-1.f);
+	tempforward /= sqrt(tempforward.x*tempforward.x+tempforward.y*tempforward.y+tempforward.z*tempforward.z);
+	if(tempforward.z<=1&&tempforward.z>=-1)
+		muscles[which].rotate3 = acos(0 - tempforward.z);
+	else
+		muscles[which].rotate3 = acos(-1.f);
 	muscles[which].rotate3*=360/6.28;
-	if(0>tempforward.x)muscles[which].rotate3=360-muscles[which].rotate3;
-	if(!isnormal(muscles[which].rotate3))muscles[which].rotate3=0;
+	if (0 > tempforward.x)
+		muscles[which].rotate3=360-muscles[which].rotate3;
+	if (!isnormal(muscles[which].rotate3))
+		muscles[which].rotate3=0;
 }
 
-void Animation::Load(char *filename, int aheight, int aattack)
+void Animation::Load(const char *filename, int aheight, int aattack)
 {
-	static FILE *tfile;
-	static int i,j;
-	static XYZ startoffset,endoffset;
-	static int howmany;
+	FILE *tfile;
 	float tmpx, tmpy, tmpz;
 
 	LOGFUNC;
@@ -1051,21 +1029,21 @@ void Animation::Load(char *filename, int aheight, int aattack)
 		if(label)dealloc2(label);*/
 
 		position=(XYZ**)malloc(sizeof(XYZ*)*joints);
-		for(i = 0; i < joints; i++)
+		for(int i = 0; i < joints; i++)
 			position[i] = (XYZ*)malloc(sizeof(XYZ)*numframes);
 
 		twist=(float**)malloc(sizeof(float*)*joints);
-		for(i = 0; i < joints; i++)
+		for(int i = 0; i < joints; i++)
 			twist[i] = (float*)malloc(sizeof(float)*numframes);
 
 		twist2=(float**)malloc(sizeof(float*)*joints);
-		for(i = 0; i < joints; i++)
+		for(int i = 0; i < joints; i++)
 			twist2[i] = (float*)malloc(sizeof(float)*numframes);
 
 		speed = (float*)malloc(sizeof(float)*numframes);
 
 		onground=(bool**)malloc(sizeof(bool*)*joints);
-		for(i = 0; i < joints; i++)
+		for(int i = 0; i < joints; i++)
 			onground[i] =(bool*)malloc(sizeof(bool)*numframes);
 
 		forward = (XYZ*)malloc(sizeof(XYZ)*numframes);
@@ -1080,31 +1058,31 @@ void Animation::Load(char *filename, int aheight, int aattack)
 		forward = new XYZ[numframes];
 		label = new int[numframes];*/
 
-		for(i=0;i<numframes;i++){
-			for(j=0;j<joints;j++){
+		for(int i=0;i<numframes;i++){
+			for(int j=0;j<joints;j++){
 				funpackf(tfile, "Bf Bf Bf", &tmpx,&tmpy,&tmpz);
 				position[j][i] = {tmpx, tmpy, tmpz};
 			}
-			for(j=0;j<joints;j++){
+			for(int j=0;j<joints;j++){
 				funpackf(tfile, "Bf", &twist[j][i]);
 			}
-			for(j=0;j<joints;j++){
+			for(int j=0;j<joints;j++){
 				unsigned char uch;
 				funpackf(tfile, "Bb", &uch);
 				onground[j][i] = (uch != 0);
 			}
 			funpackf(tfile, "Bf", &speed[i]);
 		}
-		for(i=0;i<numframes;i++){
-			for(j=0;j<joints;j++){
+		for(int i=0;i<numframes;i++){
+			for(int j=0;j<joints;j++){
 				funpackf(tfile, "Bf", &twist2[j][i]);
 			}
 		}
-		for(i=0;i<numframes;i++){
+		for(int i=0;i<numframes;i++){
 			funpackf(tfile, "Bf", &label[i]);
 		}
 		funpackf(tfile, "Bi", &weapontargetnum);
-		for(i=0;i<numframes;i++){
+		for(int i=0;i<numframes;i++){
 			funpackf(tfile, "Bf Bf Bf", &tmpx,&tmpy,&tmpz);
 			weapontarget[i] = {tmpx, tmpy, tmpz};
 		}
@@ -1112,18 +1090,18 @@ void Animation::Load(char *filename, int aheight, int aattack)
 		fclose(tfile);
 	}
 
-	startoffset=0;
-	endoffset=0;
-	howmany=0;
-	for(j=0;j<joints;j++){
+	XYZ startoffset=0;
+	XYZ endoffset=0;
+	int howmany=0;
+	for(int j=0;j<joints;j++){
 		if(position[j][0].y<1)
 			startoffset+=position[j][0];
 		if(position[j][numframes-1].y<1)
 			endoffset+=position[j][numframes-1];
 		howmany++;
 	}
-	startoffset/=howmany;
-	endoffset/=howmany;
+	startoffset /= howmany;
+	endoffset /= howmany;
 	offset=endoffset;
 	offset.y=0;
 }
@@ -1131,9 +1109,9 @@ void Animation::Load(char *filename, int aheight, int aattack)
 
 void Animation::Move(XYZ how)
 {
-	static int i,j,joints;
-	for(i=0;i<numframes;i++){
-		for(j=0;j<joints;j++){
+	int joints = 1;
+	for(int i=0;i<numframes;i++){
+		for(int j=0;j<joints;j++){
 			position[j][i]=0;
 		}
 	}
@@ -1146,31 +1124,34 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
                     const char *model7filename, const char *modellowfilename, 
                     const char *modelclothesfilename, bool aclothes)
 {
-	static GLfloat M[16];
+	GLfloat M[16];
 	static int parentID;
-	static FILE *tfile;
-	static float lSize;
-	static int i,j,tempmuscle;
-	int newload;
+	FILE *tfile;
+	float lSize;
+	int tempmuscle;
+	int newload = 0;
 	int edit;
 
 	LOGFUNC;
 
-
-	newload=0;
-
 	num_models=7;
-
 	clothes=aclothes;
 
-	for(i=0;i<num_models;i++){
-		if(i==0)model[i].loadnotex(modelfilename);
-		if(i==1)model[i].loadnotex(model2filename);
-		if(i==2)model[i].loadnotex(model3filename);
-		if(i==3)model[i].loadnotex(model4filename);
-		if(i==4)model[i].loadnotex(model5filename);
-		if(i==5)model[i].loadnotex(model6filename);
-		if(i==6)model[i].loadnotex(model7filename);
+	for (int i = 0; i < num_models; i++) {
+		if(i==0)
+			model[i].loadnotex(modelfilename);
+		if(i==1)
+			model[i].loadnotex(model2filename);
+		if(i==2)
+			model[i].loadnotex(model3filename);
+		if(i==3)
+			model[i].loadnotex(model4filename);
+		if(i==4)
+			model[i].loadnotex(model5filename);
+		if(i==5)
+			model[i].loadnotex(model6filename);
+		if(i==6)
+			model[i].loadnotex(model7filename);
 		model[i].Rotate(180,0,0);
 		model[i].Scale(.04,.04,.04);
 		model[i].CalculateNormals(0);
@@ -1180,8 +1161,10 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 	drawmodel.Rotate(180,0,0);
 	drawmodel.Scale(.04,.04,.04);
 	drawmodel.FlipTexCoords();
-	if(tutoriallevel==1&&id!=0)drawmodel.UniformTexCoords();
-	if(tutoriallevel==1&&id!=0)drawmodel.ScaleTexCoords(0.1);
+	if (tutoriallevel == 1 && id != 0)
+		drawmodel.UniformTexCoords();
+	if (tutoriallevel == 1 && id != 0)
+		drawmodel.ScaleTexCoords(0.1);
 	drawmodel.CalculateNormals(0);
 
 	modellow.loadnotex(modellowfilename);
@@ -1193,11 +1176,13 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 	drawmodellow.Rotate(180,0,0);
 	drawmodellow.Scale(.04,.04,.04);
 	drawmodellow.FlipTexCoords();
-	if(tutoriallevel==1&&id!=0)drawmodellow.UniformTexCoords();
-	if(tutoriallevel==1&&id!=0)drawmodellow.ScaleTexCoords(0.1);
+	if (tutoriallevel == 1 && id != 0)
+		drawmodellow.UniformTexCoords();
+	if (tutoriallevel == 1 && id != 0)
+		drawmodellow.ScaleTexCoords(0.1);
 	drawmodellow.CalculateNormals(0);
 
-	if(clothes){
+	if (clothes) {
 		modelclothes.loadnotex(modelclothesfilename);
 		modelclothes.Rotate(180,0,0);
 		modelclothes.Scale(.041,.04,.041);
@@ -1211,33 +1196,36 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 	}
 
 	tfile=fopen( ConvertFileName(filename), "rb" );
-	if(1){
+	if (1) {
 		float tmpx, tmpy, tmpz;
 		funpackf(tfile, "Bi", &num_joints);
 		//joints.resize(num_joints);
-		if(joints) delete [] joints; //dealloc2(joints);
+		if(joints)
+			delete [] joints; //dealloc2(joints);
 		joints=(Joint*)new Joint[num_joints]; //malloc(sizeof(Joint)*num_joints);
 
-		for(i=0;i<num_joints;i++){
+		for (int i = 0; i < num_joints; i++) {
 			funpackf(tfile, "Bf Bf Bf Bf Bf", &tmpx, &tmpy, &tmpz, &joints[i].length,&joints[i].mass);
 			joints[i].position = {tmpx, tmpy, tmpz};
-			funpackf(tfile, "Bb Bb", &joints[i].hasparent,&joints[i].locked);
+			funpackf(tfile, "Bb Bb", &joints[i].hasparent, &joints[i].locked);
 			funpackf(tfile, "Bi", &joints[i].modelnum);
-			funpackf(tfile, "Bb Bb", &joints[i].visible,&joints[i].sametwist);
-			funpackf(tfile, "Bi Bi", &joints[i].label,&joints[i].hasgun);
+			funpackf(tfile, "Bb Bb", &joints[i].visible, &joints[i].sametwist);
+			funpackf(tfile, "Bi Bi", &joints[i].label, &joints[i].hasgun);
 			funpackf(tfile, "Bb", &joints[i].lower);
 			funpackf(tfile, "Bi", &parentID);
-			if(joints[i].hasparent)joints[i].parent=&joints[parentID];
+			if(joints[i].hasparent)
+				joints[i].parent=&joints[parentID];
 			joints[i].velocity=0;
-			joints[i].oldposition=joints[i].position;
+			joints[i].oldposition = joints[i].position;
 		}
 		tempmuscle=num_muscles;
 		funpackf(tfile, "Bi", &num_muscles);
 		//muscles.clear();
-		if(muscles) delete [] muscles; //dealloc2(muscles);
+		if(muscles)
+			delete [] muscles; //dealloc2(muscles);
 		muscles=(Muscle*)new Muscle[num_muscles]; //malloc(sizeof(Muscle)*num_muscles);
-		newload=1;
-		for(i=0;i<num_muscles;i++){
+		newload = 1;
+		for (int i = 0; i < num_muscles; i++) {
 			tempmuscle=muscles[i].numvertices;
 			funpackf(tfile, "Bf Bf Bf Bf Bf Bi Bi", &muscles[i].length, &muscles[i].targetlength,&muscles[i].minlength, &muscles[i].maxlength,&muscles[i].strength,&muscles[i].type,&muscles[i].numvertices);
 			//muscles[i].vertices.clear();
@@ -1245,10 +1233,10 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 			//if(muscles[i].vertices)dealloc2(muscles[i].vertices);
 			muscles[i].vertices=(int*)malloc(sizeof(int)*muscles[i].numvertices);
 
-			edit=0;
-			for(j=0;j<muscles[i].numvertices-edit;j++){
+			edit = 0;
+			for (int j = 0; j < muscles[i].numvertices - edit; j++) {
 				funpackf(tfile, "Bi", &muscles[i].vertices[j+edit]);
-				if(muscles[i].vertices[j+edit]>=model[0].vertexNum){
+				if(muscles[i].vertices[j+edit] >= model[0].vertexNum) {
 					muscles[i].numvertices--;
 					edit--;
 				}
@@ -1258,28 +1246,28 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 			funpackf(tfile, "Bi", &parentID);
 			muscles[i].parent2=&joints[parentID];
 		}
-		for(j=0;j<3;j++){
+		for (int j = 0; j < 3; j++) {
 			funpackf(tfile, "Bi", &forwardjoints[j]);
 		}
-		for(j=0;j<3;j++){
+		for (int j = 0; j < 3; j++) {
 			funpackf(tfile, "Bi", &lowforwardjoints[j]);
 		}
-		for(j=0;j<num_muscles;j++){
-			for(i=0;i<muscles[j].numvertices;i++){
-				for(int k=0;k<num_models;k++){
+		for (int j = 0; j < num_muscles; j++) {
+			for (int i = 0; i < muscles[j].numvertices; i++) {
+				for (int k = 0; k < num_models; k++) {
 					if(muscles[j].numvertices&&muscles[j].vertices[i]<model[k].vertexNum)model[k].owner[muscles[j].vertices[i]]=j;
 				}
 			}
 		}
 		FindForwards();
-		for(i=0;i<num_joints;i++){
+		for (int i = 0; i < num_joints; i++) {
 			joints[i].startpos=joints[i].position;
 		}
-		for(i=0;i<num_muscles;i++){
+		for (int i = 0; i < num_muscles; i++) {
 			FindRotationMuscle(i,-1);
 		}
-		for(int k=0;k<num_models;k++){
-			for(i=0;i<model[k].vertexNum;i++){
+		for (int k = 0; k < num_models; k++) {
+			for (int i = 0; i < model[k].vertexNum; i++) {
 				model[k].vertex[i]=model[k].vertex[i]-(muscles[model[k].owner[i]].parent1->position+muscles[model[k].owner[i]].parent2->position)/2;
 				glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 				glPushMatrix();
@@ -1300,13 +1288,13 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 	fclose(tfile);
 
 	tfile=fopen( ConvertFileName(lowfilename), "rb" );
-	if(1){
+	if (1) {
 		lSize=sizeof(num_joints);
 		fseek ( tfile, lSize, SEEK_CUR);
 		//joints = new Joint[num_joints];
 		//jointlabels = new int[num_joints];
-		for(i=0;i<num_joints;i++){
-			lSize=sizeof(XYZ);
+		for (int i = 0; i < num_joints; i++) {
+			lSize=sizeof(float)*3;//sizeof(XYZ);
 			fseek ( tfile, lSize, SEEK_CUR);
 			lSize=sizeof(float);
 			fseek ( tfile, lSize, SEEK_CUR);
@@ -1336,7 +1324,7 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 		}
 		funpackf(tfile, "Bi", &num_muscles);
 		//muscles = new Muscle[num_muscles];
-		for(i=0;i<num_muscles;i++){
+		for (int i = 0; i < num_muscles; i++){
 			lSize=sizeof(float);
 			fseek ( tfile, lSize, SEEK_CUR);
 			lSize=sizeof(float);
@@ -1349,15 +1337,15 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 			fseek ( tfile, lSize, SEEK_CUR);
 			lSize=sizeof(int);
 			fseek ( tfile, lSize, SEEK_CUR);
-			tempmuscle=muscles[i].numverticeslow;
+			tempmuscle = muscles[i].numverticeslow;
 			funpackf(tfile, "Bi", &muscles[i].numverticeslow);
-			if(muscles[i].numverticeslow){
+			if (muscles[i].numverticeslow) {
 				//muscles[i].verticeslow.clear();
 				//muscles[i].verticeslow.resize(muscles[i].numverticeslow);
 				//if(muscles[i].verticeslow)dealloc2(muscles[i].verticeslow);
-				muscles[i].verticeslow=(int*)malloc(sizeof(int)*muscles[i].numverticeslow);
+				muscles[i].verticeslow = (int*)calloc(sizeof(int),muscles[i].numverticeslow);
 				edit=0;
-				for(j=0;j<muscles[i].numverticeslow-edit;j++){
+				for (int j = 0; j < muscles[i].numverticeslow-edit; j++) {
 					funpackf(tfile, "Bi", &muscles[i].verticeslow[j+edit]);
 					if(muscles[i].verticeslow[j+edit]>=modellow.vertexNum){
 						muscles[i].numverticeslow--;
@@ -1374,9 +1362,10 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 			fseek ( tfile, lSize, SEEK_CUR);
 		}
 		lSize=sizeof(int);
-		for(j=0;j<num_muscles;j++){
-			for(i=0;i<muscles[j].numverticeslow;i++){
-				if(muscles[j].numverticeslow&&muscles[j].verticeslow[i]<modellow.vertexNum)modellow.owner[muscles[j].verticeslow[i]]=j;
+		for (int j = 0; j < num_muscles; j++) {
+			for (int i = 0; i < muscles[j].numverticeslow; i++) {
+				if (muscles[j].numverticeslow && muscles[j].verticeslow[i] < modellow.vertexNum)
+					modellow.owner[muscles[j].verticeslow[i]] = j;
 			}
 		}
 		/*FindForwards();
@@ -1386,8 +1375,8 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 		for(i=0;i<num_muscles;i++){
 		FindRotationMuscle(i,-1);
 		}*/
-		for(i=0;i<modellow.vertexNum;i++){
-			modellow.vertex[i]=modellow.vertex[i]-(muscles[modellow.owner[i]].parent1->position+muscles[modellow.owner[i]].parent2->position)/2;
+		for(int i = 0; i < modellow.vertexNum; i++) {
+			modellow.vertex[i] = modellow.vertex[i] - (muscles[modellow.owner[i]].parent1->position + muscles[modellow.owner[i]].parent2->position) / 2;
 			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 			glPushMatrix();
 				glLoadIdentity();
@@ -1404,14 +1393,14 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 		modellow.CalculateNormals(0);
 	}
 
-	if(clothes){
+	if (clothes) {
 		tfile=fopen( ConvertFileName(clothesfilename), "rb" );
 		lSize=sizeof(num_joints);
 		fseek ( tfile, lSize, SEEK_CUR);
 		//joints = new Joint[num_joints];
 		//jointlabels = new int[num_joints];
-		for(i=0;i<num_joints;i++){
-			lSize=sizeof(XYZ);
+		for(int i = 0; i < num_joints; i++) {
+			lSize=sizeof(float)*3;//sizeof(XYZ);
 			fseek ( tfile, lSize, SEEK_CUR);
 			lSize=sizeof(float);
 			fseek ( tfile, lSize, SEEK_CUR);
@@ -1435,13 +1424,14 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 			fseek ( tfile, lSize, SEEK_CUR);
 			lSize=sizeof(int);
 			fseek ( tfile, lSize, SEEK_CUR);
-			if(joints[i].hasparent)joints[i].parent=&joints[parentID];
+			if(joints[i].hasparent)
+				joints[i].parent=&joints[parentID];
 			joints[i].velocity=0;
 			joints[i].oldposition=joints[i].position;
 		}
 		funpackf(tfile, "Bi", &num_muscles);
 		//muscles = new Muscle[num_muscles];
-		for(i=0;i<num_muscles;i++){
+		for (int i = 0; i < num_muscles; i++) {
 			lSize=sizeof(float);
 			fseek ( tfile, lSize, SEEK_CUR);
 			lSize=sizeof(float);
@@ -1456,15 +1446,15 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 			fseek ( tfile, lSize, SEEK_CUR);
 			tempmuscle=muscles[i].numverticesclothes;
 			funpackf(tfile, "Bi", &muscles[i].numverticesclothes);
-			if(muscles[i].numverticesclothes){
+			if (muscles[i].numverticesclothes) {
 				//muscles[i].verticesclothes.clear();
 				//muscles[i].verticesclothes.resize(muscles[i].numverticesclothes);
 				//if(muscles[i].verticesclothes)dealloc2(muscles[i].verticesclothes);
 				muscles[i].verticesclothes=(int*)malloc(sizeof(int)*muscles[i].numverticesclothes);
 				edit=0;
-				for(j=0;j<muscles[i].numverticesclothes-edit;j++){
+				for (int j = 0; j < muscles[i].numverticesclothes - edit; j++) {
 					funpackf(tfile, "Bi", &muscles[i].verticesclothes[j+edit]);
-					if(muscles[i].verticesclothes[j+edit]>=modelclothes.vertexNum){
+					if (muscles[i].verticesclothes[j+edit]>=modelclothes.vertexNum) {
 						muscles[i].numverticesclothes--;
 						edit--;
 					}
@@ -1477,9 +1467,10 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 			fseek ( tfile, lSize, SEEK_CUR);
 		}
 		lSize=sizeof(int);
-		for(j=0;j<num_muscles;j++){
-			for(i=0;i<muscles[j].numverticesclothes;i++){
-				if(muscles[j].numverticesclothes&&muscles[j].verticesclothes[i]<modelclothes.vertexNum)modelclothes.owner[muscles[j].verticesclothes[i]]=j;
+		for (int j = 0; j < num_muscles; j++) {
+			for (int i = 0; i < muscles[j].numverticesclothes; i++) {
+				if (muscles[j].numverticesclothes&&muscles[j].verticesclothes[i]<modelclothes.vertexNum)
+					modelclothes.owner[muscles[j].verticesclothes[i]]=j;
 			}
 		}
 		/*FindForwards();
@@ -1489,8 +1480,8 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 		for(i=0;i<num_muscles;i++){
 		FindRotationMuscle(i,-1);
 		}*/
-		for(i=0;i<modelclothes.vertexNum;i++){
-			modelclothes.vertex[i]=modelclothes.vertex[i]-(muscles[modelclothes.owner[i]].parent1->position+muscles[modelclothes.owner[i]].parent2->position)/2;
+		for (int i = 0; i < modelclothes.vertexNum; i++) {
+			modelclothes.vertex[i] = modelclothes.vertex[i] - (muscles[modelclothes.owner[i]].parent1->position + muscles[modelclothes.owner[i]].parent2->position) / 2;
 			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 			glPushMatrix();
 				glLoadIdentity();
@@ -1508,13 +1499,15 @@ void Skeleton::Load(const char *filename,       const char *lowfilename, const c
 	}
 	fclose(tfile);
 
-	for(i=0;i<num_joints;i++){
-		for(j=0;j<num_joints;j++){
-			if(joints[i].label==j)jointlabels[j]=i;
+	for (int i = 0; i < num_joints; i++){
+		for (int j = 0; j < num_joints; j++){
+			if (joints[i].label == j) {
+				jointlabels[j]=i;
+			}
 		}
 	}
 
-	free=0;
+	free = 0;
 }
 
 Animation::Animation()
@@ -1692,13 +1685,10 @@ Muscle::~Muscle()
 
 Animation & Animation::operator = (const Animation & ani)
 {
-	int i = 0;
+	bool allocate = ((ani.numframes != numframes) || (ani.joints != joints));
 
-	bool allocate = true;
-
-	allocate = ((ani.numframes != numframes) || (ani.joints != joints));
-
-	if (allocate) deallocate();
+	if (allocate)
+		deallocate();
 
 	numframes = ani.numframes;
 	height = ani.height;
@@ -1707,43 +1697,54 @@ Animation & Animation::operator = (const Animation & ani)
 	weapontargetnum = ani.weapontargetnum;
 
 	if (allocate) position=(XYZ**)malloc(sizeof(XYZ*)*ani.joints);
-	for(i = 0; i < ani.joints; i++)
+	for(int i = 0; i < ani.joints; i++)
 	{
-		if (allocate) position[i] = (XYZ*)malloc(sizeof(XYZ)*ani.numframes);
+		if (allocate)
+			position[i] = (XYZ*)malloc(sizeof(XYZ)*ani.numframes);
 		memcpy(position[i], ani.position[i], sizeof(XYZ)*ani.numframes);
 	}
 
-	if (allocate) twist=(float**)malloc(sizeof(float*)*ani.joints);
-	for(i = 0; i < ani.joints; i++)
+	if (allocate)
+		twist=(float**)malloc(sizeof(float*)*ani.joints);
+	for(int i = 0; i < ani.joints; i++)
 	{
-		if (allocate) twist[i] = (float*)malloc(sizeof(float)*ani.numframes);
+		if (allocate)
+			twist[i] = (float*)malloc(sizeof(float)*ani.numframes);
 		memcpy(twist[i], ani.twist[i], sizeof(float)*ani.numframes);
 	}
 
-	if (allocate) twist2=(float**)malloc(sizeof(float*)*ani.joints);
-	for(i = 0; i < ani.joints; i++)
+	if (allocate)
+		twist2=(float**)malloc(sizeof(float*)*ani.joints);
+	for(int i = 0; i < ani.joints; i++)
 	{
-		if (allocate) twist2[i] = (float*)malloc(sizeof(float)*ani.numframes);
+		if (allocate)
+			twist2[i] = (float*)malloc(sizeof(float)*ani.numframes);
 		memcpy(twist2[i], ani.twist2[i], sizeof(float)*ani.numframes);
 	}
 
-	if (allocate) speed = (float*)malloc(sizeof(float)*ani.numframes);
+	if (allocate)
+		speed = (float*)malloc(sizeof(float)*ani.numframes);
 	memcpy(speed, ani.speed, sizeof(float)*ani.numframes);
 
-	if (allocate) onground=(bool**)malloc(sizeof(bool*)*ani.joints);
-	for(i = 0; i < ani.joints; i++)
+	if (allocate)
+		onground=(bool**)malloc(sizeof(bool*)*ani.joints);
+	for(int i = 0; i < ani.joints; i++)
 	{
-		if (allocate) onground[i] =(bool*)malloc(sizeof(bool)*ani.numframes);
+		if (allocate)
+			onground[i] =(bool*)malloc(sizeof(bool)*ani.numframes);
 		memcpy(onground[i], ani.onground[i], sizeof(bool)*ani.numframes);
 	}
 
-	if (allocate) forward = (XYZ*)malloc(sizeof(XYZ)*ani.numframes);
+	if (allocate)
+		forward = (XYZ*)malloc(sizeof(XYZ)*ani.numframes);
 	memcpy(forward, ani.forward, sizeof(XYZ)*ani.numframes);
 
-	if (allocate) weapontarget = (XYZ*)malloc(sizeof(XYZ)*ani.numframes);
+	if (allocate)
+		weapontarget = (XYZ*)malloc(sizeof(XYZ)*ani.numframes);
 	memcpy(weapontarget, ani.weapontarget, sizeof(XYZ)*ani.numframes);
 
-	if (allocate) label = (int*)malloc(sizeof(int)*ani.numframes);
+	if (allocate)
+		label = (int*)malloc(sizeof(int)*ani.numframes);
 	memcpy(label, ani.label, sizeof(int)*ani.numframes);
 
 	return (*this);

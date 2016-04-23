@@ -22,16 +22,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 /**> HEADER FILES <**/
 #include "Game.h"
 #include "TGALoader.h"
+#include "Globals.h"
 
-extern float texdetail;
-extern TGAImageRec texture;
-extern short vRefNum;
-extern long dirID;
-extern bool visibleloading;
-extern Game * pgame;
-extern int loadscreencolor;
-
-extern bool LoadImage(const char * fname, TGAImageRec & tex);
 /********************> LoadTGA() <*****/
 bool upload_image(const unsigned char* filePath, bool hasalpha)
 {

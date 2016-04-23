@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "openal_wrapper.h"
 
 #include "Constants.h"
+#include "Globals.h"
 
 bool visibleloading = 0;
 OPENAL_SAMPLE	*samp[100] = {0};
@@ -62,6 +63,7 @@ int difficulty = 0;
 float multiplier = 0;
 float realmultiplier = 0;
 float screenwidth = 0,screenheight = 0;
+float windowWidth = 0,windowHeight = 0;
 float viewdistance = 0;
 XYZ viewer;
 XYZ viewerfacing;
@@ -98,30 +100,30 @@ bool osx = 0;
 float camerashake = 0;
 float woozy = 0;
 float blackout = 0;
-bool foliage = 0;
-bool musictoggle = 0;
+bool foliage = false;
+bool musictoggle = false;
 bool trilinear;
 Weapons weapons;
-bool damageeffects = 0;
+bool damageeffects = false;
 //apvector<Person> player(maxplayers);
 Person player[maxplayers];
 int numplayers = 0;
-bool ambientsound = 0;
-bool mousejump = 0;
-bool freeze = 0;
-bool winfreeze = 0;
+bool ambientsound = false;
+bool mousejump = false;
+bool freeze = false;
+bool winfreeze = false;
 float flashamount = 0,flashr = 0,flashg = 0,flashb = 0;
 int flashdelay = 0;
-bool vblsync = 0;
+bool vblsync = false;
 float motionbluramount = 0;
 bool keyboardfrozen = 0;
 char mapname[256] = {0};
-bool loadingstuff = 0;
-bool stillloading = 0;
-bool showpoints = 0;
-bool alwaysblur = 0;
-bool immediate = 0;
-bool velocityblur = 0;
+bool loadingstuff = false;
+bool stillloading = false;
+bool showpoints = false;
+bool alwaysblur = false;
+bool immediate = false;
+bool velocityblur = false;
 int test = 0;
 XYZ windvector;
 short vRefNum = 0;
@@ -240,7 +242,8 @@ float accountcampaignhighscore[10] = {0};
 float accountcampaignfasttime[10] = {0};
 float accountcampaignscore[10] = {0};
 float accountcampaigntime[10] = {0};
-int accountcampaignchoicesmade[10] = {0};int accountcampaignchoices[10][5000] = {0};
+int accountcampaignchoicesmade[10] = {0};
+int accountcampaignchoices[10][5000] = {0};
 bool won = 0;
 
 

@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 //#include <Carbon.h>
 
+#include <cmath>
 #include "MacCompatibility.h"
 #include <simd/simd.h>
 
@@ -62,11 +63,14 @@ typedef simd::float3 Vector;
 
 
 // triple scalar product (u dot (v cross w))
-inline	float TripleScalarProduct(Vector u, Vector v, Vector w)
+inline float TripleScalarProduct(Vector u, Vector v, Vector w)
 {
+	return simd::dot(u, simd::cross(v, w));
+	/*
 	return float(	(u.x * (v.y*w.z - v.z*w.y)) +
 		(u.y * (-v.x*w.z + v.z*w.x)) +
 		(u.z * (v.x*w.y - v.y*w.x)) );
+	 */
 	//return u*(v^w);
 
 }
@@ -92,7 +96,7 @@ public:
 	{
 		n = 0;
 		v.x = 0;
-		v.y =  0;
+		v.y = 0;
 		v.z = 0;
 	}
 	inline Quaternion(float e0, float e1, float e2, float e3)
@@ -107,6 +111,7 @@ public:
 	{
 		return (float) sqrt(n*n + v.x*v.x + v.y*v.y + v.z*v.z);
 	}
+	
 	inline Vector GetVector(void)
 	{
 		return (Vector){v.x, v.y, v.z};
@@ -233,7 +238,7 @@ inline	Quaternion operator/(Quaternion q, float s)
 
 inline	float QGetAngle(Quaternion q)
 {
-	return	(float) (2*acosf(q.n));
+	return	(float) (2*acos(q.n));
 }
 
 inline	Vector QGetAxis(Quaternion q)
@@ -242,7 +247,7 @@ inline	Vector QGetAxis(Quaternion q)
 	float m;
 
 	v = q.GetVector();
-	m = vector_length(v);
+	m = simd::length(v);
 
 	if (m <= tol)
 		return Vector();
@@ -258,7 +263,6 @@ inline	Quaternion QRotate(Quaternion q1, Quaternion q2)
 inline	Vector	QVRotate(Quaternion q, Vector v)
 {
 	Quaternion t;
-
 
 	t = q*v*(~q);
 
@@ -326,11 +330,9 @@ inline	Vector	MakeEulerAnglesFromQ(Quaternion q)
 	}
 
 	u.x = RadiansToDegrees((float) atan2(r32, r33)); // roll
-	u.y = RadiansToDegrees((float) asinf(-r31));		 // pitch
+	u.y = RadiansToDegrees((float) asin(-r31));		 // pitch
 	u.z = RadiansToDegrees((float) atan2(r21, r11)); // yaw
 	return u;
-
-
 }
 
 #endif

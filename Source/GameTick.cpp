@@ -30,198 +30,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <ctime>
 #include "Game.h"
 #include "openal_wrapper.h"
+#include "Globals.h"
 
 using namespace std;
-
-extern float multiplier;
-extern XYZ viewer;
-extern int environment;
-extern float texscale;
-extern Terrain terrain;
-extern OPENAL_SAMPLE	*samp[100];
-extern int channels[100];
-extern Sprites sprites;
-extern int kTextureSize;
-extern float screenwidth,screenheight;
-extern float gravity;
-extern int detail;
-extern float texdetail;
-extern Objects objects;
-extern int slomo;
-extern float slomodelay;
-extern bool floatjump;
-extern float volume;
-extern Animation animation[animation_count];
-extern Light light;
-extern float texdetail;
-extern GLubyte bloodText[512*512*3];
-extern GLubyte wolfbloodText[512*512*3];
-extern float terraindetail;
-extern float camerashake;
-extern float woozy;
-extern float blackout;
-extern bool cellophane;
-extern bool musictoggle;
-extern int difficulty;
-extern Weapons weapons;
-extern Person player[maxplayers];
-extern int numplayers;
-extern int bloodtoggle;
-extern bool invertmouse;
-extern float windvar;
-extern float precipdelay;
-extern XYZ viewerfacing;
-extern bool ambientsound;
-extern bool mousejump;
-extern float viewdistance;
-extern bool freeze;
-extern bool autoslomo;
-extern bool keyboardfrozen;
-extern int netdatanew;
-extern bool loadingstuff;
-extern char mapname[256];
-extern XYZ windvector;
-extern bool buttons[3];
-extern bool debugmode;
-static int music1;
-extern int mainmenu;
-extern int oldmainmenu;
-extern bool visibleloading;
-extern int loadscreencolor;
-extern float flashamount,flashr,flashg,flashb;
-extern int flashdelay;
-extern XYZ envsound[30];
-extern float envsoundvol[30];
-extern int numenvsounds;
-extern float envsoundlife[30];
-extern float usermousesensitivity;
-extern bool ismotionblur;
-extern bool foliage;
-extern bool trilinear;
-extern bool damageeffects;
-extern bool showpoints;
-extern bool texttoggle;
-extern bool alwaysblur;
-extern float gamespeed;
-extern bool decals;
-extern bool vblsync;
-extern bool immediate;
-extern bool velocityblur;
-extern int bonus;
-extern int oldbonus;
-extern float bonusvalue;
-extern float bonustotal;
-extern float bonustime;
-extern float startbonustotal;
-extern float tintr,tintg,tintb;
-extern float bonusnum[100];
-extern bool skyboxtexture;
-extern float skyboxr;
-extern float skyboxg;
-extern float skyboxb;
-extern float skyboxlightr;
-extern float skyboxlightg;
-extern float skyboxlightb;
-extern float fadestart;
-extern float slomospeed;
-extern float slomofreq;
-extern int tutoriallevel;
-extern float smoketex;
-extern float tutorialstagetime;
-extern int tutorialstage;
-extern float tutorialmaxtime;
-extern float tutorialsuccess;
-extern bool againbonus;
-extern bool reversaltrain;
-extern bool canattack;
-extern bool cananger;
-extern float damagedealt;
-extern float damagetaken;
-extern int maptype;
-extern int editoractive;
-extern int editorpathtype;
-extern bool oldbuttons[3];
-
-extern float hostiletime;
-
-extern bool gamestarted;
-
-extern int numhotspots;
-extern int winhotspot;
-extern int windialogue;
-extern int killhotspot;
-extern XYZ hotspot[40];
-extern int hotspottype[40];
-extern float hotspotsize[40];
-extern char hotspottext[40][256];
-extern int currenthotspot;
-
-extern int kBitsPerPixel;
-extern int hostile;
-
-extern int numaccounts;
-extern int accountactive;
-extern int accountdifficulty[10];
-extern int accountprogress[10];
-extern float accountpoints[10];
-extern float accounthighscore[10][50];
-extern float accountfasttime[10][50];
-extern bool accountunlocked[10][60];
-extern char accountname[10][256];
-
-extern bool stillloading;
-extern bool winfreeze;
-
-extern int numfalls;
-extern int numflipfail;
-extern int numseen;
-extern int numstaffattack;
-extern int numswordattack;
-extern int numknifeattack;
-extern int numunarmedattack;
-extern int numescaped;
-extern int numflipped;
-extern int numwallflipped;
-extern int numthrowkill;
-extern int numafterkill;
-extern int numreversals;
-extern int numattacks;
-extern int maxalarmed;
-extern int numresponded;
-
-extern int numdialogues;
-extern int numdialogueboxes[max_dialogues];
-extern int dialoguetype[max_dialogues];
-extern int dialogueboxlocation[max_dialogues][max_dialoguelength];
-extern float dialogueboxcolor[max_dialogues][max_dialoguelength][3];
-extern int dialogueboxsound[max_dialogues][max_dialoguelength];
-extern char dialoguetext[max_dialogues][max_dialoguelength][128];
-extern char dialoguename[max_dialogues][max_dialoguelength][64];
-extern XYZ dialoguecamera[max_dialogues][max_dialoguelength];
-extern XYZ participantlocation[max_dialogues][10];
-extern int participantfocus[max_dialogues][max_dialoguelength];
-extern int participantaction[max_dialogues][max_dialoguelength];
-extern float participantrotation[max_dialogues][10];
-extern XYZ participantfacing[max_dialogues][max_dialoguelength][10];
-extern float dialoguecamerarotation[max_dialogues][max_dialoguelength];
-extern float dialoguecamerarotation2[max_dialogues][max_dialoguelength];
-extern int indialogue;
-extern int whichdialogue;
-extern int directing;
-extern float dialoguetime;
-extern int dialoguegonethrough[20];
-
-extern bool campaign;
-
-extern float oldgamespeed;
-
-extern float accountcampaignhighscore[10];
-extern float accountcampaignfasttime[10];
-extern float accountcampaignscore[10];
-extern float accountcampaigntime[10];
-
-extern int accountcampaignchoicesmade[10];
-extern int accountcampaignchoices[10][5000];
+using namespace simd;
 
 static const char *rabbitskin[] = {
 ":Data:Textures:Fur3.jpg",
@@ -252,11 +64,6 @@ static bool stripfx(const char *str, const char *pfx)
 {
   return !strncasecmp(str, pfx, strlen(pfx));
 }
-
-extern OPENAL_STREAM * strm[20];
-extern "C"	void PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
-extern "C" void PlayStreamEx(int chan, OPENAL_STREAM *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
-
 
 static const char *cmd_names[] = {
 #define DECLARE_COMMAND(cmd) #cmd " ",
@@ -294,7 +101,7 @@ static void ch_save(Game *game, const char *args)
 {
   char buf[64];
   size_t templength;
-  float headprop, bodyprop, armprop, legprop;
+  float headprop = 0, bodyprop = 0, armprop = 0, legprop = 0;
   snprintf(buf, 63, ":Data:Maps:%s", args);
 
 
@@ -332,7 +139,7 @@ static void ch_save(Game *game, const char *args)
 	fpackf(tfile, "Bf Bf Bf", participantlocation[k][l].x, participantlocation[k][l].y, participantlocation[k][l].z);
 	fpackf(tfile, "Bf", participantrotation[k][l]);
       }
-      if(numdialogueboxes)
+      //if(numdialogueboxes)
 	for(size_t l=0;l<numdialogueboxes[k];l++){
 	  fpackf(tfile, "Bi", dialogueboxlocation[k][l]);
 	  fpackf(tfile, "Bf", dialogueboxcolor[k][l][0]);
@@ -1510,7 +1317,7 @@ int Game::checkcollide(XYZ startpoint,XYZ endpoint){
 			if(objects.type[i]!=treeleavestype&&objects.type[i]!=bushtype&&objects.type[i]!=firetype){
 				colviewer=startpoint;
 				coltarget=endpoint;
-				if(objects.model[i].LineCheck(&colviewer,&coltarget,&colpoint,&objects.position[i],&objects.rotation[i])!=-1)return i;
+				if(objects.model[i].LineCheck(colviewer,coltarget,colpoint,objects.position[i],objects.rotation[i])!=-1)return i;
 			}
 		}
 	}
@@ -1556,12 +1363,17 @@ int Game::checkcollide(XYZ startpoint,XYZ endpoint,int what){
 			if(objects.type[what]!=treeleavestype&&objects.type[what]!=bushtype&&objects.type[what]!=firetype){
 				colviewer=startpoint;
 				coltarget=endpoint;
-				if(objects.model[what].LineCheck(&colviewer,&coltarget,&colpoint,&objects.position[what],&objects.rotation[what])!=-1)return i;
+				if(objects.model[what].LineCheck(colviewer,coltarget,colpoint,objects.position[what],objects.rotation[what])!=-1)
+					return i;
 			}
 		}
 	}
 
-	if(what==1000)if(terrain.lineTerrain(startpoint,endpoint,&colpoint)!=-1)return 1000;
+	if(what==1000) {
+		if(terrain.lineTerrain(startpoint,endpoint,&colpoint)!=-1) {
+			return 1000;
+		}
+	}
 
 	return -1;
 }
@@ -2049,7 +1861,7 @@ void	Game::Loadlevel(char *name){
 						participantlocation[k][l] = XYZ{tmpx, tmpy, tmpz};
 						funpackf(tfile, "Bf", &participantrotation[k][l]);
 					}
-					if(numdialogueboxes)
+					//if(numdialogueboxes)
 					{
 						for(l=0;l<numdialogueboxes[k];l++)
 						{
@@ -2595,30 +2407,30 @@ void	Game::Loadlevel(char *name){
 	visibleloading=0;
 }
 
-void	Game::Tick()
+void Game::Tick()
 {
-	static int i,k,j,l,m;
-	static XYZ facing,flatfacing,absflatfacing;
-	static XYZ rotatetarget;
-	static bool oldkey;
-	static float oldtargetrotation;
-	static int target, numgood;
-	static XYZ tempcoords1,tempcoords2;
-	static XYZ test;
-	static XYZ test2;
-	static XYZ lowpoint,lowpointtarget,lowpoint2,lowpointtarget2,lowpoint3,lowpointtarget3,lowpoint4,lowpointtarget4,lowpoint5,lowpointtarget5,lowpoint6,lowpointtarget6,lowpoint7,lowpointtarget7,colpoint,colpoint2;
-	static int whichhit;
-	static bool oldjumpkeydown;
+	int i,k,j,l,m;
+	XYZ facing,flatfacing,absflatfacing;
+	XYZ rotatetarget;
+	bool oldkey;
+	float oldtargetrotation;
+	int target, numgood;
+	XYZ tempcoords1,tempcoords2;
+	XYZ test;
+	XYZ test2;
+	XYZ lowpoint,lowpointtarget,lowpoint2,lowpointtarget2,lowpoint3,lowpointtarget3,lowpoint4,lowpointtarget4,lowpoint5,lowpointtarget5,lowpoint6,lowpointtarget6,lowpoint7,lowpointtarget7,colpoint,colpoint2;
+	int whichhit;
+	bool oldjumpkeydown = false;
 
 	int templength;
 
 	float headprop,bodyprop,armprop,legprop;
 
-	for(i=0;i<15;i++){
+	for(int i=0;i<15;i++){
 		displaytime[i]+=multiplier;
 	}
 
-	static unsigned char	theKeyMap[16];
+	unsigned char	theKeyMap[16];
 	GetKeys( theKeyMap );
 
 	keyboardfrozen=0;
@@ -2762,86 +2574,7 @@ void	Game::Tick()
 				flashamount=1;
 				flashdelay=1;
 
-				if(newdetail>2)newdetail=detail;
-				if(newdetail<0)newdetail=detail;
-				if(newscreenwidth<0)newscreenwidth=screenwidth;
-				if(newscreenheight<0)newscreenheight=screenheight;
-
-				ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
-				opstream << "Screenwidth:\n";
-				opstream << newscreenwidth;
-				opstream << "\nScreenheight:\n";
-				opstream << newscreenheight;
-				opstream << "\nMouse sensitivity:\n";
-				opstream << usermousesensitivity;
-				opstream << "\nBlur(0,1):\n";
-				opstream << ismotionblur;
-				opstream << "\nOverall Detail(0,1,2) higher=better:\n";
-				opstream << newdetail;
-				opstream << "\nFloating jump:\n";
-				opstream << floatjump;
-				opstream << "\nMouse jump:\n";
-				opstream << mousejump;
-				opstream << "\nAmbient sound:\n";
-				opstream << ambientsound;
-				opstream << "\nBlood (0,1,2):\n";
-				opstream << bloodtoggle;
-				opstream << "\nAuto slomo:\n";
-				opstream << autoslomo;
-				opstream << "\nFoliage:\n";
-				opstream << foliage;
-				opstream << "\nMusic:\n";
-				opstream << musictoggle;
-				opstream << "\nTrilinear:\n";
-				opstream << trilinear;
-				opstream << "\nDecals(shadows,blood puddles,etc):\n";
-				opstream << decals;
-				opstream << "\nInvert mouse:\n";
-				opstream << invertmouse;
-				opstream << "\nGamespeed:\n";
-				if(oldgamespeed==0)oldgamespeed=1;
-				opstream << oldgamespeed;
-				opstream << "\nDifficulty(0,1,2) higher=harder:\n";
-				opstream << difficulty;
-				opstream << "\nDamage effects(blackout, doublevision):\n";
-				opstream << damageeffects;
-				opstream << "\nText:\n";
-				opstream << texttoggle;
-				opstream << "\nDebug:\n";
-				opstream << debugmode;
-				opstream << "\nVBL Sync:\n";
-				opstream << vblsync;
-				opstream << "\nShow Points:\n";
-				opstream << showpoints;
-				opstream << "\nAlways Blur:\n";
-				opstream << alwaysblur;
-				opstream << "\nImmediate mode (turn on on G5):\n";
-				opstream << immediate;
-				opstream << "\nVelocity blur:\n";
-				opstream << velocityblur;
-			    opstream << "\nVolume:\n";
-		        opstream << volume;
-				opstream << "\nForward key:\n";
-				opstream << KeyToChar(forwardkey);
-				opstream << "\nBack key:\n";
-				opstream << KeyToChar(backkey);
-				opstream << "\nLeft key:\n";
-				opstream << KeyToChar(leftkey);
-				opstream << "\nRight key:\n";
-				opstream << KeyToChar(rightkey);
-				opstream << "\nJump key:\n";
-				opstream << KeyToChar(jumpkey);
-				opstream << "\nCrouch key:\n";
-				opstream << KeyToChar(crouchkey);
-				opstream << "\nDraw key:\n";
-				opstream << KeyToChar(drawkey);
-				opstream << "\nThrow key:\n";
-				opstream << KeyToChar(throwkey);
-				opstream << "\nAttack key:\n";
-				opstream << KeyToChar(attackkey);
-				opstream << "\nChat key:\n";
-				opstream << KeyToChar(chatkey);
-				opstream.close();
+				writeSettings();
 			}
 			if(mainmenu==4||mainmenu==5||mainmenu==6||mainmenu==7||mainmenu==9||mainmenu==13||mainmenu==10||mainmenu==11||mainmenu==100){
 				float gLoc[3]={0,0,0};
@@ -2973,10 +2706,10 @@ void	Game::Tick()
 
 				if(newdetail>2)newdetail=detail;
 				if(newdetail<0)newdetail=detail;
-				if(newscreenwidth>3000)newscreenwidth=screenwidth;
-				if(newscreenwidth<0)newscreenwidth=screenwidth;
-				if(newscreenheight>3000)newscreenheight=screenheight;
-				if(newscreenheight<0)newscreenheight=screenheight;
+				if(newscreenwidth>3000)newscreenwidth=windowWidth;
+				if(newscreenwidth<0)newscreenwidth=windowWidth;
+				if(newscreenheight>3000)newscreenheight=windowHeight;
+				if(newscreenheight<0)newscreenheight=windowHeight;
 			}
 
 			if(Button()&&!oldbutton&&selected==3){
@@ -3156,87 +2889,7 @@ void	Game::Tick()
 				flashamount=1;
 				flashdelay=1;
 
-				if(newdetail>2)newdetail=detail;
-				if(newdetail<0)newdetail=detail;
-				if(newscreenwidth<0)newscreenwidth=screenwidth;
-				if(newscreenheight<0)newscreenheight=screenheight;
-
-
-				ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
-				opstream << "Screenwidth:\n";
-				opstream << newscreenwidth;
-				opstream << "\nScreenheight:\n";
-				opstream << newscreenheight;
-				opstream << "\nMouse sensitivity:\n";
-				opstream << usermousesensitivity;
-				opstream << "\nBlur(0,1):\n";
-				opstream << ismotionblur;
-				opstream << "\nOverall Detail(0,1,2) higher=better:\n";
-				opstream << newdetail;
-				opstream << "\nFloating jump:\n";
-				opstream << floatjump;
-				opstream << "\nMouse jump:\n";
-				opstream << mousejump;
-				opstream << "\nAmbient sound:\n";
-				opstream << ambientsound;
-				opstream << "\nBlood (0,1,2):\n";
-				opstream << bloodtoggle;
-				opstream << "\nAuto slomo:\n";
-				opstream << autoslomo;
-				opstream << "\nFoliage:\n";
-				opstream << foliage;
-				opstream << "\nMusic:\n";
-				opstream << musictoggle;
-				opstream << "\nTrilinear:\n";
-				opstream << trilinear;
-				opstream << "\nDecals(shadows,blood puddles,etc):\n";
-				opstream << decals;
-				opstream << "\nInvert mouse:\n";
-				opstream << invertmouse;
-				opstream << "\nGamespeed:\n";
-				if(oldgamespeed==0)oldgamespeed=1;
-				opstream << oldgamespeed;
-				opstream << "\nDifficulty(0,1,2) higher=harder:\n";
-				opstream << difficulty;
-				opstream << "\nDamage effects(blackout, doublevision):\n";
-				opstream << damageeffects;
-				opstream << "\nText:\n";
-				opstream << texttoggle;
-				opstream << "\nDebug:\n";
-				opstream << debugmode;
-				opstream << "\nVBL Sync:\n";
-				opstream << vblsync;
-				opstream << "\nShow Points:\n";
-				opstream << showpoints;
-				opstream << "\nAlways Blur:\n";
-				opstream << alwaysblur;
-				opstream << "\nImmediate mode (turn on on G5):\n";
-				opstream << immediate;
-				opstream << "\nVelocity blur:\n";
-				opstream << velocityblur;
-			    opstream << "\nVolume:\n";
-		        opstream << volume;
-				opstream << "\nForward key:\n";
-				opstream << KeyToChar(forwardkey);
-				opstream << "\nBack key:\n";
-				opstream << KeyToChar(backkey);
-				opstream << "\nLeft key:\n";
-				opstream << KeyToChar(leftkey);
-				opstream << "\nRight key:\n";
-				opstream << KeyToChar(rightkey);
-				opstream << "\nJump key:\n";
-				opstream << KeyToChar(jumpkey);
-				opstream << "\nCrouch key:\n";
-				opstream << KeyToChar(crouchkey);
-				opstream << "\nDraw key:\n";
-				opstream << KeyToChar(drawkey);
-				opstream << "\nThrow key:\n";
-				opstream << KeyToChar(throwkey);
-				opstream << "\nAttack key:\n";
-				opstream << KeyToChar(attackkey);
-				opstream << "\nChat key:\n";
-				opstream << KeyToChar(chatkey);
-				opstream.close();
+				writeSettings();
 
 				if(mainmenu==3&&gameon)mainmenu=2;
 				if(mainmenu==3&&!gameon)mainmenu=1;
@@ -3314,12 +2967,7 @@ void	Game::Tick()
 
 				mainmenu=3;
 
-				if(newdetail>2)newdetail=detail;
-				if(newdetail<0)newdetail=detail;
-				if(newscreenwidth>3000)newscreenwidth=screenwidth;
-				if(newscreenwidth<0)newscreenwidth=screenwidth;
-				if(newscreenheight>3000)newscreenheight=screenheight;
-				if(newscreenheight<0)newscreenheight=screenheight;
+				validateDisplaySettings();
 			}
 		}
 
@@ -3785,86 +3433,7 @@ void	Game::Tick()
 		if(IsKeyDown(theKeyMap, MAC_Q_KEY)&&IsKeyDown(theKeyMap, MAC_COMMAND_KEY)){
 			tryquit=1;
 			if(mainmenu==3){
-				if(newdetail>2)newdetail=detail;
-				if(newdetail<0)newdetail=detail;
-				if(newscreenwidth<0)newscreenwidth=screenwidth;
-				if(newscreenheight<0)newscreenheight=screenheight;
-
-				ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
-				opstream << "Screenwidth:\n";
-				opstream << newscreenwidth;
-				opstream << "\nScreenheight:\n";
-				opstream << newscreenheight;
-				opstream << "\nMouse sensitivity:\n";
-				opstream << usermousesensitivity;
-				opstream << "\nBlur(0,1):\n";
-				opstream << ismotionblur;
-				opstream << "\nOverall Detail(0,1,2) higher=better:\n";
-				opstream << newdetail;
-				opstream << "\nFloating jump:\n";
-				opstream << floatjump;
-				opstream << "\nMouse jump:\n";
-				opstream << mousejump;
-				opstream << "\nAmbient sound:\n";
-				opstream << ambientsound;
-				opstream << "\nBlood (0,1,2):\n";
-				opstream << bloodtoggle;
-				opstream << "\nAuto slomo:\n";
-				opstream << autoslomo;
-				opstream << "\nFoliage:\n";
-				opstream << foliage;
-				opstream << "\nMusic:\n";
-				opstream << musictoggle;
-				opstream << "\nTrilinear:\n";
-				opstream << trilinear;
-				opstream << "\nDecals(shadows,blood puddles,etc):\n";
-				opstream << decals;
-				opstream << "\nInvert mouse:\n";
-				opstream << invertmouse;
-				opstream << "\nGamespeed:\n";
-				if(oldgamespeed==0)oldgamespeed=1;
-				opstream << oldgamespeed;
-				opstream << "\nDifficulty(0,1,2) higher=harder:\n";
-				opstream << difficulty;
-				opstream << "\nDamage effects(blackout, doublevision):\n";
-				opstream << damageeffects;
-				opstream << "\nText:\n";
-				opstream << texttoggle;
-				opstream << "\nDebug:\n";
-				opstream << debugmode;
-				opstream << "\nVBL Sync:\n";
-				opstream << vblsync;
-				opstream << "\nShow Points:\n";
-				opstream << showpoints;
-				opstream << "\nAlways Blur:\n";
-				opstream << alwaysblur;
-				opstream << "\nImmediate mode (turn on on G5):\n";
-				opstream << immediate;
-				opstream << "\nVelocity blur:\n";
-				opstream << velocityblur;
-			    opstream << "\nVolume:\n";
-		        opstream << volume;
-				opstream << "\nForward key:\n";
-				opstream << KeyToChar(forwardkey);
-				opstream << "\nBack key:\n";
-				opstream << KeyToChar(backkey);
-				opstream << "\nLeft key:\n";
-				opstream << KeyToChar(leftkey);
-				opstream << "\nRight key:\n";
-				opstream << KeyToChar(rightkey);
-				opstream << "\nJump key:\n";
-				opstream << KeyToChar(jumpkey);
-				opstream << "\nCrouch key:\n";
-				opstream << KeyToChar(crouchkey);
-				opstream << "\nDraw key:\n";
-				opstream << KeyToChar(drawkey);
-				opstream << "\nThrow key:\n";
-				opstream << KeyToChar(throwkey);
-				opstream << "\nAttack key:\n";
-				opstream << KeyToChar(attackkey);
-				opstream << "\nChat key:\n";
-				opstream << KeyToChar(chatkey);
-				opstream.close();
+				writeSettings();
 			}
 		}
 
@@ -4220,86 +3789,7 @@ void	Game::Tick()
 		if(IsKeyDown(theKeyMap, MAC_Q_KEY)&&IsKeyDown(theKeyMap, MAC_COMMAND_KEY)){
 			tryquit=1;
 			if(mainmenu==3){
-				if(newdetail>2)newdetail=detail;
-				if(newdetail<0)newdetail=detail;
-				if(newscreenwidth<0)newscreenwidth=screenwidth;
-				if(newscreenheight<0)newscreenheight=screenheight;
-
-				ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
-				opstream << "Screenwidth:\n";
-				opstream << newscreenwidth;
-				opstream << "\nScreenheight:\n";
-				opstream << newscreenheight;
-				opstream << "\nMouse sensitivity:\n";
-				opstream << usermousesensitivity;
-				opstream << "\nBlur(0,1):\n";
-				opstream << ismotionblur;
-				opstream << "\nOverall Detail(0,1,2) higher=better:\n";
-				opstream << newdetail;
-				opstream << "\nFloating jump:\n";
-				opstream << floatjump;
-				opstream << "\nMouse jump:\n";
-				opstream << mousejump;
-				opstream << "\nAmbient sound:\n";
-				opstream << ambientsound;
-				opstream << "\nBlood (0,1,2):\n";
-				opstream << bloodtoggle;
-				opstream << "\nAuto slomo:\n";
-				opstream << autoslomo;
-				opstream << "\nFoliage:\n";
-				opstream << foliage;
-				opstream << "\nMusic:\n";
-				opstream << musictoggle;
-				opstream << "\nTrilinear:\n";
-				opstream << trilinear;
-				opstream << "\nDecals(shadows,blood puddles,etc):\n";
-				opstream << decals;
-				opstream << "\nInvert mouse:\n";
-				opstream << invertmouse;
-				opstream << "\nGamespeed:\n";
-				if(oldgamespeed==0)oldgamespeed=1;
-				opstream << oldgamespeed;
-				opstream << "\nDifficulty(0,1,2) higher=harder:\n";
-				opstream << difficulty;
-				opstream << "\nDamage effects(blackout, doublevision):\n";
-				opstream << damageeffects;
-				opstream << "\nText:\n";
-				opstream << texttoggle;
-				opstream << "\nDebug:\n";
-				opstream << debugmode;
-				opstream << "\nVBL Sync:\n";
-				opstream << vblsync;
-				opstream << "\nShow Points:\n";
-				opstream << showpoints;
-				opstream << "\nAlways Blur:\n";
-				opstream << alwaysblur;
-				opstream << "\nImmediate mode (turn on on G5):\n";
-				opstream << immediate;
-				opstream << "\nVelocity blur:\n";
-				opstream << velocityblur;
-			    opstream << "\nVolume:\n";
-		        opstream << volume;
-				opstream << "\nForward key:\n";
-				opstream << KeyToChar(forwardkey);
-				opstream << "\nBack key:\n";
-				opstream << KeyToChar(backkey);
-				opstream << "\nLeft key:\n";
-				opstream << KeyToChar(leftkey);
-				opstream << "\nRight key:\n";
-				opstream << KeyToChar(rightkey);
-				opstream << "\nJump key:\n";
-				opstream << KeyToChar(jumpkey);
-				opstream << "\nCrouch key:\n";
-				opstream << KeyToChar(crouchkey);
-				opstream << "\nDraw key:\n";
-				opstream << KeyToChar(drawkey);
-				opstream << "\nThrow key:\n";
-				opstream << KeyToChar(throwkey);
-				opstream << "\nAttack key:\n";
-				opstream << KeyToChar(attackkey);
-				opstream << "\nChat key:\n";
-				opstream << KeyToChar(chatkey);
-				opstream.close();
+				writeSettings();
 			}
 		}
 
@@ -4390,7 +3880,8 @@ void	Game::Tick()
 
 									gLoc[0]=temppos.x;
 									gLoc[1]=temppos.y;
-									gLoc[2]=temppos.z;vel[0]=0;
+									gLoc[2]=temppos.z;
+									vel[0]=0;
 									vel[1]=0;
 									vel[2]=0;
 									int whichsoundplay;
@@ -5092,7 +4583,7 @@ void	Game::Tick()
 													if(player[k].aitype==playercontrolled&&(player[k].targetanimation==jumpupanim||player[k].targetanimation==jumpdownanim||player[k].isFlip())&&!player[k].jumptogglekeydown&&player[k].jumpkeydown){
 														lowpointtarget=lowpoint+DoRotation(player[k].facing,0,-90,0)*1.5;
 														tempcoords1=lowpoint;
-														whichhit=objects.model[i].LineCheck(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.rotation[i]);
+														whichhit=objects.model[i].LineCheck(lowpoint,lowpointtarget,colpoint,objects.position[i],objects.rotation[i]);
 														if(whichhit!=-1&&abs(objects.model[i].facenormals[whichhit].y)<.3){
 															player[k].target=0;
 															player[k].targetanimation=walljumpleftanim;
@@ -5123,7 +4614,7 @@ void	Game::Tick()
 														{
 															lowpoint=tempcoords1;
 															lowpointtarget=lowpoint+DoRotation(player[k].facing,0,90,0)*1.5;
-															whichhit=objects.model[i].LineCheck(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.rotation[i]);
+															whichhit=objects.model[i].LineCheck(lowpoint,lowpointtarget,colpoint,objects.position[i],objects.rotation[i]);
 															if(whichhit!=-1&&abs(objects.model[i].facenormals[whichhit].y)<.3){
 																player[k].target=0;
 																player[k].targetanimation=walljumprightanim;
@@ -5154,7 +4645,7 @@ void	Game::Tick()
 															{
 																lowpoint=tempcoords1;
 																lowpointtarget=lowpoint+player[k].facing*2;
-																whichhit=objects.model[i].LineCheck(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.rotation[i]);
+																whichhit=objects.model[i].LineCheck(lowpoint,lowpointtarget,colpoint,objects.position[i],objects.rotation[i]);
 																if(whichhit!=-1&&abs(objects.model[i].facenormals[whichhit].y)<.3){
 																	player[k].target=0;
 																	player[k].targetanimation=walljumpbackanim;
@@ -5185,7 +4676,7 @@ void	Game::Tick()
 																{
 																	lowpoint=tempcoords1;
 																	lowpointtarget=lowpoint-player[k].facing*2;
-																	whichhit=objects.model[i].LineCheck(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.rotation[i]);
+																	whichhit=objects.model[i].LineCheck(lowpoint,lowpointtarget,colpoint,objects.position[i],objects.rotation[i]);
 																	if(whichhit!=-1&&abs(objects.model[i].facenormals[whichhit].y)<.3){
 																		player[k].target=0;
 																		player[k].targetanimation=walljumpfrontanim;
@@ -5223,7 +4714,7 @@ void	Game::Tick()
 												lowpoint2=player[k].coords;
 												lowpoint=player[k].coords;
 												lowpoint.y+=2;
-												if(objects.model[i].LineCheck(&lowpoint,&lowpoint2,&colpoint,&objects.position[i],&objects.rotation[i])!=-1){
+												if(objects.model[i].LineCheck(lowpoint,lowpoint2,colpoint,objects.position[i],objects.rotation[i])!=-1){
 													player[k].coords=colpoint;
 													player[k].collide=1;
 													tempcollide=1;
@@ -5282,14 +4773,14 @@ void	Game::Tick()
 
 														if((player[k].grabdelay<=0||player[k].aitype!=playercontrolled)&&((/*(player[k].isRun()||player[k].targetanimation==sneakanim||player[k].targetanimation==walkanim)&&*/player[k].currentanimation!=climbanim&&player[k].currentanimation!=hanganim&&!player[k].isWallJump())||player[k].targetanimation==jumpupanim||player[k].targetanimation==jumpdownanim)){
 															lowpoint=player[k].coords;
-															objects.model[i].SphereCheckPossible(&lowpoint, 1.5, &objects.position[i], &objects.rotation[i]);
+															objects.model[i].SphereCheckPossible(lowpoint, 1.5, objects.position[i], objects.rotation[i]);
 															lowpoint=player[k].coords;
 															lowpoint.y+=.05;
 															facing=0;
 															facing.z=-1;
 															facing=DoRotation(facing,0,player[k].targetrotation+180,0);
 															lowpointtarget=lowpoint+facing*1.4;
-															whichhit=objects.model[i].LineCheckPossible(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.rotation[i]);
+															whichhit=objects.model[i].LineCheckPossible(lowpoint,lowpointtarget,colpoint,objects.position[i],objects.rotation[i]);
 															if(whichhit!=-1){
 																lowpoint=player[k].coords;
 																lowpoint.y+=.1;
@@ -5318,19 +4809,19 @@ void	Game::Tick()
 																lowpointtarget6.y+=45/13;
 																lowpointtarget6+=facing*.6;
 																lowpointtarget7.y+=90/13;
-																whichhit=objects.model[i].LineCheckPossible(&lowpoint,&lowpointtarget,&colpoint,&objects.position[i],&objects.rotation[i]);
+																whichhit=objects.model[i].LineCheckPossible(lowpoint,lowpointtarget,colpoint,objects.position[i],objects.rotation[i]);
 																if(objects.friction[i]>.5)
 																	if(whichhit!=-1){
 																		//if(k==0){
 																		if(whichhit!=-1)if(player[k].targetanimation!=jumpupanim&&player[k].targetanimation!=jumpdownanim)player[k].collided=1;
 																		if(checkcollide(lowpoint7,lowpointtarget7)==-1)
 																			if(checkcollide(lowpoint6,lowpointtarget6)==-1)
-																				if(objects.model[i].LineCheckPossible(&lowpoint2,&lowpointtarget2,&colpoint,&objects.position[i],&objects.rotation[i])!=-1&&objects.model[i].LineCheckPossible(&lowpoint3,&lowpointtarget3,&colpoint,&objects.position[i],&objects.rotation[i])!=-1&&objects.model[i].LineCheckPossible(&lowpoint4,&lowpointtarget4,&colpoint,&objects.position[i],&objects.rotation[i])!=-1&&objects.model[i].LineCheckPossible(&lowpoint5,&lowpointtarget5,&colpoint,&objects.position[i],&objects.rotation[i])!=-1)
+																				if(objects.model[i].LineCheckPossible(lowpoint2,lowpointtarget2,colpoint,objects.position[i],objects.rotation[i])!=-1&&objects.model[i].LineCheckPossible(lowpoint3,lowpointtarget3,colpoint,objects.position[i],objects.rotation[i])!=-1&&objects.model[i].LineCheckPossible(lowpoint4,lowpointtarget4,colpoint,objects.position[i],objects.rotation[i])!=-1&&objects.model[i].LineCheckPossible(lowpoint5,lowpointtarget5,colpoint,objects.position[i],objects.rotation[i])!=-1)
 																					for(j=0;j<45;j++){
 																						lowpoint=player[k].coords;
 																						lowpoint.y+=(float)j/13;
 																						lowpointtarget=lowpoint+facing*1.4;
-																						if(objects.model[i].LineCheckPossible(&lowpoint,&lowpointtarget,&colpoint2,&objects.position[i],&objects.rotation[i])==-1){
+																						if(objects.model[i].LineCheckPossible(lowpoint,lowpointtarget,colpoint2,objects.position[i],objects.rotation[i])==-1){
 																							if(j<=6){
 																								j=100;
 																							}
@@ -5342,7 +4833,7 @@ void	Game::Tick()
 																							}
 																							if(j!=100&&(/*j>25||(player[k].isRun()||player[k].targetanimation==sneakanim||player[k].targetanimation==walkanim)||*/player[k].targetanimation==jumpupanim||player[k].targetanimation==jumpdownanim)){
 																								lowpoint=DoRotation(objects.model[i].facenormals[whichhit],0,objects.rotation[k],0);
-																								if(1==1/*dotproduct(&player[k].velocity,&lowpoint)>0||player[k].aitype!=playercontrolled||(player[k].isRun()||player[k].targetanimation==sneakanim||player[k].targetanimation==walkanim||player[k].targetanimation==jumpupanim)*/){
+																								if(1==1/*dot(&player[k].velocity,&lowpoint)>0||player[k].aitype!=playercontrolled||(player[k].isRun()||player[k].targetanimation==sneakanim||player[k].targetanimation==walkanim||player[k].targetanimation==jumpupanim)*/){
 																									lowpoint=player[k].coords;
 																									lowpoint.y+=(float)j/13;
 																									lowpointtarget=lowpoint+facing*1.3;
@@ -5841,7 +5332,7 @@ void	Game::Tick()
 
 							hawkcalldelay=16+abs(Random()%8);
 						}
-						static float temptexdetail;
+						//static float temptexdetail;
 
 
 						if(IsKeyDown(theKeyMap, MAC_H_KEY)&&debugmode){
@@ -7683,7 +7174,7 @@ void	Game::Tick()
 														for(k=0;k<numpathpointconnect[j];k++){
 															DistancePointLine(&player[i].finalfinaltarget, &pathpoint[j], &pathpoint[pathpointconnect[j][k]], &tempdist,&colpoint );
 															if(tempdist*tempdist<closestdistance){
-																if(findDistance(&colpoint,&pathpoint[j])+findDistance(&colpoint,&pathpoint[pathpointconnect[j][k]])<findDistance(&pathpoint[j],&pathpoint[pathpointconnect[j][k]])+.1){
+																if(distance(colpoint,pathpoint[j])+distance(colpoint,pathpoint[pathpointconnect[j][k]])<distance(pathpoint[j],pathpoint[pathpointconnect[j][k]])+.1){
 																	closestdistance=tempdist*tempdist;
 																	closest=j;
 																	player[i].finaltarget=colpoint;
@@ -7716,7 +7207,7 @@ void	Game::Tick()
 																for(k=0;k<numpathpointconnect[j];k++){
 																	DistancePointLine(&player[i].coords, &pathpoint[j], &pathpoint[pathpointconnect[j][k]], &tempdist,&colpoint );
 																	if(tempdist*tempdist<closestdistance){
-																		if(findDistance(&colpoint,&pathpoint[j])+findDistance(&colpoint,&pathpoint[pathpointconnect[j][k]])<findDistance(&pathpoint[j],&pathpoint[pathpointconnect[j][k]])+.1){
+																		if(distance(colpoint,pathpoint[j])+distance(colpoint,pathpoint[pathpointconnect[j][k]])<distance(pathpoint[j],pathpoint[pathpointconnect[j][k]])+.1){
 																			//if(findDistancefast(&player[i].finaltarget,&colpoint)<findDistancefast(&player[i].finaltarget,&player[i].coords)){
 																			closestdistance=tempdist*tempdist;
 																			closest=j;
@@ -8363,7 +7854,7 @@ void	Game::Tick()
 																player[i].rabbitkickenabled=Random()%2;
 																rotatetarget=player[player[i].aitarget].coords+player[player[i].aitarget].velocity;
 																if(findDistancefast(&player[player[i].aitarget].coords,&player[i].coords)<findDistancefast(&rotatetarget,&player[i].coords))
-																	rotatetarget=player[player[i].aitarget].coords+player[player[i].aitarget].velocity*findDistance(&player[player[i].aitarget].coords,&player[i].coords)/findLength(&player[i].velocity)-player[i].coords;
+																	rotatetarget=player[player[i].aitarget].coords+player[player[i].aitarget].velocity*distance(player[player[i].aitarget].coords,player[i].coords)/length(player[i].velocity)-player[i].coords;
 																else rotatetarget=player[player[i].aitarget].coords-player[i].coords;
 																Normalise(rotatetarget);
 																player[i].targetrotation=-asin(0-rotatetarget.x);
@@ -8444,7 +7935,7 @@ void	Game::Tick()
 																flatfacing=player[0].coords;
 																facing.y+=player[i].skeleton.joints[player[i].skeleton.jointlabels[head]].position.y*player[i].scale;
 																flatfacing.y+=player[0].skeleton.joints[player[0].skeleton.jointlabels[head]].position.y*player[0].scale;
-																if(player[i].occluded>=2)
+																if(player[i].occluded>=2) {
 																	if(-1!=checkcollide(facing,flatfacing)){
 																		if(!player[i].pause)player[i].lastseentime-=.2;
 																		if(player[i].lastseentime<=0&&(player[i].creature!=wolftype||player[i].weaponstuck==-1)){
@@ -8455,6 +7946,7 @@ void	Game::Tick()
 																		}
 																	}
 																	else player[i].lastseentime=1;
+																}
 															}
 										}
 										if(animation[player[0].targetanimation].height==highheight&&(player[i].aitype==attacktypecutoff||player[i].aitype==searchtype)){
@@ -8807,7 +8299,7 @@ void	Game::Tick()
 																					player[i].victim=&player[j];
 																					XYZ aim;
 																					weapons.owner[player[i].weaponids[0]]=-1;
-																					aim=player[i].victim->coords+DoRotation(player[i].victim->skeleton.joints[player[i].victim->skeleton.jointlabels[abdomen]].position,0,player[i].victim->rotation,0)*player[i].victim->scale+player[i].victim->velocity*findDistance(&player[i].victim->coords,&player[i].coords)/50-(player[i].coords+DoRotation(player[i].skeleton.joints[player[i].skeleton.jointlabels[righthand]].position,0,player[i].rotation,0)*player[i].scale);
+																					aim=player[i].victim->coords+DoRotation(player[i].victim->skeleton.joints[player[i].victim->skeleton.jointlabels[abdomen]].position,0,player[i].victim->rotation,0)*player[i].victim->scale+player[i].victim->velocity*distance(player[i].victim->coords,player[i].coords)/50-(player[i].coords+DoRotation(player[i].skeleton.joints[player[i].skeleton.jointlabels[righthand]].position,0,player[i].rotation,0)*player[i].scale);
 																					Normalise(aim);
 
 																					aim=DoRotation(aim,(float)abs(Random()%30)-15,(float)abs(Random()%30)-15,0);
@@ -9783,7 +9275,8 @@ void	Game::TickOnceAfter(){
 
 								loading=3;
 							}
-							if(changedelay<=-999&&whichlevel!=-2&&!loading&&(player[0].dead||(alldead&&maptype==mapkilleveryone)||(winhotspot)||(killhotspot))&&!winfreeze)loading=1;
+							if(changedelay<=-999&&whichlevel!=-2&&!loading&&(player[0].dead||(alldead&&maptype==mapkilleveryone)||(winhotspot)||(killhotspot))&&!winfreeze)
+								loading=1;
 							if((player[0].dead||(alldead&&maptype==mapkilleveryone)||(winhotspot)||(windialogue)||(killhotspot))&&changedelay<=0){
                         {
 									if(whichlevel!=-2&&!loading&&!player[0].dead){
@@ -9801,7 +9294,7 @@ void	Game::TickOnceAfter(){
 									endgame=1;
 								}
 							}
-						} else if(mainmenu==0&&winfreeze){
+							else if(mainmenu==0&&winfreeze){
 								if(campaignchoosenext[campaignchoicewhich[whichchoice]]==2)
 									stealthloading=1;
 								else stealthloading=0;
@@ -9929,7 +9422,7 @@ void	Game::TickOnceAfter(){
 
 									stealthloading=0;
 							}
-
+						}
 							if(loading==3)loading=0;
 
 					}
@@ -9959,7 +9452,7 @@ void	Game::TickOnceAfter(){
 		if(player[0].skeleton.free!=2&&!autocam){
 			cameraspeed=20;
 			if(findLengthfast(&player[0].velocity)>400){
-				cameraspeed=20+(findLength(&player[0].velocity)-20)*.96;
+				cameraspeed=20+(length(player[0].velocity)-20)*.96;
 			}
 			if(player[0].skeleton.free==0&&player[0].targetanimation!=hanganim&&player[0].targetanimation!=climbanim)target.y+=1.4;
 			coltarget=target-cameraloc;
@@ -9975,23 +9468,23 @@ void	Game::TickOnceAfter(){
 			viewer=cameraloc-facing*cameradist;
 			colviewer=viewer;
 			coltarget=cameraloc;
-			objects.SphereCheckPossible(&colviewer, findDistance(&colviewer,&coltarget));
+			objects.SphereCheckPossible(&colviewer, distance(colviewer,coltarget));
 			if(terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz])
 				for(j=0;j<terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz];j++){
 					i=terrain.patchobjects[player[0].whichpatchx][player[0].whichpatchz][j];
 					colviewer=viewer;
 					coltarget=cameraloc;
-					if(objects.model[i].LineCheckPossible(&colviewer,&coltarget,&col,&objects.position[i],&objects.rotation[i])!=-1)viewer=col;
+					if(objects.model[i].LineCheckPossible(colviewer,coltarget,col,objects.position[i],objects.rotation[i])!=-1)viewer=col;
 				}
 				if(terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz])
 					for(j=0;j<terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz];j++){
 						i=terrain.patchobjects[player[0].whichpatchx][player[0].whichpatchz][j];
 						colviewer=viewer;
-						if(objects.model[i].SphereCheck(&colviewer,.15,&col,&objects.position[i],&objects.rotation[i])!=-1){
+						if(objects.model[i].SphereCheck(colviewer,.15,col,objects.position[i],objects.rotation[i])!=-1){
 							viewer=colviewer;
 						}
 					}
-					cameradist=findDistance(&viewer,&target);
+					cameradist=distance(viewer,target);
 					if(viewer.y<terrain.getHeight(viewer.x,viewer.z)+.6){
 						viewer.y=terrain.getHeight(viewer.x,viewer.z)+.6;
 					}
@@ -10002,7 +9495,7 @@ void	Game::TickOnceAfter(){
 		if(player[0].skeleton.free!=2&&autocam){
 			cameraspeed=20;
 			if(findLengthfast(&player[0].velocity)>400){
-				cameraspeed=20+(findLength(&player[0].velocity)-20)*.96;
+				cameraspeed=20+(length(player[0].velocity)-20)*.96;
 			}
 			if(player[0].skeleton.free==0&&player[0].targetanimation!=hanganim&&player[0].targetanimation!=climbanim)target.y+=1.4;
 			cameradist+=multiplier*5;
@@ -10019,23 +9512,23 @@ void	Game::TickOnceAfter(){
 			viewer=cameraloc;
 			colviewer=viewer;
 			coltarget=cameraloc;
-			objects.SphereCheckPossible(&colviewer, findDistance(&colviewer,&coltarget));
+			objects.SphereCheckPossible(&colviewer, distance(colviewer,coltarget));
 			if(terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz])
 				for(j=0;j<terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz];j++){
 					i=terrain.patchobjects[player[0].whichpatchx][player[0].whichpatchz][j];
 					colviewer=viewer;
 					coltarget=cameraloc;
-					if(objects.model[i].LineCheckPossible(&colviewer,&coltarget,&col,&objects.position[i],&objects.rotation[i])!=-1)viewer=col;
+					if(objects.model[i].LineCheckPossible(colviewer,coltarget,col,objects.position[i],objects.rotation[i])!=-1)viewer=col;
 				}
 				if(terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz])
 					for(j=0;j<terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz];j++){
 						i=terrain.patchobjects[player[0].whichpatchx][player[0].whichpatchz][j];
 						colviewer=viewer;
-						if(objects.model[i].SphereCheck(&colviewer,.15,&col,&objects.position[i],&objects.rotation[i])!=-1){
+						if(objects.model[i].SphereCheck(colviewer,.15,col,objects.position[i],objects.rotation[i])!=-1){
 							viewer=colviewer;
 						}
 					}
-					cameradist=findDistance(&viewer,&target);
+					cameradist=distance(viewer,target);
 					if(viewer.y<terrain.getHeight(viewer.x,viewer.z)+.6){
 						viewer.y=terrain.getHeight(viewer.x,viewer.z)+.6;
 					}
@@ -10061,4 +9554,97 @@ void	Game::TickOnceAfter(){
 			viewer.z+=(float)(Random()%100)*.0005*camerashake;
 		}
 	}
+}
+
+void Game::writeSettings()
+{
+	if(newdetail>2)newdetail=detail;
+	if(newdetail<0)newdetail=detail;
+	if(newscreenwidth<0)newscreenwidth=windowWidth;
+	if(newscreenheight<0)newscreenheight=windowHeight;
+	
+	ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
+	opstream << "Screenwidth:\n";
+	opstream << newscreenwidth;
+	opstream << "\nScreenheight:\n";
+	opstream << newscreenheight;
+	opstream << "\nMouse sensitivity:\n";
+	opstream << usermousesensitivity;
+	opstream << "\nBlur(0,1):\n";
+	opstream << ismotionblur;
+	opstream << "\nOverall Detail(0,1,2) higher=better:\n";
+	opstream << newdetail;
+	opstream << "\nFloating jump:\n";
+	opstream << floatjump;
+	opstream << "\nMouse jump:\n";
+	opstream << mousejump;
+	opstream << "\nAmbient sound:\n";
+	opstream << ambientsound;
+	opstream << "\nBlood (0,1,2):\n";
+	opstream << bloodtoggle;
+	opstream << "\nAuto slomo:\n";
+	opstream << autoslomo;
+	opstream << "\nFoliage:\n";
+	opstream << foliage;
+	opstream << "\nMusic:\n";
+	opstream << musictoggle;
+	opstream << "\nTrilinear:\n";
+	opstream << trilinear;
+	opstream << "\nDecals(shadows,blood puddles,etc):\n";
+	opstream << decals;
+	opstream << "\nInvert mouse:\n";
+	opstream << invertmouse;
+	opstream << "\nGamespeed:\n";
+	if(oldgamespeed==0)oldgamespeed=1;
+	opstream << oldgamespeed;
+	opstream << "\nDifficulty(0,1,2) higher=harder:\n";
+	opstream << difficulty;
+	opstream << "\nDamage effects(blackout, doublevision):\n";
+	opstream << damageeffects;
+	opstream << "\nText:\n";
+	opstream << texttoggle;
+	opstream << "\nDebug:\n";
+	opstream << debugmode;
+	opstream << "\nVBL Sync:\n";
+	opstream << vblsync;
+	opstream << "\nShow Points:\n";
+	opstream << showpoints;
+	opstream << "\nAlways Blur:\n";
+	opstream << alwaysblur;
+	opstream << "\nImmediate mode (turn on on G5):\n";
+	opstream << immediate;
+	opstream << "\nVelocity blur:\n";
+	opstream << velocityblur;
+	opstream << "\nVolume:\n";
+	opstream << volume;
+	opstream << "\nForward key:\n";
+	opstream << KeyToChar(forwardkey);
+	opstream << "\nBack key:\n";
+	opstream << KeyToChar(backkey);
+	opstream << "\nLeft key:\n";
+	opstream << KeyToChar(leftkey);
+	opstream << "\nRight key:\n";
+	opstream << KeyToChar(rightkey);
+	opstream << "\nJump key:\n";
+	opstream << KeyToChar(jumpkey);
+	opstream << "\nCrouch key:\n";
+	opstream << KeyToChar(crouchkey);
+	opstream << "\nDraw key:\n";
+	opstream << KeyToChar(drawkey);
+	opstream << "\nThrow key:\n";
+	opstream << KeyToChar(throwkey);
+	opstream << "\nAttack key:\n";
+	opstream << KeyToChar(attackkey);
+	opstream << "\nChat key:\n";
+	opstream << KeyToChar(chatkey);
+	opstream.close();
+}
+
+void Game::validateDisplaySettings() {
+	if(newdetail>2)newdetail=detail;
+	if(newdetail<0)newdetail=detail;
+	if(newscreenwidth>3000)newscreenwidth=windowWidth;
+	if(newscreenwidth<0)newscreenwidth=windowWidth;
+	if(newscreenheight>3000)newscreenheight=windowHeight;
+	if(newscreenheight<0)newscreenheight=windowHeight;
 }
