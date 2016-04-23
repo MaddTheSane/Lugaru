@@ -1164,17 +1164,17 @@ void Model::DeleteDecal(int which)
 
 void Model::MakeDecal(int atype, XYZ *where,float *size, float *opacity, const float rotation){
 	if(decals){
-		if(type!=decalstype)return;
+		if(type!=decalstype)
+			return;
 
-		static float placex,placez;
-		static XYZ rot;
+		float placex,placez;
+		XYZ rot;
 		//static XYZ point,point1,point2;
-		static float distance;
-		static int i,j;
+		float distance;
 
 		if(*opacity>0)
 			if(findDistancefast(where,&boundingspherecenter)<(boundingsphereradius+*size)*(boundingsphereradius+*size))
-				for(i=0;i<TriangleNum;i++){
+				for (int i = 0; i < TriangleNum; i++) {
 					if(facenormals[i].y<-.1&&(vertex[Triangles[i].vertex[0]].y<where->y||vertex[Triangles[i].vertex[1]].y<where->y||vertex[Triangles[i].vertex[2]].y<where->y)){
 						decalposition[numdecals]=*where;
 						decaltype[numdecals]=atype;
@@ -1222,7 +1222,7 @@ void Model::MakeDecal(int atype, XYZ *where,float *size, float *opacity, const f
 										if(!(decaltexcoords[numdecals][0][1]>1&&decaltexcoords[numdecals][1][1]>1&&decaltexcoords[numdecals][2][1]>1))
 										{
 											if(decalrotation[numdecals]){
-												for(j=0;j<3;j++){			
+												for(int j=0;j<3;j++){
 													rot.y=0;
 													rot.x=decaltexcoords[numdecals][j][0]-.5;
 													rot.z=decaltexcoords[numdecals][j][1]-.5;
@@ -1240,18 +1240,19 @@ void Model::MakeDecal(int atype, XYZ *where,float *size, float *opacity, const f
 }
 
 void Model::MakeDecal(int atype, XYZ where,float size, float opacity, float rotation){
-	if(decals){
-		if(type!=decalstype)return;
+	if (decals) {
+		if (type != decalstype) {
+			return;
+		}
 
-		static float placex,placez;
-		static XYZ rot;
+		float placex,placez;
+		XYZ rot;
 		//static XYZ point,point1,point2;
-		static float distance;
-		static int i,j;
+		float distance;
 
-		if(opacity>0)
-			if(findDistancefast(&where,&boundingspherecenter)<(boundingsphereradius+size)*(boundingsphereradius+size))
-				for(i=0;i<TriangleNum;i++){
+		if(opacity>0) {
+			if(findDistancefast(&where,&boundingspherecenter)<(boundingsphereradius+size)*(boundingsphereradius+size)) {
+				for (int i = 0; i < TriangleNum; i++){
 					distance=abs(((facenormals[i].x*where.x)+(facenormals[i].y*where.y)+(facenormals[i].z*where.z)-((facenormals[i].x*vertex[Triangles[i].vertex[0]].x)+(facenormals[i].y*vertex[Triangles[i].vertex[0]].y)+(facenormals[i].z*vertex[Triangles[i].vertex[0]].z))));
 					if(distance<.02&&abs(facenormals[i].y)>abs(facenormals[i].x)&&abs(facenormals[i].y)>abs(facenormals[i].z)){
 						decalposition[numdecals]=where;
@@ -1299,7 +1300,7 @@ void Model::MakeDecal(int atype, XYZ where,float size, float opacity, float rota
 										if(!(decaltexcoords[numdecals][0][1]>1&&decaltexcoords[numdecals][1][1]>1&&decaltexcoords[numdecals][2][1]>1))
 										{
 											if(decalrotation[numdecals]){
-												for(j=0;j<3;j++){			
+												for (int j = 0; j < 3; j++) {
 													rot.y=0;
 													rot.x=decaltexcoords[numdecals][j][0]-.5;
 													rot.z=decaltexcoords[numdecals][j][1]-.5;
@@ -1308,7 +1309,8 @@ void Model::MakeDecal(int atype, XYZ where,float size, float opacity, float rota
 													decaltexcoords[numdecals][j][1]=rot.z+.5;
 												}
 											}
-											if(numdecals<max_model_decals-1)numdecals++;
+											if(numdecals<max_model_decals-1)
+												numdecals++;
 										}
 						}
 					}
@@ -1355,10 +1357,9 @@ void Model::MakeDecal(int atype, XYZ where,float size, float opacity, float rota
 							if(!(decaltexcoords[numdecals][0][0]<0&&decaltexcoords[numdecals][1][0]<0&&decaltexcoords[numdecals][2][0]<0))
 								if(!(decaltexcoords[numdecals][0][1]<0&&decaltexcoords[numdecals][1][1]<0&&decaltexcoords[numdecals][2][1]<0))
 									if(!(decaltexcoords[numdecals][0][0]>1&&decaltexcoords[numdecals][1][0]>1&&decaltexcoords[numdecals][2][0]>1))
-										if(!(decaltexcoords[numdecals][0][1]>1&&decaltexcoords[numdecals][1][1]>1&&decaltexcoords[numdecals][2][1]>1))
-										{
-											if(decalrotation[numdecals]){
-												for(j=0;j<3;j++){			
+										if(!(decaltexcoords[numdecals][0][1]>1&&decaltexcoords[numdecals][1][1]>1&&decaltexcoords[numdecals][2][1]>1)) {
+											if(decalrotation[numdecals]) {
+												for (int j = 0; j < 3; j++) {
 													rot.y=0;
 													rot.x=decaltexcoords[numdecals][j][0]-.5;
 													rot.z=decaltexcoords[numdecals][j][1]-.5;
@@ -1367,7 +1368,8 @@ void Model::MakeDecal(int atype, XYZ where,float size, float opacity, float rota
 													decaltexcoords[numdecals][j][1]=rot.z+.5;
 												}
 											}
-											if(numdecals<max_model_decals-1)numdecals++;
+											if(numdecals<max_model_decals-1)
+												numdecals++;
 										}
 						}
 					}
@@ -1417,7 +1419,7 @@ void Model::MakeDecal(int atype, XYZ where,float size, float opacity, float rota
 										if(!(decaltexcoords[numdecals][0][1]>1&&decaltexcoords[numdecals][1][1]>1&&decaltexcoords[numdecals][2][1]>1))
 										{
 											if(decalrotation[numdecals]){
-												for(j=0;j<3;j++){			
+												for (int j = 0; j < 3; j++) {
 													rot.y=0;
 													rot.x=decaltexcoords[numdecals][j][0]-.5;
 													rot.z=decaltexcoords[numdecals][j][1]-.5;
@@ -1431,6 +1433,8 @@ void Model::MakeDecal(int atype, XYZ where,float size, float opacity, float rota
 						}
 					}
 				}
+			}
+		}
 	}
 }
 
@@ -1443,8 +1447,6 @@ Model::~Model()
 
 void Model::deallocate()
 {
-	int i = 0, j = 0;
-
 	if(owner)dealloc(owner);
 	owner = 0;
 
@@ -1470,9 +1472,9 @@ void Model::deallocate()
 	//allow decals
 	if(decaltexcoords)
 	{
-		for(i=0;i<max_model_decals;i++)
+		for (int i = 0; i < max_model_decals; i++)
 		{
-			for(j=0;j<3;j++)
+			for (int j = 0; j < 3; j++)
 			{
 				dealloc(decaltexcoords[i][j]);
 			}
@@ -1485,7 +1487,7 @@ void Model::deallocate()
 
 	if (decalvertex)
 	{
-		for(i=0;i<max_model_decals;i++)
+		for (int i = 0; i < max_model_decals; i++)
 		{
 			dealloc(decalvertex[i]);
 		}

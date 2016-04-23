@@ -730,7 +730,6 @@ void Terrain::drawpatchotherother(int whichx, int whichy, float opacity){
 float Terrain::getHeight(float pointx, float pointz)
 {
 	float height1,height2;
-	int tilex,tiley;
 	XYZ startpoint,endpoint,intersect,triangle[3],average;
 
 	pointx /= scale;
@@ -746,8 +745,14 @@ float Terrain::getHeight(float pointx, float pointz)
 	endpoint=startpoint;
 	endpoint.y=1000;
 
-	tilex=pointx;
-	tiley=pointz;
+	int tilex=pointx;
+	int tiley=pointz;
+	if (isnan(pointx)) {
+		tilex = 0;
+	}
+	if (isnan(pointz)) {
+		tiley = 0;
+	}
 
 	triangle[0].x=tilex;
 	triangle[0].z=tiley;

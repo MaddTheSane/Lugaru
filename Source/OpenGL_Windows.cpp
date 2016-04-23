@@ -1,4 +1,4 @@
-/*
+I/*
 Copyright (C) 2003, 2010 - Wolfire Games
 
 This file is part of Lugaru.

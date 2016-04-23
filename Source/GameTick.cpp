@@ -2407,30 +2407,30 @@ void	Game::Loadlevel(char *name){
 	visibleloading=0;
 }
 
-void	Game::Tick()
+void Game::Tick()
 {
-	static int i,k,j,l,m;
-	static XYZ facing,flatfacing,absflatfacing;
-	static XYZ rotatetarget;
-	static bool oldkey;
-	static float oldtargetrotation;
-	static int target, numgood;
-	static XYZ tempcoords1,tempcoords2;
-	static XYZ test;
-	static XYZ test2;
-	static XYZ lowpoint,lowpointtarget,lowpoint2,lowpointtarget2,lowpoint3,lowpointtarget3,lowpoint4,lowpointtarget4,lowpoint5,lowpointtarget5,lowpoint6,lowpointtarget6,lowpoint7,lowpointtarget7,colpoint,colpoint2;
-	static int whichhit;
-	static bool oldjumpkeydown;
+	int i,k,j,l,m;
+	XYZ facing,flatfacing,absflatfacing;
+	XYZ rotatetarget;
+	bool oldkey;
+	float oldtargetrotation;
+	int target, numgood;
+	XYZ tempcoords1,tempcoords2;
+	XYZ test;
+	XYZ test2;
+	XYZ lowpoint,lowpointtarget,lowpoint2,lowpointtarget2,lowpoint3,lowpointtarget3,lowpoint4,lowpointtarget4,lowpoint5,lowpointtarget5,lowpoint6,lowpointtarget6,lowpoint7,lowpointtarget7,colpoint,colpoint2;
+	int whichhit;
+	bool oldjumpkeydown = false;
 
 	int templength;
 
 	float headprop,bodyprop,armprop,legprop;
 
-	for(i=0;i<15;i++){
+	for(int i=0;i<15;i++){
 		displaytime[i]+=multiplier;
 	}
 
-	static unsigned char	theKeyMap[16];
+	unsigned char	theKeyMap[16];
 	GetKeys( theKeyMap );
 
 	keyboardfrozen=0;
@@ -3880,7 +3880,8 @@ void	Game::Tick()
 
 									gLoc[0]=temppos.x;
 									gLoc[1]=temppos.y;
-									gLoc[2]=temppos.z;vel[0]=0;
+									gLoc[2]=temppos.z;
+									vel[0]=0;
 									vel[1]=0;
 									vel[2]=0;
 									int whichsoundplay;
