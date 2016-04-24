@@ -12,6 +12,7 @@
 		550AE9A318DFC22800F0C197 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 550AE9A218DFC22800F0C197 /* SDL2.framework */; };
 		550AE9A518DFC24700F0C197 /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 550AE9A218DFC22800F0C197 /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		550AE9A918DFC8B700F0C197 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 550AE9A818DFC8B700F0C197 /* Images.xcassets */; };
+		55320A7E1CCD43F400BAEE86 /* Skeleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55320A7D1CCD43F400BAEE86 /* Skeleton.swift */; };
 		554B1EE61CCBE6EF005CE5BC /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 554B1EE51CCBE6EF005CE5BC /* Constants.swift */; };
 		554B1EE81CCBFA3D005CE5BC /* Terrain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 554B1EE71CCBFA3D005CE5BC /* Terrain.swift */; };
 		554B1EEA1CCBFAE8005CE5BC /* Quaternions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 554B1EE91CCBFAE8005CE5BC /* Quaternions.swift */; };
@@ -248,6 +249,7 @@
 		550AE9A618DFC29A00F0C197 /* Data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Data; path = ../Data; sourceTree = SOURCE_ROOT; };
 		550AE9A818DFC8B700F0C197 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		551C714D1CCA8F6C0098D893 /* Lugaru.exp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.exports; path = Lugaru.exp; sourceTree = "<group>"; };
+		55320A7D1CCD43F400BAEE86 /* Skeleton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Skeleton.swift; sourceTree = "<group>"; };
 		554B1EE51CCBE6EF005CE5BC /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		554B1EE71CCBFA3D005CE5BC /* Terrain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Terrain.swift; sourceTree = "<group>"; };
 		554B1EE91CCBFAE8005CE5BC /* Quaternions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Quaternions.swift; sourceTree = "<group>"; };
@@ -548,6 +550,7 @@
 			children = (
 				55A13D031CC971420070DECF /* AppDelegate.swift */,
 				554B1EE91CCBFAE8005CE5BC /* Quaternions.swift */,
+				55320A7D1CCD43F400BAEE86 /* Skeleton.swift */,
 				55A13D201CC974200070DECF /* Model.swift */,
 				554B1EEE1CCC1A90005CE5BC /* Globals.swift */,
 				554B1EE71CCBFA3D005CE5BC /* Terrain.swift */,
@@ -1104,6 +1107,7 @@
 				55A13D1B1CC972190070DECF /* pack.c in Sources */,
 				554B1EEA1CCBFAE8005CE5BC /* Quaternions.swift in Sources */,
 				55A13D171CC972140070DECF /* private.c in Sources */,
+				55320A7E1CCD43F400BAEE86 /* Skeleton.swift in Sources */,
 				554B1EE61CCBE6EF005CE5BC /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

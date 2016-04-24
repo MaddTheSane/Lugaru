@@ -18,7 +18,7 @@ var decalsEnabled = true
 //MARK: -
 let max_model_decals = 300
 
-class Model {
+final class Model {
 	private(set) var modelType = Type.Nothing
 	private var oldType = Type.Nothing
 	
