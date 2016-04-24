@@ -282,7 +282,7 @@ bool LineFacet(Vector p1,Vector p2,Vector pa,Vector pb,Vector pc,Vector *p)
 	//Calculate the position on the line that intersects the plane 
 	denom = n.x * (p2.x - p1.x) + n.y * (p2.y - p1.y) + n.z * (p2.z - p1.z);
 	if (abs(denom) < 0.0000001)        // Line and plane don't intersect 
-		return true;
+		return false;
 	mu = - (d + n.x * p1.x + n.y * p1.y + n.z * p1.z) / denom;
 	p->x = p1.x + mu * (p2.x - p1.x);
 	p->y = p1.y + mu * (p2.y - p1.y);
