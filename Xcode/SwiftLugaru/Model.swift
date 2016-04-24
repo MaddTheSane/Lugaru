@@ -9,6 +9,7 @@
 import Foundation
 import simd
 import OpenGL.GL
+import OpenGL.GL.GLU
 import OpenGL.GL.Ext
 
 //MARK: Preferences
@@ -21,16 +22,16 @@ class Model {
 	private(set) var modelType = Type.Nothing
 	private var oldType = Type.Nothing
 	
-	var vertexNum: Int16 = 0
+	private(set) var vertexNum: Int16 = 0
 	var hastexture = false
 	
-	var possible = [Int32]() // maxModelVertex
-	var owner = [Int32]() // maxTexturedTriangle
-	var vertex = [float3]() // maxModelVertex
-	var normals = [float3]() // maxModelVertex
-	var facenormals = [float3]() //maxTexturedTriangle
-	var triangles = [TexturedTriangle]() //maxTexturedTriangle
-	var vArray = [GLfloat]() //maxTexturedTriangle * 24
+	private var possible = [Int32]() // maxModelVertex
+	private var owner = [Int32]() // maxTexturedTriangle
+	private var vertex = [float3]() // maxModelVertex
+	private var normals = [float3]() // maxModelVertex
+	private var facenormals = [float3]() //maxTexturedTriangle
+	private var triangles = [TexturedTriangle]() //maxTexturedTriangle
+	private var vArray = [GLfloat]() //maxTexturedTriangle * 24
 	
 	/*int possible[max_model_vertex];
 	int owner[max_textured_triangle];
@@ -41,12 +42,12 @@ class Model {
 	GLfloat vArray[max_textured_triangle*24];*/
 	
 	private(set) var textureptr: GLuint = 0
-	var texture = Texture()
-	var numPossible: Int = 0
-	var color = false
+	private(set) var texture = Texture()
+	private(set) var numPossible: Int = 0
+	private(set) var color = false
 	
-	var boundingspherecenter = float3()
-	var boundingsphereradius = Float(0)
+	private(set) var boundingspherecenter = float3()
+	private(set) var boundingsphereradius = Float(0)
 	
 	enum DecalType: Int {
 		case Shadow = 0
@@ -221,17 +222,7 @@ class Model {
 		fclose(tfile);
 		
 		updateVertexArray();
-		
-		boundingsphereradius = 0;
-		for i in 0..<Int(vertexNum) {
-			for j in 0..<Int(vertexNum) {
-				if(j != i && findDistancefast(vertex[j],vertex[i])/2>boundingsphereradius){
-					boundingsphereradius=findDistancefast(vertex[j],vertex[i])/2;
-					boundingspherecenter = (vertex[i]+vertex[j]) / float3(2)
-				}
-			}
-		}
-		boundingsphereradius = sqrt(boundingsphereradius);
+		updateBoundingSphere()
 	}
 	
 	func loadDecal(fileURL: NSURL, texture textured: Bool) {
@@ -353,17 +344,7 @@ class Model {
 		fclose(tfile);
 		
 		updateVertexArray();
-		
-		boundingsphereradius = 0;
-		for i in 0..<Int(vertexNum) {
-			for j in 0..<Int(vertexNum) {
-				if j != i && findDistancefast(vertex[j],vertex[i])/2 > boundingsphereradius {
-					boundingsphereradius=findDistancefast(vertex[j],vertex[i])/2;
-					boundingspherecenter=(vertex[i]+vertex[j]) / float3(2);
-				}
-			}
-		}
-		boundingsphereradius = sqrt(boundingsphereradius);
+		updateBoundingSphere()
 		
 		//allow decals
 		// We use slightly better struct-base storage of decals
@@ -576,7 +557,7 @@ class Model {
 		}
 	}
 	
-	func updateVertexArrayNoTex() {
+	func updateVertexArrayNoTexture() {
 		guard modelType == .Normal || modelType == .Decals else {
 			return;
 		}
@@ -651,7 +632,7 @@ class Model {
 		}
 	}
 	
-	func uniformTexCoords() {
+	func uniformTextureCoords() {
 		for var triangle in triangles {
 			triangle.gy.0 = vertex[Int(triangle.vertex.0)].y;
 			triangle.gy.1 = vertex[Int(triangle.vertex.1)].y;
@@ -663,17 +644,18 @@ class Model {
 		updateVertexArray();
 	}
 	
-	
-	func flipTexCoords() {
+	// MARK: - scale, rotate, translate
+	func flipTextureCoords() {
 		for var triangle in triangles {
 			triangle.gy.0 = -triangle.gy.0;
 			triangle.gy.1 = -triangle.gy.1;
 			triangle.gy.2 = -triangle.gy.2;
 		}
+		
 		updateVertexArray();
 	}
 	
-	func scaleTexCoords(howMuch: Float) {
+	func scaleTextureCoords(howMuch: Float) {
 		for var triangle in triangles {
 			triangle.gx.0 *= howMuch;
 			triangle.gx.1 *= howMuch;
@@ -686,7 +668,81 @@ class Model {
 		
 		updateVertexArray();
 	}
+	
+	private func updateBoundingSphere() {
+		boundingsphereradius=0;
+		for i in 0..<Int(vertexNum) {
+			for j in 0..<Int(vertexNum) {
+				if j != i && findDistancefast(vertex[j],vertex[i]) / 2 > boundingsphereradius {
+					boundingsphereradius = findDistancefast(vertex[j], vertex[i]) / 2;
+					boundingspherecenter = (vertex[i] + vertex[j]) / float3(2);
+				}
+			}
+		}
+		boundingsphereradius = sqrt(boundingsphereradius);
+	}
 
+	func scale(x xscale: Float,y yscale: Float,z zscale: Float) {
+		scale(float3(xscale, yscale, zscale))
+	}
+	
+	func scale(amount: float3) {
+		for var vert in vertex {
+			vert *= amount
+		}
+		updateVertexArray();
+		
+		updateBoundingSphere()
+	}
+	
+	func scaleNormals(x xscale: Float, y yscale: Float, z zscale: Float) {
+		scaleNormals(float3(xscale, yscale, zscale))
+	}
+	
+	func scaleNormals(amount: float3) {
+		guard modelType == .Normal || modelType == .Decals else {
+			return
+		}
+		for var normal in normals {
+			normal *= amount
+		}
+
+		for var faceNormal in facenormals {
+			faceNormal *= amount
+		}
+
+		updateVertexArray();
+	}
+	
+	func translate(x xscale: Float, y yscale: Float, z zscale: Float) {
+		translate(float3(xscale, yscale, zscale))
+	}
+	
+	func translate(amount: float3) {
+		for var vert in vertex {
+			vert += amount
+		}
+	updateVertexArray();
+	
+		updateBoundingSphere()
+	}
+
+	func rotate(x xscale: Float, y yscale: Float, z zscale: Float) {
+		rotate(float3(xscale, yscale, zscale))
+	}
+
+	
+	func rotate(amount: float3) {
+		for var vert in vertex {
+			vert = SwiftLugaru.rotate(vert, byAngles: (amount.x, amount.y, amount.z))
+		}
+		updateVertexArray();
+	
+		updateBoundingSphere()
+	}
+
+	//MARK: -
+	
 	func calculateNormals(facenormalise: Bool) {
 		//if(visibleloading){
 		//loadscreencolor=3;
@@ -715,12 +771,12 @@ class Model {
 			normal = normalize(normal)
 			normal *= -1;
 		}
-		updateVertexArrayNoTex();
+		updateVertexArrayNoTexture();
 	}
 
 	// MARK: - Drawing
 	func drawImmediate() {
-		self.drawImmediate(texture: textureptr)
+		drawImmediate(texture: textureptr)
 	}
 	
 	func drawImmediate(texture texture: GLuint) {
@@ -774,7 +830,7 @@ class Model {
 	}
 	
 	func draw() {
-		self.draw(texture: textureptr)
+		draw(texture: textureptr)
 	}
 	
 	func draw(texture texture: GLuint) {
@@ -899,7 +955,8 @@ class Model {
 			glEnd();
 			glPopMatrix();
 		}
-		var delDecalPos = [Int]()
+		
+		var delDecalPos = Set<Int>()
 		for (i, var decal) in decals.enumerate().reverse() {
 			decal.aliveTime+=multiplier;
 			if decal.type == .BloodSlow {
@@ -909,17 +966,17 @@ class Model {
 				decal.aliveTime+=multiplier*4;
 			}
 			if decal.type == .Shadow {
-				delDecalPos.append(i)
+				delDecalPos.insert(i)
 				continue
 			}
 			if (decal.type == .Blood || decal.type == .BloodFast || decal.type == .BloodSlow) && decal.aliveTime >= 60 {
-				delDecalPos.append(i)
+				delDecalPos.insert(i)
 			}
 		}
 		glAlphaFunc(GLenum(GL_GREATER), 0.0001);
 		glBlendFunc(GLenum(GL_SRC_ALPHA), GLenum(GL_ONE_MINUS_SRC_ALPHA))
 		
-		for i in delDecalPos.sort().reverse() {
+		for i in Array(delDecalPos).sort().reverse() {
 			removeDecal(i)
 		}
 	}
@@ -1016,7 +1073,7 @@ class Model {
 										rot.y=0;
 										rot.x=aDecal.textureCoordinates[j][0]-0.5;
 										rot.z=aDecal.textureCoordinates[j][1]-0.5;
-										rot=rotate(rot, byAngles: (0, -aDecal.rotation, 0));
+										rot = SwiftLugaru.rotate(rot, byAngles: (0, -aDecal.rotation, 0));
 										aDecal.textureCoordinates[j][0]=rot.x+0.5;
 										aDecal.textureCoordinates[j][1]=rot.z+0.5;
 									}
@@ -1072,7 +1129,7 @@ class Model {
 										rot.y=0;
 										rot.x=aDecal.textureCoordinates[j][0]-0.5;
 										rot.z=aDecal.textureCoordinates[j][1]-0.5;
-										rot=rotate(rot, byAngles: (0,-aDecal.rotation,0));
+										rot = SwiftLugaru.rotate(rot, byAngles: (0,-aDecal.rotation,0));
 										aDecal.textureCoordinates[j][0]=rot.x+0.5;
 										aDecal.textureCoordinates[j][1]=rot.z+0.5;
 									}
@@ -1128,7 +1185,7 @@ class Model {
 										rot.y=0;
 										rot.x=aDecal.textureCoordinates[j][0]-0.5;
 										rot.z=aDecal.textureCoordinates[j][1]-0.5;
-										rot=rotate(rot, byAngles: (0,-aDecal.rotation,0))
+										rot = SwiftLugaru.rotate(rot, byAngles: (0,-aDecal.rotation,0))
 										aDecal.textureCoordinates[j][0]=rot.x+0.5;
 										aDecal.textureCoordinates[j][1]=rot.z+0.5;
 									}
