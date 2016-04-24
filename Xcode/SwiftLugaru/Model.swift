@@ -942,6 +942,20 @@ class Model {
 		//static XYZ point,point1,point2;
 		//float distance;
 		var aDecal = Decal()
+		decals.reserveCapacity(max_model_decals)
+		
+		func validateDecal(bDecal: Decal) -> Bool {
+			if !(bDecal.textureCoordinates[0][0] < 0 && bDecal.textureCoordinates[1][0] < 0 && bDecal.textureCoordinates[2][0] < 0) {
+				if !(bDecal.textureCoordinates[0][1] < 0 && bDecal.textureCoordinates[1][1] < 0 && bDecal.textureCoordinates[2][1] < 0) {
+					if !(bDecal.textureCoordinates[0][0] > 1 && bDecal.textureCoordinates[1][0] > 1 && bDecal.textureCoordinates[2][0] > 1) {
+						if !(bDecal.textureCoordinates[0][1] > 1 && bDecal.textureCoordinates[1][1] > 1 && bDecal.textureCoordinates[2][1] > 1) {
+							return true
+						}
+					}
+				}
+			}
+			return false
+		}
 		
 		if opacity > 0 {
 			if (findDistancefast(loc, boundingspherecenter) < (boundingsphereradius + size) * (boundingsphereradius + size)) {
@@ -996,26 +1010,19 @@ class Model {
 							aDecal.vertex[2].z=placez;
 							aDecal.vertex[2].y=vertex[Int(triangle.vertex.2)].y;
 							
-							if !(aDecal.textureCoordinates[0][0] < 0 && aDecal.textureCoordinates[1][0] < 0 && aDecal.textureCoordinates[2][0] < 0) {
-								if !(aDecal.textureCoordinates[0][1]<0&&aDecal.textureCoordinates[1][1]<0&&aDecal.textureCoordinates[2][1]<0) {
-									if !(aDecal.textureCoordinates[0][0]>1&&aDecal.textureCoordinates[1][0]>1&&aDecal.textureCoordinates[2][0]>1) {
-										if !(aDecal.textureCoordinates[0][1]>1&&aDecal.textureCoordinates[1][1]>1&&aDecal.textureCoordinates[2][1]>1)
-										{
-											if(aDecal.rotation != 0){
-												for j in 0..<3 {
-													rot.y=0;
-													rot.x=aDecal.textureCoordinates[j][0]-0.5;
-													rot.z=aDecal.textureCoordinates[j][1]-0.5;
-													rot=rotate(rot, byAngles: (0, -aDecal.rotation, 0));
-													aDecal.textureCoordinates[j][0]=rot.x+0.5;
-													aDecal.textureCoordinates[j][1]=rot.z+0.5;
-												}
-											}
-											if decals.count < max_model_decals-1 {
-												decals.append(aDecal)
-											}
-										}
+							if validateDecal(aDecal) {
+								if aDecal.rotation != 0 {
+									for j in 0..<3 {
+										rot.y=0;
+										rot.x=aDecal.textureCoordinates[j][0]-0.5;
+										rot.z=aDecal.textureCoordinates[j][1]-0.5;
+										rot=rotate(rot, byAngles: (0, -aDecal.rotation, 0));
+										aDecal.textureCoordinates[j][0]=rot.x+0.5;
+										aDecal.textureCoordinates[j][1]=rot.z+0.5;
 									}
+								}
+								if decals.count < max_model_decals - 1 {
+									decals.append(aDecal)
 								}
 							}
 						}
@@ -1059,25 +1066,19 @@ class Model {
 							aDecal.vertex[2].z=placez;
 							aDecal.vertex[2].y=placex;
 							
-							if(!(aDecal.textureCoordinates[0][0]<0&&aDecal.textureCoordinates[1][0]<0&&aDecal.textureCoordinates[2][0]<0)) {
-								if(!(aDecal.textureCoordinates[0][1]<0&&aDecal.textureCoordinates[1][1]<0&&aDecal.textureCoordinates[2][1]<0)) {
-									if(!(aDecal.textureCoordinates[0][0]>1&&aDecal.textureCoordinates[1][0]>1&&aDecal.textureCoordinates[2][0]>1)) {
-										if(!(aDecal.textureCoordinates[0][1]>1&&aDecal.textureCoordinates[1][1]>1&&aDecal.textureCoordinates[2][1]>1)) {
-											if aDecal.rotation != 0 {
-												for j in 0..<3 {
-													rot.y=0;
-													rot.x=aDecal.textureCoordinates[j][0]-0.5;
-													rot.z=aDecal.textureCoordinates[j][1]-0.5;
-													rot=rotate(rot, byAngles: (0,-aDecal.rotation,0));
-													aDecal.textureCoordinates[j][0]=rot.x+0.5;
-													aDecal.textureCoordinates[j][1]=rot.z+0.5;
-												}
-											}
-											if decals.count < max_model_decals-1 {
-												decals.append(aDecal)
-											}
-										}
+							if validateDecal(aDecal) {
+								if aDecal.rotation != 0 {
+									for j in 0..<3 {
+										rot.y=0;
+										rot.x=aDecal.textureCoordinates[j][0]-0.5;
+										rot.z=aDecal.textureCoordinates[j][1]-0.5;
+										rot=rotate(rot, byAngles: (0,-aDecal.rotation,0));
+										aDecal.textureCoordinates[j][0]=rot.x+0.5;
+										aDecal.textureCoordinates[j][1]=rot.z+0.5;
 									}
+								}
+								if decals.count < max_model_decals-1 {
+									decals.append(aDecal)
 								}
 							}
 						}
@@ -1121,25 +1122,19 @@ class Model {
 							aDecal.vertex[2].z=vertex[Int(triangle.vertex.2)].z;
 							aDecal.vertex[2].y=placez;
 							
-							if !(aDecal.textureCoordinates[0][0]<0&&aDecal.textureCoordinates[1][0]<0&&aDecal.textureCoordinates[2][0]<0) {
-								if !(aDecal.textureCoordinates[0][1]<0&&aDecal.textureCoordinates[1][1]<0&&aDecal.textureCoordinates[2][1]<0) {
-									if !(aDecal.textureCoordinates[0][0]>1&&aDecal.textureCoordinates[1][0]>1&&aDecal.textureCoordinates[2][0]>1) {
-										if !(aDecal.textureCoordinates[0][1]>1&&aDecal.textureCoordinates[1][1]>1&&aDecal.textureCoordinates[2][1]>1) {
-											if aDecal.rotation != 0 {
-												for j in 0..<3 {
-													rot.y=0;
-													rot.x=aDecal.textureCoordinates[j][0]-0.5;
-													rot.z=aDecal.textureCoordinates[j][1]-0.5;
-													rot=rotate(rot, byAngles: (0,-aDecal.rotation,0))
-													aDecal.textureCoordinates[j][0]=rot.x+0.5;
-													aDecal.textureCoordinates[j][1]=rot.z+0.5;
-												}
-											}
-											if decals.count < max_model_decals-1 {
-												decals.append(aDecal)
-											}
-										}
+							if validateDecal(aDecal) {
+								if aDecal.rotation != 0 {
+									for j in 0..<3 {
+										rot.y=0;
+										rot.x=aDecal.textureCoordinates[j][0]-0.5;
+										rot.z=aDecal.textureCoordinates[j][1]-0.5;
+										rot=rotate(rot, byAngles: (0,-aDecal.rotation,0))
+										aDecal.textureCoordinates[j][0]=rot.x+0.5;
+										aDecal.textureCoordinates[j][1]=rot.z+0.5;
 									}
+								}
+								if decals.count < max_model_decals-1 {
+									decals.append(aDecal)
 								}
 							}
 						}
