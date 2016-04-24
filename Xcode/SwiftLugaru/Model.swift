@@ -29,7 +29,7 @@ class Model {
 	private var owner = [Int32]() // maxTexturedTriangle
 	private var vertex = [float3]() // maxModelVertex
 	private var normals = [float3]() // maxModelVertex
-	private var facenormals = [float3]() //maxTexturedTriangle
+	private var faceNormals = [float3]() //maxTexturedTriangle
 	private var triangles = [TexturedTriangle]() //maxTexturedTriangle
 	private var vArray = [GLfloat]() //maxTexturedTriangle * 24
 	
@@ -41,13 +41,13 @@ class Model {
 	TexturedTriangle triangles[max_textured_triangle];
 	GLfloat vArray[max_textured_triangle*24];*/
 	
-	private(set) var textureptr: GLuint = 0
+	private(set) var texturePtr: GLuint = 0
 	private(set) var texture = Texture()
 	private(set) var numPossible: Int = 0
 	private(set) var color = false
 	
-	private(set) var boundingspherecenter = float3()
-	private(set) var boundingsphereradius = Float(0)
+	private(set) var boundingSphereCenter = float3()
+	private(set) var boundingSphereRadius = Float(0)
 	
 	enum DecalType: Int {
 		case Shadow = 0
@@ -71,7 +71,7 @@ class Model {
 	}
 	private var decals = [Decal]()
 	
-	var flat = false
+	private(set) var flat = false
 
 	
 	enum Type {
@@ -96,8 +96,8 @@ class Model {
 	}
 
 	deinit {
-		if textureptr != 0 {
-			glDeleteTextures(1, &textureptr)
+		if texturePtr != 0 {
+			glDeleteTextures(1, &texturePtr)
 		}
 	}
 	
@@ -148,7 +148,7 @@ class Model {
 		vertex.removeAll()
 		vertex.reserveCapacity(Int(vertexNum))
 		normals = [float3](count: Int(vertexNum), repeatedValue: float3(0))
-		facenormals = [float3](count: Int(triangleNum), repeatedValue: float3(0))
+		faceNormals = [float3](count: Int(triangleNum), repeatedValue: float3(0))
 		triangles.removeAll()
 		triangles.reserveCapacity(Int(triangleNum))
 		vArray = [GLfloat](count: Int(triangleNum) * 24, repeatedValue: 0)
@@ -270,7 +270,7 @@ class Model {
 		vertex.removeAll()
 		vertex.reserveCapacity(Int(vertexNum))
 		normals = [float3](count: Int(vertexNum), repeatedValue: float3(0))
-		facenormals = [float3](count: Int(triangleNum), repeatedValue: float3(0))
+		faceNormals = [float3](count: Int(triangleNum), repeatedValue: float3(0))
 		triangles.removeAll()
 		triangles.reserveCapacity(Int(triangleNum))
 		vArray = [GLfloat](count: Int(triangleNum) * 24, repeatedValue: 0)
@@ -528,27 +528,27 @@ class Model {
 				let j = i*24;
 				vArray[j+0]=triangle.gx.0;
 				vArray[j+1]=triangle.gy.0;
-				vArray[j+2]=facenormals[i].x * -1;
-				vArray[j+3]=facenormals[i].y * -1;
-				vArray[j+4]=facenormals[i].z * -1;
+				vArray[j+2]=faceNormals[i].x * -1;
+				vArray[j+3]=faceNormals[i].y * -1;
+				vArray[j+4]=faceNormals[i].z * -1;
 				vArray[j+5]=vertex[Int(triangle.vertex.0)].x;
 				vArray[j+6]=vertex[Int(triangle.vertex.0)].y;
 				vArray[j+7]=vertex[Int(triangle.vertex.0)].z;
 				
 				vArray[j+8]=triangle.gx.1;
 				vArray[j+9]=triangle.gy.1;
-				vArray[j+10]=facenormals[i].x * -1;
-				vArray[j+11]=facenormals[i].y * -1;
-				vArray[j+12]=facenormals[i].z * -1;
+				vArray[j+10]=faceNormals[i].x * -1;
+				vArray[j+11]=faceNormals[i].y * -1;
+				vArray[j+12]=faceNormals[i].z * -1;
 				vArray[j+13]=vertex[Int(triangle.vertex.1)].x;
 				vArray[j+14]=vertex[Int(triangle.vertex.1)].y;
 				vArray[j+15]=vertex[Int(triangle.vertex.1)].z;
 				
 				vArray[j+16]=triangle.gx.2;
 				vArray[j+17]=triangle.gy.2;
-				vArray[j+18]=facenormals[i].x * -1;
-				vArray[j+19]=facenormals[i].y * -1;
-				vArray[j+20]=facenormals[i].z * -1;
+				vArray[j+18]=faceNormals[i].x * -1;
+				vArray[j+19]=faceNormals[i].y * -1;
+				vArray[j+20]=faceNormals[i].z * -1;
 				vArray[j+21]=vertex[Int(triangle.vertex.2)].x;
 				vArray[j+22]=vertex[Int(triangle.vertex.2)].y;
 				vArray[j+23]=vertex[Int(triangle.vertex.2)].z;
@@ -588,23 +588,23 @@ class Model {
 		} else {
 			for (i,triangle) in triangles.enumerate() {
 				let j = i*24;
-				vArray[j+2]=facenormals[i].x * -1;
-				vArray[j+3]=facenormals[i].y * -1;
-				vArray[j+4]=facenormals[i].z * -1;
+				vArray[j+2]=faceNormals[i].x * -1;
+				vArray[j+3]=faceNormals[i].y * -1;
+				vArray[j+4]=faceNormals[i].z * -1;
 				vArray[j+5]=vertex[Int(triangle.vertex.0)].x;
 				vArray[j+6]=vertex[Int(triangle.vertex.0)].y;
 				vArray[j+7]=vertex[Int(triangle.vertex.0)].z;
 				
-				vArray[j+10]=facenormals[i].x * -1;
-				vArray[j+11]=facenormals[i].y * -1;
-				vArray[j+12]=facenormals[i].z * -1;
+				vArray[j+10]=faceNormals[i].x * -1;
+				vArray[j+11]=faceNormals[i].y * -1;
+				vArray[j+12]=faceNormals[i].z * -1;
 				vArray[j+13]=vertex[Int(triangle.vertex.1)].x;
 				vArray[j+14]=vertex[Int(triangle.vertex.1)].y;
 				vArray[j+15]=vertex[Int(triangle.vertex.1)].z;
 				
-				vArray[j+18]=facenormals[i].x * -1;
-				vArray[j+19]=facenormals[i].y * -1;
-				vArray[j+20]=facenormals[i].z * -1;
+				vArray[j+18]=faceNormals[i].x * -1;
+				vArray[j+19]=faceNormals[i].y * -1;
+				vArray[j+20]=faceNormals[i].z * -1;
 				vArray[j+21]=vertex[Int(triangle.vertex.2)].x;
 				vArray[j+22]=vertex[Int(triangle.vertex.2)].y;
 				vArray[j+23]=vertex[Int(triangle.vertex.2)].z;
@@ -670,16 +670,16 @@ class Model {
 	}
 	
 	private func updateBoundingSphere() {
-		boundingsphereradius=0;
+		boundingSphereRadius=0;
 		for i in 0..<Int(vertexNum) {
 			for j in 0..<Int(vertexNum) {
-				if j != i && findDistancefast(vertex[j],vertex[i]) / 2 > boundingsphereradius {
-					boundingsphereradius = findDistancefast(vertex[j], vertex[i]) / 2;
-					boundingspherecenter = (vertex[i] + vertex[j]) / float3(2);
+				if j != i && findDistancefast(vertex[j],vertex[i]) / 2 > boundingSphereRadius {
+					boundingSphereRadius = findDistancefast(vertex[j], vertex[i]) / 2;
+					boundingSphereCenter = (vertex[i] + vertex[j]) / float3(2);
 				}
 			}
 		}
-		boundingsphereradius = sqrt(boundingsphereradius);
+		boundingSphereRadius = sqrt(boundingSphereRadius);
 	}
 
 	func scale(x xscale: Float,y yscale: Float,z zscale: Float) {
@@ -707,7 +707,7 @@ class Model {
 			normal *= amount
 		}
 
-		for var faceNormal in facenormals {
+		for var faceNormal in faceNormals {
 			faceNormal *= amount
 		}
 
@@ -757,14 +757,14 @@ class Model {
 		for (i, triangle) in triangles.enumerate() {
 			let l_vect_b1 = vertex[Int(triangle.vertex.1)] - vertex[Int(triangle.vertex.0)];
 			let l_vect_b2 = vertex[Int(triangle.vertex.2)] - vertex[Int(triangle.vertex.0)];
-			facenormals[i] = cross(l_vect_b1, l_vect_b2);
+			faceNormals[i] = cross(l_vect_b1, l_vect_b2);
 			
-			normals[Int(triangle.vertex.0)] += facenormals[i];
-			normals[Int(triangle.vertex.1)] += facenormals[i];
-			normals[Int(triangle.vertex.2)] += facenormals[i];
+			normals[Int(triangle.vertex.0)] += faceNormals[i];
+			normals[Int(triangle.vertex.1)] += faceNormals[i];
+			normals[Int(triangle.vertex.2)] += faceNormals[i];
 			
 			if (facenormalise) {
-				facenormals[i] = normalize(facenormals[i])
+				faceNormals[i] = normalize(faceNormals[i])
 			}
 		}
 		for var normal in normals {
@@ -776,7 +776,7 @@ class Model {
 
 	// MARK: - Drawing
 	func drawImmediate() {
-		drawImmediate(texture: textureptr)
+		drawImmediate(texture: texturePtr)
 	}
 	
 	func drawImmediate(texture texture: GLuint) {
@@ -796,7 +796,7 @@ class Model {
 				glNormal3f(normals[Int(triangle.vertex.0)].x, normals[Int(triangle.vertex.0)].y, normals[Int(triangle.vertex.0)].z);
 			}
 			if(!color&&flat) {
-				glNormal3f(facenormals[i].x,facenormals[i].y,facenormals[i].y);
+				glNormal3f(faceNormals[i].x,faceNormals[i].y,faceNormals[i].y);
 			}
 			glVertex3f(vertex[Int(triangle.vertex.0)].x, vertex[Int(triangle.vertex.0)].y, vertex[Int(triangle.vertex.0)].z);
 			
@@ -808,7 +808,7 @@ class Model {
 				glNormal3f(normals[Int(triangle.vertex.1)].x, normals[Int(triangle.vertex.1)].y, normals[Int(triangle.vertex.1)].z);
 			}
 			if !color && flat {
-				glNormal3f(facenormals[i].x,facenormals[i].y,facenormals[i].y);
+				glNormal3f(faceNormals[i].x,faceNormals[i].y,faceNormals[i].y);
 			}
 			glVertex3f(vertex[Int(triangle.vertex.1)].x, vertex[Int(triangle.vertex.1)].y, vertex[Int(triangle.vertex.1)].z);
 			
@@ -820,7 +820,7 @@ class Model {
 				glNormal3f(normals[Int(triangle.vertex.2)].x, normals[Int(triangle.vertex.2)].y, normals[Int(triangle.vertex.2)].z);
 			}
 			if(!color&&flat) {
-				glNormal3f(facenormals[i].x, facenormals[i].y, facenormals[i].y);
+				glNormal3f(faceNormals[i].x, faceNormals[i].y, faceNormals[i].y);
 			}
 			glVertex3f(vertex[Int(triangle.vertex.2)].x, vertex[Int(triangle.vertex.2)].y, vertex[Int(triangle.vertex.2)].z);
 			//}
@@ -830,7 +830,7 @@ class Model {
 	}
 	
 	func draw() {
-		draw(texture: textureptr)
+		draw(texture: texturePtr)
 	}
 	
 	func draw(texture texture: GLuint) {
@@ -1015,19 +1015,19 @@ class Model {
 		}
 		
 		if opacity > 0 {
-			if (findDistancefast(loc, boundingspherecenter) < (boundingsphereradius + size) * (boundingsphereradius + size)) {
+			if (findDistancefast(loc, boundingSphereCenter) < (boundingSphereRadius + size) * (boundingSphereRadius + size)) {
 				for (i, triangle) in triangles.enumerate() {
 					let distance: Float = {
-						var stage1: Float = (facenormals[i].x * loc.x)
-						stage1 += (facenormals[i].y * loc.y)
-						stage1 += (facenormals[i].z * loc.z)
-						var stage2: Float = (facenormals[i].x * vertex[Int(triangle.vertex.0)].x)
-						stage2 += (facenormals[i].y * vertex[Int(triangle.vertex.0)].y)
-						stage2 += (facenormals[i].z * vertex[Int(triangle.vertex.0)].z)
+						var stage1: Float = (faceNormals[i].x * loc.x)
+						stage1 += (faceNormals[i].y * loc.y)
+						stage1 += (faceNormals[i].z * loc.z)
+						var stage2: Float = (faceNormals[i].x * vertex[Int(triangle.vertex.0)].x)
+						stage2 += (faceNormals[i].y * vertex[Int(triangle.vertex.0)].y)
+						stage2 += (faceNormals[i].z * vertex[Int(triangle.vertex.0)].z)
 						
 						return abs(stage1 - stage2)
 					}()
-					if distance < 0.02 && abs(facenormals[i].y) > abs(facenormals[i].x) && abs(facenormals[i].y) > abs(facenormals[i].z) {
+					if distance < 0.02 && abs(faceNormals[i].y) > abs(faceNormals[i].x) && abs(faceNormals[i].y) > abs(faceNormals[i].z) {
 						aDecal.position=loc;
 						aDecal.type = atype;
 						aDecal.rotation = rotation;
@@ -1083,7 +1083,7 @@ class Model {
 								}
 							}
 						}
-					} else if (distance < 0.02 && abs(facenormals[i].x) > abs(facenormals[i].y) && abs(facenormals[i].x) > abs(facenormals[i].z)) {
+					} else if (distance < 0.02 && abs(faceNormals[i].x) > abs(faceNormals[i].y) && abs(faceNormals[i].x) > abs(faceNormals[i].z)) {
 						aDecal.position=loc;
 						aDecal.type=atype;
 						aDecal.rotation=rotation;
@@ -1139,7 +1139,7 @@ class Model {
 								}
 							}
 						}
-					} else if (distance < 0.02 && abs(facenormals[i].z) > abs(facenormals[i].y) && abs(facenormals[i].z) > abs(facenormals[i].x)) {
+					} else if (distance < 0.02 && abs(faceNormals[i].z) > abs(faceNormals[i].y) && abs(faceNormals[i].z) > abs(faceNormals[i].x)) {
 						aDecal.position=loc;
 						aDecal.type=atype;
 						aDecal.rotation=rotation;
