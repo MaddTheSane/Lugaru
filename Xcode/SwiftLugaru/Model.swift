@@ -100,8 +100,8 @@ class Model {
 		}
 	}
 	
-	func load(filename: String, textured: Bool) /*throws*/ {
-		print("Loading model " + filename);
+	func load(fileURL: NSURL, texture textured: Bool) /*throws*/ {
+		print("Loading model " + fileURL.path!);
 		
 		//if(visibleloading){
 		//loadscreencolor=2;
@@ -115,18 +115,19 @@ class Model {
 		modelType = .Normal;
 		color = false;
 		
-		let tfile=fopen( ConvertFileName(filename), "rb" );
+		let tfile=fopen( ConvertFileName(fileURL.fileSystemRepresentation), "rb" );
 		// read model settings
 		var triangleNum: Int16 = 0
-		var vNum: Int16 = 0
 		
 		fseek(tfile, 0, SEEK_SET);
-		var vaListArr = [CVarArgType]()
-		vaListArr.reserveCapacity(10)
-		vaListArr.append(withUnsafeMutablePointer(&vNum, {$0}))
-		vaListArr.append(withUnsafeMutablePointer(&triangleNum, {$0}))
-		vfunpackf(tfile, "Bs Bs", getVaList(vaListArr))
-		vaListArr.removeAll(keepCapacity: true)
+		do {
+			var vNum: Int16 = 0
+			var vaListArr = [CVarArgType]()
+			vaListArr.append(withUnsafeMutablePointer(&vNum, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(&triangleNum, {$0}))
+			vfunpackf(tfile, "Bs Bs", getVaList(vaListArr))
+			vertexNum = vNum
+		}
 		//funpackf(tfile, "Bs Bs", &vertexNum, &triangleNum);
 		
 		// read the model data
@@ -141,16 +142,18 @@ class Model {
 		
 		numPossible = 0;
 		
-		vertexNum = vNum
-		owner = [Int32](count: Int(vertexNum), repeatedValue: 0)
+		owner = [Int32](count: Int(vertexNum), repeatedValue: -1)
 		possible = [Int32](count: Int(triangleNum), repeatedValue: 0)
-		vertex = [float3](count: Int(vertexNum), repeatedValue: float3(0))
+		vertex.removeAll()
+		vertex.reserveCapacity(Int(vertexNum))
 		normals = [float3](count: Int(vertexNum), repeatedValue: float3(0))
 		facenormals = [float3](count: Int(triangleNum), repeatedValue: float3(0))
-		triangles = [TexturedTriangle](count: Int(triangleNum), repeatedValue: TexturedTriangle())
+		triangles.removeAll()
+		triangles.reserveCapacity(Int(triangleNum))
 		vArray = [GLfloat](count: Int(triangleNum) * 24, repeatedValue: 0)
 		
-		for i in 0..<Int(vertexNum) {
+		for _ in 0..<vertexNum {
+			var vaListArr = [CVarArgType]()
 			var tmpx = Float()
 			var tmpy = Float()
 			var tmpz = Float()
@@ -159,10 +162,11 @@ class Model {
 			vaListArr.append(withUnsafeMutablePointer(&tmpz, {$0}))
 			vfunpackf(tfile, "Bf Bf Bf", getVaList(vaListArr))
 			vaListArr.removeAll(keepCapacity: true)
-			vertex[i] = float3(tmpx, tmpy, tmpz)
+			vertex.append(float3(tmpx, tmpy, tmpz))
 		}
 		
-		for i in 0..<Int(triangleNum) {
+		for _ in 0..<triangleNum {
+			var triangle = TexturedTriangle()
 			// funpackf(tfile, "Bi Bi Bi", &Triangles[i].vertex[0], &Triangles[i].vertex[1], &Triangles[i].vertex[2]);
 			var vertex1: Int16 = 0
 			var vertex2: Int16 = 0
@@ -170,6 +174,7 @@ class Model {
 			var vertex4: Int16 = 0
 			var vertex5: Int16 = 0
 			var vertex6: Int16 = 0
+			var vaListArr = [CVarArgType]()
 			vaListArr.append(withUnsafeMutablePointer(&vertex1, {$0}))
 			vaListArr.append(withUnsafeMutablePointer(&vertex2, {$0}))
 			vaListArr.append(withUnsafeMutablePointer(&vertex3, {$0}))
@@ -177,40 +182,38 @@ class Model {
 			vaListArr.append(withUnsafeMutablePointer(&vertex5, {$0}))
 			vaListArr.append(withUnsafeMutablePointer(&vertex6, {$0}))
 			vfunpackf(tfile, "Bs Bs Bs Bs Bs Bs", getVaList(vaListArr))
-			vaListArr.removeAll(keepCapacity: true)
-			
-			triangles[i].vertex.0 = vertex1;
-			triangles[i].vertex.1 = vertex3;
-			triangles[i].vertex.2 = vertex5;
+			triangle.vertex.0 = vertex1
+			triangle.vertex.1 = vertex3
+			triangle.vertex.2 = vertex5
+			do {
+				var float1: Float = 0
+				var float2: Float = 0
+				var float3: Float = 0
+				var vaListArr2 = [CVarArgType]()
+				
+				vaListArr2.append(withUnsafeMutablePointer(&float1, {$0}))
+				vaListArr2.append(withUnsafeMutablePointer(&float2, {$0}))
+				vaListArr2.append(withUnsafeMutablePointer(&float3, {$0}))
+				vfunpackf(tfile, "Bf Bf Bf", getVaList(vaListArr2))
+				triangle.gx.0 = float1
+				triangle.gx.1 = float2
+				triangle.gx.2 = float3
+			}
 			do {
 				var float1: Float = 0
 				var float2: Float = 0
 				var float3: Float = 0
 				
-				vaListArr.append(withUnsafeMutablePointer(&float1, {$0}))
-				vaListArr.append(withUnsafeMutablePointer(&float2, {$0}))
-				vaListArr.append(withUnsafeMutablePointer(&float3, {$0}))
-				vfunpackf(tfile, "Bf Bf Bf", getVaList(vaListArr))
-				vaListArr.removeAll(keepCapacity: true)
-				triangles[i].gx.0 = float1
-				triangles[i].gx.1 = float2
-				triangles[i].gx.2 = float3
+				var vaListArr2 = [CVarArgType]()
+				vaListArr2.append(withUnsafeMutablePointer(&float1, {$0}))
+				vaListArr2.append(withUnsafeMutablePointer(&float2, {$0}))
+				vaListArr2.append(withUnsafeMutablePointer(&float3, {$0}))
+				vfunpackf(tfile, "Bf Bf Bf", getVaList(vaListArr2))
+				triangle.gy.0 = float1
+				triangle.gy.1 = float2
+				triangle.gy.2 = float3
 			}
-			do {
-				vaListArr.removeAll()
-				var float1: Float = 0
-				var float2: Float = 0
-				var float3: Float = 0
-				
-				vaListArr.append(withUnsafeMutablePointer(&float1, {$0}))
-				vaListArr.append(withUnsafeMutablePointer(&float2, {$0}))
-				vaListArr.append(withUnsafeMutablePointer(&float3, {$0}))
-				vfunpackf(tfile, "Bf Bf Bf", getVaList(vaListArr))
-				vaListArr.removeAll(keepCapacity: true)
-				triangles[i].gy.0 = float1
-				triangles[i].gy.1 = float2
-				triangles[i].gy.2 = float3
-			}
+			triangles.append(triangle)
 		}
 		
 		texture.xsz = 0;
@@ -218,10 +221,6 @@ class Model {
 		fclose(tfile);
 		
 		updateVertexArray();
-		
-		for i in 0..<Int(vertexNum) {
-			owner[i] = -1;
-		}
 		
 		boundingsphereradius = 0;
 		for i in 0..<Int(vertexNum) {
@@ -234,6 +233,279 @@ class Model {
 		}
 		boundingsphereradius = sqrt(boundingsphereradius);
 	}
+	
+	func loadDecal(fileURL: NSURL, texture textured: Bool) {
+		// Changing the filename so that its more os specific
+		let FixedFN = ConvertFileName(fileURL.fileSystemRepresentation);
+		
+		print("Loading decal... " + String.fromCString(FixedFN)!);
+		
+		//int oldvertexNum,oldTriangleNum;
+		//oldvertexNum=vertexNum;
+		//oldTriangleNum=TriangleNum;
+		
+		modelType = .Decals;
+		color=false;
+		
+		let tfile=fopen( FixedFN, "rb" );
+		// read model settings
+		
+		var triangleNum = Int16()
+		var vNum = Int16()
+		fseek(tfile, 0, SEEK_SET);
+		do {
+			var vaListArr = [CVarArgType]()
+			vaListArr.append(withUnsafeMutablePointer(&vNum, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(&triangleNum, {$0}))
+			vfunpackf(tfile, "Bs Bs", getVaList(vaListArr))
+			vertexNum = vNum
+		}
+		
+		// read the model data
+		
+		/*if(owner)dealloc(owner);
+		if(possible)dealloc(possible);
+		if(vertex)dealloc(vertex);
+		if(normals)dealloc(normals);
+		if(facenormals)dealloc(facenormals);
+		if(Triangles)dealloc(Triangles);
+		if(vArray)dealloc(vArray);*/
+		//deallocate();
+		
+		numPossible=0;
+		
+		owner = [Int32](count: Int(vertexNum), repeatedValue: -1)
+		possible = [Int32](count: Int(triangleNum), repeatedValue: 0)
+		vertex.removeAll()
+		vertex.reserveCapacity(Int(vertexNum))
+		normals = [float3](count: Int(vertexNum), repeatedValue: float3(0))
+		facenormals = [float3](count: Int(triangleNum), repeatedValue: float3(0))
+		triangles.removeAll()
+		triangles.reserveCapacity(Int(triangleNum))
+		vArray = [GLfloat](count: Int(triangleNum) * 24, repeatedValue: 0)
+		
+		
+		for _ in 0..<vertexNum {
+			var tmpx = Float()
+			var tmpy = Float()
+			var tmpz = Float()
+			var vaListArr = [CVarArgType]()
+			vaListArr.append(withUnsafeMutablePointer(&tmpx, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(&tmpy, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(&tmpz, {$0}))
+			vfunpackf(tfile, "Bf Bf Bf", getVaList(vaListArr))
+			vertex.append(float3(tmpx, tmpy, tmpz))
+		}
+		
+		for _ in 0..<triangleNum {
+			var triangle = TexturedTriangle()
+			// funpackf(tfile, "Bi Bi Bi", &Triangles[i].vertex[0], &Triangles[i].vertex[1], &Triangles[i].vertex[2]);
+			var vertex1: Int16 = 0
+			var vertex2: Int16 = 0
+			var vertex3: Int16 = 0
+			var vertex4: Int16 = 0
+			var vertex5: Int16 = 0
+			var vertex6: Int16 = 0
+			var vaListArr = [CVarArgType]()
+			vaListArr.append(withUnsafeMutablePointer(&vertex1, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(&vertex2, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(&vertex3, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(&vertex4, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(&vertex5, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(&vertex6, {$0}))
+			vfunpackf(tfile, "Bs Bs Bs Bs Bs Bs", getVaList(vaListArr))
+			triangle.vertex.0 = vertex1
+			triangle.vertex.1 = vertex3
+			triangle.vertex.2 = vertex5
+			do {
+				var float1: Float = 0
+				var float2: Float = 0
+				var float3: Float = 0
+				var vaListArr2 = [CVarArgType]()
+				
+				vaListArr2.append(withUnsafeMutablePointer(&float1, {$0}))
+				vaListArr2.append(withUnsafeMutablePointer(&float2, {$0}))
+				vaListArr2.append(withUnsafeMutablePointer(&float3, {$0}))
+				vfunpackf(tfile, "Bf Bf Bf", getVaList(vaListArr2))
+				triangle.gx.0 = float1
+				triangle.gx.1 = float2
+				triangle.gx.2 = float3
+			}
+			do {
+				var float1: Float = 0
+				var float2: Float = 0
+				var float3: Float = 0
+				
+				var vaListArr2 = [CVarArgType]()
+				vaListArr2.append(withUnsafeMutablePointer(&float1, {$0}))
+				vaListArr2.append(withUnsafeMutablePointer(&float2, {$0}))
+				vaListArr2.append(withUnsafeMutablePointer(&float3, {$0}))
+				vfunpackf(tfile, "Bf Bf Bf", getVaList(vaListArr2))
+				triangle.gy.0 = float1
+				triangle.gy.1 = float2
+				triangle.gy.2 = float3
+			}
+			triangles.append(triangle)
+		}
+		
+		texture.xsz = 0;
+		
+		fclose(tfile);
+		
+		updateVertexArray();
+		
+		boundingsphereradius = 0;
+		for i in 0..<Int(vertexNum) {
+			for j in 0..<Int(vertexNum) {
+				if j != i && findDistancefast(vertex[j],vertex[i])/2 > boundingsphereradius {
+					boundingsphereradius=findDistancefast(vertex[j],vertex[i])/2;
+					boundingspherecenter=(vertex[i]+vertex[j]) / float3(2);
+				}
+			}
+		}
+		boundingsphereradius = sqrt(boundingsphereradius);
+		
+		//allow decals
+		// We use slightly better struct-base storage of decals
+		/*
+		if(!decaltexcoords){
+		decaltexcoords = (float***)malloc(sizeof(float**)*max_model_decals);
+		for(i=0;i<max_model_decals;i++){
+		decaltexcoords[i] = (float**)malloc(sizeof(float*)*3);
+		for(j=0;j<3;j++){
+		decaltexcoords[i][j] = (float*)malloc(sizeof(float)*2);
+		}
+		}
+		//if(decalvertex)free(decalvertex);
+		decalvertex = (XYZ**)malloc(sizeof(XYZ*)*max_model_decals);
+		for(i=0;i<max_model_decals;i++){
+		decalvertex[i] = (XYZ*)malloc(sizeof(XYZ)*3);
+		}
+		
+		decaltype = (int*)malloc(sizeof(int)*max_model_decals);
+		decalopacity = (float*)malloc(sizeof(float)*max_model_decals);
+		decalrotation = (float*)malloc(sizeof(float)*max_model_decals);
+		decalalivetime = (float*)malloc(sizeof(float)*max_model_decals);
+		decalposition = (XYZ*)malloc(sizeof(XYZ)*max_model_decals);
+		}*/
+		
+		//return 1;
+	}
+	
+	func loadRaw(fileURL: NSURL) {
+		//LOGFUNC;
+		
+		print("Loading raw... " + fileURL.path!);
+		
+		//int oldvertexNum,oldTriangleNum;
+		//oldvertexNum=vertexNum;
+		//oldTriangleNum=TriangleNum;
+		
+		modelType = .Raw;
+		color = false;
+		
+		let tfile = fopen( ConvertFileName(fileURL.fileSystemRepresentation), "rb" );
+		// read model settings
+		
+		var triangleNum = Int16()
+		var vNum = Int16()
+		fseek(tfile, 0, SEEK_SET);
+		do {
+			var vaListArr = [CVarArgType]()
+			vaListArr.append(withUnsafeMutablePointer(&vNum, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(&triangleNum, {$0}))
+			vfunpackf(tfile, "Bs Bs", getVaList(vaListArr))
+			vertexNum = vNum
+		}
+		
+		// read the model data
+		/*if(owner)dealloc(owner);
+		if(possible)dealloc(possible);
+		if(vertex)dealloc(vertex);
+		if(normals)dealloc(normals);
+		if(facenormals)dealloc(facenormals);
+		if(Triangles)dealloc(Triangles);
+		if(vArray)dealloc(vArray);*/
+		//deallocate();
+		
+		numPossible=0;
+		
+		owner = [Int32](count: Int(vertexNum), repeatedValue: -1)
+		possible = [Int32](count: Int(triangleNum), repeatedValue: 0)
+		vertex.removeAll()
+		vertex.reserveCapacity(Int(vertexNum))
+		triangles.removeAll()
+		triangles.reserveCapacity(Int(triangleNum))
+		vArray = [GLfloat](count: Int(triangleNum) * 24, repeatedValue: 0)
+		
+		for _ in 0..<vertexNum {
+			var tmpx = Float()
+			var tmpy = Float()
+			var tmpz = Float()
+			var vaListArr = [CVarArgType]()
+			vaListArr.append(withUnsafeMutablePointer(&tmpx, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(&tmpy, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(&tmpz, {$0}))
+			vfunpackf(tfile, "Bf Bf Bf", getVaList(vaListArr))
+			vertex.append(float3(tmpx, tmpy, tmpz))
+		}
+		
+		for _ in 0..<triangleNum {
+			var triangle = TexturedTriangle()
+			// funpackf(tfile, "Bi Bi Bi", &Triangles[i].vertex[0], &Triangles[i].vertex[1], &Triangles[i].vertex[2]);
+			var vertex1: Int16 = 0
+			var vertex2: Int16 = 0
+			var vertex3: Int16 = 0
+			var vertex4: Int16 = 0
+			var vertex5: Int16 = 0
+			var vertex6: Int16 = 0
+			var vaListArr = [CVarArgType]()
+			vaListArr.append(withUnsafeMutablePointer(&vertex1, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(&vertex2, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(&vertex3, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(&vertex4, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(&vertex5, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(&vertex6, {$0}))
+			vfunpackf(tfile, "Bs Bs Bs Bs Bs Bs", getVaList(vaListArr))
+			triangle.vertex.0 = vertex1
+			triangle.vertex.1 = vertex3
+			triangle.vertex.2 = vertex5
+			do {
+				var float1: Float = 0
+				var float2: Float = 0
+				var float3: Float = 0
+				var vaListArr2 = [CVarArgType]()
+				
+				vaListArr2.append(withUnsafeMutablePointer(&float1, {$0}))
+				vaListArr2.append(withUnsafeMutablePointer(&float2, {$0}))
+				vaListArr2.append(withUnsafeMutablePointer(&float3, {$0}))
+				vfunpackf(tfile, "Bf Bf Bf", getVaList(vaListArr2))
+				triangle.gx.0 = float1
+				triangle.gx.1 = float2
+				triangle.gx.2 = float3
+			}
+			do {
+				var float1: Float = 0
+				var float2: Float = 0
+				var float3: Float = 0
+				
+				var vaListArr2 = [CVarArgType]()
+				vaListArr2.append(withUnsafeMutablePointer(&float1, {$0}))
+				vaListArr2.append(withUnsafeMutablePointer(&float2, {$0}))
+				vaListArr2.append(withUnsafeMutablePointer(&float3, {$0}))
+				vfunpackf(tfile, "Bf Bf Bf", getVaList(vaListArr2))
+				triangle.gy.0 = float1
+				triangle.gy.1 = float2
+				triangle.gy.2 = float3
+			}
+			triangles.append(triangle)
+		}
+		
+		fclose(tfile);
+		
+		//return 1;
+	}
+
 	
 	func updateVertexArray() {
 		guard modelType == .Normal || modelType == .Decals else {
@@ -380,35 +652,35 @@ class Model {
 	}
 	
 	func uniformTexCoords() {
-		for i in 0..<triangles.count {
-			triangles[i].gy.0 = vertex[Int(triangles[i].vertex.0)].y;
-			triangles[i].gy.1 = vertex[Int(triangles[i].vertex.1)].y;
-			triangles[i].gy.2 = vertex[Int(triangles[i].vertex.2)].y;
-			triangles[i].gx.0 = vertex[Int(triangles[i].vertex.0)].x;
-			triangles[i].gx.1 = vertex[Int(triangles[i].vertex.1)].x;
-			triangles[i].gx.2 = vertex[Int(triangles[i].vertex.2)].x;
+		for var triangle in triangles {
+			triangle.gy.0 = vertex[Int(triangle.vertex.0)].y;
+			triangle.gy.1 = vertex[Int(triangle.vertex.1)].y;
+			triangle.gy.2 = vertex[Int(triangle.vertex.2)].y;
+			triangle.gx.0 = vertex[Int(triangle.vertex.0)].x;
+			triangle.gx.1 = vertex[Int(triangle.vertex.1)].x;
+			triangle.gx.2 = vertex[Int(triangle.vertex.2)].x;
 		}
 		updateVertexArray();
 	}
 	
 	
 	func flipTexCoords() {
-		for i in 0..<triangles.count {
-			triangles[i].gy.0 = -triangles[i].gy.0;
-			triangles[i].gy.1 = -triangles[i].gy.1;
-			triangles[i].gy.2 = -triangles[i].gy.2;
+		for var triangle in triangles {
+			triangle.gy.0 = -triangle.gy.0;
+			triangle.gy.1 = -triangle.gy.1;
+			triangle.gy.2 = -triangle.gy.2;
 		}
 		updateVertexArray();
 	}
 	
 	func scaleTexCoords(howMuch: Float) {
-		for i in 0..<triangles.count {
-			triangles[i].gx.0 *= howMuch;
-			triangles[i].gx.1 *= howMuch;
-			triangles[i].gx.2 *= howMuch;
-			triangles[i].gy.0 *= howMuch;
-			triangles[i].gy.1 *= howMuch;
-			triangles[i].gy.2 *= howMuch;
+		for var triangle in triangles {
+			triangle.gx.0 *= howMuch;
+			triangle.gx.1 *= howMuch;
+			triangle.gx.2 *= howMuch;
+			triangle.gy.0 *= howMuch;
+			triangle.gy.1 *= howMuch;
+			triangle.gy.2 *= howMuch;
 			
 		}
 		
@@ -424,7 +696,7 @@ class Model {
 			return;
 		}
 		
-		memset(&normals, 0, sizeof(float3) * Int(vertexNum))
+		normals = [float3](count: Int(vertexNum), repeatedValue: float3())
 		
 		for (i, triangle) in triangles.enumerate() {
 			let l_vect_b1 = vertex[Int(triangle.vertex.1)] - vertex[Int(triangle.vertex.0)];
@@ -439,9 +711,9 @@ class Model {
 				facenormals[i] = normalize(facenormals[i])
 			}
 		}
-		for i in 0..<Int(vertexNum) {
-			normals[i] = normalize(normals[i])
-			normals[i] *= -1;
+		for var normal in normals {
+			normal = normalize(normal)
+			normal *= -1;
 		}
 		updateVertexArrayNoTex();
 	}
@@ -672,7 +944,7 @@ class Model {
 		var aDecal = Decal()
 		
 		if opacity > 0 {
-			if(findDistancefast(loc,boundingspherecenter)<(boundingsphereradius+size)*(boundingsphereradius+size)) {
+			if (findDistancefast(loc, boundingspherecenter) < (boundingsphereradius + size) * (boundingsphereradius + size)) {
 				for (i, triangle) in triangles.enumerate() {
 					let distance: Float = {
 						var stage1: Float = (facenormals[i].x * loc.x)
@@ -691,7 +963,7 @@ class Model {
 						aDecal.aliveTime=0;
 						aDecal.opacity=opacity-distance/10;
 						
-						if(aDecal.opacity > 0) {
+						if aDecal.opacity > 0 {
 							var placex=vertex[Int(triangle.vertex.0)].x;
 							var placez=vertex[Int(triangle.vertex.0)].z;
 							
