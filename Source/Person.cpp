@@ -945,8 +945,12 @@ void Person::DoMipmaps(int howmanylevels,float startx, float endx, float starty,
 
 			newsize=skeleton.skinsize;
 
-			if(howmanylevels)
-				gluBuild2DMipmaps( GL_TEXTURE_2D, GL_RGB, skeleton.skinsize, skeleton.skinsize, GL_RGB, GL_UNSIGNED_BYTE, &skeleton.skinText[0] );
+			if(howmanylevels) {
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+				glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, skeleton.skinsize, skeleton.skinsize, 0, GL_RGB, GL_UNSIGNED_BYTE, skeleton.skinText );
+			}
 		}
 		/*for(j=1;j<=howmanylevels;j++){
 		if(j==1)texpointer=&skeleton.skinText[0];
