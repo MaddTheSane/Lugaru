@@ -99,6 +99,9 @@ static bool lookup_all_alsyms(const char *libname)
 #define unload_alsyms()
 #endif
 
+using namespace std;
+
+
 typedef struct
 {
     ALuint sid;

@@ -32,6 +32,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Globals.h"
 
+using namespace std;
+
 /********************> IsKeyDown() <*****/
 Boolean	IsKeyDown( unsigned char *keyMap, unsigned short theKey )
 {

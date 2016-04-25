@@ -22,6 +22,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 /**> HEADER FILES <**/
 #include "Lights.h"
 
+using namespace std;
+
+
 void SetUpLight(Light* whichsource, int whichlight){
 	static const GLfloat qattenuation[]={0.0002f};
 	//static float cattenuation[]={1.5f};

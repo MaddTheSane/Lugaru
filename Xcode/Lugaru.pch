@@ -17,6 +17,11 @@
 #ifdef __cplusplus
 #include <cmath>
 #include <fstream>
+#include <cstring>
+#include <iostream>
+#include <algorithm>
+#include <map>
+#include <string>
 #include "PhysicsMath.h"
 #endif
 
