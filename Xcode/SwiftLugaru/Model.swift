@@ -12,10 +12,6 @@ import OpenGL.GL
 import OpenGL.GL.GLU
 import OpenGL.GL.Ext
 
-//MARK: Preferences
-var decalsEnabled = true
-
-//MARK: -
 let max_model_decals = 300
 
 final class Model {
@@ -868,7 +864,7 @@ final class Model {
 	}
 
 	func drawDecals(shadowTexture shadowtexture: GLuint, bloodTexture bloodtexture: GLuint, secondBloodTexture bloodtexture2: GLuint, breakTexture breaktexture: GLuint) {
-		guard decalsEnabled && modelType == .Decals else {
+		guard preferences.decalsEnabled && modelType == .Decals else {
 			return
 		}
 		var lastType: DecalType? = nil
@@ -983,14 +979,14 @@ final class Model {
 	
 	// MARK: - Decals
 	func removeDecal(which: Int) {
-		guard decalsEnabled && modelType == .Decals else {
+		guard preferences.decalsEnabled && modelType == .Decals else {
 			return
 		}
 		decals.removeAtIndex(which)
 	}
 	
 	func makeDecal(type atype: DecalType, `where` loc: float3, size: Float, opacity: Float, rotation: Float) {
-		guard decalsEnabled && modelType == .Decals else {
+		guard preferences.decalsEnabled && modelType == .Decals else {
 			return
 		}
 		//float placex,placez;

@@ -13,6 +13,7 @@
 		550AE9A518DFC24700F0C197 /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 550AE9A218DFC22800F0C197 /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		550AE9A918DFC8B700F0C197 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 550AE9A818DFC8B700F0C197 /* Images.xcassets */; };
 		55320A7E1CCD43F400BAEE86 /* Skeleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55320A7D1CCD43F400BAEE86 /* Skeleton.swift */; };
+		55350C9C1CCDE02200CABBB8 /* Text.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55350C9B1CCDE02200CABBB8 /* Text.swift */; };
 		554B1EE61CCBE6EF005CE5BC /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 554B1EE51CCBE6EF005CE5BC /* Constants.swift */; };
 		554B1EE81CCBFA3D005CE5BC /* Terrain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 554B1EE71CCBFA3D005CE5BC /* Terrain.swift */; };
 		554B1EEA1CCBFAE8005CE5BC /* Quaternions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 554B1EE91CCBFAE8005CE5BC /* Quaternions.swift */; };
@@ -42,6 +43,9 @@
 		55A13D211CC974200070DECF /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A13D201CC974200070DECF /* Model.swift */; };
 		55A13D231CC975850070DECF /* MacCompatibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A13D221CC975850070DECF /* MacCompatibility.swift */; };
 		55A13D251CC9778A0070DECF /* NSURLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A13D241CC9778A0070DECF /* NSURLAdditions.swift */; };
+		55A2F4071CCE8A0F00B12C09 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A2F4061CCE8A0F00B12C09 /* Game.swift */; };
+		55A2F4091CCE8A6B00B12C09 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A2F4081CCE8A6B00B12C09 /* Preferences.swift */; };
+		55A2F40B1CCE8C3300B12C09 /* TextureLoading+OSX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A2F40A1CCE8C3300B12C09 /* TextureLoading+OSX.swift */; };
 		565AD00C11990D7600DF867A /* Frustum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 565ACFF111990D7600DF867A /* Frustum.cpp */; };
 		565AD00D11990D7600DF867A /* GameDraw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 565ACFF211990D7600DF867A /* GameDraw.cpp */; };
 		565AD00E11990D7600DF867A /* GameInitDispose.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 565ACFF311990D7600DF867A /* GameInitDispose.cpp */; };
@@ -250,6 +254,7 @@
 		550AE9A818DFC8B700F0C197 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		551C714D1CCA8F6C0098D893 /* Lugaru.exp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.exports; path = Lugaru.exp; sourceTree = "<group>"; };
 		55320A7D1CCD43F400BAEE86 /* Skeleton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Skeleton.swift; sourceTree = "<group>"; };
+		55350C9B1CCDE02200CABBB8 /* Text.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Text.swift; sourceTree = "<group>"; };
 		554B1EE51CCBE6EF005CE5BC /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		554B1EE71CCBFA3D005CE5BC /* Terrain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Terrain.swift; sourceTree = "<group>"; };
 		554B1EE91CCBFAE8005CE5BC /* Quaternions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Quaternions.swift; sourceTree = "<group>"; };
@@ -278,6 +283,9 @@
 		55A13D201CC974200070DECF /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		55A13D221CC975850070DECF /* MacCompatibility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacCompatibility.swift; sourceTree = "<group>"; };
 		55A13D241CC9778A0070DECF /* NSURLAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSURLAdditions.swift; sourceTree = "<group>"; };
+		55A2F4061CCE8A0F00B12C09 /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
+		55A2F4081CCE8A6B00B12C09 /* Preferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
+		55A2F40A1CCE8C3300B12C09 /* TextureLoading+OSX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TextureLoading+OSX.swift"; sourceTree = "<group>"; };
 		55C148C61CCA0241007E238B /* Globals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Globals.h; sourceTree = "<group>"; };
 		565ACFF111990D7600DF867A /* Frustum.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Frustum.cpp; sourceTree = "<group>"; };
 		565ACFF211990D7600DF867A /* GameDraw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameDraw.cpp; sourceTree = "<group>"; };
@@ -549,18 +557,22 @@
 			isa = PBXGroup;
 			children = (
 				55A13D031CC971420070DECF /* AppDelegate.swift */,
+				554B1EE51CCBE6EF005CE5BC /* Constants.swift */,
+				55A2F4061CCE8A0F00B12C09 /* Game.swift */,
+				554B1EEE1CCC1A90005CE5BC /* Globals.swift */,
+				55A13D221CC975850070DECF /* MacCompatibility.swift */,
+				55A2F40A1CCE8C3300B12C09 /* TextureLoading+OSX.swift */,
+				55A13D201CC974200070DECF /* Model.swift */,
+				55A13D241CC9778A0070DECF /* NSURLAdditions.swift */,
+				55A2F4081CCE8A6B00B12C09 /* Preferences.swift */,
 				554B1EE91CCBFAE8005CE5BC /* Quaternions.swift */,
 				55320A7D1CCD43F400BAEE86 /* Skeleton.swift */,
-				55A13D201CC974200070DECF /* Model.swift */,
-				554B1EEE1CCC1A90005CE5BC /* Globals.swift */,
 				554B1EE71CCBFA3D005CE5BC /* Terrain.swift */,
-				55A13D221CC975850070DECF /* MacCompatibility.swift */,
-				55A13D241CC9778A0070DECF /* NSURLAdditions.swift */,
-				554B1EE51CCBE6EF005CE5BC /* Constants.swift */,
+				55350C9B1CCDE02200CABBB8 /* Text.swift */,
 				55A13D051CC971420070DECF /* Assets.xcassets */,
-				55A13D071CC971430070DECF /* MainMenu.xib */,
-				55A13D0A1CC971430070DECF /* Info.plist */,
 				55A13D1D1CC9728B0070DECF /* CmdLine.cpp */,
+				55A13D0A1CC971430070DECF /* Info.plist */,
+				55A13D071CC971430070DECF /* MainMenu.xib */,
 				55A13D1F1CC9735D0070DECF /* SwiftLugaru-Bridging.h */,
 			);
 			indentWidth = 4;
@@ -1094,6 +1106,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				55A13D231CC975850070DECF /* MacCompatibility.swift in Sources */,
+				55A2F4071CCE8A0F00B12C09 /* Game.swift in Sources */,
 				554B1EE81CCBFA3D005CE5BC /* Terrain.swift in Sources */,
 				55A13D211CC974200070DECF /* Model.swift in Sources */,
 				55A13D1E1CC9728B0070DECF /* CmdLine.cpp in Sources */,
@@ -1102,8 +1115,11 @@
 				55A13D251CC9778A0070DECF /* NSURLAdditions.swift in Sources */,
 				55A13D1A1CC972190070DECF /* pack_private.c in Sources */,
 				554B1EEF1CCC1A90005CE5BC /* Globals.swift in Sources */,
+				55A2F4091CCE8A6B00B12C09 /* Preferences.swift in Sources */,
 				55A13D181CC972190070DECF /* unpack_private.c in Sources */,
 				55A13D041CC971420070DECF /* AppDelegate.swift in Sources */,
+				55350C9C1CCDE02200CABBB8 /* Text.swift in Sources */,
+				55A2F40B1CCE8C3300B12C09 /* TextureLoading+OSX.swift in Sources */,
 				55A13D1B1CC972190070DECF /* pack.c in Sources */,
 				554B1EEA1CCBFAE8005CE5BC /* Quaternions.swift in Sources */,
 				55A13D171CC972140070DECF /* private.c in Sources */,
