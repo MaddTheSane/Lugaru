@@ -23,6 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Quaternions.h"
 
 using namespace simd;
+using namespace std;
 
 // Functions
 quaternion Quat_Mult(quaternion q1, quaternion q2)
@@ -332,10 +333,10 @@ bool PointInTriangle(const XYZ *p, const XYZ normal, const XYZ *p1, const XYZ *p
 	normalv[1]=normal.y;
 	normalv[2]=normal.z;
 
-	max = std::max(std::max(fabs(normalv[0]), fabs(normalv[1])), fabs(normalv[2]));
-	if (max == fabs(normalv[0])) {i = 1; j = 2;} // y, z
-	if (max == fabs(normalv[1])) {i = 0; j = 2;} // x, z
-	if (max == fabs(normalv[2])) {i = 0; j = 1;} // x, y
+	max = std::max(std::max(abs(normalv[0]), abs(normalv[1])), abs(normalv[2]));
+	if (max == abs(normalv[0])) {i = 1; j = 2;} // y, z
+	if (max == abs(normalv[1])) {i = 0; j = 2;} // x, z
+	if (max == abs(normalv[2])) {i = 0; j = 1;} // x, y
 
 	u0 = pointv[i] - p1v[i];
 	v0 = pointv[j] - p1v[j];

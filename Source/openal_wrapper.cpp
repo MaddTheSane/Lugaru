@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <cmath>
 
 #include "openal_wrapper.h"
 
@@ -98,6 +99,9 @@ static bool lookup_all_alsyms(const char *libname)
 #define unload_alsyms()
 #endif
 
+using namespace std;
+
+
 typedef struct
 {
     ALuint sid;
@@ -132,9 +136,9 @@ static inline bool source_too_close(const int channel)
 {
     const OPENAL_Channels *chan = &channels[channel];
     const float *pos = chan->position;
-    const float distance = sqrtf(powf((pos[0] - listener_position[0]), 2.0f) +
-                                 powf((pos[1] - listener_position[1]), 2.0f) +
-                                 powf((pos[2] - listener_position[2]), 2.0f));
+    const float distance = sqrt(pow((pos[0] - listener_position[0]), 2.0f) +
+                                pow((pos[1] - listener_position[1]), 2.0f) +
+                                pow((pos[2] - listener_position[2]), 2.0f));
     return (distance <= chan->sample->min_distance);
 }
 

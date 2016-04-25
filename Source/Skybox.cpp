@@ -23,6 +23,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Game.h"
 #include "Globals.h"
 
+using namespace std;
+
 
 bool SkyBox::load( const char *ffront,const char *fleft,const char *fback,const char *fright,const char *fup,const char *fdown,const char *fcloud,const char *freflect)
 {

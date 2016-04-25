@@ -24,6 +24,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "openal_wrapper.h"
 #include "Globals.h"
 
+using namespace std;
+
+
 void	Weapons::DoStuff(){
 	static int i,whichpatchx,whichpatchz,j,k,whichhit,m;
 	static XYZ start,end,colpoint,normalrot,footvel,footpoint;

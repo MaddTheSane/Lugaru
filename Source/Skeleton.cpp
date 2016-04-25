@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "openal_wrapper.h"
 #include "Globals.h"
 
+using namespace std;
 using namespace simd;
 
 void dealloc2(void* param){

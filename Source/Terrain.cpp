@@ -24,6 +24,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Objects.h"
 #include "Globals.h"
 
+using namespace std;
+
 //Functions
 
 int Terrain::lineTerrain(XYZ p1,XYZ p2, XYZ *p)

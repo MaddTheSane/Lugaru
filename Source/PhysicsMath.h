@@ -37,6 +37,7 @@ float	const	g	= -32.174f;		// acceleration due to gravity, ft/s^2
 float	const	rho = 0.0023769f;	// desity of air at sea level, slugs/ft^3
 float	const	tol = 0.0000000001f;		// float type tolerance 
 
+using std::atan2;
 
 //------------------------------------------------------------------------//
 // Misc. Functions
@@ -109,7 +110,7 @@ public:
 
 	inline float Magnitude(void)
 	{
-		return (float) sqrt(n*n + v.x*v.x + v.y*v.y + v.z*v.z);
+		return (float) std::sqrt(n*n + v.x*v.x + v.y*v.y + v.z*v.z);
 	}
 	
 	inline Vector GetVector(void)
@@ -238,7 +239,7 @@ inline	Quaternion operator/(Quaternion q, float s)
 
 inline	float QGetAngle(Quaternion q)
 {
-	return	(float) (2*acos(q.n));
+	return	(float) (2*std::acos(q.n));
 }
 
 inline	Vector QGetAxis(Quaternion q)
@@ -317,7 +318,7 @@ inline	Vector	MakeEulerAnglesFromQ(Quaternion q)
 	r32 = 2 * (q.v.y*q.v.z + q.n*q.v.x);
 	r33 = q00 - q11 - q22 + q33;
 
-	tmp = fabs(r31);
+	tmp = std::abs(r31);
 	if(tmp > 0.999999)
 	{
 		r12 = 2 * (q.v.x*q.v.y - q.n*q.v.z);

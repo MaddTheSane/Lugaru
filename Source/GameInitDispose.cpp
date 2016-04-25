@@ -23,14 +23,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "openal_wrapper.h"
 #include "Globals.h"
 
+using namespace std;
 
-void LOG(const std::string fmt, ...)
+
+void LOG(const string fmt, ...)
 {
 	char cStr[512] = {0};
 	va_list list;
 	va_start(list, fmt);
 	vsprintf(cStr, fmt.c_str(), list);
-	cerr << std::string(cStr) << std::endl;
+	cerr << string(cStr) << endl;
 
 	va_end(list);
     // !!! FIXME: write me.
@@ -55,7 +57,7 @@ void Game::Dispose()
 
 	sprintf (mapname, ":Data:Users");
 
-	FILE			*tfile;
+	FILE *tfile;
 	tfile=fopen( ConvertFileName(mapname), "wb" );
 	if (tfile)
 	{
