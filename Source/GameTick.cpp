@@ -1237,7 +1237,7 @@ void	Game::SetUpLighting(){
 	light.ambient[2]=0;	*/
 }
 
-int Game::findPathDist(int start,int end){
+int Game::findPathDist(int start,int end) {
 	int i,j,k,smallestcount,count,connected;
 	int last,last2,last3,last4;
 	int closest;
@@ -1281,28 +1281,26 @@ int Game::findPathDist(int start,int end){
 	return smallestcount;
 }
 
-int Game::checkcollide(XYZ startpoint,XYZ endpoint){
-	static XYZ colpoint,colviewer,coltarget;
-	static float minx,minz,maxx,maxz,miny,maxy;
-	static int i;
+int Game::checkcollide(XYZ startpoint,XYZ endpoint) {
+	XYZ colpoint,colviewer,coltarget;
 
 	//startpoint.y+=.7;
 	//endpoint.y+=.7;
 	//startpoint.y-=.1;
 	//endpoint.y-=.1;
 
-	minx=startpoint.x;
+	float minx=startpoint.x;
 	if(minx>endpoint.x)minx=endpoint.x;
-	miny=startpoint.y;
+	float miny=startpoint.y;
 	if(miny>endpoint.y)miny=endpoint.y;
-	minz=startpoint.z;
+	float minz=startpoint.z;
 	if(minz>endpoint.z)minz=endpoint.z;
 
-	maxx=startpoint.x;
+	float maxx=startpoint.x;
 	if(maxx<endpoint.x)maxx=endpoint.x;
-	maxy=startpoint.y;
+	float maxy=startpoint.y;
 	if(maxy<endpoint.y)maxy=endpoint.y;
-	maxz=startpoint.z;
+	float maxz=startpoint.z;
 	if(maxz<endpoint.z)maxz=endpoint.z;
 
 	minx-=1;
@@ -1312,7 +1310,7 @@ int Game::checkcollide(XYZ startpoint,XYZ endpoint){
 	maxy+=1;
 	maxz+=1;
 
-	for(i=0;i<objects.numobjects;i++){
+	for(int i=0;i<objects.numobjects;i++){
 		if(objects.position[i].x>minx-objects.model[i].boundingsphereradius&&objects.position[i].x<maxx+objects.model[i].boundingsphereradius&&objects.position[i].y>miny-objects.model[i].boundingsphereradius&&objects.position[i].y<maxy+objects.model[i].boundingsphereradius&&objects.position[i].z>minz-objects.model[i].boundingsphereradius&&objects.position[i].z<maxz+objects.model[i].boundingsphereradius){
 			if(objects.type[i]!=treeleavestype&&objects.type[i]!=bushtype&&objects.type[i]!=firetype){
 				colviewer=startpoint;
@@ -1327,28 +1325,27 @@ int Game::checkcollide(XYZ startpoint,XYZ endpoint){
 	return -1;
 }
 
-int Game::checkcollide(XYZ startpoint,XYZ endpoint,int what){
-	static XYZ colpoint,colviewer,coltarget;
-	static float minx,minz,maxx,maxz,miny,maxy;
-	static int i;
+int Game::checkcollide(XYZ startpoint,XYZ endpoint,int what) {
+	XYZ colpoint,colviewer,coltarget;
+	int i = 0;
 
 	//startpoint.y+=.7;
 	//endpoint.y+=.7;
 	//startpoint.y-=.1;
 	//endpoint.y-=.1;
 
-	minx=startpoint.x;
+	float minx=startpoint.x;
 	if(minx>endpoint.x)minx=endpoint.x;
-	miny=startpoint.y;
+	float miny=startpoint.y;
 	if(miny>endpoint.y)miny=endpoint.y;
-	minz=startpoint.z;
+	float minz=startpoint.z;
 	if(minz>endpoint.z)minz=endpoint.z;
 
-	maxx=startpoint.x;
+	float maxx=startpoint.x;
 	if(maxx<endpoint.x)maxx=endpoint.x;
-	maxy=startpoint.y;
+	float maxy=startpoint.y;
 	if(maxy<endpoint.y)maxy=endpoint.y;
-	maxz=startpoint.z;
+	float maxz=startpoint.z;
 	if(maxz<endpoint.z)maxz=endpoint.z;
 
 	minx-=1;
@@ -1564,7 +1561,7 @@ void	Game::Setenvironment(int which)
 }
 
 
-void	Game::Loadlevel(int which){
+void	Game::Loadlevel(int which) {
 	stealthloading=0;
 
 	if(which==0)Loadlevel((char *)":Data:Maps:map1");
@@ -1609,7 +1606,7 @@ return context.hex_digest();
 
 
 
-void	Game::Loadlevel(char *name){
+void Game::Loadlevel(char *name) {
 	float tmpx, tmpy, tmpz;
 	int i,j,k,l,m;
 	static int oldlevel;
@@ -1850,7 +1847,7 @@ void	Game::Loadlevel(char *name){
 			funpackf(tfile, "Bi", &numdialogues);
 			if(numdialogues)
 			{
-				for(k=0;k<numdialogues;k++)
+				for(int k=0;k<numdialogues;k++)
 				{
 					float tmpx, tmpy, tmpz;
 					funpackf(tfile, "Bi", &numdialogueboxes[k]);
@@ -1863,7 +1860,7 @@ void	Game::Loadlevel(char *name){
 					}
 					//if(numdialogueboxes)
 					{
-						for(l=0;l<numdialogueboxes[k];l++)
+						for(int l=0;l<numdialogueboxes[k];l++)
 						{
 							funpackf(tfile, "Bi", &dialogueboxlocation[k][l]);
 							funpackf(tfile, "Bf", &dialogueboxcolor[k][l][0]);
@@ -1893,7 +1890,7 @@ void	Game::Loadlevel(char *name){
 							funpackf(tfile, "Bi", &participantfocus[k][l]);
 							funpackf(tfile, "Bi", &participantaction[k][l]);
 
-							for(m=0;m<10;m++) {
+							for(int m=0;m<10;m++) {
 								funpackf(tfile, "Bf Bf Bf", &tmpx, &tmpy, &tmpz);
 								participantfacing[k][l][m] = XYZ{tmpx, tmpy, tmpz};
 							}
@@ -1908,7 +1905,7 @@ void	Game::Loadlevel(char *name){
 
 		if(player[0].numclothes)
 		{
-			for(k=0;k<player[0].numclothes;k++)
+			for(int k=0;k<player[0].numclothes;k++)
 			{
 				funpackf(tfile, "Bi", &templength);
 				for(l=0;l<templength;l++)
@@ -1923,7 +1920,7 @@ void	Game::Loadlevel(char *name){
 		funpackf(tfile, "Bi", &objects.numobjects);
 		if(objects.numobjects)
 		{
-			for(i=0;i<objects.numobjects;i++)
+			for(int i=0;i<objects.numobjects;i++)
 			{
 				funpackf(tfile, "Bi Bf Bf Bf Bf Bf Bf", &objects.type[i],&objects.rotation[i],&objects.rotation2[i], &tmpx, &tmpy, &tmpz,&objects.scale[i]);
 				objects.position[i] = XYZ{tmpx, tmpy, tmpz};
@@ -1989,7 +1986,7 @@ void	Game::Loadlevel(char *name){
 		bool removeanother=0;
 		if(numplayers>1&&numplayers<maxplayers)
 		{
-			for(i=1;i<numplayers;i++)
+			for(int i=1;i<numplayers;i++)
 			{
 				if(visibleloading){loadscreencolor=4; LoadingScreen();}
 				removeanother=0;
@@ -2013,7 +2010,7 @@ void	Game::Loadlevel(char *name){
 				{
 					if(player[i-howmanyremoved].num_weapons>0&&player[i-howmanyremoved].num_weapons<5)
 					{
-						for(j=0;j<player[i-howmanyremoved].num_weapons;j++)
+						for(int j=0;j<player[i-howmanyremoved].num_weapons;j++)
 						{
 							player[i-howmanyremoved].weaponids[j]=weapons.numweapons;
 							funpackf(tfile, "Bi", &weapons.type[player[i-howmanyremoved].weaponids[j]]);
@@ -2023,7 +2020,7 @@ void	Game::Loadlevel(char *name){
 					}
 					funpackf(tfile, "Bi", &player[i-howmanyremoved].numwaypoints);
 					//player[i-howmanyremoved].numwaypoints=10;
-					for(j=0;j<player[i-howmanyremoved].numwaypoints;j++)
+					for(int j=0;j<player[i-howmanyremoved].numwaypoints;j++)
 					{
 						funpackf(tfile, "Bf", &tmpx);
 						funpackf(tfile, "Bf", &tmpy);
@@ -2070,7 +2067,7 @@ void	Game::Loadlevel(char *name){
 					funpackf(tfile, "Bi", &player[i-howmanyremoved].numclothes);
 					if(player[i-howmanyremoved].numclothes)
 					{
-						for(k=0;k<player[i-howmanyremoved].numclothes;k++)
+						for(int k=0;k<player[i-howmanyremoved].numclothes;k++)
 						{
 							int templength;
 							funpackf(tfile, "Bi", &templength);
@@ -2091,11 +2088,11 @@ void	Game::Loadlevel(char *name){
 			numpathpoints=0;
 		if(numpathpoints)
 		{
-			for(j=0;j<numpathpoints;j++)
+			for(int j=0;j<numpathpoints;j++)
 			{
 				funpackf(tfile, "Bf Bf Bf Bi", &tmpx,&tmpy,&tmpz,&numpathpointconnect[j]);
 				pathpoint[j] = XYZ{tmpx, tmpy, tmpz};
-				for(k=0;k<numpathpointconnect[j];k++){
+				for(int k=0;k<numpathpointconnect[j];k++){
 					funpackf(tfile, "Bi", &pathpointconnect[j][k]);
 				}
 			}
@@ -2113,7 +2110,7 @@ void	Game::Loadlevel(char *name){
 		{
 			j=objects.numobjects;
 			objects.numobjects=0;
-			for(i=0;i<j;i++)
+			for(int i=0;i<j;i++)
 			{
 				//if(objects.type[i]!=spiketype)
 				objects.MakeObject(objects.type[i],objects.position[i],objects.rotation[i],objects.rotation2[i],objects.scale[i]);
@@ -2136,27 +2133,28 @@ void	Game::Loadlevel(char *name){
 
 
 		if(numplayers>maxplayers-1)numplayers=maxplayers-1;
-		for(i=0;i<numplayers;i++)
+		for(int i=0;i<numplayers;i++)
 		{
 			if(visibleloading){loadscreencolor=4; LoadingScreen();}
 			player[i].burnt=0;
 			player[i].bled=0;
 			player[i].onfire=0;
-			if(i==0||player[i].scale<0)player[i].scale=.2;
+			if(i==0||player[i].scale<0)
+				player[i].scale=.2;
 			player[i].skeleton.free=0;
 			player[i].skeleton.id=i;
 			//if(Random()%2==0)player[i].creature=wolftype;
 			//else player[i].creature=rabbittype;
 			if(i==0&&mapvers<9)player[i].creature=rabbittype;
-			if(player[i].creature!=wolftype)player[i].skeleton.Load((char *)":Data:Skeleton:Basic Figure",(char *)":Data:Skeleton:Basic Figurelow",(char *)":Data:Skeleton:Rabbitbelt",(char *)":Data:Models:Body.solid",(char *)":Data:Models:Body2.solid",(char *)":Data:Models:Body3.solid",(char *)":Data:Models:Body4.solid",(char *)":Data:Models:Body5.solid",(char *)":Data:Models:Body6.solid",(char *)":Data:Models:Body7.solid",(char *)":Data:Models:Bodylow.solid",(char *)":Data:Models:Belt.solid",0);
+			if(player[i].creature!=wolftype)player[i].skeleton.Load(":Data:Skeleton:Basic Figure", ":Data:Skeleton:Basic Figurelow", ":Data:Skeleton:Rabbitbelt", ":Data:Models:Body.solid", ":Data:Models:Body2.solid", ":Data:Models:Body3.solid", ":Data:Models:Body4.solid", ":Data:Models:Body5.solid", ":Data:Models:Body6.solid", ":Data:Models:Body7.solid", ":Data:Models:Bodylow.solid", ":Data:Models:Belt.solid", false);
 			else
 			{
 				if(player[i].creature!=wolftype){
-					player[i].skeleton.Load((char *)":Data:Skeleton:Basic Figure",(char *)":Data:Skeleton:Basic Figurelow",(char *)":Data:Skeleton:Rabbitbelt",(char *)":Data:Models:Body.solid",(char *)":Data:Models:Body2.solid",(char *)":Data:Models:Body3.solid",(char *)":Data:Models:Body4.solid",(char *)":Data:Models:Body5.solid",(char *)":Data:Models:Body6.solid",(char *)":Data:Models:Body7.solid",(char *)":Data:Models:Bodylow.solid",(char *)":Data:Models:Belt.solid",1);
+					player[i].skeleton.Load(":Data:Skeleton:Basic Figure", ":Data:Skeleton:Basic Figurelow", ":Data:Skeleton:Rabbitbelt", ":Data:Models:Body.solid", ":Data:Models:Body2.solid", ":Data:Models:Body3.solid", ":Data:Models:Body4.solid", ":Data:Models:Body5.solid", ":Data:Models:Body6.solid", ":Data:Models:Body7.solid", ":Data:Models:Bodylow.solid", ":Data:Models:Belt.solid", true);
 					LoadTexture(":Data:Textures:Belt.png",&player[i].skeleton.drawmodelclothes.textureptr,1,1);
 				}
 				if(player[i].creature==wolftype){
-					player[i].skeleton.Load((char *)":Data:Skeleton:Basic Figure Wolf",(char *)":Data:Skeleton:Basic Figure Wolf Low",(char *)":Data:Skeleton:Rabbitbelt",(char *)":Data:Models:Wolf.solid",(char *)":Data:Models:Wolf2.solid",(char *)":Data:Models:Wolf3.solid",(char *)":Data:Models:Wolf4.solid",(char *)":Data:Models:Wolf5.solid",(char *)":Data:Models:Wolf6.solid",(char *)":Data:Models:Wolf7.solid",(char *)":Data:Models:Wolflow.solid",(char *)":Data:Models:Belt.solid",0);
+					player[i].skeleton.Load(":Data:Skeleton:Basic Figure Wolf", ":Data:Skeleton:Basic Figure Wolf Low", ":Data:Skeleton:Rabbitbelt", ":Data:Models:Wolf.solid", ":Data:Models:Wolf2.solid", ":Data:Models:Wolf3.solid", ":Data:Models:Wolf4.solid", ":Data:Models:Wolf5.solid", ":Data:Models:Wolf6.solid", ":Data:Models:Wolf7.solid", ":Data:Models:Wolflow.solid", ":Data:Models:Belt.solid", false);
 				}
 			}
 
@@ -2248,7 +2246,7 @@ void	Game::Loadlevel(char *name){
 				player[i].proportionlegs.z=0;
 			}
 
-			player[i].tempanimation.Load((char *)":Data:Animations:Tempanim",0,0);
+			player[i].tempanimation.Load(":Data:Animations:Tempanim",0,0);
 
 			player[i].headmorphness=0;
 			player[i].targetheadmorphness=1;
@@ -2409,20 +2407,18 @@ void	Game::Loadlevel(char *name){
 
 void Game::Tick()
 {
-	int i,k,j,l,m;
+	int i,k,j,l;
 	XYZ facing,flatfacing,absflatfacing;
 	XYZ rotatetarget;
 	bool oldkey;
 	float oldtargetrotation;
-	int target, numgood;
+	int target;
 	XYZ tempcoords1,tempcoords2;
 	XYZ test;
 	XYZ test2;
 	XYZ lowpoint,lowpointtarget,lowpoint2,lowpointtarget2,lowpoint3,lowpointtarget3,lowpoint4,lowpointtarget4,lowpoint5,lowpointtarget5,lowpoint6,lowpointtarget6,lowpoint7,lowpointtarget7,colpoint,colpoint2;
 	int whichhit;
 	bool oldjumpkeydown = false;
-
-	int templength;
 
 	float headprop,bodyprop,armprop,legprop;
 
@@ -3870,8 +3866,8 @@ void Game::Tick()
 								dialoguetime=0;
 								dialoguegonethrough[i]++;
 								if(dialogueboxsound[whichdialogue][indialogue]!=0){
-									static float gLoc[3];
-									static float vel[3];
+									float gLoc[3];
+									float vel[3];
 									XYZ temppos;
 									temppos=player[participantfocus[whichdialogue][indialogue]].coords;
 									temppos=temppos-viewer;
@@ -5012,8 +5008,8 @@ void Game::Tick()
 										indialogue++;
 										if(indialogue<numdialogueboxes[whichdialogue]){
 											if(dialogueboxsound[whichdialogue][indialogue]!=0){
-												static float gLoc[3];
-												static float vel[3];
+												float gLoc[3];
+												float vel[3];
 												XYZ temppos;
 												temppos=player[participantfocus[whichdialogue][indialogue]].coords;
 												temppos=temppos-viewer;
@@ -5102,8 +5098,8 @@ void Game::Tick()
 											endkeydown=1;
 											if(indialogue<numdialogueboxes[whichdialogue]){
 												if(dialogueboxsound[whichdialogue][indialogue]!=0){
-													static float gLoc[3];
-													static float vel[3];
+													float gLoc[3];
+													float vel[3];
 													XYZ temppos;
 													temppos=player[participantfocus[whichdialogue][indialogue]].coords;
 													temppos=temppos-viewer;
@@ -5190,7 +5186,7 @@ void Game::Tick()
 						if(!IsKeyDown(theKeyMap, attackkey))oldbuttondialogue=0;
 						else oldbuttondialogue=1;
 
-						static float keyrefreshdelay=0,bigrefreshdelay=0;
+						//static float keyrefreshdelay=0,bigrefreshdelay=0;
 
 						//Net updates
 
@@ -5317,8 +5313,8 @@ void Game::Tick()
 
 						if(hawkcalldelay<=0)
 						{
-							static float gLoc[3];
-							static float vel[3];
+							float gLoc[3];
+							float vel[3];
 							gLoc[0]=realhawkcoords.x;
 							gLoc[1]=realhawkcoords.y;
 							gLoc[2]=realhawkcoords.z;
@@ -6305,9 +6301,9 @@ void Game::Tick()
 
 						if(IsKeyDown(theKeyMap, MAC_N_KEY)&&IsKeyDown(theKeyMap, MAC_CONTROL_KEY)&&!texturesizetogglekeydown&&debugmode){
 
-							int closest=-1;
-							float closestdist=-1;
-							float distance;
+							//int closest=-1;
+							//float closestdist=-1;
+							//float distance;
 							for(i=0;i<objects.numobjects;i++){
 								if(objects.type[i]==treeleavestype){
 									objects.scale[i]*=.9;
@@ -6316,8 +6312,8 @@ void Game::Tick()
 							texturesizetogglekeydown=1;
 						}
 
-						static XYZ relative;
-						static int randattack;
+						//static XYZ relative;
+						int randattack;
 						//Attack
 						static bool playerrealattackkeydown=0;
 
@@ -6336,7 +6332,7 @@ void Game::Tick()
 
 						if(!hostile||indialogue!=-1)player[0].attackkeydown=0;
 
-						for(k=0;k<numplayers;k++){
+						for(int k=0;k<numplayers;k++){
 							if(indialogue!=-1)player[k].attackkeydown=0;
 							if(player[k].targetanimation!=rabbitrunninganim&&player[k].targetanimation!=wolfrunninganim){
 								if(player[k].aitype!=playercontrolled)player[k].victim=&player[0];
@@ -6646,7 +6642,7 @@ void Game::Tick()
 						}
 
 						//Collisions
-						static float collisionradius;
+						float collisionradius = 0;
 						if(numplayers>1)
 							for(k=0;k<numplayers;k++){
 								for(i=k;i<numplayers;i++){
@@ -6709,8 +6705,8 @@ void Game::Tick()
 																										if(((((findLengthfast(&rotatetarget)>150&&(i!=0&&k!=0))||(findLengthfast(&rotatetarget)>50&&player[0].rabbitkickragdoll/*currentanimation==rabbitkickanim*/&&(i==0||k==0)))&&normaldotproduct(rotatetarget,player[k].coords-player[i].coords)>0)&&((i==0||k==0)||((player[i].skeleton.oldfree==1&&k!=0&&animation[player[k].currentanimation].attack==neutral)||(player[k].skeleton.oldfree==1&&i!=0&&animation[player[i].currentanimation].attack==neutral)||(player[i].isFlip()&&!player[i].skeleton.oldfree&&(i==0||k==0))||(player[k].isFlip()&&!player[k].skeleton.oldfree&&(i==0||k==0))||(i==0||k==0))))||((player[i].targetanimation==jumpupanim||player[i].targetanimation==jumpdownanim||player[i].isFlip())&&(player[k].targetanimation==jumpupanim||player[k].targetanimation==jumpdownanim||player[k].isFlip())&&(i==0||k==0)&&(!player[i].skeleton.oldfree&&!player[k].skeleton.oldfree))){
 																											//If hit by body
 																											if(((i!=0||player[i].skeleton.free)&&(k!=0||player[k].skeleton.free))||(animation[player[i].targetanimation].height==highheight&&animation[player[k].targetanimation].height==highheight)){
-																												static float gLoc[3];
-																												static float vel[3];
+																												float gLoc[3];
+																												float vel[3];
 																												gLoc[0]=player[i].coords.x;
 																												gLoc[1]=player[i].coords.y;
 																												gLoc[2]=player[i].coords.z;
@@ -7004,9 +7000,6 @@ void Game::Tick()
 							}
 							if(!IsKeyDown(theKeyMap, jumpkey))respawnkeydown=0;
 							if(IsKeyDown(theKeyMap, jumpkey))respawnkeydown=1;
-
-
-
 
 							if(whichlevel!=-2&&IsKeyDown(theKeyMap, MAC_K_KEY)&&IsKeyDown(theKeyMap, MAC_SHIFT_KEY)&&!slomotogglekeydown&&debugmode&&!editorenabled){
 								targetlevel++;
@@ -8626,8 +8619,8 @@ void Game::Tick()
 														player[i].coords.y+=.2;
 														player[i].jumppower-=1;
 
-														static float gLoc[3];
-														static float vel[3];
+														float gLoc[3];
+														float vel[3];
 														gLoc[0]=player[i].coords.x;
 														gLoc[1]=player[i].coords.y;
 														gLoc[2]=player[i].coords.z;
@@ -8898,17 +8891,17 @@ void Game::Tick()
 
 
 								//3d sound
-								static float gLoc[3];
+								float gLoc[3];
 								gLoc[0]=viewer.x;
 								gLoc[1]=viewer.y;
 								gLoc[2]=viewer.z;
-								static float vel[3];
+								float vel[3];
 								vel[0]=(viewer.x-oldviewer.x)/multiplier;
 								vel[1]=(viewer.y-oldviewer.y)/multiplier;
 								vel[2]=(viewer.z-oldviewer.z)/multiplier;
 
 								//Set orientation with forward and up vectors
-								static XYZ upvector;
+								XYZ upvector;
 								upvector=0;
 								upvector.z=-1;
 
@@ -8922,7 +8915,7 @@ void Game::Tick()
 								facing=DoRotation(facing,0,0-rotation,0);
 
 
-								static float ori[6];
+								float ori[6];
 								ori[0] = -facing.x;
 								ori[1] = facing.y;
 								ori[2] = -facing.z;
@@ -8959,17 +8952,17 @@ void	Game::TickOnce(){
 }
 
 void	Game::TickOnceAfter(){
-	static XYZ colviewer;
-	static XYZ coltarget;
-	static XYZ target;
-	static XYZ col;
-	static float brotate;
-	static XYZ facing;
-	static int i,j;
+	XYZ colviewer;
+	XYZ coltarget;
+	XYZ target;
+	XYZ col;
+	float brotate;
+	XYZ facing;
+	int i,j;
 	static float changedelay;
-	static bool alldead;
-	static float unseendelay;
-	static float cameraspeed;
+	bool alldead;
+	float unseendelay;
+	float cameraspeed;
 
 	if(!mainmenu){
 
@@ -9011,8 +9004,8 @@ void	Game::TickOnceAfter(){
 
 		if(musictoggle){
 			if(musictype!=oldmusictype&&musictype==stream_music2){
-				static float gLoc[3];
-				static float vel[3];
+				float gLoc[3];
+				float vel[3];
 				gLoc[0]=cameraloc.x;
 				gLoc[1]=cameraloc.y;
 				gLoc[2]=cameraloc.z;
