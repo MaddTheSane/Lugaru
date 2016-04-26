@@ -29,14 +29,6 @@ final class Model {
 	private var triangles = [TexturedTriangle]() //maxTexturedTriangle
 	private var vArray = [GLfloat]() //maxTexturedTriangle * 24
 	
-	/*int possible[max_model_vertex];
-	int owner[max_textured_triangle];
-	XYZ vertex[max_model_vertex];
-	XYZ normals[max_model_vertex];
-	XYZ facenormals[max_textured_triangle];
-	TexturedTriangle triangles[max_textured_triangle];
-	GLfloat vArray[max_textured_triangle*24];*/
-	
 	private(set) var texturePtr: GLuint = 0
 	private(set) var texture = Texture()
 	private(set) var numPossible: Int = 0
@@ -97,6 +89,228 @@ final class Model {
 		}
 	}
 	
+	func lineCheck(inout p1: float3, inout _ p2: float3, inout _ p: float3, move: float3, rotate: Float = 0) -> Int {
+		var point = float3()
+		var oldDistance = Float(0)
+		
+		p1=p1-move;
+		p2=p2-move;
+		if(rotate != 0) {
+			p1=SwiftLugaru.rotate(p1,byAngles: (0,-rotate,0))
+		}
+		if(rotate != 0) {
+			p2=SwiftLugaru.rotate(p2,byAngles: (0,-rotate,0))
+		}
+		guard sphereLineIntersection(p1,p2,center: boundingSphereCenter, radius: boundingSphereRadius) else {
+			return -1;
+		}
+		var firstintersecting = -1;
+		
+		for (j, triangle) in triangles.enumerate() {
+			let intersecting = lineFacetd(p1, p2, vertex[Int(triangle.vertex.0)], vertex[Int(triangle.vertex.1)],vertex[Int(triangle.vertex.2)], faceNormals[j],p: &point);
+			let distance = distance_squared(point, p1);
+			if ((distance < oldDistance || firstintersecting == -1) && (intersecting != 0)) {
+				oldDistance=distance;
+				firstintersecting=j;
+				p=point;
+			}
+		}
+		
+		if rotate != 0 {
+			p=SwiftLugaru.rotate(p,byAngles: (0,rotate,0));
+		}
+		p += move;
+		return firstintersecting;
+	}
+	
+	func lineCheckSlide(inout p1: float3, inout _ p2: float3, inout _ p: float3, move: float3, rotate: Float = 0) -> Int {
+		var point = float3()
+		var olddistance = Float(0)
+		
+		var p1 = p1 - move;
+		var p2 = p2 - move;
+		if(!sphereLineIntersection(p1,p2,center: boundingSphereCenter, radius: boundingSphereRadius)) {
+			return -1;
+		}
+		var firstintersecting = -1;
+		if rotate != 0 {
+			p1 = SwiftLugaru.rotate(p1,byAngles: (0,-rotate,0));
+			p2 = SwiftLugaru.rotate(p2,byAngles: (0,-rotate,0));
+			
+		}
+		
+		for (j, triangle) in triangles.enumerate() {
+			let intersecting = lineFacetd(p1, p2, vertex[Int(triangle.vertex.0)], vertex[Int(triangle.vertex.1)], vertex[Int(triangle.vertex.2)], faceNormals[j], p: &point);
+			let distance = distance_squared(point, p1);
+			if((distance<olddistance||firstintersecting == -1) && (intersecting != 0)){
+				olddistance=distance;
+				firstintersecting=j;
+			}
+		}
+		
+		let distance: Float = {
+			let part1 = (faceNormals[firstintersecting].x*p2.x)+(faceNormals[firstintersecting].y*p2.y)+(faceNormals[firstintersecting].z*p2.z)
+			let part2 = (faceNormals[firstintersecting].x*vertex[Int(triangles[firstintersecting].vertex.0)].x)+(faceNormals[firstintersecting].y*vertex[Int(triangles[firstintersecting].vertex.0)].y)+(faceNormals[firstintersecting].z*vertex[Int(triangles[firstintersecting].vertex.0)].z)
+			return part1 - part2
+		}()
+		p2 -= faceNormals[firstintersecting] * distance;
+		
+		if rotate != 0 {
+			p2=SwiftLugaru.rotate(p2, byAngles: (0,rotate,0))
+		}
+		p2 += move;
+		return firstintersecting;
+	}
+	
+	func lineCheckPossible(inout p1: float3, inout _ p2: float3, inout _ p: float3, move: float3, rotate: Float = 0) -> Int {
+		var olddistance = Float(0)
+		var firstintersecting = -1;
+		var point = float3()
+		
+		p1=p1-move;
+		p2=p2-move;
+		if(!sphereLineIntersection(p1,p2, center: boundingSphereCenter, radius: boundingSphereRadius)) {
+			return -1;
+		}
+		
+		if rotate != 0 {
+			p1=SwiftLugaru.rotate(p1,byAngles: (0,-rotate,0));
+			p2=SwiftLugaru.rotate(p2,byAngles: (0,-rotate,0));
+		}
+		
+		if(numPossible > 0 && numPossible < triangles.count) {
+			for poss in possible {
+				if(poss >= 0 && Int(poss) < triangles.count){
+					let intersecting = lineFacetd(p1, p2, vertex[Int(triangles[Int(poss)].vertex.0)], vertex[Int(triangles[Int(poss)].vertex.1)], vertex[Int(triangles[Int(poss)].vertex.2)], faceNormals[Int(poss)], p: &point);
+					let distance = distance_squared(point, p1);
+					if((distance<olddistance||firstintersecting == -1) && intersecting != 0) {
+						olddistance=distance;
+						firstintersecting=Int(poss)
+						p=point;
+					}
+				}
+			}
+		}
+		
+		if rotate != 0 {
+			p=SwiftLugaru.rotate(p, byAngles: (0,rotate,0));
+		}
+		p += move;
+		return firstintersecting;
+	}
+	
+	func lineCheckSlidePossible(inout p1: float3, inout _ p2: float3, inout _ p: float3, move: float3, rotate: Float = 0) -> Int {
+		var olddistance = Float(0)
+		var point = float3()
+		
+		p1=p1-move;
+		p2=p2-move;
+		guard sphereLineIntersection(p1, p2, center: boundingSphereCenter,radius: boundingSphereRadius) else {
+			return -1;
+		}
+		var firstintersecting = -1;
+		if rotate != 0 {
+			p1=SwiftLugaru.rotate(p1,byAngles: (0,-rotate,0));
+			p2=SwiftLugaru.rotate(p2,byAngles: (0,-rotate,0));
+		}
+		
+		if(numPossible != 0) {
+			for poss in possible {
+				if poss >= 0 && Int(poss) < triangles.count {
+					let intersecting = lineFacetd(p1, p2, vertex[Int(triangles[Int(poss)].vertex.0)], vertex[Int(triangles[Int(poss)].vertex.1)], vertex[Int(triangles[Int(poss)].vertex.2)], faceNormals[Int(poss)], p: &point);
+					let distance = distance_squared(point, p1);
+					if((distance<olddistance||firstintersecting == -1) && intersecting != 0) {
+						olddistance=distance;
+						firstintersecting=Int(poss);
+					}
+				}
+			}
+		}
+		
+		if(firstintersecting>0){
+			let distance: Float = {
+				let part1 = (faceNormals[firstintersecting].x*p2.x)+(faceNormals[firstintersecting].y*p2.y)+(faceNormals[firstintersecting].z*p2.z)
+				let part2 = (faceNormals[firstintersecting].x*vertex[Int(triangles[firstintersecting].vertex.0)].x)+(faceNormals[firstintersecting].y*vertex[Int(triangles[firstintersecting].vertex.0)].y)+(faceNormals[firstintersecting].z*vertex[Int(triangles[firstintersecting].vertex.0)].z)
+				return abs(part1 - part2)
+			}()
+			p2 -= faceNormals[firstintersecting] * distance;
+		}
+		
+		if rotate != 0 {
+			p2=SwiftLugaru.rotate(p2,byAngles: (0,rotate,0));
+		}
+		p2 += move;
+		return firstintersecting;
+	}
+	
+	func sphereCheck(inout p1: float3, radius: Float, inout _ p: float3, move: float3, rotate: Float = 0) -> Int {
+		var olddistance = Float(0)
+		var point = float3()
+		var firstintersecting = -1;
+		
+		//XYZ oldp1=p1;
+		p1=p1-move;
+		if rotate != 0 {
+			p1=SwiftLugaru.rotate(p1,byAngles: (0,-rotate,0));
+		}
+		if(findDistancefast(p1, boundingSphereCenter) > radius*radius+boundingSphereRadius*boundingSphereRadius) {
+			return -1;
+		}
+		
+		for _ in 0..<4 {
+			for (j, triangle) in triangles.enumerate() {
+				var intersecting = false
+				let distance: Float = {
+					let stage1 = (faceNormals[j].x*p1.x)+(faceNormals[j].y*p1.y)+(faceNormals[j].z*p1.z)
+					let stage2 = (faceNormals[j].x*vertex[Int(triangle.vertex.0)].x)+(faceNormals[j].y*vertex[Int(triangle.vertex.0)].y)+(faceNormals[j].z*vertex[Int(triangle.vertex.0)].z)
+					return abs(stage1 - stage2)
+				}()
+				if distance < radius {
+					point = p1 - faceNormals[j] * distance;
+					if pointInTriangle(point, normal: faceNormals[j], vertex[Int(triangle.vertex.0)], vertex[Int(triangle.vertex.1)], vertex[Int(triangle.vertex.2)]) {
+						intersecting = true
+					}
+					if !intersecting {
+						intersecting = sphereLineIntersection(vertex[Int(triangle.vertex.0)],
+						                                    vertex[Int(triangle.vertex.1)],
+						                                    center: p1, radius: radius);
+					}
+					if !intersecting {
+						intersecting = sphereLineIntersection(vertex[Int(triangle.vertex.1)],
+						                                    vertex[Int(triangle.vertex.2)],
+						                                    center: p1, radius: radius);
+					}
+					if !intersecting {
+						intersecting = sphereLineIntersection(vertex[Int(triangle.vertex.0)],
+						                                    vertex[Int(triangle.vertex.2)],
+						                                    center: p1, radius: radius);
+					}
+					if intersecting {
+						p1 += faceNormals[j] * (distance - radius)
+						/*start=*p1;
+						end=*p1;
+						end.y-=radius;
+						if(LineFacetd(&start,&end,&vertex[Triangles[j].vertex[0]],&vertex[Triangles[j].vertex[1]],&vertex[Triangles[j].vertex[2]],&faceNormals[j],&point)){
+						p1->y=point.y+radius;
+						}*/
+					}
+				}
+				if((distance<olddistance||firstintersecting == -1)&&intersecting) {
+					olddistance = distance;
+					firstintersecting = j;
+					p = point;
+				}
+			}
+		}
+		if rotate != 0 {
+			p=SwiftLugaru.rotate(p, byAngles: (0,rotate,0))
+			p1=SwiftLugaru.rotate(p1, byAngles: (0,rotate,0))
+		}
+		p += move;
+		p1 += move;
+		return firstintersecting;
+	}
+	
 	func load(fileURL: NSURL, texture textured: Bool) /*throws*/ {
 		print("Loading model " + fileURL.path!);
 		
@@ -108,8 +322,11 @@ final class Model {
 		//int oldvertexNum,oldTriangleNum;
 		//oldvertexNum=vertexNum;
 		//oldTriangleNum=TriangleNum;
-		
-		modelType = .Normal;
+		if textured {
+			modelType = .Normal;
+		} else {
+			modelType = .NoTexture
+		}
 		color = false;
 		
 		let tfile=fopen( ConvertFileName(fileURL.fileSystemRepresentation), "rb" );
@@ -238,9 +455,9 @@ final class Model {
 		// read model settings
 		
 		var triangleNum = Int16()
-		var vNum = Int16()
 		fseek(tfile, 0, SEEK_SET);
 		do {
+			var vNum = Int16()
 			var vaListArr = [CVarArgType]()
 			vaListArr.append(withUnsafeMutablePointer(&vNum, {$0}))
 			vaListArr.append(withUnsafeMutablePointer(&triangleNum, {$0}))
@@ -659,7 +876,6 @@ final class Model {
 			triangle.gy.0 *= howMuch;
 			triangle.gy.1 *= howMuch;
 			triangle.gy.2 *= howMuch;
-			
 		}
 		
 		updateVertexArray();
@@ -687,7 +903,6 @@ final class Model {
 			vert *= amount
 		}
 		updateVertexArray();
-		
 		updateBoundingSphere()
 	}
 	
@@ -718,8 +933,7 @@ final class Model {
 		for var vert in vertex {
 			vert += amount
 		}
-	updateVertexArray();
-	
+		updateVertexArray()
 		updateBoundingSphere()
 	}
 
@@ -732,8 +946,7 @@ final class Model {
 		for var vert in vertex {
 			vert = SwiftLugaru.rotate(vert, byAngles: (amount.x, amount.y, amount.z))
 		}
-		updateVertexArray();
-	
+		updateVertexArray()
 		updateBoundingSphere()
 	}
 
