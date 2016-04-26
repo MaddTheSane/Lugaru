@@ -89,17 +89,17 @@ final class Model {
 		}
 	}
 	
+	// MARK: - checking functions
+	
 	func lineCheck(inout p1: float3, inout _ p2: float3, inout _ p: float3, move: float3, rotate: Float = 0) -> Int {
 		var point = float3()
 		var oldDistance = Float(0)
 		
-		p1=p1-move;
-		p2=p2-move;
-		if(rotate != 0) {
-			p1=SwiftLugaru.rotate(p1,byAngles: (0,-rotate,0))
-		}
-		if(rotate != 0) {
-			p2=SwiftLugaru.rotate(p2,byAngles: (0,-rotate,0))
+		p1 = p1 - move;
+		p2 = p2 - move;
+		if rotate != 0 {
+			p1 = SwiftLugaru.rotate(p1, byAngles: (0,-rotate,0))
+			p2 = SwiftLugaru.rotate(p2, byAngles: (0,-rotate,0))
 		}
 		guard sphereLineIntersection(p1,p2,center: boundingSphereCenter, radius: boundingSphereRadius) else {
 			return -1;
@@ -117,7 +117,7 @@ final class Model {
 		}
 		
 		if rotate != 0 {
-			p=SwiftLugaru.rotate(p,byAngles: (0,rotate,0));
+			p = SwiftLugaru.rotate(p, byAngles: (0, rotate, 0));
 		}
 		p += move;
 		return firstintersecting;
@@ -129,29 +129,29 @@ final class Model {
 		
 		var p1 = p1 - move;
 		var p2 = p2 - move;
-		if(!sphereLineIntersection(p1,p2,center: boundingSphereCenter, radius: boundingSphereRadius)) {
+		guard sphereLineIntersection(p1, p2, center: boundingSphereCenter, radius: boundingSphereRadius) else {
 			return -1;
 		}
 		var firstintersecting = -1;
 		if rotate != 0 {
-			p1 = SwiftLugaru.rotate(p1,byAngles: (0,-rotate,0));
-			p2 = SwiftLugaru.rotate(p2,byAngles: (0,-rotate,0));
+			p1 = SwiftLugaru.rotate(p1, byAngles: (0, -rotate, 0));
+			p2 = SwiftLugaru.rotate(p2, byAngles: (0, -rotate, 0));
 			
 		}
 		
 		for (j, triangle) in triangles.enumerate() {
 			let intersecting = lineFacetd(p1, p2, vertex[Int(triangle.vertex.0)], vertex[Int(triangle.vertex.1)], vertex[Int(triangle.vertex.2)], faceNormals[j], p: &point);
 			let distance = distance_squared(point, p1);
-			if((distance<olddistance||firstintersecting == -1) && (intersecting != 0)){
-				olddistance=distance;
-				firstintersecting=j;
+			if (distance<olddistance||firstintersecting == -1) && (intersecting != 0) {
+				olddistance = distance;
+				firstintersecting = j;
 			}
 		}
 		
 		let distance: Float = {
 			let part1 = (faceNormals[firstintersecting].x*p2.x)+(faceNormals[firstintersecting].y*p2.y)+(faceNormals[firstintersecting].z*p2.z)
 			let part2 = (faceNormals[firstintersecting].x*vertex[Int(triangles[firstintersecting].vertex.0)].x)+(faceNormals[firstintersecting].y*vertex[Int(triangles[firstintersecting].vertex.0)].y)+(faceNormals[firstintersecting].z*vertex[Int(triangles[firstintersecting].vertex.0)].z)
-			return part1 - part2
+			return abs(part1 - part2)
 		}()
 		p2 -= faceNormals[firstintersecting] * distance;
 		
@@ -169,13 +169,13 @@ final class Model {
 		
 		p1=p1-move;
 		p2=p2-move;
-		if(!sphereLineIntersection(p1,p2, center: boundingSphereCenter, radius: boundingSphereRadius)) {
+		guard sphereLineIntersection(p1, p2, center: boundingSphereCenter, radius: boundingSphereRadius) else {
 			return -1;
 		}
 		
 		if rotate != 0 {
-			p1=SwiftLugaru.rotate(p1,byAngles: (0,-rotate,0));
-			p2=SwiftLugaru.rotate(p2,byAngles: (0,-rotate,0));
+			p1=SwiftLugaru.rotate(p1, byAngles: (0, -rotate, 0));
+			p2=SwiftLugaru.rotate(p2, byAngles: (0, -rotate, 0));
 		}
 		
 		if(numPossible > 0 && numPossible < triangles.count) {
@@ -183,17 +183,17 @@ final class Model {
 				if(poss >= 0 && Int(poss) < triangles.count){
 					let intersecting = lineFacetd(p1, p2, vertex[Int(triangles[Int(poss)].vertex.0)], vertex[Int(triangles[Int(poss)].vertex.1)], vertex[Int(triangles[Int(poss)].vertex.2)], faceNormals[Int(poss)], p: &point);
 					let distance = distance_squared(point, p1);
-					if((distance<olddistance||firstintersecting == -1) && intersecting != 0) {
-						olddistance=distance;
-						firstintersecting=Int(poss)
-						p=point;
+					if (distance < olddistance || firstintersecting == -1) && intersecting != 0 {
+						olddistance = distance;
+						firstintersecting = Int(poss)
+						p = point;
 					}
 				}
 			}
 		}
 		
 		if rotate != 0 {
-			p=SwiftLugaru.rotate(p, byAngles: (0,rotate,0));
+			p = SwiftLugaru.rotate(p, byAngles: (0,rotate,0));
 		}
 		p += move;
 		return firstintersecting;
@@ -203,15 +203,15 @@ final class Model {
 		var olddistance = Float(0)
 		var point = float3()
 		
-		p1=p1-move;
-		p2=p2-move;
+		p1 -= move;
+		p2 -= move;
 		guard sphereLineIntersection(p1, p2, center: boundingSphereCenter,radius: boundingSphereRadius) else {
 			return -1;
 		}
 		var firstintersecting = -1;
 		if rotate != 0 {
-			p1=SwiftLugaru.rotate(p1,byAngles: (0,-rotate,0));
-			p2=SwiftLugaru.rotate(p2,byAngles: (0,-rotate,0));
+			p1 = SwiftLugaru.rotate(p1, byAngles: (0, -rotate, 0));
+			p2 = SwiftLugaru.rotate(p2, byAngles: (0, -rotate, 0));
 		}
 		
 		if(numPossible != 0) {
@@ -219,15 +219,15 @@ final class Model {
 				if poss >= 0 && Int(poss) < triangles.count {
 					let intersecting = lineFacetd(p1, p2, vertex[Int(triangles[Int(poss)].vertex.0)], vertex[Int(triangles[Int(poss)].vertex.1)], vertex[Int(triangles[Int(poss)].vertex.2)], faceNormals[Int(poss)], p: &point);
 					let distance = distance_squared(point, p1);
-					if((distance<olddistance||firstintersecting == -1) && intersecting != 0) {
-						olddistance=distance;
-						firstintersecting=Int(poss);
+					if (distance<olddistance||firstintersecting == -1) && intersecting != 0 {
+						olddistance = distance;
+						firstintersecting = Int(poss)
 					}
 				}
 			}
 		}
 		
-		if(firstintersecting>0){
+		if firstintersecting > 0 {
 			let distance: Float = {
 				let part1 = (faceNormals[firstintersecting].x*p2.x)+(faceNormals[firstintersecting].y*p2.y)+(faceNormals[firstintersecting].z*p2.z)
 				let part2 = (faceNormals[firstintersecting].x*vertex[Int(triangles[firstintersecting].vertex.0)].x)+(faceNormals[firstintersecting].y*vertex[Int(triangles[firstintersecting].vertex.0)].y)+(faceNormals[firstintersecting].z*vertex[Int(triangles[firstintersecting].vertex.0)].z)
@@ -237,7 +237,7 @@ final class Model {
 		}
 		
 		if rotate != 0 {
-			p2=SwiftLugaru.rotate(p2,byAngles: (0,rotate,0));
+			p2 = SwiftLugaru.rotate(p2, byAngles: (0, rotate, 0));
 		}
 		p2 += move;
 		return firstintersecting;
@@ -303,8 +303,8 @@ final class Model {
 			}
 		}
 		if rotate != 0 {
-			p=SwiftLugaru.rotate(p, byAngles: (0,rotate,0))
-			p1=SwiftLugaru.rotate(p1, byAngles: (0,rotate,0))
+			p = SwiftLugaru.rotate(p, byAngles: (0, rotate, 0))
+			p1 = SwiftLugaru.rotate(p1, byAngles: (0, rotate, 0))
 		}
 		p += move;
 		p1 += move;
