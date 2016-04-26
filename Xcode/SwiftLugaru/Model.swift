@@ -37,25 +37,27 @@ final class Model {
 	private(set) var boundingSphereCenter = float3()
 	private(set) var boundingSphereRadius = Float(0)
 	
-	enum DecalType: Int {
-		case Shadow = 0
-		case Footprint
-		case Blood
-		case BloodFast
-		case PermanentShadow
-		case Break
-		case BloodSlow
-		case Bodyprint
-	}
 	
-	private struct Decal {
+	struct Decal {
 		var textureCoordinates = [[Float]](count: 3, repeatedValue: [Float](count: 2, repeatedValue: 0))
 		var vertex = [float3](count: 3, repeatedValue: float3(0))
-		var type = DecalType.Shadow
+		var type = Kind.Shadow
 		var opacity: Float = 0
 		var rotation: Float = 0
 		var aliveTime: Float = 0
 		var position = float3(0)
+		
+		enum Kind: Int {
+			case Shadow = 0
+			case Footprint
+			case Blood
+			case BloodFast
+			case PermanentShadow
+			case Break
+			case BloodSlow
+			case Bodyprint
+		}
+
 	}
 	private var decals = [Decal]()
 	
@@ -95,11 +97,11 @@ final class Model {
 		var point = float3()
 		var oldDistance = Float(0)
 		
-		p1 = p1 - move;
-		p2 = p2 - move;
+		p1 -= move;
+		p2 -= move;
 		if rotate != 0 {
-			p1 = SwiftLugaru.rotate(p1, byAngles: (0,-rotate,0))
-			p2 = SwiftLugaru.rotate(p2, byAngles: (0,-rotate,0))
+			p1 = SwiftLugaru.rotate(p1, byAngles: (x: 0, y: -rotate, z: 0))
+			p2 = SwiftLugaru.rotate(p2, byAngles: (x: 0, y: -rotate, z: 0))
 		}
 		guard sphereLineIntersection(p1,p2,center: boundingSphereCenter, radius: boundingSphereRadius) else {
 			return -1;
@@ -109,15 +111,15 @@ final class Model {
 		for (j, triangle) in triangles.enumerate() {
 			let intersecting = lineFacetd(p1, p2, vertex[Int(triangle.vertex.0)], vertex[Int(triangle.vertex.1)],vertex[Int(triangle.vertex.2)], faceNormals[j],p: &point);
 			let distance = distance_squared(point, p1);
-			if ((distance < oldDistance || firstintersecting == -1) && (intersecting != 0)) {
-				oldDistance=distance;
-				firstintersecting=j;
-				p=point;
+			if (distance < oldDistance || firstintersecting == -1) && (intersecting != 0) {
+				oldDistance = distance;
+				firstintersecting = j;
+				p = point;
 			}
 		}
 		
 		if rotate != 0 {
-			p = SwiftLugaru.rotate(p, byAngles: (0, rotate, 0));
+			p = SwiftLugaru.rotate(p, byAngles: (x: 0, y: rotate, z: 0));
 		}
 		p += move;
 		return firstintersecting;
@@ -127,16 +129,15 @@ final class Model {
 		var point = float3()
 		var olddistance = Float(0)
 		
-		var p1 = p1 - move;
-		var p2 = p2 - move;
+		p1 -= move;
+		p2 -= move;
 		guard sphereLineIntersection(p1, p2, center: boundingSphereCenter, radius: boundingSphereRadius) else {
 			return -1;
 		}
 		var firstintersecting = -1;
 		if rotate != 0 {
-			p1 = SwiftLugaru.rotate(p1, byAngles: (0, -rotate, 0));
-			p2 = SwiftLugaru.rotate(p2, byAngles: (0, -rotate, 0));
-			
+			p1 = SwiftLugaru.rotate(p1, byAngles: (x: 0, y: -rotate, z: 0));
+			p2 = SwiftLugaru.rotate(p2, byAngles: (x: 0, y: -rotate, z: 0));
 		}
 		
 		for (j, triangle) in triangles.enumerate() {
@@ -156,7 +157,7 @@ final class Model {
 		p2 -= faceNormals[firstintersecting] * distance;
 		
 		if rotate != 0 {
-			p2=SwiftLugaru.rotate(p2, byAngles: (0,rotate,0))
+			p2 = SwiftLugaru.rotate(p2, byAngles: (x: 0, y: rotate, z: 0))
 		}
 		p2 += move;
 		return firstintersecting;
@@ -167,15 +168,15 @@ final class Model {
 		var firstintersecting = -1;
 		var point = float3()
 		
-		p1=p1-move;
-		p2=p2-move;
+		p1 -= move;
+		p2 -= move;
 		guard sphereLineIntersection(p1, p2, center: boundingSphereCenter, radius: boundingSphereRadius) else {
 			return -1;
 		}
 		
 		if rotate != 0 {
-			p1=SwiftLugaru.rotate(p1, byAngles: (0, -rotate, 0));
-			p2=SwiftLugaru.rotate(p2, byAngles: (0, -rotate, 0));
+			p1 = SwiftLugaru.rotate(p1, byAngles: (x: 0, y: -rotate, z: 0));
+			p2 = SwiftLugaru.rotate(p2, byAngles: (x: 0, y: -rotate, z: 0));
 		}
 		
 		if(numPossible > 0 && numPossible < triangles.count) {
@@ -193,7 +194,7 @@ final class Model {
 		}
 		
 		if rotate != 0 {
-			p = SwiftLugaru.rotate(p, byAngles: (0,rotate,0));
+			p = SwiftLugaru.rotate(p, byAngles: (x: 0, y: rotate, z: 0));
 		}
 		p += move;
 		return firstintersecting;
@@ -210,8 +211,8 @@ final class Model {
 		}
 		var firstintersecting = -1;
 		if rotate != 0 {
-			p1 = SwiftLugaru.rotate(p1, byAngles: (0, -rotate, 0));
-			p2 = SwiftLugaru.rotate(p2, byAngles: (0, -rotate, 0));
+			p1 = SwiftLugaru.rotate(p1, byAngles: (x: 0, y: -rotate, z: 0));
+			p2 = SwiftLugaru.rotate(p2, byAngles: (x: 0, y: -rotate, z: 0));
 		}
 		
 		if(numPossible != 0) {
@@ -237,7 +238,7 @@ final class Model {
 		}
 		
 		if rotate != 0 {
-			p2 = SwiftLugaru.rotate(p2, byAngles: (0, rotate, 0));
+			p2 = SwiftLugaru.rotate(p2, byAngles: (x: 0, y: rotate, z: 0));
 		}
 		p2 += move;
 		return firstintersecting;
@@ -249,9 +250,9 @@ final class Model {
 		var firstintersecting = -1;
 		
 		//XYZ oldp1=p1;
-		p1=p1-move;
+		p1 -= move;
 		if rotate != 0 {
-			p1=SwiftLugaru.rotate(p1,byAngles: (0,-rotate,0));
+			p1 = SwiftLugaru.rotate(p1,byAngles: (0,-rotate,0));
 		}
 		if(findDistancefast(p1, boundingSphereCenter) > radius*radius+boundingSphereRadius*boundingSphereRadius) {
 			return -1;
@@ -303,8 +304,8 @@ final class Model {
 			}
 		}
 		if rotate != 0 {
-			p = SwiftLugaru.rotate(p, byAngles: (0, rotate, 0))
-			p1 = SwiftLugaru.rotate(p1, byAngles: (0, rotate, 0))
+			p = SwiftLugaru.rotate(p, byAngles: (x: 0, y: rotate, z: 0))
+			p1 = SwiftLugaru.rotate(p1, byAngles: (x: 0, y: rotate, z: 0))
 		}
 		p += move;
 		p1 += move;
@@ -1091,7 +1092,7 @@ final class Model {
 		guard preferences.decalsEnabled && modelType == .Decals else {
 			return
 		}
-		var lastType: DecalType? = nil
+		var lastType: Decal.Kind? = nil
 		//int lasttype = -1;
 		var blend = true;
 		
@@ -1209,15 +1210,12 @@ final class Model {
 		decals.removeAtIndex(which)
 	}
 	
-	func makeDecal(type atype: DecalType, `where` loc: float3, size: Float, opacity: Float, rotation: Float) {
+	func makeDecal(type atype: Decal.Kind, `where` loc: float3, size: Float, opacity: Float, rotation: Float) {
 		guard preferences.decalsEnabled && modelType == .Decals else {
 			return
 		}
-		//float placex,placez;
+		
 		var rot = float3()
-		//XYZ rot;
-		//static XYZ point,point1,point2;
-		//float distance;
 		var aDecal = Decal()
 		decals.reserveCapacity(max_model_decals)
 		
