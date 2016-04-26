@@ -5,6 +5,8 @@
 #include <malloc.h>
 #endif
 
+#include <stdbool.h>
+
 #include "al.h"
 #include "alc.h"
 
@@ -69,32 +71,32 @@ extern "C" {
 #define AL_API
 
 AL_API void OPENAL_3D_Listener_SetAttributes(const float *pos, const float *vel, float fx, float fy, float fz, float tx, float ty, float tz);
-AL_API signed char OPENAL_3D_SetAttributes(int channel, const float *pos, const float *vel);
+AL_API bool OPENAL_3D_SetAttributes(int channel, const float *pos, const float *vel);
 AL_API void OPENAL_3D_SetDopplerFactor(float scale);
-AL_API signed char OPENAL_Init(int mixrate, int maxsoftwarechannels, unsigned int flags);
+AL_API bool OPENAL_Init(int mixrate, int maxsoftwarechannels, unsigned int flags);
 AL_API void OPENAL_Close();
 AL_API OPENAL_SAMPLE *OPENAL_GetCurrentSample(int channel);
-AL_API signed char OPENAL_GetPaused(int channel);
+AL_API bool OPENAL_GetPaused(int channel);
 AL_API unsigned int OPENAL_GetLoopMode(int channel);
-AL_API signed char OPENAL_IsPlaying(int channel);
-AL_API int OPENAL_PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
+AL_API bool OPENAL_IsPlaying(int channel);
+AL_API int OPENAL_PlaySoundEx(int channel, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, bool startpaused);
 AL_API OPENAL_SAMPLE *OPENAL_Sample_Load(int index, const char *name_or_data, unsigned int mode, int offset, int length);
 AL_API void OPENAL_Sample_Free(OPENAL_SAMPLE *sptr);
-AL_API signed char OPENAL_Sample_SetMode(OPENAL_SAMPLE *sptr, unsigned int mode);
-AL_API signed char OPENAL_Sample_SetMinMaxDistance(OPENAL_SAMPLE *sptr, float mindist, float maxdist);
-AL_API signed char OPENAL_SetFrequency(int channel, int freq);
-AL_API signed char OPENAL_SetVolume(int channel, int vol);
-AL_API signed char OPENAL_SetPaused(int channel, signed char paused);
+AL_API bool OPENAL_Sample_SetMode(OPENAL_SAMPLE *sptr, unsigned int mode);
+AL_API bool OPENAL_Sample_SetMinMaxDistance(OPENAL_SAMPLE *sptr, float mindist, float maxdist);
+AL_API bool OPENAL_SetFrequency(int channel, int freq);
+AL_API bool OPENAL_SetVolume(int channel, int vol);
+AL_API bool OPENAL_SetPaused(int channel, bool paused);
 AL_API void OPENAL_SetSFXMasterVolume(int volume);
-AL_API signed char OPENAL_StopSound(int channel);
+AL_API bool OPENAL_StopSound(int channel);
 AL_API OPENAL_STREAM *OPENAL_Stream_Open(const char *name_or_data, unsigned int mode, int offset, int length);
 AL_API void OPENAL_Stream_Close(OPENAL_STREAM *stream);
 AL_API OPENAL_SAMPLE *OPENAL_Stream_GetSample(OPENAL_STREAM *stream);
-AL_API int OPENAL_Stream_PlayEx(int channel, OPENAL_STREAM *stream, OPENAL_DSPUNIT *dsp, signed char startpaused);
-AL_API signed char OPENAL_Stream_Stop(OPENAL_STREAM *stream);
-AL_API signed char OPENAL_Stream_SetMode(OPENAL_STREAM *stream, unsigned int mode);
+AL_API int OPENAL_Stream_PlayEx(int channel, OPENAL_STREAM *stream, OPENAL_DSPUNIT *dsp, bool startpaused);
+AL_API bool OPENAL_Stream_Stop(OPENAL_STREAM *stream);
+AL_API bool OPENAL_Stream_SetMode(OPENAL_STREAM *stream, unsigned int mode);
 AL_API void OPENAL_Update();
-AL_API signed char OPENAL_SetOutput(int outputtype);
+AL_API bool OPENAL_SetOutput(int outputtype);
 
 #ifdef __cplusplus
 }
