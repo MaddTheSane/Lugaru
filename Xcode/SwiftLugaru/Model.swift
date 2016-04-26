@@ -311,6 +311,12 @@ final class Model {
 		return firstintersecting;
 	}
 	
+	// MARK: - file loading
+	
+	func load(fileNamed: String, texture textured: Bool) {
+		load(ConvertFileName(fileNamed), texture: textured)
+	}
+	
 	func load(fileURL: NSURL, texture textured: Bool) /*throws*/ {
 		print("Loading model " + fileURL.path!);
 		
@@ -329,7 +335,7 @@ final class Model {
 		}
 		color = false;
 		
-		let tfile=fopen( ConvertFileName(fileURL.fileSystemRepresentation), "rb" );
+		let tfile = fopen(fileURL.fileSystemRepresentation, "rb" );
 		// read model settings
 		var triangleNum: Int16 = 0
 		
@@ -438,11 +444,12 @@ final class Model {
 		updateBoundingSphere()
 	}
 	
+	func loadDecal(fileNamed: String, texture textured: Bool) {
+		loadDecal(ConvertFileName(fileNamed), texture: textured)
+	}
+	
 	func loadDecal(fileURL: NSURL, texture textured: Bool) {
-		// Changing the filename so that its more os specific
-		let FixedFN = ConvertFileName(fileURL.fileSystemRepresentation);
-		
-		print("Loading decal... " + String.fromCString(FixedFN)!);
+		print("Loading decal... " + fileURL.path!);
 		
 		//int oldvertexNum,oldTriangleNum;
 		//oldvertexNum=vertexNum;
@@ -451,7 +458,7 @@ final class Model {
 		modelType = .Decals;
 		color=false;
 		
-		let tfile=fopen( FixedFN, "rb" );
+		let tfile = fopen(fileURL.fileSystemRepresentation, "rb");
 		// read model settings
 		
 		var triangleNum = Int16()
@@ -586,6 +593,10 @@ final class Model {
 		//return 1;
 	}
 	
+	func loadRaw(fileNamed: String) {
+		loadRaw(ConvertFileName(fileNamed))
+	}
+	
 	func loadRaw(fileURL: NSURL) {
 		//LOGFUNC;
 		
@@ -598,7 +609,7 @@ final class Model {
 		modelType = .Raw;
 		color = false;
 		
-		let tfile = fopen( ConvertFileName(fileURL.fileSystemRepresentation), "rb" );
+		let tfile = fopen(fileURL.fileSystemRepresentation, "rb");
 		// read model settings
 		
 		var triangleNum = Int16()
