@@ -2712,7 +2712,7 @@ void Game::Tick()
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
 				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
-				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
+				PlaySoundEx(fireendsound, samp[fireendsound], NULL, true);
 				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
 				OPENAL_SetVolume(channels[fireendsound], 256);
 				OPENAL_SetPaused(channels[fireendsound], false);
@@ -2724,7 +2724,7 @@ void Game::Tick()
 				flashamount=1;
 				flashdelay=1;
 
-				if(!gameon){
+				if (!gameon) {
 					//quit
 					tryquit=1;
 					OPENAL_SetPaused(channels[stream_music3], true);
@@ -2735,12 +2735,14 @@ void Game::Tick()
 					mainmenu=1;
 				}
 			}
-			if(Button())oldbutton=1;
-			else oldbutton=0;
+			if(Button())
+				oldbutton=1;
+			else
+				oldbutton=0;
 		}
 
-		if(mainmenu==3){
-			if(Button()&&!oldbutton&&selected!=-1){
+		if (mainmenu == 3) {
+			if (Button() && !oldbutton && selected != -1) {
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
 				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
@@ -2750,13 +2752,11 @@ void Game::Tick()
 				OPENAL_SetPaused(channels[firestartsound], false);
 				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
 			}
-			if(Button()&&!oldbutton&&selected==0){
-			
+			if (Button() && !oldbutton && selected == 0) {
 				extern SDL_Rect **resolutions;
 				bool isCustomResolution = true;
 				bool found = false;
-				for (int i = 0; (!found) && (resolutions[i]); i++)
-				{
+				for (int i = 0; (!found) && (resolutions[i]); i++) {
 					if ((resolutions[i]->w == screenwidth) && (resolutions[i]->h == screenwidth))
 						isCustomResolution = false;
 
@@ -2798,39 +2798,41 @@ void Game::Tick()
 
 				
 			}
-			if(Button()&&!oldbutton&&selected==1){
+			if (Button() && !oldbutton && selected == 1) {
 				newdetail++;
 				if(newdetail>2)newdetail=0;
 			}
-			if(Button()&&!oldbutton&&selected==2){
+			if (Button() && !oldbutton && selected == 2) {
 				bloodtoggle++;
-				if(bloodtoggle>2)bloodtoggle=0;
+				if (bloodtoggle > 2)
+					bloodtoggle = 0;
 			}
-			if(Button()&&!oldbutton&&selected==3){
+			if (Button() && !oldbutton && selected == 3) {
 				difficulty++;
-				if(difficulty>2)difficulty=0;
+				if (difficulty > 2)
+					difficulty = 0;
 			}
-			if(Button()&&!oldbutton&&selected==4){
-				ismotionblur=1-ismotionblur;
+			if (Button() && !oldbutton && selected == 4) {
+				ismotionblur = !ismotionblur;
 			}
-			if(Button()&&!oldbutton&&selected==5){
-				decals=1-decals;
+			if (Button() && !oldbutton && selected == 5) {
+				decals = !decals;
 			}
-			if(Button()&&!oldbutton&&selected==6){
-				musictoggle=1-musictoggle;
+			if (Button()&&!oldbutton&&selected==6){
+				musictoggle = !musictoggle;
 
 				if(!musictoggle){
 					OPENAL_SetPaused(channels[music1], true);
 					OPENAL_SetPaused(channels[stream_music2], true);
 					OPENAL_SetPaused(channels[stream_music3], true);
 
-					for(i=0;i<4;i++){
-						oldmusicvolume[i]=0;
-						musicvolume[i]=0;
+					for (int i = 0; i < 4; i++) {
+						oldmusicvolume[i] = 0;
+						musicvolume[i] = 0;
 					}
 				}
 
-				if(musictoggle){
+				if (musictoggle) {
 					PlayStreamEx( stream_music3, strm[stream_music3], NULL, true);
 					OPENAL_SetPaused(channels[stream_music3], false);
 					OPENAL_SetVolume(channels[stream_music3], 256);
@@ -2873,7 +2875,7 @@ void Game::Tick()
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
 				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
-				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
+				PlaySoundEx(fireendsound, samp[fireendsound], NULL, true);
 				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
 				OPENAL_SetVolume(channels[fireendsound], 256);
 				OPENAL_SetPaused(channels[fireendsound], false);
@@ -2887,14 +2889,19 @@ void Game::Tick()
 
 				writeSettings();
 
-				if(mainmenu==3&&gameon)mainmenu=2;
-				if(mainmenu==3&&!gameon)mainmenu=1;
+				if(mainmenu==3&&gameon)
+					mainmenu=2;
+				if(mainmenu==3&&!gameon)
+					mainmenu=1;
 			}
-			if(Button())oldbutton=1;
-			else oldbutton=0;
+			if(Button()) {
+				oldbutton=1;
+			} else {
+				oldbutton=0;
+			}
 		}
-		if(mainmenu==4){
-			if(Button()&&!oldbutton&&selected!=-1&&keyselect==-1){
+		if (mainmenu==4) {
+			if (Button() && !oldbutton && selected != -1 && keyselect == -1) {
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
 				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
@@ -2904,52 +2911,62 @@ void Game::Tick()
 				OPENAL_SetPaused(channels[firestartsound], false);
 				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
 			}
-			if(Button()&&!oldbutton&&selected<9&&keyselect==-1){
+			if (Button() && !oldbutton && selected < 9 && keyselect == -1) {
 				keyselect=selected;
 				oldbuttons[0]=1;
 				oldbuttons[1]=1;
 				oldbuttons[2]=1;
 			}
-			if(keyselect!=-1){
-				for(i=0;i<3;i++)
+			if (keyselect != -1) {
+				for (int i = 0; i < 3; i++)
 					if(!buttons[i]&&!oldbutton&&!Button())oldbuttons[i]=0;
-				for(i=0;i<140;i++){
+				for (int i = 0; i < 140; i++) {
 					if((IsKeyDown(theKeyMap, i)||(buttons[0]&&!oldbuttons[0]&&!oldbutton)||(buttons[1]&&!oldbuttons[1]&&!oldbutton))&&keyselect!=-1){
-						if(i!=MAC_ESCAPE_KEY&&(strcmp(KeyToChar(i),"unknown")||(buttons[0]&&!oldbuttons[0]&&!oldbutton)||(buttons[1]&&!oldbuttons[1]&&!oldbutton))){
-							float gLoc[3]={0,0,0};
-							float vel[3]={0,0,0};
+						if ( i != MAC_ESCAPE_KEY && (strcmp(KeyToChar(i), "unknown") || (buttons[0] && !oldbuttons[0] && !oldbutton) || (buttons[1] && !oldbuttons[1] && !oldbutton))) {
+							float gLoc[3] = {0,0,0};
+							float vel[3] = {0,0,0};
 							OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
-							PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
+							PlaySoundEx(fireendsound, samp[fireendsound], NULL, true);
 							OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
 							OPENAL_SetVolume(channels[fireendsound], 256);
 							OPENAL_SetPaused(channels[fireendsound], false);
 							OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
 
-							int keynum;
-							keynum=i;
-							if(buttons[0]&&!oldbuttons[0])keynum=MAC_MOUSEBUTTON1;
-							if(buttons[1]&&!oldbuttons[1])keynum=MAC_MOUSEBUTTON2;
+							int keynum = i;
+							if (buttons[0] && !oldbuttons[0])
+								keynum=MAC_MOUSEBUTTON1;
+							if (buttons[1] && !oldbuttons[1])
+								keynum=MAC_MOUSEBUTTON2;
 
 
 
-							if(keyselect==0)forwardkey=keynum;
-							if(keyselect==1)backkey=keynum;
-							if(keyselect==2)leftkey=keynum;
-							if(keyselect==3)rightkey=keynum;
-							if(keyselect==4)crouchkey=keynum;
-							if(keyselect==5)jumpkey=keynum;
-							if(keyselect==6)drawkey=keynum;
-							if(keyselect==7)throwkey=keynum;
-							if(keyselect==8)attackkey=keynum;
-							keyselect=-1;
+							if (keyselect == 0)
+								forwardkey = keynum;
+							if (keyselect == 1)
+								backkey = keynum;
+							if (keyselect == 2)
+								leftkey = keynum;
+							if (keyselect == 3)
+								rightkey = keynum;
+							if (keyselect == 4)
+								crouchkey = keynum;
+							if (keyselect == 5)
+								jumpkey = keynum;
+							if (keyselect == 6)
+								drawkey = keynum;
+							if (keyselect == 7)
+								throwkey = keynum;
+							if (keyselect == 8)
+								attackkey=keynum;
+							keyselect = -1;
 						}
 					}
 				}}
-			if(Button()&&!oldbutton&&selected==9){
-				float gLoc[3]={0,0,0};
-				float vel[3]={0,0,0};
+			if (Button() && !oldbutton && selected == 9) {
+				float gLoc[3] = {0,0,0};
+				float vel[3] = {0,0,0};
 				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
-				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
+				PlaySoundEx(fireendsound, samp[fireendsound], NULL, true);
 				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
 				OPENAL_SetVolume(channels[fireendsound], 256);
 				OPENAL_SetPaused(channels[fireendsound], false);
@@ -2967,20 +2984,20 @@ void Game::Tick()
 			}
 		}
 
-		if(mainmenu==5){
+		if (mainmenu == 5) {
 
-			if(endgame==2){
+			if (endgame == 2) {
 				accountcampaignchoicesmade[accountactive]=0;
 				accountcampaignscore[accountactive]=0;
 				accountcampaigntime[accountactive]=0;
 				endgame=0;
 			}
 
-			if(Button()&&!oldbutton&&selected==1){
+			if (Button() && !oldbutton && selected == 1) {
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
 				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
-				PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
+				PlaySoundEx(firestartsound, samp[firestartsound], NULL, true);
 				OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
 				OPENAL_SetVolume(channels[firestartsound], 256);
 				OPENAL_SetPaused(channels[firestartsound], false);
@@ -2997,9 +3014,11 @@ void Game::Tick()
 				loading=2;
 				loadtime=0;
 				targetlevel=-1;
-				if(firstload)TickOnceAfter();
-				if(!firstload)LoadStuff();
-				else {
+				if (firstload)
+					TickOnceAfter();
+				if (!firstload) {
+					LoadStuff();
+				} else {
 					Loadlevel(-1);
 				}
 
@@ -3007,11 +3026,11 @@ void Game::Tick()
 				gameon=1;
 				OPENAL_SetPaused(channels[stream_music3], true);
 			}
-			if(Button()&&!oldbutton&&selected-7>=accountcampaignchoicesmade[accountactive]){//selected>=7&&(selected-7<=campaignnumchoices)){
+			if (Button() && !oldbutton && selected - 7 >= accountcampaignchoicesmade[accountactive]){//selected>=7&&(selected-7<=campaignnumchoices)){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
 				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
-				PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
+				PlaySoundEx(firestartsound, samp[firestartsound], NULL, true);
 				OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
 				OPENAL_SetVolume(channels[firestartsound], 256);
 				OPENAL_SetPaused(channels[firestartsound], false);
@@ -3031,20 +3050,8 @@ void Game::Tick()
 				if(firstload)TickOnceAfter();
 				if(!firstload)LoadStuff();
 				//else {
-				for(i=0;i<255;i++){
-					mapname[i]='\0';
-				}
-				mapname[0]=':';
-				mapname[1]='D';
-				mapname[2]='a';
-				mapname[3]='t';
-				mapname[4]='a';
-				mapname[5]=':';
-				mapname[6]='M';
-				mapname[7]='a';
-				mapname[8]='p';
-				mapname[9]='s';
-				mapname[10]=':';
+				memset(mapname, 0, sizeof(mapname));
+				strcpy(mapname, ":Data:Maps:");
 				strcat(mapname,campaignmapname[campaignchoicewhich[selected-7-accountcampaignchoicesmade[accountactive]]]);
 				whichchoice=selected-7-accountcampaignchoicesmade[accountactive];
 				visibleloading=1;
@@ -3057,7 +3064,7 @@ void Game::Tick()
 				gameon=1;
 				OPENAL_SetPaused(channels[stream_music3], true);
 			}
-			if(Button()&&!oldbutton&&selected==4){
+			if (Button() && !oldbutton && selected == 4) {
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
 				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
@@ -3073,14 +3080,16 @@ void Game::Tick()
 				flashamount=1;
 				flashdelay=1;
 
-				if(mainmenu==5&&gameon)mainmenu=2;
-				if(mainmenu==5&&!gameon)mainmenu=1;
+				if(mainmenu==5&&gameon)
+					mainmenu=2;
+				if(mainmenu==5&&!gameon)
+					mainmenu=1;
 			}
-			if(Button()&&!oldbutton&&selected==5){
+			if (Button() && !oldbutton && selected == 5) {
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
 				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
-				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
+				PlaySoundEx(fireendsound, samp[fireendsound], NULL, true);
 				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
 				OPENAL_SetVolume(channels[fireendsound], 256);
 				OPENAL_SetPaused(channels[fireendsound], false);
@@ -3094,7 +3103,7 @@ void Game::Tick()
 
 				mainmenu=7;
 			}
-			if(Button()&&!oldbutton&&selected==3){
+			if (Button() && !oldbutton && selected==3) {
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
 				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
@@ -3130,11 +3139,71 @@ void Game::Tick()
 
 				mainmenu=9;
 			}
-			if(Button())oldbutton=1;
-			else oldbutton=0;
+			if(Button())
+				oldbutton=1;
+			else
+				oldbutton=0;
 		}
-		if(mainmenu==9){
-			if(Button()&&!oldbutton&&selected<numchallengelevels&&selected>=0&&selected<=accountprogress[accountactive]){
+		if (mainmenu==9) {
+			if (Button() && !oldbutton && selected < numchallengelevels && selected >= 0 && selected <= accountprogress[accountactive]) {
+				float gLoc[3]={0,0,0};
+				float vel[3]={0,0,0};
+				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
+				PlaySoundEx(firestartsound, samp[firestartsound], NULL, true);
+				OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
+				OPENAL_SetVolume(channels[firestartsound], 256);
+				OPENAL_SetPaused(channels[firestartsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
+
+				flashr=1;
+				flashg=0;
+				flashb=0;
+				flashamount=1;
+				flashdelay=1;
+
+				startbonustotal=0;
+
+				loading=2;
+				loadtime=0;
+				targetlevel=selected;
+				if (firstload)
+					TickOnceAfter();
+				if (!firstload) {
+					LoadStuff();
+				} else {
+					Loadlevel(selected);
+				}
+				campaign=0;
+
+				mainmenu=0;
+				gameon=1;
+				OPENAL_SetPaused(channels[stream_music3], true);
+			}
+			if(Button()&&!oldbutton&&selected==numchallengelevels){
+				float gLoc[3]={0,0,0};
+				float vel[3]={0,0,0};
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
+				PlaySoundEx(fireendsound, samp[fireendsound], NULL, true);
+				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
+				OPENAL_SetVolume(channels[fireendsound], 256);
+				OPENAL_SetPaused(channels[fireendsound], false);
+				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
+
+				flashr=1;
+				flashg=0;
+				flashb=0;
+				flashamount=1;
+				flashdelay=1;
+
+				mainmenu=5;
+			}
+			if (Button())
+				oldbutton=1;
+			else
+				oldbutton=0;
+		}
+		if (mainmenu == 11) {
+			if (Button() && !oldbutton && selected < numchallengelevels && selected >= 0 && selected <=accountprogress[accountactive]) {
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
 				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
@@ -3166,7 +3235,7 @@ void Game::Tick()
 				gameon=1;
 				OPENAL_SetPaused(channels[stream_music3], true);
 			}
-			if(Button()&&!oldbutton&&selected==numchallengelevels){
+			if (Button() && !oldbutton && selected == numchallengelevels) {
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
 				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
@@ -3184,64 +3253,12 @@ void Game::Tick()
 
 				mainmenu=5;
 			}
-			if(Button())oldbutton=1;
-			else oldbutton=0;
+			if (Button())
+				oldbutton=1;
+			else
+				oldbutton=0;
 		}
-		if(mainmenu==11){
-			if(Button()&&!oldbutton&&selected<numchallengelevels&&selected>=0&&selected<=accountprogress[accountactive]){
-				float gLoc[3]={0,0,0};
-				float vel[3]={0,0,0};
-				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
-				PlaySoundEx( firestartsound, samp[firestartsound], NULL, true);
-				OPENAL_3D_SetAttributes(channels[firestartsound], gLoc, vel);
-				OPENAL_SetVolume(channels[firestartsound], 256);
-				OPENAL_SetPaused(channels[firestartsound], false);
-				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
-
-				flashr=1;
-				flashg=0;
-				flashb=0;
-				flashamount=1;
-				flashdelay=1;
-
-				startbonustotal=0;
-
-				loading=2;
-				loadtime=0;
-				targetlevel=selected;
-				if(firstload)TickOnceAfter();
-				if(!firstload)LoadStuff();
-				else {
-					Loadlevel(selected);
-				}
-				campaign=0;
-
-				mainmenu=0;
-				gameon=1;
-				OPENAL_SetPaused(channels[stream_music3], true);
-			}
-			if(Button()&&!oldbutton&&selected==numchallengelevels){
-				float gLoc[3]={0,0,0};
-				float vel[3]={0,0,0};
-				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 9999.0f, 99999.0f);
-				PlaySoundEx( fireendsound, samp[fireendsound], NULL, true);
-				OPENAL_3D_SetAttributes(channels[fireendsound], gLoc, vel);
-				OPENAL_SetVolume(channels[fireendsound], 256);
-				OPENAL_SetPaused(channels[fireendsound], false);
-				OPENAL_Sample_SetMinMaxDistance(samp[fireendsound], 8.0f, 2000.0f);
-
-				flashr=1;
-				flashg=0;
-				flashb=0;
-				flashamount=1;
-				flashdelay=1;
-
-				mainmenu=5;
-			}
-			if(Button())oldbutton=1;
-			else oldbutton=0;
-		}
-		if(mainmenu==10){
+		if (mainmenu == 10) {
 			endgame=2;
 			if(Button()&&!oldbutton&&selected==3){
 				float gLoc[3]={0,0,0};
@@ -3261,12 +3278,15 @@ void Game::Tick()
 
 				mainmenu=5;
 			}
-			if(Button())oldbutton=1;
-			else oldbutton=0;
+			if (Button()) {
+				oldbutton=1;
+			} else {
+				oldbutton=0;
+			}
 		}
 
-		if(mainmenu==6){
-			if(Button()&&!oldbutton&&selected!=-1){
+		if (mainmenu == 6) {
+			if (Button() && !oldbutton && selected != -1) {
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
 				OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 9999.0f, 99999.0f);
@@ -3292,21 +3312,21 @@ void Game::Tick()
 				flashamount=1;
 				flashdelay=1;
 
-				for(i=accountactive;i<numaccounts-1;i++){
+				for (int i = accountactive; i < numaccounts-1; i++) {
 					accountdifficulty[i]=accountdifficulty[i+1];
 					accountcampaignchoicesmade[i]=accountcampaignchoicesmade[i+1];
-					for(j=0;j<accountcampaignchoicesmade[i+1];j++){
+					for (int j = 0; j < accountcampaignchoicesmade[i+1]; j++) {
 						accountcampaignchoices[i][j]=accountcampaignchoices[i+1][j];
 					}
-					accountpoints[i]=accountpoints[i+1];
-					for(j=0;j<50;j++){
+					accountpoints[i] = accountpoints[i+1];
+					for (int j = 0; j < 50; j++) {
 						accounthighscore[i][j]=accounthighscore[i+1][j];
 						accountfasttime[i][j]=accountfasttime[i+1][j];
 					}
-					for(j=0;j<60;j++){
+					for (int j = 0; j < 60; j++) {
 						accountunlocked[i][j]=accountunlocked[i+1][j];
 					}
-					for(j=0;j<256;j++){
+					for (int j = 0; j < 256; j++) {
 						accountname[i][j]=accountname[i+1][j];
 					}
 					accountcampaignhighscore[i]=accountcampaignhighscore[i+1];
@@ -3343,7 +3363,7 @@ void Game::Tick()
 			if(Button())oldbutton=1;
 			else oldbutton=0;
 		}
-		if(mainmenu==7){
+		if (mainmenu == 7) {
 			if(Button()&&!oldbutton&&selected!=-1){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
@@ -3394,7 +3414,7 @@ void Game::Tick()
 			if(Button())oldbutton=1;
 			else oldbutton=0;
 		}
-		if(mainmenu==8){
+		if (mainmenu == 8) {
 			if(Button()&&!oldbutton&&selected!=-1){
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
@@ -8966,9 +8986,12 @@ void	Game::TickOnceAfter(){
 
 	if(!mainmenu){
 
-		if(environment==snowyenvironment)music1=stream_music1snow;
-		if(environment==grassyenvironment)music1=stream_music1grass;
-		if(environment==desertenvironment)music1=stream_music1desert;
+		if(environment==snowyenvironment)
+			music1=stream_music1snow;
+		if(environment==grassyenvironment)
+			music1=stream_music1grass;
+		if(environment==desertenvironment)
+			music1=stream_music1desert;
 
 		realthreat=0;
 
@@ -9634,10 +9657,19 @@ void Game::writeSettings()
 }
 
 void Game::validateDisplaySettings() {
-	if(newdetail>2)newdetail=detail;
-	if(newdetail<0)newdetail=detail;
-	if(newscreenwidth>3000)newscreenwidth=windowWidth;
-	if(newscreenwidth<0)newscreenwidth=windowWidth;
-	if(newscreenheight>3000)newscreenheight=windowHeight;
-	if(newscreenheight<0)newscreenheight=windowHeight;
+	if (newdetail > 2) {
+		newdetail=detail;
+	} else if(newdetail < 0) {
+		newdetail=detail;
+	}
+	if (newscreenwidth > 3000) {
+		newscreenwidth=windowWidth;
+	} else if(newscreenwidth < 0) {
+		newscreenwidth=windowWidth;
+	}
+	if (newscreenheight > 3000) {
+		newscreenheight=windowHeight;
+	} else if(newscreenheight < 0) {
+		newscreenheight=windowHeight;
+	}
 }
