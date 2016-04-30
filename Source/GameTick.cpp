@@ -2700,12 +2700,7 @@ void Game::Tick()
 
 				mainmenu=3;
 
-				if(newdetail>2)newdetail=detail;
-				if(newdetail<0)newdetail=detail;
-				if(newscreenwidth>3000)newscreenwidth=windowWidth;
-				if(newscreenwidth<0)newscreenwidth=windowWidth;
-				if(newscreenheight>3000)newscreenheight=windowHeight;
-				if(newscreenheight<0)newscreenheight=windowHeight;
+				validateDisplaySettings();
 			}
 
 			if(Button()&&!oldbutton&&selected==3){
@@ -9574,10 +9569,7 @@ void	Game::TickOnceAfter(){
 
 void Game::writeSettings()
 {
-	if(newdetail>2)newdetail=detail;
-	if(newdetail<0)newdetail=detail;
-	if(newscreenwidth<0)newscreenwidth=windowWidth;
-	if(newscreenheight<0)newscreenheight=windowHeight;
+	validateDisplaySettings();
 	
 	ofstream opstream(ConvertFileName(":Data:config.txt", "w"));
 	opstream << "Screenwidth:\n";
