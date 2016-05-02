@@ -681,10 +681,9 @@ void Person::DoBloodBig(float howmuch,int which){
 		if(bleeding>2)bleeding=2;
 }
 
-bool Person::DoBloodBigWhere(float howmuch,int which, XYZ where){
-	int bleedxint,bleedyint,i,j;
+bool Person::DoBloodBigWhere(float howmuch,int which, XYZ where) {
 	XYZ bloodvel;
-	XYZ startpoint,endpoint,colpoint,movepoint;
+	XYZ /*startpoint,*/endpoint,colpoint,movepoint;
 	float rotationpoint;
 	int whichtri;
 	//XYZ N,temp;
@@ -790,8 +789,8 @@ bool Person::DoBloodBigWhere(float howmuch,int which, XYZ where){
 			int endy=0;
 			GLubyte color;
 			if(creature==rabbittype)
-				for(i=0;i<512;i++){
-					for(j=0;j<512;j++){
+				for(int i=0;i<512;i++){
+					for(int j=0;j<512;j++){
 						if(bloodText[i*512*3+j*3+0]<=which+4&&bloodText[i*512*3+j*3+0]>=which-4){
 							if(i<startx)startx=i;
 							if(j<starty)starty=j;
@@ -801,8 +800,8 @@ bool Person::DoBloodBigWhere(float howmuch,int which, XYZ where){
 					}
 				}
 				if(creature==wolftype)
-					for(i=0;i<512;i++){
-						for(j=0;j<512;j++){
+					for(int i=0;i<512;i++){
+						for(int j=0;j<512;j++){
 							if(wolfbloodText[i*512*3+j*3+0]<=which+4&&wolfbloodText[i*512*3+j*3+0]>=which-4){
 								if(i<startx)startx=i;
 								if(j<starty)starty=j;
@@ -831,8 +830,8 @@ bool Person::DoBloodBigWhere(float howmuch,int which, XYZ where){
 					int texdetailint=realtexdetail;
 					int where;
 					if(creature==rabbittype)
-						for(i=startx;i<endx;i++){
-							for(j=starty;j<endy;j++){
+						for(int i=startx;i<endx;i++){
+							for(int j=starty;j<endy;j++){
 								if(bloodText[(i*texdetailint-offsetx)*512*3+(j*texdetailint-offsety)*3+0]<=which+4&&bloodText[(i*texdetailint-offsetx)*512*3+(j*texdetailint-offsety)*3+0]>=which-4){
 									color=Random()%85+170;
 									where=i*skeleton.skinsize*3+j*3;
@@ -850,8 +849,8 @@ bool Person::DoBloodBigWhere(float howmuch,int which, XYZ where){
 							}
 						}
 						if(creature==wolftype)
-							for(i=startx;i<endx;i++){
-								for(j=starty;j<endy;j++){
+							for(int i=startx;i<endx;i++){
+								for(int j=starty;j<endy;j++){
 									if(wolfbloodText[(i*texdetailint-offsetx)*512*3+(j*texdetailint-offsety)*3+0]<=which+4&&wolfbloodText[(i*texdetailint-offsetx)*512*3+(j*texdetailint-offsety)*3+0]>=which-4){
 										color=Random()%85+170;
 										where=i*skeleton.skinsize*3+j*3;
@@ -1527,7 +1526,6 @@ void Person::DoHead() {
 
 void Person::RagDoll(bool checkcollision){
 	XYZ change;
-	static int l;
 	float speed;
 	if(!skeleton.free){
 		if(id==0)numfalls++;
@@ -2220,7 +2218,7 @@ void Person::DoAnimations() {
 								}
 							}
 
-							static bool willwork;
+							//static bool willwork;
 							if(targetanimation==crouchremoveknifeanim&&animation[targetanimation].label[currentframe]==5){
 								for(i=0;i<weapons.numweapons;i++){
 									bool willwork=1;
@@ -4629,7 +4627,7 @@ void Person::DoAnimations() {
 									if(id==0)OPENAL_SetPaused(channels[whooshsound], false);
 								}
 								if(targetanimation==sneakattackanim){
-									float ycoords=oldcoords.y;
+									//float ycoords=oldcoords.y;
 									currentanimation=getCrouch();
 									targetanimation=getCrouch();
 									targetframe=1;
@@ -4641,15 +4639,17 @@ void Person::DoAnimations() {
 									transspeed=1000000;
 									targetheadrotation+=180;
 									coords-=facing*.7;
-									if(onterrain)coords.y=terrain.getHeight(coords.x,coords.z);
+									if(onterrain)
+										coords.y=terrain.getHeight(coords.x,coords.z);
 
 									lastfeint=0;
 								}
 								if(targetanimation==knifesneakattackanim||targetanimation==swordsneakattackanim){
-									float ycoords=oldcoords.y;
+									//float ycoords=oldcoords.y;
 									targetanimation=getIdle();
 									targetframe=0;
-									if(onterrain)coords.y=terrain.getHeight(coords.x,coords.z);
+									if(onterrain)
+										coords.y=terrain.getHeight(coords.x,coords.z);
 
 									lastfeint=0;
 								}
@@ -6016,7 +6016,7 @@ void Person::DoStuff(){
 		if(skeleton.freefall==0)freefall=0;
 
 		if(!isnormal(velocity.x)&&velocity.x){
-			int xy=1;
+			//int xy=1;
 		}
 	}
 
@@ -6859,13 +6859,13 @@ int Person::DrawSkeleton() {
 		static float M[16];
 		static int i,j,k;
 		static int weaponattachmuscle;
-		static int weaponrotatemuscle,weaponrotatemuscle2;
+		static int weaponrotatemuscle/*,weaponrotatemuscle2*/;
 		static XYZ weaponpoint;
 		static int start,endthing;
 		if((dead!=2||skeleton.free!=2)&&updatedelay<=0){
 			if(!isSleeping()&&!isSitting()){
 				if(onterrain&&((isIdle()||isCrouch()||isLanding()||isLandhard()||targetanimation==drawrightanim||targetanimation==drawleftanim||targetanimation==crouchdrawrightanim)&&(wasIdle()||wasCrouch()||wasLanding()||wasLandhard()||currentanimation==drawrightanim||currentanimation==drawleftanim||currentanimation==crouchdrawrightanim))&&!skeleton.free){
-					XYZ point,newpoint,change,change2;
+					XYZ point,change,change2;
 					point=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,rotation,0)*scale+coords;
 					heightleft=terrain.getHeight(point.x,point.z)+.04;
 					point.y=heightleft;
@@ -6907,7 +6907,7 @@ int Person::DrawSkeleton() {
 					}
 				}
 				if(onterrain&&((isIdle()||isCrouch()||isLanding()||isLandhard()||targetanimation==drawrightanim||targetanimation==drawleftanim||targetanimation==crouchdrawrightanim)&&!(wasIdle()||wasCrouch()||wasLanding()||wasLandhard()||currentanimation==drawrightanim||currentanimation==drawleftanim||currentanimation==crouchdrawrightanim))&&!skeleton.free){
-					XYZ point,newpoint,change,change2;
+					XYZ point,change,change2;
 					point=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,rotation,0)*scale+coords;
 					heightleft=terrain.getHeight(point.x,point.z)+.04;
 					point.y=heightleft;
@@ -6950,7 +6950,7 @@ int Person::DrawSkeleton() {
 				}
 
 				if(onterrain&&(!(isIdle()||isCrouch()||isLanding()||isLandhard()||targetanimation==drawrightanim||targetanimation==drawleftanim||targetanimation==crouchdrawrightanim)&&(wasIdle()||wasCrouch()||wasLanding()||wasLandhard()||currentanimation==drawrightanim||currentanimation==drawleftanim||currentanimation==crouchdrawrightanim))&&!skeleton.free){
-					XYZ point,newpoint,change,change2;
+					XYZ point,change,change2;
 					point=DoRotation(skeleton.joints[skeleton.jointlabels[leftfoot]].position,0,rotation,0)*scale+coords;
 					heightleft=terrain.getHeight(point.x,point.z)+.04;
 					point.y=heightleft;
@@ -7436,14 +7436,14 @@ int Person::DrawSkeleton() {
 					if(weapons.type[i]==knife){
 						weapons.smallrotation[i]=180;
 						weapons.smallrotation2[i]=0;
-						if(isCrouch()||wasCrouch()){
+						if (isCrouch()||wasCrouch()) {
 							weapons.smallrotation2[i]=20;
 						}
-						if(targetanimation==hurtidleanim){
+						if (targetanimation==hurtidleanim) {
 							weapons.smallrotation2[i]=50;
 						}
 						if((currentanimation==crouchstabanim&&targetanimation==crouchstabanim)||(currentanimation==backhandspringanim&&targetanimation==backhandspringanim)){
-							XYZ temppoint1,temppoint2,tempforward;
+							XYZ temppoint1,temppoint2;
 							float distance;
 
 							temppoint1=skeleton.joints[skeleton.jointlabels[righthand]].position;
@@ -7461,7 +7461,7 @@ int Person::DrawSkeleton() {
 							if(temppoint1.x>temppoint2.x)weapons.rotation1[i]=360-weapons.rotation1[i];
 						}
 						if((currentanimation==knifeslashreversalanim&&targetanimation==knifeslashreversalanim)||(currentanimation==knifeslashreversedanim&&targetanimation==knifeslashreversedanim)){
-							XYZ temppoint1,temppoint2,tempforward;
+							XYZ temppoint1,temppoint2;
 							float distance;
 
 							temppoint1=skeleton.joints[skeleton.jointlabels[righthand]].position;
@@ -7504,7 +7504,7 @@ int Person::DrawSkeleton() {
 							weapons.rotation3[i]=0;
 						}
 						if((targetanimation==swordgroundstabanim&&currentanimation==swordgroundstabanim)||(targetanimation==swordsneakattackanim&&currentanimation==swordsneakattackanim)||(targetanimation==swordslashparryanim&&currentanimation==swordslashparryanim)||(targetanimation==swordslashparriedanim&&currentanimation==swordslashparriedanim)||(targetanimation==swordslashreversalanim&&currentanimation==swordslashreversalanim)||(targetanimation==swordslashreversedanim&&currentanimation==swordslashreversedanim)||(targetanimation==knifeslashreversalanim&&currentanimation==knifeslashreversalanim)||(targetanimation==knifeslashreversedanim&&currentanimation==knifeslashreversedanim)||(targetanimation==swordslashanim&&currentanimation==swordslashanim)||(targetanimation==drawleftanim&&currentanimation==drawleftanim)||(currentanimation==backhandspringanim&&targetanimation==backhandspringanim)){
-							XYZ temppoint1,temppoint2,tempforward;
+							XYZ temppoint1,temppoint2;
 							float distance;
 
 							temppoint1=animation[currentanimation].position[skeleton.jointlabels[righthand]][currentframe]*(1-target)+animation[targetanimation].position[skeleton.jointlabels[righthand]][targetframe]*(target); //skeleton.joints[skeleton.jointlabels[righthand]].position;
@@ -7526,7 +7526,7 @@ int Person::DrawSkeleton() {
 						weapons.smallrotation[i]=100;
 						weapons.smallrotation2[i]=0;
 						if((targetanimation==staffhitanim&&currentanimation==staffhitanim)||(targetanimation==staffhitreversedanim&&currentanimation==staffhitreversedanim)||(targetanimation==staffspinhitreversedanim&&currentanimation==staffspinhitreversedanim)||(targetanimation==staffgroundsmashanim&&currentanimation==staffgroundsmashanim)||(targetanimation==staffspinhitanim&&currentanimation==staffspinhitanim)){
-							XYZ temppoint1,temppoint2,tempforward;
+							XYZ temppoint1,temppoint2;
 							float distance;
 
 							temppoint1=animation[currentanimation].position[skeleton.jointlabels[righthand]][currentframe]*(1-target)+animation[targetanimation].position[skeleton.jointlabels[righthand]][targetframe]*(target); //skeleton.joints[skeleton.jointlabels[righthand]].position;

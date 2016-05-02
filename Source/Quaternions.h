@@ -160,7 +160,7 @@ inline float findDistancefastflat(const XYZ &point1, const XYZ &point2) {
 }
 
 inline XYZ DoRotation(XYZ thePoint, float xang, float yang, float zang){
-	static XYZ newpoint;
+	XYZ newpoint = {0};
 	if(xang){
 		xang*=6.283185f;
 		xang/=360;

@@ -182,7 +182,7 @@ TGAImageRec*	LoadTGA(const char *filename )
 	GLuint			bytesPerPixel;								// Holds Number Of Bytes Per Pixel Used In The TGA File
 	GLuint			imageSize;									// Used To Store The Image Size When Setting Aside Ram
 	GLuint			temp;										// Temporary Variable
-	GLuint			type = GL_RGBA;								// Set The Default GL Mode To RBGA (32 BPP)
+	//GLuint			type = GL_RGBA;								// Set The Default GL Mode To RBGA (32 BPP)
 	//TGAImageRec		*texture;
 	FILE			*file;
 

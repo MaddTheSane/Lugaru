@@ -731,8 +731,7 @@ void Terrain::drawpatchotherother(int whichx, int whichy, float opacity){
 
 float Terrain::getHeight(float pointx, float pointz)
 {
-	float height1,height2;
-	XYZ startpoint,endpoint,intersect,triangle[3],average;
+	XYZ startpoint,endpoint,intersect,triangle[3];
 
 	pointx /= scale;
 	pointz /= scale;
@@ -792,9 +791,8 @@ float Terrain::getHeight(float pointx, float pointz)
 
 float Terrain::getHeightExtrude(float pointx, float pointz,float point2x, float point2z)
 {
-	float height1,height2;
 	int tilex,tiley;
-	XYZ startpoint,endpoint,intersect,triangle[3],average;
+	XYZ startpoint,endpoint,intersect,triangle[3];
 
 	pointx/=scale;
 	pointz/=scale;
@@ -987,21 +985,19 @@ void Terrain::draw(int layer)
 void Terrain::drawdecals()
 {
 	if(decals){
-		int i,j;
 		float distancemult;
-		int lasttype;
+		int lasttype = -1;
 
 		//float patch_size=size/subdivision*scale;
 		const float viewdistsquared = viewdistance*viewdistance;
 		bool blend = true;
 
-		lasttype=-1;
 		glEnable(GL_BLEND);
 		glDisable(GL_LIGHTING);
 		glDisable(GL_CULL_FACE);
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 		glDepthMask(0);
-		for(i=0;i<numdecals;i++){
+		for(int i=0;i<numdecals;i++){
 			if(decaltype[i]==blooddecalfast&&decalalivetime[i]<2)decalalivetime[i]=2;
 			if((decaltype[i]==shadowdecal||decaltype[i]==shadowdecalpermanent)&&decaltype[i]!=lasttype){
 				glBindTexture( GL_TEXTURE_2D, shadowtexture);
@@ -1086,7 +1082,7 @@ void Terrain::drawdecals()
 				glEnd();
 			glPopMatrix();
 		}
-		for(i=numdecals-1;i>=0;i--){
+		for (int i = numdecals - 1; i >= 0; i--) {
 			decalalivetime[i]+=multiplier;
 			if(decaltype[i]==blooddecalslow)decalalivetime[i]-=multiplier*2/3;
 			if(decaltype[i]==blooddecalfast)decalalivetime[i]+=multiplier*4;
@@ -1332,7 +1328,7 @@ void Terrain::DoLighting()
 {
 	int i,j,k,todivide;
 	float brightness, total;
-	XYZ blank, terrainpoint;
+	XYZ terrainpoint;
 	XYZ lightloc=light.location;
 	Normalise(lightloc);
 	//Calculate shadows
@@ -1346,19 +1342,27 @@ void Terrain::DoLighting()
 			*/
 			brightness=simd::dot(lightloc,normals[i][j]);
 
-			if(brightness>1)brightness=1;
-			if(brightness<0)brightness=0;
+			if(brightness>1)
+				brightness=1;
+			if(brightness<0)
+				brightness=0;
 
 			colors[i][j][0]=light.color[0]*brightness+light.ambient[0];
 			colors[i][j][1]=light.color[1]*brightness+light.ambient[1];
 			colors[i][j][2]=light.color[2]*brightness+light.ambient[2];
 
-			if(colors[i][j][0]>1)colors[i][j][0]=1;
-			if(colors[i][j][1]>1)colors[i][j][1]=1;
-			if(colors[i][j][2]>1)colors[i][j][2]=1;
-			if(colors[i][j][0]<0)colors[i][j][0]=0;
-			if(colors[i][j][1]<0)colors[i][j][1]=0;
-			if(colors[i][j][2]<0)colors[i][j][2]=0;
+			if(colors[i][j][0]>1)
+				colors[i][j][0]=1;
+			if(colors[i][j][1]>1)
+				colors[i][j][1]=1;
+			if(colors[i][j][2]>1)
+				colors[i][j][2]=1;
+			if(colors[i][j][0]<0)
+				colors[i][j][0]=0;
+			if(colors[i][j][1]<0)
+				colors[i][j][1]=0;
+			if(colors[i][j][2]<0)
+				colors[i][j][2]=0;
 		}
 	}
 
@@ -1386,34 +1390,31 @@ void Terrain::DoLighting()
 
 void Terrain::DoShadows()
 {
-	int i,j,k,l,todivide;
-	float brightness, total;
-	XYZ testpoint,testpoint2, terrainpoint,col;
-	XYZ lightloc=light.location;
+	XYZ testpoint, testpoint2, col;
+	XYZ lightloc = light.location;
 	if(!skyboxtexture){
-		lightloc.x=0;
-		lightloc.z=0;
+		lightloc.x = 0;
+		lightloc.z = 0;
 	}
 	if(skyboxtexture&&tutoriallevel){
-		lightloc.x*=.4;
-		lightloc.z*=.4;
+		lightloc.x *= 0.4;
+		lightloc.z *= 0.4;
 	}
-	int patchx,patchz;
-	float shadowed;
 	Normalise(lightloc);
 	//Calculate shadows
-	for(i=0;i<size;i++){
-		for(j=0;j<size;j++){
+	for (int i = 0; i < size; i++) {
+		for (int j = 0; j < size; j++) {
+			XYZ terrainpoint;
 			terrainpoint.x=(float)(i)*scale;
 			terrainpoint.z=(float)(j)*scale;
 			terrainpoint.y=heightmap[i][j]*scale;
 
-			shadowed=0;
-			patchx=(float)(i)*subdivision/size;
-			patchz=(float)(j)*subdivision/size;
+			float shadowed=0;
+			int patchx=(float)(i)*subdivision/size;
+			int patchz=(float)(j)*subdivision/size;
 			if(patchobjectnum[patchx][patchz]){
-				for(k=0;k<patchobjectnum[patchx][patchz];k++){
-					l=patchobjects[patchx][patchz][k];
+				for(int k=0;k<patchobjectnum[patchx][patchz];k++){
+					int l=patchobjects[patchx][patchz][k];
 					if(objects.type[l]!=treetrunktype){
 						testpoint=terrainpoint;
 						testpoint2=terrainpoint+lightloc*50*(1-shadowed);
@@ -1424,7 +1425,7 @@ void Terrain::DoShadows()
 				}
 				if(visibleloading)pgame->LoadingScreen();
 			}
-			brightness=simd::dot(lightloc,normals[i][j]);
+			float brightness = simd::dot(lightloc,normals[i][j]);
 			if(shadowed)brightness*=1-shadowed;
 
 			if(brightness>1)brightness=1;
@@ -1446,11 +1447,11 @@ void Terrain::DoShadows()
 	if(visibleloading)pgame->LoadingScreen();
 
 	//Smooth shadows
-	for(i=0;i<size;i++){
-		for(j=0;j<size;j++){
-			for(k=0;k<3;k++){
-				total=0;
-				todivide=0;
+	for (int i = 0; i < size; i++) {
+		for (int j = 0; j < size; j++) {
+			for (int k = 0; k < 3; k++) {
+				float total=0;
+				int todivide=0;
 				if(i!=0){				total+=colors[j][i-1][k]; todivide++;}
 				if(i!=size-1){				total+=colors[j][i+1][k]; todivide++;}
 				if(j!=0){				total+=colors[j-1][i][k]; todivide++;}
@@ -1466,8 +1467,8 @@ void Terrain::DoShadows()
 		}
 	}
 
-	for(i=0;i<subdivision;i++){
-		for(j=0;j<subdivision;j++){
+	for(int i=0;i<subdivision;i++){
+		for(int j=0;j<subdivision;j++){
 			UpdateVertexArray(i,j);
 		}
 	}

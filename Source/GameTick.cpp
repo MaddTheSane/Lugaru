@@ -1868,7 +1868,7 @@ void Game::Loadlevel(char *name) {
 							funpackf(tfile, "Bf", &dialogueboxcolor[k][l][2]);
 							funpackf(tfile, "Bi", &dialogueboxsound[k][l]);
 
-							bool doneread;
+							//bool doneread;
 
 							funpackf(tfile, "Bi",&templength);
 							if(templength>128||templength<=0)templength=128;
@@ -7103,7 +7103,7 @@ void Game::Tick()
 										player[i].targetheadrotation2=-asin(rotatetarget.y)*360/6.28;
 									}
 
-									bool pause;
+									//bool pause;
 
 									if(leveltime<.5)
 										numenvsounds=0;
