@@ -72,8 +72,7 @@ float LineFacetd(const XYZ &p1,const XYZ &p2,const XYZ &pa,const XYZ &pb,const X
 float LineFacetd(const XYZ &p1, const XYZ &p2, const XYZ &pa,const XYZ &pb,const XYZ &pc,XYZ *p);
 bool PointInTriangle(Vector *p, Vector normal, float p11, float p12, float p13, float p21, float p22, float p23, float p31, float p32, float p33);
 bool LineFacet(Vector p1,Vector p2,Vector pa,Vector pb,Vector pc,Vector *p);
-inline void ReflectVector(XYZ *vel, const XYZ *n);
-inline void ReflectVector(XYZ *vel, const XYZ &n);
+inline void ReflectVector(XYZ &vel, const XYZ &n);
 inline XYZ DoRotation(XYZ thePoint, float xang, float yang, float zang);
 inline XYZ DoRotationRadian(XYZ thePoint, float xang, float yang, float zang);
 inline float findLengthfast(XYZ *point1);
@@ -120,23 +119,17 @@ inline float normaldotproduct(XYZ point1, XYZ point2){
 	GLfloat returnvalue;
 	Normalise(point1);
 	Normalise(point2);
-	//return simd::dot(point1, point2);
+#if 0
+	return simd::dot(point1, point2);
+#else
 	returnvalue=(point1.x*point2.x+point1.y*point2.y+point1.z*point2.z);
 	return returnvalue;
+#endif
 }
 
-inline void ReflectVector(XYZ *vel, const XYZ *n)
+inline void ReflectVector(XYZ &vel, const XYZ &n)
 {
-    ReflectVector(vel, *n);
-}
-
-inline void ReflectVector(XYZ *vel, const XYZ &n)
-{
-	float dotprod=simd::dot(n,*vel);
-	XYZ vn = n * dotprod;
-	XYZ vt = *vel - vn;
-
-	*vel = vt - vn;
+	vel = simd::reflect(vel, n);
 }
 
 inline float findLengthfast(XYZ *point1){

@@ -434,7 +434,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 						}
 
 						terrainnormal=terrain.getNormal(joints[i].position.x*(*scale)+coords->x,joints[i].position.z*(*scale)+coords->z);
-						ReflectVector(&joints[i].velocity,&terrainnormal);
+						ReflectVector(joints[i].velocity, terrainnormal);
 						bounceness=terrainnormal*length(joints[i].velocity)*(abs(normaldotproduct(joints[i].velocity,terrainnormal)));
 						if(!joints[i].locked)damage+=findLengthfast(&bounceness)/4000;
 						if(findLengthfast(&joints[i].velocity)<findLengthfast(&bounceness))bounceness=0;
@@ -613,7 +613,7 @@ float Skeleton::DoConstraints(XYZ *coords,float *scale)
 												objects.roty[k+1]+=joints[i].velocity.z*multiplier*.4;
 											}
 											if(!joints[i].locked)damage+=findLengthfast(&bounceness)/2500;
-											ReflectVector(&joints[i].velocity,&terrainnormal);
+											ReflectVector(joints[i].velocity, terrainnormal);
 											frictionness=abs(normaldotproduct(joints[i].velocity,terrainnormal));//length(bounceness)/length(joints[i].velocity);
 											joints[i].velocity-=bounceness;
 											if(1-friction*frictionness>0)joints[i].velocity*=1-friction*frictionness;

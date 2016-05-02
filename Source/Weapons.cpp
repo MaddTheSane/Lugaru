@@ -27,28 +27,28 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using namespace std;
 
 
-void	Weapons::DoStuff(){
-	static int i,whichpatchx,whichpatchz,j,k,whichhit,m;
-	static XYZ start,end,colpoint,normalrot,footvel,footpoint;
-	static XYZ terrainnormal;
-	static XYZ vel;
-	static XYZ midp;
-	static XYZ newpoint1,newpoint2;
-	static float friction=3.5;
-	static float elasticity=.4;
-	static XYZ bounceness;
-	static float frictionness;
+void Weapons::DoStuff() {
+	int whichpatchx,whichpatchz,whichhit;
+	XYZ start,end,colpoint,normalrot;
+	XYZ terrainnormal;
+	XYZ vel;
+	XYZ midp;
+	XYZ newpoint1,newpoint2;
+	static const float friction=3.5;
+	static const float elasticity=0.4;
+	XYZ bounceness;
+	float frictionness;
 	int closestline;
-	static float closestdistance;
-	static float distance;
-	static XYZ point[3];
-	static XYZ closestpoint;
-	static XYZ closestswordpoint;
-	static float tempmult;
+	float closestdistance;
+	float distance;
+	XYZ point[3];
+	XYZ closestpoint;
+	XYZ closestswordpoint;
+	float tempmult;
 
 	//Move
 
-	for(i=0;i<numweapons;i++){
+	for(int i=0;i<numweapons;i++){
 		if(owner[i]!=-1){
 			oldowner[i]=owner[i];
 		}
@@ -76,7 +76,7 @@ void	Weapons::DoStuff(){
 			tempvel+=speed;
 			sprites.MakeSprite(cloudimpactsprite, position[i]+(tippoint[i]-position[i])*((float)j-2)/8,tempvel*.5, 115/255,73/255,12/255, .15+float(abs(Random()%100)-50)/1000, .7);
 			}*/
-			for(j=0;j<40;j++){
+			for(int j=0;j<40;j++){
 				tempvel.x=float(abs(Random()%100)-50)/20;
 				tempvel.y=float(abs(Random()%100)-50)/20;
 				tempvel.z=float(abs(Random()%100)-50)/20;
@@ -110,8 +110,8 @@ void	Weapons::DoStuff(){
 			whichpatchz=position[i].z/(terrain.size/subdivision*terrain.scale*terraindetail);
 			if(whichpatchx>0&&whichpatchz>0&&whichpatchx<subdivision&&whichpatchz<subdivision)
 				if(terrain.patchobjectnum[whichpatchx][whichpatchz]){
-					for(j=0;j<terrain.patchobjectnum[whichpatchx][whichpatchz];j++){
-						k=terrain.patchobjects[whichpatchx][whichpatchz][j];
+					for(int j=0;j<terrain.patchobjectnum[whichpatchx][whichpatchz];j++){
+						int k=terrain.patchobjects[whichpatchx][whichpatchz][j];
 						start=oldtippoint[i];
 						end=tippoint[i];
 						whichhit=objects.model[k].LineCheck(start,end,colpoint,objects.position[k],objects.rotation[k]);
@@ -172,9 +172,9 @@ void	Weapons::DoStuff(){
 					}
 				}
 				if(velocity[i].x||velocity[i].y||velocity[i].z)
-					for(j=0;j<numplayers;j++){
-						footvel=0;
-						footpoint=DoRotation((player[j].skeleton.joints[player[j].skeleton.jointlabels[abdomen]].position+player[j].skeleton.joints[player[j].skeleton.jointlabels[neck]].position)/2,0,player[j].rotation,0)*player[j].scale+player[j].coords;
+					for(int j=0;j<numplayers;j++){
+						XYZ footvel=0;
+						XYZ footpoint=DoRotation((player[j].skeleton.joints[player[j].skeleton.jointlabels[abdomen]].position+player[j].skeleton.joints[player[j].skeleton.jointlabels[neck]].position)/2,0,player[j].rotation,0)*player[j].scale+player[j].coords;
 						if(owner[i]==-1&&findDistancefastflat(&position[i],&player[j].coords)<1.5&&findDistancefast(&position[i],&player[j].coords)<4&&player[j].weaponstuck==-1&&!player[j].skeleton.free&&j!=oldowner[i]){
 							if((player[j].aitype!=attacktypecutoff||abs(Random()%6)==0||(player[j].targetanimation!=backhandspringanim&&player[j].targetanimation!=rollanim&&player[j].targetanimation!=flipanim&&Random()%2==0))&&!missed[i]){
 								if((player[j].creature==wolftype&&Random()%3!=0&&player[j].weaponactive==-1&&(player[j].isIdle()||player[j].isRun()||player[j].targetanimation==walkanim))||(player[j].creature==rabbittype&&Random()%2==0&&player[j].aitype==attacktypecutoff&&player[j].weaponactive==-1)){
@@ -208,8 +208,10 @@ void	Weapons::DoStuff(){
 									if(j!=0)numthrowkill++;
 									player[j].num_weapons++;
 									player[j].weaponstuck=player[j].num_weapons-1;
-									if(normaldotproduct(player[j].facing,velocity[i])>0)player[j].weaponstuckwhere=1;
-									else player[j].weaponstuckwhere=0;
+									if(normaldotproduct(player[j].facing,velocity[i])>0)
+										player[j].weaponstuckwhere=1;
+									else
+										player[j].weaponstuckwhere=0;
 
 									player[j].weaponids[player[j].num_weapons-1]=i;
 
@@ -270,7 +272,8 @@ void	Weapons::DoStuff(){
 							if(terrain.lineTerrain(oldposition[i],position[i],&colpoint)!=-1){
 								position[i]=colpoint*terrain.scale;
 							}
-							else position[i].y=terrain.getHeight(position[i].x,position[i].z);
+							else
+								position[i].y=terrain.getHeight(position[i].x,position[i].z);
 
 							terrain.MakeDecal(shadowdecalpermanent,position[i],.06,.5,0);
 							normalrot=terrain.getNormal(position[i].x,position[i].z)*-1;
@@ -278,6 +281,7 @@ void	Weapons::DoStuff(){
 							//position[i]-=normalrot*.1;
 							glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 							glPushMatrix();
+							{
 								GLfloat M[16];
 								glLoadIdentity();
 								glRotatef(bigrotation[i],0,1,0);
@@ -293,6 +297,7 @@ void	Weapons::DoStuff(){
 								tippoint[i].x=M[12];
 								tippoint[i].y=M[13];
 								tippoint[i].z=M[14];
+							}
 							glPopMatrix();
 							position[i]-=tippoint[i]*.15;
 
@@ -311,7 +316,7 @@ void	Weapons::DoStuff(){
 							vel[0]=0;
 							vel[1]=0;
 							vel[2]=0;
-							PlaySoundEx( knifesheathesound, samp[knifesheathesound], NULL, true);
+							PlaySoundEx(knifesheathesound, samp[knifesheathesound], NULL, true);
 							OPENAL_3D_SetAttributes(channels[knifesheathesound], gLoc, vel);
 							OPENAL_SetVolume(channels[knifesheathesound], 128);
 							OPENAL_SetPaused(channels[knifesheathesound], false);
@@ -394,8 +399,8 @@ void	Weapons::DoStuff(){
 				whichpatchz=(position[i].z)/(terrain.size/subdivision*terrain.scale*terraindetail);
 				if(whichpatchx>0&&whichpatchz>0&&whichpatchx<subdivision&&whichpatchz<subdivision)
 					if(terrain.patchobjectnum[whichpatchx][whichpatchz]){
-						for(j=0;j<terrain.patchobjectnum[whichpatchx][whichpatchz];j++){
-							k=terrain.patchobjects[whichpatchx][whichpatchz][j];
+						for(int j=0;j<terrain.patchobjectnum[whichpatchx][whichpatchz];j++){
+							int k=terrain.patchobjects[whichpatchx][whichpatchz][j];
 
 							if(firstfree[i]){
 								if(type[i]!=staff){
@@ -439,18 +444,20 @@ void	Weapons::DoStuff(){
 								hitsomething[i]=1;
 								position[i]=colpoint;
 								terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
-								ReflectVector(&velocity[i],&terrainnormal);
+								ReflectVector(velocity[i], terrainnormal);
 								position[i]+=terrainnormal*.002;
 
 								bounceness=terrainnormal*simd::length(velocity[i])*(abs(normaldotproduct(velocity[i],terrainnormal)));
 								if(findLengthfast(&velocity[i])<findLengthfast(&bounceness))bounceness=0;
 								frictionness=abs(normaldotproduct(velocity[i],terrainnormal));
 								velocity[i]-=bounceness;
-								if(1-friction*frictionness>0)velocity[i]*=1-friction*frictionness;
-								else velocity[i]=0;
+								if(1-friction*frictionness>0)
+									velocity[i]*=1-friction*frictionness;
+								else
+									velocity[i]=0;
 								velocity[i]+=bounceness*elasticity;
 
-								if(findLengthfast(&bounceness)>1){
+								if (findLengthfast(&bounceness) > 1) {
 									float gLoc[3];
 									float vel[3];
 									//int whichsound=clank1sound+abs(Random()%4);
@@ -471,11 +478,11 @@ void	Weapons::DoStuff(){
 							start=oldtippoint[i];
 							end=tippoint[i];
 							whichhit=objects.model[k].LineCheck(start,end,colpoint,objects.position[k],objects.rotation[k]);
-							if(whichhit!=-1){
+							if (whichhit != -1) {
 								hitsomething[i]=1;
 								tippoint[i]=colpoint;
 								terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
-								ReflectVector(&tipvelocity[i],&terrainnormal);
+								ReflectVector(tipvelocity[i], terrainnormal);
 								tippoint[i]+=terrainnormal*.002;
 
 								bounceness=terrainnormal*simd::length(tipvelocity[i])*(abs(normaldotproduct(tipvelocity[i],terrainnormal)));
@@ -486,13 +493,16 @@ void	Weapons::DoStuff(){
 								else tipvelocity[i]=0;
 								tipvelocity[i]+=bounceness*elasticity;
 
-								if(findLengthfast(&bounceness)>1){
+								if (findLengthfast(&bounceness) > 1) {
 									float gLoc[3];
 									float vel[3];
 									//int whichsound=clank1sound+abs(Random()%4);
 									int whichsound;
-									if(type[i]==staff)whichsound=footstepsound3+abs(Random()%2);
-									if(type[i]!=staff)whichsound=clank1sound+abs(Random()%4);gLoc[0]=position[i].x;
+									if(type[i]==staff) {
+										whichsound=footstepsound3+abs(Random()%2);
+									} else {
+										whichsound=clank1sound+abs(Random()%4);gLoc[0]=position[i].x;
+									}
 									gLoc[0]=position[i].x;
 									gLoc[1]=position[i].y;
 									gLoc[2]=position[i].z;
@@ -507,7 +517,7 @@ void	Weapons::DoStuff(){
 							}
 
 							if((objects.type[k]!=boxtype&&objects.type[k]!=platformtype&&objects.type[k]!=walltype&&objects.type[k]!=weirdtype)||objects.rotation2[k]!=0)
-								for(m=0;m<2;m++){
+								for (int m = 0; m < 2; m++) {
 									mid=(position[i]*(21+(float)m*10)+tippoint[i]*(19-(float)m*10))/40;
 									oldmid2=mid;
 									oldmid=(oldposition[i]*(21+(float)m*10)+oldtippoint[i]*(19-(float)m*10))/40;
@@ -519,7 +529,7 @@ void	Weapons::DoStuff(){
 										hitsomething[i]=1;
 										mid=colpoint;
 										terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
-										ReflectVector(&velocity[i],&terrainnormal);
+										ReflectVector(velocity[i], terrainnormal);
 
 										bounceness=terrainnormal*simd::length(velocity[i])*(abs(normaldotproduct(velocity[i],terrainnormal)));
 										if(findLengthfast(&velocity[i])<findLengthfast(&bounceness))bounceness=0;
@@ -556,11 +566,11 @@ void	Weapons::DoStuff(){
 									start=oldmid;
 									end=mid;
 									whichhit=objects.model[k].LineCheck(start,end,colpoint,objects.position[k],objects.rotation[k]);
-									if(whichhit!=-1){
+									if (whichhit!=-1) {
 										hitsomething[i]=1;
 										mid=colpoint;
 										terrainnormal=DoRotation(objects.model[k].facenormals[whichhit],0,objects.rotation[k],0)*-1;
-										ReflectVector(&tipvelocity[i],&terrainnormal);
+										ReflectVector(tipvelocity[i], terrainnormal);
 
 										bounceness=terrainnormal*simd::length(tipvelocity[i])*(abs(normaldotproduct(tipvelocity[i],terrainnormal)));
 										if(findLengthfast(&tipvelocity[i])<findLengthfast(&bounceness))bounceness=0;
@@ -638,18 +648,23 @@ void	Weapons::DoStuff(){
 					whichhit=terrain.lineTerrain(oldposition[i],position[i],&colpoint);
 					if(whichhit!=-1||position[i].y<terrain.getHeight(position[i].x,position[i].z)){
 						hitsomething[i]=1;
-						if(whichhit!=-1)position[i]=colpoint*terrain.scale;
-						else position[i].y=terrain.getHeight(position[i].x,position[i].z);
+						if (whichhit!=-1)
+							position[i]=colpoint*terrain.scale;
+						else
+							position[i].y=terrain.getHeight(position[i].x,position[i].z);
 
 						terrainnormal=terrain.getNormal(position[i].x,position[i].z);
-						ReflectVector(&velocity[i],&terrainnormal);
+						ReflectVector(velocity[i], terrainnormal);
 						position[i]+=terrainnormal*.002;
-						bounceness=terrainnormal*simd::length(velocity[i])*(abs(normaldotproduct(velocity[i],terrainnormal)));
-						if(findLengthfast(&velocity[i])<findLengthfast(&bounceness))bounceness=0;
+						bounceness = terrainnormal * simd::length(velocity[i]) * (abs(normaldotproduct(velocity[i], terrainnormal)));
+						if(findLengthfast(&velocity[i])<findLengthfast(&bounceness))
+							bounceness=0;
 						frictionness=abs(normaldotproduct(velocity[i],terrainnormal));
 						velocity[i]-=bounceness;
-						if(1-friction*frictionness>0)velocity[i]*=1-friction*frictionness;
-						else velocity[i]=0;
+						if(1-friction*frictionness>0)
+							velocity[i]*=1-friction*frictionness;
+						else
+							velocity[i]=0;
 						if(terrain.getOpacity(position[i].x,position[i].z)<.2)velocity[i]+=bounceness*elasticity*.3;
 						else velocity[i]+=bounceness*elasticity;
 //if (type[i]==knife) printf("velocity of knife %d now %f,%f,%f.\n", i, velocity[i].x, velocity[i].y, velocity[i].z);
@@ -661,7 +676,8 @@ void	Weapons::DoStuff(){
 								if(type[i]==staff)whichsound=footstepsound3+abs(Random()%2);
 								if(type[i]!=staff)whichsound=clank1sound+abs(Random()%4);
 							}
-							else whichsound=footstepsound+abs(Random()%2);
+							else
+								whichsound=footstepsound+abs(Random()%2);
 							gLoc[0]=position[i].x;
 							gLoc[1]=position[i].y;
 							gLoc[2]=position[i].z;
@@ -670,11 +686,13 @@ void	Weapons::DoStuff(){
 							vel[2]=0;
 							PlaySoundEx( whichsound, samp[whichsound], NULL, true);
 							OPENAL_3D_SetAttributes(channels[whichsound], gLoc, vel);
-							if(terrain.getOpacity(position[i].x,position[i].z)>.2)OPENAL_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
-							else OPENAL_SetVolume(channels[whichsound], 32*findLengthfast(&bounceness));
+							if(terrain.getOpacity(position[i].x,position[i].z)>.2)
+								OPENAL_SetVolume(channels[whichsound], 128*findLengthfast(&bounceness));
+							else
+								OPENAL_SetVolume(channels[whichsound], 32*findLengthfast(&bounceness));
 							OPENAL_SetPaused(channels[whichsound], false);
 
-							if(terrain.getOpacity(position[i].x,position[i].z)<.2){
+							if (terrain.getOpacity(position[i].x,position[i].z)<.2) {
 								XYZ terrainlight;
 								terrainlight=terrain.getLighting(position[i].x,position[i].z);
 								if(environment==snowyenvironment){
@@ -691,11 +709,13 @@ void	Weapons::DoStuff(){
 					}
 					whichhit=terrain.lineTerrain(oldtippoint[i],tippoint[i],&colpoint);
 					if(whichhit!=-1||tippoint[i].y<terrain.getHeight(tippoint[i].x,tippoint[i].z)){
-						if(whichhit!=-1)tippoint[i]=colpoint*terrain.scale;
-						else tippoint[i].y=terrain.getHeight(tippoint[i].x,tippoint[i].z);
+						if(whichhit!=-1)
+							tippoint[i]=colpoint*terrain.scale;
+						else
+							tippoint[i].y=terrain.getHeight(tippoint[i].x,tippoint[i].z);
 
 						terrainnormal=terrain.getNormal(tippoint[i].x,tippoint[i].z);
-						ReflectVector(&tipvelocity[i],&terrainnormal);
+						ReflectVector(tipvelocity[i], terrainnormal);
 						tippoint[i]+=terrainnormal*.002;
 						bounceness=terrainnormal*simd::length(tipvelocity[i])*(abs(normaldotproduct(tipvelocity[i],terrainnormal)));
 						if(findLengthfast(&tipvelocity[i])<findLengthfast(&bounceness))bounceness=0;
@@ -754,7 +774,7 @@ void	Weapons::DoStuff(){
 						mid.y=terrain.getHeight(mid.x,mid.z);
 
 						terrainnormal=terrain.getNormal(mid.x,mid.z);
-						ReflectVector(&velocity[i],&terrainnormal);
+						ReflectVector(velocity[i], terrainnormal);
 						//mid+=terrainnormal*.002;
 						bounceness=terrainnormal*simd::length(velocity[i])*(abs(normaldotproduct(velocity[i],terrainnormal)));
 						if(findLengthfast(&velocity[i])<findLengthfast(&bounceness))bounceness=0;
@@ -798,7 +818,7 @@ void	Weapons::DoStuff(){
 						mid.y=terrain.getHeight(mid.x,mid.z);
 
 						terrainnormal=terrain.getNormal(mid.x,mid.z);
-						ReflectVector(&tipvelocity[i],&terrainnormal);
+						ReflectVector(tipvelocity[i], terrainnormal);
 						//mid+=terrainnormal*.002;
 						bounceness=terrainnormal*simd::length(tipvelocity[i])*(abs(normaldotproduct(tipvelocity[i],terrainnormal)));
 						if(findLengthfast(&tipvelocity[i])<findLengthfast(&bounceness))bounceness=0;
