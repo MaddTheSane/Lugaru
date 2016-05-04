@@ -581,6 +581,9 @@ bool Terrain::load(const char *fileName)
 
 void Terrain::CalculateNormals()
 {
+#if 1
+	memset(normals, 0, sizeof(normals));
+#else
 	for(int i=0; i<size; i++){
 		for(int j=0; j<size; j++){
 			normals[i][j].x=0;
@@ -588,6 +591,7 @@ void Terrain::CalculateNormals()
 			normals[i][j].z=0;
 		}
 	}
+#endif
 
 	for(int i=0;i<size-1;i++){
 		for(int j=0;j<size-1;j++){
@@ -646,7 +650,8 @@ void Terrain::CalculateNormals()
 }
 
 void Terrain::drawpatch(int whichx, int whichy, float opacity){
-	if(opacity>=1)glDisable(GL_BLEND);
+	if(opacity>=1)
+		glDisable(GL_BLEND);
 	if(opacity<1){
 		glEnable(GL_BLEND);
 		UpdateTransparency(whichx,whichy);
