@@ -63,21 +63,20 @@ angle_axis Quat_2_AA(quaternion Quat);
 void Quat_2_Matrix(quaternion Quat, Matrix_t m);
 XYZ Quat2Vector(quaternion Quat);
 
-inline void Normalise(XYZ &vectory);
+static inline void Normalise(XYZ &vectory);
 inline float normaldotproduct(XYZ point1, XYZ point2);
-inline float fast_sqrt (register float arg);
+static inline float fast_sqrt (register float arg);
 bool PointInTriangle(const XYZ *p, const XYZ normal, const XYZ *p1, const XYZ *p2, const XYZ *p3);
 bool LineFacet(XYZ p1,XYZ p2,XYZ pa,XYZ pb,XYZ pc,XYZ *p);
 float LineFacetd(const XYZ &p1,const XYZ &p2,const XYZ &pa,const XYZ &pb,const XYZ &pc, const XYZ &n, XYZ &p);
 float LineFacetd(const XYZ &p1, const XYZ &p2, const XYZ &pa,const XYZ &pb,const XYZ &pc,XYZ *p);
 bool PointInTriangle(Vector *p, Vector normal, float p11, float p12, float p13, float p21, float p22, float p23, float p31, float p32, float p33);
 bool LineFacet(Vector p1,Vector p2,Vector pa,Vector pb,Vector pc,Vector *p);
-inline void ReflectVector(XYZ *vel, const XYZ *n);
-inline void ReflectVector(XYZ *vel, const XYZ &n);
+static inline void ReflectVector(XYZ &vel, const XYZ &n);
 inline XYZ DoRotation(XYZ thePoint, float xang, float yang, float zang);
 inline XYZ DoRotationRadian(XYZ thePoint, float xang, float yang, float zang);
 inline float findLengthfast(XYZ *point1);
-inline float findDistancefast(XYZ *point1, XYZ *point2);
+static inline float findDistancefast(XYZ *point1, XYZ *point2);
 inline float findDistancefast(const XYZ &point1, const XYZ &point2);
 inline float findDistancefastflat(XYZ *point1, XYZ *point2);
 inline float findDistancefastflat(const XYZ &point1, const XYZ &point2);
@@ -90,13 +89,13 @@ bool sphere_line_intersection (
 inline bool DistancePointLine( XYZ *Point, XYZ *LineStart, XYZ *LineEnd, float *Distance, XYZ *Intersection );
 
 
-inline void Normalise(XYZ &vectory) {
+static inline void Normalise(XYZ &vectory) {
 	vectory = simd::normalize(vectory);
 }
 
-inline float fast_sqrt (register float arg)
+static inline float fast_sqrt (register float arg)
 {	
-#if PLATFORM_MACOSX
+#if __ppc__
 	// Can replace with slower return std::sqrt(arg);
 	register float result;
 
@@ -120,30 +119,24 @@ inline float normaldotproduct(XYZ point1, XYZ point2){
 	GLfloat returnvalue;
 	Normalise(point1);
 	Normalise(point2);
-	//return simd::dot(point1, point2);
+#if 0
+	return simd::dot(point1, point2);
+#else
 	returnvalue=(point1.x*point2.x+point1.y*point2.y+point1.z*point2.z);
 	return returnvalue;
+#endif
 }
 
-inline void ReflectVector(XYZ *vel, const XYZ *n)
+static inline void ReflectVector(XYZ &vel, const XYZ &n)
 {
-    ReflectVector(vel, *n);
-}
-
-inline void ReflectVector(XYZ *vel, const XYZ &n)
-{
-	float dotprod=simd::dot(n,*vel);
-	XYZ vn = n * dotprod;
-	XYZ vt = *vel - vn;
-
-	*vel = vt - vn;
+	vel = simd::reflect(vel, n);
 }
 
 inline float findLengthfast(XYZ *point1){
 	return((point1->x)*(point1->x)+(point1->y)*(point1->y)+(point1->z)*(point1->z));
 }
 
-inline float findDistancefast(XYZ *point1, XYZ *point2){
+static inline float findDistancefast(XYZ *point1, XYZ *point2){
 	return findDistancefast(*point1, *point2);
 }
 
@@ -160,7 +153,7 @@ inline float findDistancefastflat(const XYZ &point1, const XYZ &point2) {
 }
 
 inline XYZ DoRotation(XYZ thePoint, float xang, float yang, float zang){
-	static XYZ newpoint;
+	XYZ newpoint = {0};
 	if(xang){
 		xang*=6.283185f;
 		xang/=360;
@@ -199,7 +192,7 @@ inline XYZ DoRotation(XYZ thePoint, float xang, float yang, float zang){
 	return thePoint;
 }
 
-inline float square(const float f ) { return (f*f) ;}
+static inline float square(const float f ) { return (f*f) ;}
 
 inline bool sphere_line_intersection (
 									  float x1, float y1 , float z1,
@@ -292,7 +285,7 @@ inline bool sphere_line_intersection (
 }
 
 inline XYZ DoRotationRadian(XYZ thePoint, float xang, float yang, float zang){
-	XYZ newpoint;
+	XYZ newpoint = {0};
 	XYZ oldpoint = thePoint;
 
 	if(yang!=0){
@@ -320,7 +313,7 @@ inline XYZ DoRotationRadian(XYZ thePoint, float xang, float yang, float zang){
 
 }
 
-inline bool DistancePointLine( XYZ *Point, XYZ *LineStart, XYZ *LineEnd, float *Distance, XYZ *Intersection )
+inline bool DistancePointLine(XYZ *Point, XYZ *LineStart, XYZ *LineEnd, float *Distance, XYZ *Intersection)
 {
 	float U;
 

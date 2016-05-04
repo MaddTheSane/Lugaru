@@ -29,7 +29,7 @@ using namespace std;
 
 void Text::LoadFontTexture(const char *fileName)
 {
-	GLuint		type;
+	//GLuint		type;
 
 	LOGFUNC;
 
