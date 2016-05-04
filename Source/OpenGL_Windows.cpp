@@ -87,6 +87,8 @@ extern float slomofreq;
 #ifdef WIN32
 #include <shellapi.h>
 #include "win-res/resource.h"
+#else
+#include <unistd.h>
 #endif
 
 using namespace std;
