@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
 #include <stdio.h>
-#include <float.h>
+#include <math.h>
 
 // stuff to make Mac code compatable with Windows
 
@@ -42,11 +42,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 typedef bool Boolean;
 
-
-struct Point
-{
-	short v;
-	short h;
+struct Point {
+    short v;
+    short h;
 };
 
 typedef signed char SInt8;
@@ -60,18 +58,16 @@ void CopyCStringToPascal( const char* src, unsigned char dst[256]);
 void CopyPascalStringToC( const unsigned char* src, char* dst);
 
 
-typedef struct AbsoluteTime
-{
+typedef struct AbsoluteTime {
     unsigned long   hi;
     unsigned long   lo;
 } AbsoluteTime;
 
-AbsoluteTime UpTime();		// NOTE: returns time since app started, not system start
+AbsoluteTime UpTime(); // NOTE: returns time since app started, not system start
 
 typedef long Duration;
 
-enum
-{
+enum {
     durationMicrosecond             = -1,
     durationMillisecond             = 1,
     durationSecond                  = 1000,
@@ -85,11 +81,13 @@ enum
 Duration AbsoluteDeltaToDuration( AbsoluteTime& a, AbsoluteTime& b);
 
 
+/*
 inline bool isnormal( double x)
 {
-	int ret = _fpclass( x);
-	return (ret == _FPCLASS_NN || ret == _FPCLASS_PN);
+    int ret = _fpclass( x);
+    return (ret == _FPCLASS_NN || ret == _FPCLASS_PN);
 }
+*/
 
 typedef unsigned int uintptr_t;
 
@@ -99,20 +97,20 @@ char* ConvertFileName( const char* orgfilename);
 char* ConvertFileName( const char* orgfilename, const char* junk);
 
 
-#define fopen( a, b) fopen( ConvertFileName( a), b);
+#define fopen(a, b) fopen(ConvertFileName(a), b);
 
-inline float abs( float f)
+inline float abs(float f)
 {
-	if (f < 0)
-		return -f;
-	return f;
+    if (f < 0)
+        return -f;
+    return f;
 }
 
-inline double abs( double f)
+inline double abs(double f)
 {
-	if (f < 0)
-		return -f;
-	return f;
+    if (f < 0)
+        return -f;
+    return f;
 }
 
 

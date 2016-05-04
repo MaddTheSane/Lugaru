@@ -5,11 +5,9 @@ cmake_minimum_required(VERSION 2.6)
 set(SRCDIR "${CMAKE_CURRENT_SOURCE_DIR}/Source")
 set(DEPDIR "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies")
 
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
-      "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel"
-      FORCE)
-endif(NOT CMAKE_BUILD_TYPE)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 --std=c++11")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -pg --std=c++11")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -O2 -std=c++11")
 
 if(NOT LUGARU_INSTALL_PREFIX)
   if(WIN32)
@@ -32,9 +30,9 @@ endif(MINGW)
 
 if(APPLE)
 	set(CMAKE_OSX_ARCHITECTURES "i386;x86_64;ppc" CACHE STRING "Build architectures for OSX")
-	set(CMAKE_OSX_DEPLOYMENT_TARGET "10.5" CACHE STRING 
+	set(CMAKE_OSX_DEPLOYMENT_TARGET "10.5" CACHE STRING
 		"Minimum OS X version to target for deployment (at runtime); newer APIs weak linked. Set to empty string for default value")
-	set(CMAKE_OSX_SYSROOT "/Developer/SDKs/MacOSX10.5.sdk" CACHE PATH 
+	set(CMAKE_OSX_SYSROOT "/Developer/SDKs/MacOSX10.5.sdk" CACHE PATH
 		"The product will be built against the headers and libraries located inside the indicated SDK.")
 endif(APPLE)
 
@@ -52,64 +50,70 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 set(LUGARU_SRCS
 	${SRCDIR}/Frustum.cpp
+	${SRCDIR}/Account.cpp
+	${SRCDIR}/Game.cpp
 	${SRCDIR}/GameDraw.cpp
 	${SRCDIR}/GameInitDispose.cpp
 	${SRCDIR}/GameTick.cpp
 	${SRCDIR}/Globals.cpp
 	${SRCDIR}/Lights.cpp
+	${SRCDIR}/Menu.cpp
 	${SRCDIR}/Models.cpp
 	${SRCDIR}/Objects.cpp
 	${SRCDIR}/pack.c
-	${SRCDIR}/pack_private.c
 	${SRCDIR}/Person.cpp
 	${SRCDIR}/private.c
 	${SRCDIR}/Quaternions.cpp
-	${SRCDIR}/Random.c
 	${SRCDIR}/Skeleton.cpp
 	${SRCDIR}/Skybox.cpp
-	${SRCDIR}/Sprites.cpp
+	${SRCDIR}/Sprite.cpp
 	${SRCDIR}/Terrain.cpp
+	${SRCDIR}/Texture.cpp
 	${SRCDIR}/Text.cpp
 	${SRCDIR}/TGALoader.cpp
 	${SRCDIR}/unpack.c
-	${SRCDIR}/unpack_private.c
 	${SRCDIR}/Weapons.cpp
 	${SRCDIR}/OpenGL_Windows.cpp
 	${SRCDIR}/openal_wrapper.cpp
-	${SRCDIR}/WinInput.cpp
+	${SRCDIR}/Input.cpp
+	${SRCDIR}/Settings.cpp
+	${SRCDIR}/Stereo.cpp
+	${SRCDIR}/Animation.cpp
+	${SRCDIR}/Sounds.cpp
+	${SRCDIR}/Awards.cpp
 )
 
 set(LUGARU_H
-	${SRCDIR}/Constants.h
 	${SRCDIR}/Frustum.h
+	${SRCDIR}/Account.h
 	${SRCDIR}/Game.h
 	${SRCDIR}/Lights.h
-	${SRCDIR}/LinkedList.h
+	${SRCDIR}/Menu.h
 	${SRCDIR}/Models.h
 	${SRCDIR}/Objects.h
 	${SRCDIR}/Person.h
 	${SRCDIR}/PhysicsMath.h
-	${SRCDIR}/Pointer.h
 	${SRCDIR}/Quaternions.h
 	${SRCDIR}/Random.h
 	${SRCDIR}/Skeleton.h
 	${SRCDIR}/Skybox.h
-	${SRCDIR}/Sprites.h
+	${SRCDIR}/Sprite.h
 	${SRCDIR}/TGALoader.h
 	${SRCDIR}/Terrain.h
+	${SRCDIR}/Texture.h
 	${SRCDIR}/Text.h
 	${SRCDIR}/Weapons.h
-	${SRCDIR}/WinInput.h
+	${SRCDIR}/Input.h
 	${SRCDIR}/alstubs.h
 	${SRCDIR}/binio.h
 	${SRCDIR}/openal_wrapper.h
 	${SRCDIR}/gamegl.h
 	${SRCDIR}/glstubs.h
-	${SRCDIR}/mmgr.h
-	${SRCDIR}/nommgr.h
-	${SRCDIR}/pack_private.h
 	${SRCDIR}/private.h
-	${SRCDIR}/unpack_private.h
+	${SRCDIR}/Settings.h
+	${SRCDIR}/Stereo.h
+	${SRCDIR}/Animation.h
+	${SRCDIR}/Sounds.h
 )
 
 if(UNIX)
@@ -492,7 +496,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/Source
 )
 
-set(LUGARU_LIBS ${OPENAL_LIBRARY} ${PNG_LIBRARY} ${JPEG_LIBRARY} ${ZLIB_LIBRARIES} ${SDL_LIBRARY} ${GLU_LIBRARY} ${OPENGL_LIBRARY} ${VORBISFILE_LIBRARY} ${OGG_LIBRARY} ${PLATFORM_LIBS})
+set(LUGARU_LIBS ${OPENAL_LIBRARY} ${PNG_LIBRARY} ${JPEG_LIBRARY} ${ZLIB_LIBRARIES} ${SDL_LIBRARY} ${OPENGL_glu_LIBRARY} ${VORBISFILE_LIBRARY} ${OGG_LIBRARY} ${PLATFORM_LIBS})
 
 
 if(WIN32)
