@@ -619,7 +619,7 @@ static void ch_type(Game *game, const char *args)
   for (i = 0; i < n; i++)
     if (stripfx(args, editortypenames[i]))
       {
-	editoractive = i;
+	editoractive = editortypes(i);
 	break;
       }
 }
@@ -3139,7 +3139,7 @@ void Game::Tick()
 			else
 				oldbutton=0;
 		}
-		if (mainmenu==9) {
+		if (mainmenu == 9) {
 			if (Button() && !oldbutton && selected < numchallengelevels && selected >= 0 && selected <= accountprogress[accountactive]) {
 				float gLoc[3]={0,0,0};
 				float vel[3]={0,0,0};
@@ -3811,8 +3811,10 @@ void Game::Tick()
 			OPENAL_SetVolume(channels[consolesuccesssound], 256);
 			OPENAL_SetPaused(channels[consolesuccesssound], false);
 		}
-		if(winfreeze==0)oldwinfreeze=winfreeze;
-		else oldwinfreeze++;
+		if(winfreeze==0)
+			oldwinfreeze=winfreeze;
+		else
+			oldwinfreeze++;
 
 		if((IsKeyDown(theKeyMap, jumpkey)||IsKeyDown(theKeyMap, MAC_SPACE_KEY))&&!oldjumpkeydown&&!campaign){
 			if(winfreeze)winfreeze=0;
@@ -8967,15 +8969,12 @@ void	Game::TickOnce(){
 }
 
 void	Game::TickOnceAfter(){
-	XYZ colviewer;
-	XYZ coltarget;
-	XYZ target;
-	XYZ col;
-	float brotate;
-	XYZ facing;
-	int i,j;
+	static XYZ colviewer;
+	//static XYZ coltarget;
+	static XYZ target;
+	static XYZ col;
+	static XYZ facing;
 	static float changedelay;
-	bool alldead;
 	float unseendelay;
 	float cameraspeed;
 
@@ -8983,21 +8982,22 @@ void	Game::TickOnceAfter(){
 
 		if(environment==snowyenvironment)
 			music1=stream_music1snow;
-		if(environment==grassyenvironment)
+		else if(environment==grassyenvironment)
 			music1=stream_music1grass;
-		if(environment==desertenvironment)
+		else if(environment==desertenvironment)
 			music1=stream_music1desert;
 
 		realthreat=0;
 
 		musictype=music1;
-		for(i=0;i<numplayers;i++){
+		for (int i = 0; i < numplayers; i++) {
 			if((player[i].aitype==attacktypecutoff||player[i].aitype==getweapontype||player[i].aitype==gethelptype||player[i].aitype==searchtype)&&!player[i].dead/*&&player[i].surprised<=0*/&&(player[i].targetanimation!=sneakattackedanim&&player[i].targetanimation!=knifesneakattackedanim&&player[i].targetanimation!=swordsneakattackedanim)){
 				musictype=stream_music2;
 				realthreat=1;
 			}
 		}
-		if(player[0].dead)musictype=stream_music3;
+		if(player[0].dead)
+			musictype=stream_music3;
 
 
 		if(musictype==stream_music2){
@@ -9038,12 +9038,18 @@ void	Game::TickOnceAfter(){
 		}
 		musicselected=musictype;
 
-		if(musicselected==music1)musicvolume[0]+=multiplier*450;
-		else musicvolume[0]-=multiplier*450;
-		if(musicselected==stream_music2)musicvolume[1]+=multiplier*450;
-		else musicvolume[1]-=multiplier*450;
-		if(musicselected==stream_music3)musicvolume[2]+=multiplier*450;
-		else musicvolume[2]-=multiplier*450;
+		if(musicselected==music1)
+			musicvolume[0]+=multiplier*450;
+		else
+			musicvolume[0]-=multiplier*450;
+		if(musicselected==stream_music2)
+			musicvolume[1]+=multiplier*450;
+		else
+			musicvolume[1]-=multiplier*450;
+		if(musicselected==stream_music3)
+			musicvolume[2]+=multiplier*450;
+		else
+			musicvolume[2]-=multiplier*450;
 		/*
 		if(musicselected==music1)musicvolume[0]+=multiplier*100;
 		else musicvolume[0]-=multiplier*450;
@@ -9053,7 +9059,7 @@ void	Game::TickOnceAfter(){
 		if(musicselected==music3)musicvolume[2]+=multiplier*450;
 		else musicvolume[2]-=multiplier*450;*/
 
-		for(i=0;i<3;i++){
+		for(int i=0;i<3;i++){
 			if(musicvolume[i]<0)musicvolume[i]=0;
 			if(musicvolume[i]>512)musicvolume[i]=512;
 		}
@@ -9080,7 +9086,7 @@ void	Game::TickOnceAfter(){
 			OPENAL_SetPaused(channels[stream_music2], true);
 			OPENAL_SetPaused(channels[stream_music3], true);
 
-			for(i=0;i<4;i++){
+			for(int i=0;i<4;i++){
 				oldmusicvolume[i]=0;
 				musicvolume[i]=0;
 			}
@@ -9107,14 +9113,14 @@ void	Game::TickOnceAfter(){
 				OPENAL_SetVolume(channels[stream_music3], musicvolume[2]);
 			}
 
-			for(i=0;i<3;i++){
+			for (int i = 0; i < 3; i++) {
 				oldmusicvolume[i]=musicvolume[i];
 			}
 		}
 
 		killhotspot=2;
 		if(numhotspots)
-			for(i=0;i<numhotspots;i++){
+			for(int i=0;i<numhotspots;i++){
 				if(hotspottype[i]>10&&hotspottype[i]<20){
 					if(player[hotspottype[i]-10].dead==0){
 						killhotspot=0;
@@ -9128,7 +9134,7 @@ void	Game::TickOnceAfter(){
 
 			winhotspot=0;
 			if(numhotspots)
-				for(i=0;i<numhotspots;i++){
+				for(int i=0;i<numhotspots;i++){
 					if(hotspottype[i]==-1){
 						if(findDistancefast(&player[0].coords,&hotspot[i])<hotspotsize[i])
 							winhotspot=1;
@@ -9137,32 +9143,37 @@ void	Game::TickOnceAfter(){
 
 				int numalarmed=0;
 				if(numplayers>1)
-					for(i=1;i<numplayers;i++){
-						if(!player[i].dead&&player[i].aitype==attacktypecutoff&&player[i].surprised<=0)numalarmed++;
+					for(int i=1;i<numplayers;i++){
+						if(!player[i].dead&&player[i].aitype==attacktypecutoff&&player[i].surprised<=0)
+							numalarmed++;
 					}
-					if(numalarmed>maxalarmed)maxalarmed=numalarmed;
+					if(numalarmed>maxalarmed)
+						maxalarmed=numalarmed;
 
 					if(changedelay<=0&&!loading&&!editorenabled&&gameon&&!tutoriallevel&&changedelay!=-999&&!won){
 						if(player[0].dead&&changedelay<=0){
 							changedelay=1;
 							targetlevel=whichlevel;
 						}
-						alldead=1;
+						allDead=true;
 						if(numplayers>1)
-							for(i=1;i<numplayers;i++){
-								if(!player[i].dead&&player[i].howactive<typedead1)alldead=0;
+							for(int i=1;i<numplayers;i++){
+								if(!player[i].dead && player[i].howactive<typedead1)
+									allDead=false;
 							}
 
 
-							if(alldead&&!player[0].dead&&maptype==mapkilleveryone){
+							if(allDead&&!player[0].dead&&maptype==mapkilleveryone){
 								changedelay=1;
 								targetlevel=whichlevel+1;
-								if(targetlevel>numchallengelevels-1)targetlevel=0;
+								if(targetlevel>numchallengelevels-1)
+									targetlevel=0;
 							}
 							if(winhotspot||windialogue){
 								changedelay=0.1;
 								targetlevel=whichlevel+1;
-								if(targetlevel>numchallengelevels-1)targetlevel=0;
+								if(targetlevel>numchallengelevels-1)
+									targetlevel=0;
 							}
 
 
@@ -9199,18 +9210,19 @@ void	Game::TickOnceAfter(){
 					}
 
 					if(!winfreeze){
-
 						if(leveltime<1){
 							loading=0;
 							changedelay=.1;
-							alldead=0;
+							allDead=false;
 							winhotspot=0;
 							killhotspot=0;
 						}
 
 						if(!editorenabled&&gameon&&!mainmenu){
-							if(changedelay!=-999)changedelay-=multiplier/7;
-							if(player[0].dead)targetlevel=whichlevel;
+							if(changedelay!=-999)
+								changedelay-=multiplier/7;
+							if(player[0].dead)
+								targetlevel=whichlevel;
 							if(loading==2&&!campaign){
 								flashr=1;
 								flashg=0;
@@ -9243,7 +9255,7 @@ void	Game::TickOnceAfter(){
 
 								loading=3;
 							}
-							if(loading==2&&targetlevel==whichlevel){
+							if (loading == 2 && targetlevel == whichlevel) {
 								flashr=1;
 								flashg=0;
 								flashb=0;
@@ -9260,20 +9272,8 @@ void	Game::TickOnceAfter(){
 								OPENAL_SetPaused(channels[firestartsound], false);
 								OPENAL_Sample_SetMinMaxDistance(samp[firestartsound], 8.0f, 2000.0f);
 
-								for(i=0;i<255;i++){
-									mapname[i]='\0';
-								}
-								mapname[0]=':';
-								mapname[1]='D';
-								mapname[2]='a';
-								mapname[3]='t';
-								mapname[4]='a';
-								mapname[5]=':';
-								mapname[6]='M';
-								mapname[7]='a';
-								mapname[8]='p';
-								mapname[9]='s';
-								mapname[10]=':';
+								memset(mapname, 0, sizeof(mapname));
+								strcmp(mapname, ":Data:Maps:");
 								strcat(mapname,campaignmapname[levelorder[accountcampaignchoicesmade[accountactive]]]);//[campaignchoicewhich[whichchoice]]);
 								Loadlevel(mapname);
 
@@ -9286,16 +9286,15 @@ void	Game::TickOnceAfter(){
 
 								loading=3;
 							}
-							if(changedelay<=-999&&whichlevel!=-2&&!loading&&(player[0].dead||(alldead&&maptype==mapkilleveryone)||(winhotspot)||(killhotspot))&&!winfreeze)
-								loading=1;
-							if((player[0].dead||(alldead&&maptype==mapkilleveryone)||(winhotspot)||(windialogue)||(killhotspot))&&changedelay<=0){
-                        {
-									if(whichlevel!=-2&&!loading&&!player[0].dead){
-										winfreeze=1;
-										changedelay=-999;
-									}
-									if(player[0].dead)loading=1;
+							if(changedelay<=-999&&whichlevel!=-2&&!loading&&(player[0].dead||(allDead&&maptype==mapkilleveryone)||(winhotspot)||(killhotspot))&&!winfreeze)
+								loading = 1;
+							if((player[0].dead||(allDead&&maptype==mapkilleveryone)||(winhotspot)||(windialogue)||(killhotspot))&&changedelay<=0){
+								if(whichlevel!=-2&&!loading&&!player[0].dead) {
+									winfreeze=1;
+									changedelay=-999;
 								}
+								if(player[0].dead)
+									loading=1;
 							}
 						}
 
@@ -9334,22 +9333,23 @@ void	Game::TickOnceAfter(){
 								//accountcampaignchoicesmade[accountactive]=0;
 								ipstream.ignore(256,':');
 								ipstream >> campaignnumlevels;
-								for(i=0;i<campaignnumlevels;i++){
+								for(int i=0;i<campaignnumlevels;i++){
 									ipstream.ignore(256,':');
 									ipstream.ignore(256,':');
 									ipstream.ignore(256,' ');
 									ipstream >> campaignmapname[i];
 									ipstream.ignore(256,':');
 									ipstream >> campaigndescription[i];
-									for(j=0;j<256;j++){
-										if(campaigndescription[i][j]=='_')campaigndescription[i][j]=' ';
+									for(int j=0;j<256;j++){
+										if(campaigndescription[i][j]=='_')
+											campaigndescription[i][j]=' ';
 									}
 									ipstream.ignore(256,':');
 									ipstream >> campaignchoosenext[i];
 									ipstream.ignore(256,':');
 									ipstream >> campaignnumnext[i];
 									if(campaignnumnext[i])
-										for(j=0;j<campaignnumnext[i];j++){
+										for(int j=0;j<campaignnumnext[i];j++){
 											ipstream.ignore(256,':');
 											ipstream >> campaignnextlevel[i][j];
 											campaignnextlevel[i][j]-=1;
@@ -9361,13 +9361,13 @@ void	Game::TickOnceAfter(){
 								}
 								ipstream.close();
 
-								for(i=0;i<campaignnumlevels;i++){
+								for (int i = 0; i < campaignnumlevels; i++) {
 									levelvisible[i]=0;
 									levelhighlight[i]=0;
 								}
 
 
-								for(i=0;i<campaignnumlevels;i++){
+								for (int i = 0; i < campaignnumlevels; i++) {
 									levelvisible[i]=0;
 									levelhighlight[i]=0;
 								}
@@ -9375,7 +9375,7 @@ void	Game::TickOnceAfter(){
 								levelorder[0]=0;
 								levelvisible[0]=1;
 								if(accountcampaignchoicesmade[accountactive])
-									for(i=0;i<accountcampaignchoicesmade[accountactive];i++){
+									for (int i=0;i<accountcampaignchoicesmade[accountactive];i++){
 										levelorder[i+1]=campaignnextlevel[levelorder[i]][accountcampaignchoices[accountactive][i]];
 										levelvisible[levelorder[i+1]]=1;
 									}
@@ -9389,7 +9389,7 @@ void	Game::TickOnceAfter(){
 									{
 										campaignchoicenum=campaignnumnext[levelorder[whichlevelstart]];
 										if(campaignchoicenum)
-											for(i=0;i<campaignchoicenum;i++){
+											for (int i = 0; i < campaignchoicenum; i++) {
 												campaignchoicewhich[i]=campaignnextlevel[levelorder[whichlevelstart]][i];
 												levelvisible[campaignnextlevel[levelorder[whichlevelstart]][i]]=1;
 												levelhighlight[campaignnextlevel[levelorder[whichlevelstart]][i]]=1;
@@ -9400,22 +9400,11 @@ void	Game::TickOnceAfter(){
 									loadtime=0;
 									targetlevel=7;
 									//if(firstload)TickOnceAfter();
-									if(!firstload)LoadStuff();
+									if(!firstload)
+										LoadStuff();
 									//else {
-									for(i=0;i<255;i++){
-										mapname[i]='\0';
-									}
-									mapname[0]=':';
-									mapname[1]='D';
-									mapname[2]='a';
-									mapname[3]='t';
-									mapname[4]='a';
-									mapname[5]=':';
-									mapname[6]='M';
-									mapname[7]='a';
-									mapname[8]='p';
-									mapname[9]='s';
-									mapname[10]=':';
+									memset(mapname, 0, sizeof(mapname));
+									strcpy(mapname, ":Data:Maps:");
 
 									//accountcampaignchoices[accountactive][accountcampaignchoicesmade[accountactive]]=whichchoice;
 									//accountcampaignchoicesmade[accountactive]++;
@@ -9434,7 +9423,8 @@ void	Game::TickOnceAfter(){
 									stealthloading=0;
 							}
 						}
-							if(loading==3)loading=0;
+							if(loading==3)
+								loading=0;
 
 					}
 
@@ -9448,13 +9438,12 @@ void	Game::TickOnceAfter(){
 	facing=DoRotation(facing,0,0-rotation,0);
 	viewerfacing=facing;
 
-	brotate=0;
 	if(!cameramode){
 		if((animation[player[0].targetanimation].attack!=3&&animation[player[0].currentanimation].attack!=3)||player[0].skeleton.free)target=player[0].coords+player[0].currentoffset*(1-player[0].target)*player[0].scale+player[0].targetoffset*player[0].target*player[0].scale-player[0].facing*.05;
 		else target=player[0].oldcoords+player[0].currentoffset*(1-player[0].target)*player[0].scale+player[0].targetoffset*player[0].target*player[0].scale-player[0].facing*.05;
 		target.y+=.1;
 		if(player[0].skeleton.free){
-			for(i=0;i<player[0].skeleton.num_joints;i++){
+			for(int i=0;i<player[0].skeleton.num_joints;i++){
 				if(player[0].skeleton.joints[i].position.y*player[0].scale+player[0].coords.y>target.y)
 					target.y=player[0].skeleton.joints[i].position.y*player[0].scale+player[0].coords.y;
 			}
@@ -9466,30 +9455,34 @@ void	Game::TickOnceAfter(){
 				cameraspeed=20+(length(player[0].velocity)-20)*.96;
 			}
 			if(player[0].skeleton.free==0&&player[0].targetanimation!=hanganim&&player[0].targetanimation!=climbanim)target.y+=1.4;
-			coltarget=target-cameraloc;
+			XYZ coltarget=target-cameraloc;
 			if(findLengthfast(&coltarget)<multiplier*multiplier*400)cameraloc=target;
 			else {
 				Normalise(coltarget);
-				if(player[0].targetanimation!=hanganim&&player[0].targetanimation!=climbanim&&player[0].currentanimation!=climbanim&&player[0].currentoffset.x==0)cameraloc=cameraloc+coltarget*multiplier*cameraspeed;
-				else cameraloc=cameraloc+coltarget*multiplier*8;
+				if(player[0].targetanimation!=hanganim&&player[0].targetanimation!=climbanim&&player[0].currentanimation!=climbanim&&player[0].currentoffset.x==0)
+					cameraloc=cameraloc+coltarget*multiplier*cameraspeed;
+				else
+					cameraloc=cameraloc+coltarget*multiplier*8;
 			}
-			if(editorenabled)cameraloc=target;
+			if(editorenabled)
+				cameraloc=target;
 			cameradist+=multiplier*5;
-			if(cameradist>2.3)cameradist=2.3;
+			if(cameradist>2.3)
+				cameradist=2.3;
 			viewer=cameraloc-facing*cameradist;
 			colviewer=viewer;
 			coltarget=cameraloc;
 			objects.SphereCheckPossible(&colviewer, distance(colviewer,coltarget));
 			if(terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz])
-				for(j=0;j<terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz];j++){
-					i=terrain.patchobjects[player[0].whichpatchx][player[0].whichpatchz][j];
+				for(int j=0;j<terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz];j++){
+					int i=terrain.patchobjects[player[0].whichpatchx][player[0].whichpatchz][j];
 					colviewer=viewer;
 					coltarget=cameraloc;
 					if(objects.model[i].LineCheckPossible(colviewer,coltarget,col,objects.position[i],objects.rotation[i])!=-1)viewer=col;
 				}
 				if(terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz])
-					for(j=0;j<terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz];j++){
-						i=terrain.patchobjects[player[0].whichpatchx][player[0].whichpatchz][j];
+					for(int j=0;j<terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz];j++){
+						int i=terrain.patchobjects[player[0].whichpatchx][player[0].whichpatchz][j];
 						colviewer=viewer;
 						if(objects.model[i].SphereCheck(colviewer,.15,col,objects.position[i],objects.rotation[i])!=-1){
 							viewer=colviewer;
@@ -9508,32 +9501,35 @@ void	Game::TickOnceAfter(){
 			if(findLengthfast(&player[0].velocity)>400){
 				cameraspeed=20+(length(player[0].velocity)-20)*.96;
 			}
-			if(player[0].skeleton.free==0&&player[0].targetanimation!=hanganim&&player[0].targetanimation!=climbanim)target.y+=1.4;
+			if(player[0].skeleton.free==0&&player[0].targetanimation!=hanganim&&player[0].targetanimation!=climbanim)
+				target.y+=1.4;
 			cameradist+=multiplier*5;
-			if(cameradist>3.3)cameradist=3.3;
-			coltarget=target-cameraloc;
-			if(findLengthfast(&coltarget)<multiplier*multiplier*400)cameraloc=target;
-			else if(findLengthfast(&coltarget)>1)
-			{
+			if(cameradist>3.3)
+				cameradist=3.3;
+			XYZ coltarget=target-cameraloc;
+			if(findLengthfast(&coltarget)<multiplier*multiplier*400)
+				cameraloc=target;
+			else if(findLengthfast(&coltarget)>1) {
 				Normalise(coltarget);
 				if(player[0].targetanimation!=hanganim&&player[0].targetanimation!=climbanim&&player[0].currentanimation!=climbanim&&player[0].currentoffset.x==0)cameraloc=cameraloc+coltarget*multiplier*cameraspeed;
 				else cameraloc=cameraloc+coltarget*multiplier*8;
 			}
-			if(editorenabled)cameraloc=target;
+			if(editorenabled)
+				cameraloc=target;
 			viewer=cameraloc;
 			colviewer=viewer;
 			coltarget=cameraloc;
 			objects.SphereCheckPossible(&colviewer, distance(colviewer,coltarget));
 			if(terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz])
-				for(j=0;j<terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz];j++){
-					i=terrain.patchobjects[player[0].whichpatchx][player[0].whichpatchz][j];
+				for(int j=0;j<terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz];j++){
+					int i=terrain.patchobjects[player[0].whichpatchx][player[0].whichpatchz][j];
 					colviewer=viewer;
 					coltarget=cameraloc;
 					if(objects.model[i].LineCheckPossible(colviewer,coltarget,col,objects.position[i],objects.rotation[i])!=-1)viewer=col;
 				}
 				if(terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz])
-					for(j=0;j<terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz];j++){
-						i=terrain.patchobjects[player[0].whichpatchx][player[0].whichpatchz][j];
+					for(int j=0;j<terrain.patchobjectnum[player[0].whichpatchx][player[0].whichpatchz];j++){
+						int i=terrain.patchobjects[player[0].whichpatchx][player[0].whichpatchz][j];
 						colviewer=viewer;
 						if(objects.model[i].SphereCheck(colviewer,.15,col,objects.position[i],objects.rotation[i])!=-1){
 							viewer=colviewer;
@@ -9547,19 +9543,24 @@ void	Game::TickOnceAfter(){
 						cameraloc.y=terrain.getHeight(cameraloc.x,cameraloc.z);
 					}
 		}
-		if(camerashake>.8)camerashake=.8;
+		if(camerashake>.8)
+			camerashake=.8;
 		//if(woozy>10)woozy=10;
 		//woozy+=multiplier;
 		woozy+=multiplier;
-		if(player[0].dead)camerashake=0;
-		if(player[0].dead)woozy=0;
+		if(player[0].dead)
+			camerashake=0;
+		if(player[0].dead)
+			woozy=0;
 		camerashake-=multiplier*2;
 		blackout-=multiplier*2;
 		//if(player[0].isCrouch())woozy-=multiplier*8;
-		if(camerashake<0)camerashake=0;
-		if(blackout<0)blackout=0;
+		if(camerashake<0)
+			camerashake=0;
+		if(blackout<0)
+			blackout=0;
 		//if(woozy<0)woozy=0;
-		if(camerashake){
+		if (camerashake != 0){
 			viewer.x+=(float)(Random()%100)*.0005*camerashake;
 			viewer.y+=(float)(Random()%100)*.0005*camerashake;
 			viewer.z+=(float)(Random()%100)*.0005*camerashake;

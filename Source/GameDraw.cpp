@@ -61,7 +61,6 @@ int Game::DrawGLScene(void)
 	static float texcoordwidth,texcoordheight;
 	static float texviewwidth, texviewheight;
 	static int i,j,k,l;
-	static XYZ checkpoint;
 	static float tempmult;
 	float tutorialopac;
 	static char string[256]="";
@@ -93,8 +92,7 @@ int Game::DrawGLScene(void)
 
 		SetUpLighting();
 
-		static int changed;
-		changed=0;
+		int changed = 0;
 
 		olddrawmode=drawmode;
 		if(ismotionblur&&!loading){
@@ -220,9 +218,9 @@ int Game::DrawGLScene(void)
 		frustum.GetFrustum();
 
 		//Make Shadow
-		static XYZ point;
-		static float size,opacity,rotation;
-		rotation=0;
+		XYZ point;
+		float size,opacity;
+		float rotation=0;
 		for(k=0;k<numplayers;k++){
 			if(!player[k].skeleton.free&&player[k].playerdetail&&player[k].howactive<typesleeping)
 				if(frustum.SphereInFrustum(player[k].coords.x,player[k].coords.y+player[k].scale*3,player[k].coords.z,player[k].scale*7)&&player[k].occluded<25)
@@ -351,7 +349,7 @@ int Game::DrawGLScene(void)
 					glColor4f(terrainlight.x,terrainlight.y,terrainlight.z,distance);
 					if(distance>=1)glDisable(GL_BLEND);
 					if(distance>=.5){
-						checkpoint=DoRotation(player[k].skeleton.joints[abs(Random()%player[k].skeleton.num_joints)].position,0,player[k].rotation,0)*player[k].scale+player[k].coords;
+						XYZ checkpoint=DoRotation(player[k].skeleton.joints[abs(Random()%player[k].skeleton.num_joints)].position,0,player[k].rotation,0)*player[k].scale+player[k].coords;
 						checkpoint.y+=1;
 						if(!(player[k].occluded==0))
 							i=checkcollide(viewer,checkpoint,player[k].lastoccluded);
@@ -430,7 +428,7 @@ int Game::DrawGLScene(void)
 				glColor4f(terrainlight.x,terrainlight.y,terrainlight.z,distance);
 				if(distance>=1)glDisable(GL_BLEND);
 				if(distance>=.5){
-					checkpoint=DoRotation(player[k].skeleton.joints[abs(Random()%player[k].skeleton.num_joints)].position,0,player[k].rotation,0)*player[k].scale+player[k].coords;
+					XYZ checkpoint=DoRotation(player[k].skeleton.joints[abs(Random()%player[k].skeleton.num_joints)].position,0,player[k].rotation,0)*player[k].scale+player[k].coords;
 					checkpoint.y+=1;
 					if(!(player[k].occluded==0))i=checkcollide(viewer,checkpoint,player[k].lastoccluded);
 					if(i==-1||player[k].occluded==0)i=checkcollide(viewer,checkpoint);
@@ -503,7 +501,8 @@ int Game::DrawGLScene(void)
 		glEnable(GL_TEXTURE_2D);
 		glColor4f(.5,.5,.5,1);
 		if(!console){
-			sprintf (string, "%i",(int)(fps));
+			//sprintf (string, "%i",(int)(fps));
+			sprintf (string, " ");
 			text.glPrint(10,30,string,0,.8,screenwidth,screenheight);
 
 			if(!tutoriallevel)
@@ -1665,28 +1664,28 @@ int Game::DrawGLScene(void)
 			glDepthMask(1);*/
 
 			//Awards
-			int numawards;
+			int numawards = 0;
 			int awards[30];
-			numawards=0;
+			bool alldead = true;
 
 			if(damagetaken==0&&player[0].bloodloss==0){
 				awards[numawards]=awardflawless;
 				numawards++;
 			}
-			bool alldead;
-			alldead=1;
 			if(numplayers>1)
 				for(i=1;i<numplayers;i++){		
-					if(player[i].dead!=2)alldead=0;
+					if(player[i].dead!=2)
+						alldead=false;
 				}
 				if(alldead){
 					awards[numawards]=awardalldead;
 					numawards++;
 				}
-				alldead=1;
+				alldead=true;
 				if(numplayers>1)
 					for(i=1;i<numplayers;i++){		
-						if(player[i].dead!=1)alldead=0;
+						if(player[i].dead!=1)
+							alldead=false;
 					}
 					if(alldead){
 						awards[numawards]=awardnodead;
@@ -1727,7 +1726,8 @@ int Game::DrawGLScene(void)
 					alldead=1;
 					if(numplayers>1)
 						for(i=1;i<numplayers;i++){		
-							if(player[i].dead!=2)alldead=0;
+							if(player[i].dead!=2)
+								alldead = false;
 						}
 						if(numafterkill>0&&alldead){
 							awards[numawards]=awardbrutal;
@@ -1757,8 +1757,11 @@ int Game::DrawGLScene(void)
 						sprintf (string, "Score:     %d",(int)(bonustotal-startbonustotal));
 						text.glPrintOutlined(1024/30,768*6/8,string,1,2,1024,768);
 
-						if(!campaign)sprintf (string, "Press Escape to return to menu or Space to continue");
-						if(campaign)sprintf (string, "Press Escape or Space to continue");
+			if(!campaign) {
+							sprintf (string, "Press Escape to return to menu or Space to continue");
+			} else {
+							sprintf (string, "Press Escape or Space to continue");
+			}
 						text.glPrintOutlined(640/2-strlen(string)*5,480*1/16,string,1,1,640,480);
 
 						char temp[255];

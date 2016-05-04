@@ -1767,6 +1767,7 @@ Game::Game()
 	Mapboxtexture = 0;
 	Mapcircletexture = 0;
 	cursortexture = 0;
+	allDead = false;
 
 	memset(Mainmenuitems, 0, sizeof(Mainmenuitems));
 

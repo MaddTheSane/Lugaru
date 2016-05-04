@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Sprites.h"
 #include <cmath>
 #include "Weapons.h"
+#include "constants.h"
 
 #define passivetype 0
 #define guardtype 1
@@ -74,7 +75,7 @@ class Person
 		int oldcurrentanimation;
 		int oldtargetanimation;
 		
-		int howactive;
+		editortypes howactive;
 		
 		float parriedrecently;
 		
