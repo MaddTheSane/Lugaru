@@ -12,7 +12,7 @@ import OpenGL.GL.GLU
 import OpenGL.GL.Ext
 
 
-func loadTexture(fileURL: NSURL, inout textureID: GLuint, mipmap: Int32, hasAlpha: Bool) {
+func loadTexture(fileURL: NSURL, inout textureID: GLuint, mipmap: Bool, hasAlpha: Bool) {
 	guard let sourcefile = NSImage(contentsOfURL:fileURL) else {
 		return
 	}
@@ -37,27 +37,24 @@ func loadTexture(fileURL: NSURL, inout textureID: GLuint, mipmap: Int32, hasAlph
 		if textureID == 0 {
 			glGenTextures(1, &textureID)
 		}
+		glBindTexture(GLenum(GL_TEXTURE_2D), textureID)
+		glTexImage2D(GLenum(GL_TEXTURE_2D), 0, type, GLsizei(imgRep.pixelsWide), GLsizei(imgRep.pixelsHigh), 0, GLenum(imgRep.alpha ? GL_RGBA : GL_RGB), GLenum(GL_UNSIGNED_BYTE), imgRep.bitmapData);
+		//ATI workaround!
+		glEnable(GLenum(GL_TEXTURE_2D))
+		glGenerateMipmap(GLenum(GL_TEXTURE_2D));  //Generate mipmaps now!!!
 		glTexEnvi(GLenum(GL_TEXTURE_ENV), GLenum(GL_TEXTURE_ENV_MODE), GL_MODULATE)
 		
 		glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_S), GL_REPEAT)
 		glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_T), GL_REPEAT)
-		glBindTexture(GLenum(GL_TEXTURE_2D), textureID)
 		glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_MAG_FILTER), GL_LINEAR)
-		if preferences.trilinearFiltering {
-			if mipmap != 0 {
+		if mipmap {
+			if preferences.trilinearFiltering {
 				glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_MIN_FILTER), GL_LINEAR_MIPMAP_LINEAR)
-			}
-		}
-		if !preferences.trilinearFiltering {
-			if mipmap == 0 {
+			} else {
 				glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_MIN_FILTER), GL_LINEAR_MIPMAP_NEAREST)
 			}
-		}
-		if mipmap == 0 {
+		} else {
 			glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_MIN_FILTER), GL_LINEAR)
 		}
-		
-		glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_GENERATE_MIPMAP), GL_TRUE)
-		glTexImage2D(GLenum(GL_TEXTURE_2D), 0, type, GLsizei(imgRep.pixelsWide), GLsizei(imgRep.pixelsHigh), 0, GLenum(imgRep.alpha ? GL_RGBA : GL_RGB), GLenum(GL_UNSIGNED_BYTE), imgRep.bitmapData)
 	}
 }
