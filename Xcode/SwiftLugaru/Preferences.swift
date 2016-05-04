@@ -10,14 +10,14 @@ import Foundation
 
 struct Preferences {
 	var screenWidth = 640
-	var screenHeight = 640
+	var screenHeight = 480
 	var mouseSensitivity: Float = 1
 	var blur = false
 	var overallDetail = OverallDetail.Medium
 	var floatingJump = false
 	var mouseJump = false
 	var ambientSound = true
-	var blood = Blood.Simple
+	var blood = Blood.LowDetail
 	var autoSloMo = true
 	var foliage = true
 	var music = true
@@ -47,22 +47,88 @@ struct Preferences {
 	var chatKey = "unknown"
 	
 	
-	enum OverallDetail: Int {
+	enum OverallDetail: Int, CustomStringConvertible, CustomDebugStringConvertible {
 		case Low = 0
 		case Medium = 1
 		case High = 2
+		
+		var description: String {
+			switch self {
+			case .Low:
+				return "Low"
+			case .Medium:
+				return "Medium"
+			case .High:
+				return "High"
+			}
+		}
+		
+		var debugDescription: String {
+			switch self {
+			case .Low:
+				return "Overall Detail: Low"
+			case .Medium:
+				return "Overall Detail: Medium"
+			case .High:
+				return "Overall Detail: High"
+			}
+		}
 	}
 	
-	enum Difficulty: Int {
+	enum Difficulty: Int, CustomStringConvertible, CustomDebugStringConvertible {
 		case Easy = 0
 		case Medium = 1
 		case Hard = 2
+		
+		var description: String {
+			switch self {
+			case .Easy:
+				return "Easy"
+			case .Medium:
+				return "Medium"
+			case .Hard:
+				return "Hard"
+			}
+		}
+		
+		var debugDescription: String {
+			switch self {
+			case .Easy:
+				return "Difficulty: Easy"
+			case .Medium:
+				return "Difficulty: Medium"
+			case .Hard:
+				return "Difficulty: Hard"
+			}
+		}
 	}
 	
-	enum Blood: Int {
-		case None = 0
-		case Simple = 1
-		case Complex = 2
+	enum Blood: Int, CustomStringConvertible, CustomDebugStringConvertible {
+		case Off = 0
+		case LowDetail = 1
+		case HighDetail = 2
+		
+		var description: String {
+			switch self {
+			case .Off:
+				return "Off"
+			case .LowDetail:
+				return "On, low detail"
+			case .HighDetail:
+				return "On, high detail (slower)"
+			}
+		}
+		
+		var debugDescription: String {
+			switch self {
+			case .Off:
+				return "Blood: Off"
+			case .LowDetail:
+				return "Blood: On, low detail"
+			case .HighDetail:
+				return "Blood: On, high detail (slower)"
+			}
+		}
 	}
 }
 
