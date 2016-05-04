@@ -178,36 +178,31 @@ void Terrain::UpdateTransparencyother(int whichx, int whichy){
 }
 
 void Terrain::UpdateTransparencyotherother(int whichx, int whichy){
-	static XYZ vertex;
-	static int i,j,a,b,c,d,patch_size,stepsize;
-	static float distance;
+	const float viewdistsquared=viewdistance*viewdistance;
+	const int patch_size=size/subdivision;
 
-	static float viewdistsquared;
+	static const int stepsize=1;
+	const int c=whichx*patch_elements+whichy*patch_elements*subdivision;
 
-	viewdistsquared=viewdistance*viewdistance;
-	patch_size=size/subdivision;
-
-	stepsize=1;
-	c=whichx*patch_elements+whichy*patch_elements*subdivision;
-
-	for(i=patch_size*whichx;i<patch_size*(whichx+1)+1;i+=stepsize){
-		for(j=patch_size*whichy;j<patch_size*(whichy+1)+1;j+=stepsize){
+	for(int i=patch_size*whichx;i<patch_size*(whichx+1)+1;i+=stepsize){
+		for(int j=patch_size*whichy;j<patch_size*(whichy+1)+1;j+=stepsize){
 			if(i<size&&j<size){
+				XYZ vertex;
 				vertex.x=i*scale;
 				vertex.z=j*scale;
 				vertex.y=heightmap[i][j]*scale;
-				distance=findDistancefast(&viewer,&vertex);
+				float distance=findDistancefast(&viewer,&vertex);
 				if(distance>viewdistsquared)distance=viewdistsquared;
 				colors[i][j][3]=(viewdistsquared-(distance-(viewdistsquared*fadestart))*(1/(1-fadestart)))/viewdistsquared;
 			}
 		}
 	}
 
-	for(i=patch_size*whichx;i<patch_size*(whichx+1);i+=stepsize){
-		for(j=patch_size*whichy;j<patch_size*(whichy+1);j+=stepsize){
-			a=(i-(patch_size*whichx))/stepsize;
-			b=(j-(patch_size*whichy))/stepsize;
-			d=(a*54)+(b*54*patch_size/stepsize);
+	for(int i=patch_size*whichx;i<patch_size*(whichx+1);i+=stepsize){
+		for(int j=patch_size*whichy;j<patch_size*(whichy+1);j+=stepsize){
+			int a=(i-(patch_size*whichx))/stepsize;
+			int b=(j-(patch_size*whichy))/stepsize;
+			int d=(a*54)+(b*54*patch_size/stepsize);
 			vArray[d+c+6]=colors[i][j][3];
 
 			vArray[d+c+15]=colors[i][j+stepsize][3];
@@ -224,19 +219,16 @@ void Terrain::UpdateTransparencyotherother(int whichx, int whichy){
 }
 
 void Terrain::UpdateVertexArray(int whichx, int whichy){
-	static int i,j,a,b;
-
-
 	numtris[whichx][whichy]=0;
 
 	const int patch_size=size/subdivision;
 
 	const int stepsize=1;
 	const int c=whichx*patch_elements+whichy*patch_elements*subdivision;
-	for(i=patch_size*whichx;i<patch_size*(whichx+1);i+=stepsize){
-		for(j=patch_size*whichy;j<patch_size*(whichy+1);j+=stepsize){
-			a=(i-((float)size/subdivision*(float)whichx))/stepsize;
-			b=(j-((float)size/subdivision*(float)whichy))/stepsize;
+	for(int i=patch_size*whichx;i<patch_size*(whichx+1);i+=stepsize){
+		for(int j=patch_size*whichy;j<patch_size*(whichy+1);j+=stepsize){
+			int a=(i-((float)size/subdivision*(float)whichx))/stepsize;
+			int b=(j-((float)size/subdivision*(float)whichy))/stepsize;
 			vArray[(a*54)+(b*54*patch_size/stepsize)+c+0]=i*scale;
 			vArray[(a*54)+(b*54*patch_size/stepsize)+c+1]=heightmap[i][j]*scale;
 			vArray[(a*54)+(b*54*patch_size/stepsize)+c+2]=j*scale;
@@ -302,8 +294,8 @@ void Terrain::UpdateVertexArray(int whichx, int whichy){
 
 	maxypatch[whichx][whichy]=-10000;
 	minypatch[whichx][whichy]=10000;
-	for(a=0;a<size/subdivision;a++){
-		for(b=0;b<size/subdivision;b++){
+	for(int a=0;a<size/subdivision;a++){
+		for(int b=0;b<size/subdivision;b++){
 			if(heightmap[(size/subdivision)*whichx+a][(size/subdivision)*whichy+b]*scale>maxypatch[whichx][whichy]) maxypatch[whichx][whichy]=heightmap[(size/subdivision)*whichx+a][(size/subdivision)*whichy+b]*scale;
 			if(heightmap[(size/subdivision)*whichx+a][(size/subdivision)*whichy+b]*scale<minypatch[whichx][whichy]) minypatch[whichx][whichy]=heightmap[(size/subdivision)*whichx+a][(size/subdivision)*whichy+b]*scale;
 		}
@@ -312,8 +304,8 @@ void Terrain::UpdateVertexArray(int whichx, int whichy){
 	if(heightypatch[whichx][whichy]<size/subdivision*scale)heightypatch[whichx][whichy]=size/subdivision*scale;
 	avgypatch[whichx][whichy]=(minypatch[whichx][whichy]+maxypatch[whichx][whichy])/2;
 
-	for(i=whichx*size/subdivision;i<(whichx+1)*size/subdivision-1;i++){
-		for(j=whichy*size/subdivision;j<(whichy+1)*size/subdivision-1;j++){
+	for(int i=whichx*size/subdivision;i<(whichx+1)*size/subdivision-1;i++){
+		for(int j=whichy*size/subdivision;j<(whichy+1)*size/subdivision-1;j++){
 			triangles[(i*(size-1)*2)+(j*2)][0].x=i*scale;
 			triangles[(i*(size-1)*2)+(j*2)][0].y=heightmap[i][j]*scale;
 			triangles[(i*(size-1)*2)+(j*2)][0].z=j*scale;
@@ -617,9 +609,9 @@ void Terrain::CalculateNormals()
 
 			facenormals[i][j]=facenormal;
 
-			normals[i][j]=normals[i][j]+facenormal;
-			normals[i][j+1]=normals[i][j+1]+facenormal;
-			normals[i+1][j]=normals[i+1][j]+facenormal;
+			normals[i][j]+=facenormal;
+			normals[i][j+1]+=facenormal;
+			normals[i+1][j]+=facenormal;
 
 
 			a.x=i+1;

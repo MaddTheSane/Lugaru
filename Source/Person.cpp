@@ -1514,8 +1514,7 @@ void Person::DoHead() {
 
 		skeleton.specialforward[0]=facing;
 		//skeleton.specialforward[0]=DoRotation(facing,0,rotation,0);
-		static int i;
-		for(i=0;i<skeleton.num_muscles;i++){
+		for(int i=0;i<skeleton.num_muscles;i++){
 			if(skeleton.muscles[i].visible&&(skeleton.muscles[i].parent1->label==head||skeleton.muscles[i].parent2->label==head))
 			{
 				skeleton.FindRotationMuscle(i,targetanimation);
@@ -6855,9 +6854,9 @@ int Person::DrawSkeleton() {
 				skeleton.specialforward[1].z=1;
 			}
 		}
-		static XYZ mid;
-		static float M[16];
-		static int i,j,k;
+		XYZ mid;
+		float M[16];
+		int i,j,k;
 		static int weaponattachmuscle;
 		static int weaponrotatemuscle/*,weaponrotatemuscle2*/;
 		static XYZ weaponpoint;

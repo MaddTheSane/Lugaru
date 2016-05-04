@@ -1108,17 +1108,15 @@ void Weapons::DoStuff() {
 
 int Weapons::Draw()
 {
-	static int i,j;
-	static XYZ terrainlight;
-	static GLfloat M[16];
-	static bool draw;
+	GLfloat M[16];
+	bool draw = false;
 	glAlphaFunc(GL_GREATER, 0.9);
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);
 	glDepthMask(1);
-	for(i=0;i<numweapons;i++)
+	for(int i=0;i<numweapons;i++)
 	{
 		if((frustum.SphereInFrustum(position[i].x,position[i].y,position[i].z,1)&&findDistancefast(&viewer,&position[i])<viewdistance*viewdistance))
 		{
@@ -1153,12 +1151,12 @@ int Weapons::Draw()
 			}
 			if(draw)
 			{
-				terrainlight=terrain.getLighting(position[i].x,position[i].z);
+				XYZ terrainlight=terrain.getLighting(position[i].x,position[i].z);
 				if(drawhowmany[i]>0)
 				{
 					glAlphaFunc(GL_GREATER, 0.01);
 				}
-				for(j=drawhowmany[i];j>0;j--)
+				for(int j=drawhowmany[i];j>0;j--)
 				{
 					glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 					glPushMatrix();

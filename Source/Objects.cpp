@@ -26,43 +26,41 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //Functions
 
 bool 	Objects::checkcollide(XYZ startpoint,XYZ endpoint,int which){
-	static XYZ colpoint,colviewer,coltarget;
-	static int i;
+	XYZ colpoint = {0};
 
 	startpoint.y+=.1;
 	endpoint.y+=.1;
 	startpoint.y-=.1;
 	endpoint.y-=.1;
 
-	for(i=0;i<numobjects;i++){
+	for(int i=0;i<numobjects;i++){
 		if(type[i]!=treeleavestype&&type[i]!=treetrunktype&&type[i]!=bushtype&&type[i]!=firetype&&i!=which){
-			colviewer=startpoint;
-			coltarget=endpoint;
-			if(model[i].LineCheck(colviewer,coltarget,colpoint,position[i],rotation[i])!=-1)return 1;	
+			XYZ colviewer=startpoint;
+			XYZ coltarget=endpoint;
+			if(model[i].LineCheck(colviewer,coltarget,colpoint,position[i],rotation[i])!=-1)
+				return true;
 		}
 	}
 
-	return 0;
+	return false;
 }
 
 void Objects::SphereCheckPossible(XYZ *p1,float radius)
 {
-	static int i,j;
-	static int whichpatchx;
-	static int whichpatchz;
+	const int whichpatchx=p1->x/(terrain.size/subdivision*terrain.scale*terraindetail);
+	const int whichpatchz=p1->z/(terrain.size/subdivision*terrain.scale*terraindetail);
 
-	whichpatchx=p1->x/(terrain.size/subdivision*terrain.scale*terraindetail);
-	whichpatchz=p1->z/(terrain.size/subdivision*terrain.scale*terraindetail);
-
-	if(whichpatchx>=0&&whichpatchz>=0&&whichpatchx<subdivision&&whichpatchz<subdivision)
-		if(terrain.patchobjectnum[whichpatchx][whichpatchz]>0&&terrain.patchobjectnum[whichpatchx][whichpatchz]<500)
-			for(j=0;j<terrain.patchobjectnum[whichpatchx][whichpatchz];j++){
-				i=terrain.patchobjects[whichpatchx][whichpatchz][j];
+	if(whichpatchx>=0&&whichpatchz>=0&&whichpatchx<subdivision&&whichpatchz<subdivision) {
+		if(terrain.patchobjectnum[whichpatchx][whichpatchz]>0&&terrain.patchobjectnum[whichpatchx][whichpatchz]<500) {
+			for(int j=0;j<terrain.patchobjectnum[whichpatchx][whichpatchz];j++){
+				int i=terrain.patchobjects[whichpatchx][whichpatchz][j];
 				possible[i]=0;
 				if(model[i].SphereCheckPossible(*p1, radius, position[i], rotation[i])!=-1){
 					possible[i]=1;
 				}
 			}
+		}
+	}
 }
 
 void Objects::Draw()
@@ -680,27 +678,26 @@ void Objects::DoStuff()
 
 void Objects::DoShadows()
 {
-	int i,j,k,l;
-	static XYZ testpoint,testpoint2, terrainpoint,lightloc,col;
-	lightloc=light.location;
-	if(!skyboxtexture)lightloc=0;
-	lightloc.y+=10;
+	static XYZ testpoint,testpoint2, terrainpoint, col;
+	XYZ lightloc=light.location;
+	if(!skyboxtexture)
+		lightloc=0;
+	lightloc.y += 10;
 	Normalise(lightloc);
-	int patchx,patchz;
 
 	if(numobjects>0)
-		for(i=0;i<numobjects;i++){
+		for(int i=0;i<numobjects;i++){
 			if(type[i]!=treeleavestype&&type[i]!=treetrunktype&&type[i]!=bushtype&&type[i]!=firetype){
-				for(j=0;j<model[i].vertexNum;j++){
+				for(int j=0;j<model[i].vertexNum;j++){
 					terrainpoint=position[i]+DoRotation(model[i].vertex[j]+model[i].normals[j]*.1,0,rotation[i],0);
 					//terrainpoint.y+=model[i].boundingsphereradius;
 					shadowed[i]=0;
-					patchx=terrainpoint.x/(terrain.size/subdivision*terrain.scale*terraindetail);
-					patchz=terrainpoint.z/(terrain.size/subdivision*terrain.scale*terraindetail);
+					int patchx=terrainpoint.x/(terrain.size/subdivision*terrain.scale*terraindetail);
+					int patchz=terrainpoint.z/(terrain.size/subdivision*terrain.scale*terraindetail);
 					if(patchx>=0&&patchz>=0&&patchx<subdivision&&patchz<subdivision)
 						if(terrain.patchobjectnum[patchx][patchz])
-							for(k=0;k<terrain.patchobjectnum[patchx][patchz];k++){
-								l=terrain.patchobjects[patchx][patchz][k];
+							for(int k=0;k<terrain.patchobjectnum[patchx][patchz];k++){
+								int l=terrain.patchobjects[patchx][patchz][k];
 								if(type[l]!=treetrunktype/*&&l!=i*/){
 									testpoint=terrainpoint;
 									testpoint2=terrainpoint+lightloc*50*(1-shadowed[i]);
@@ -712,21 +709,21 @@ void Objects::DoShadows()
 							if(shadowed[i]>0){
 								col=model[i].normals[j]-DoRotation(lightloc*shadowed[i],0,-rotation[i],0);
 								Normalise(col);
-								for(k=0;k<model[i].TriangleNum;k++){
+								for(int k=0;k<model[i].TriangleNum;k++){
 									if(model[i].Triangles[k].vertex[0]==j){
-										l=k*24;
+										int l=k*24;
 										model[i].vArray[l+2]=col.x;
 										model[i].vArray[l+3]=col.y;
 										model[i].vArray[l+4]=col.z;
 									}
 									if(model[i].Triangles[k].vertex[1]==j){
-										l=k*24;
+										int l=k*24;
 										model[i].vArray[l+10]=col.x;
 										model[i].vArray[l+11]=col.y;
 										model[i].vArray[l+12]=col.z;
 									}
 									if(model[i].Triangles[k].vertex[2]==j){
-										l=k*24;
+										int l=k*24;
 										model[i].vArray[l+18]=col.x;
 										model[i].vArray[l+19]=col.y;
 										model[i].vArray[l+20]=col.z;
