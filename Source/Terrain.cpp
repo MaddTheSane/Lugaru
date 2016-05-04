@@ -863,10 +863,17 @@ float Terrain::getOpacity(float pointx, float pointz)
 	pointx /= scale;
 	pointz /= scale;
 
-	if(pointx>=size-1||pointz>=size-1||pointx<=0||pointz<=0)return 0;
+	if(pointx>=size-1||pointz>=size-1||pointx<=0||pointz<=0)
+		return 0;
 
 	tilex=pointx;
 	tiley=pointz;
+	if (isnan(pointx)) {
+		tilex = 0;
+	}
+	if (isnan(pointz)) {
+		tiley = 0;
+	}
 
 	height1=opacityother[tilex][tiley]*(1-(pointx-tilex))+opacityother[tilex+1][tiley]*(pointx-tilex);
 	height2=opacityother[tilex][tiley+1]*(1-(pointx-tilex))+opacityother[tilex+1][tiley+1]*(pointx-tilex);
