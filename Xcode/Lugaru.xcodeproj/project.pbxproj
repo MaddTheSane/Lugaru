@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5500E41D1CC9CDD3007F8554 /* Data in CopyFiles */ = {isa = PBXBuildFile; fileRef = 550AE9A618DFC29A00F0C197 /* Data */; };
+		55086D301CDC69560060E43D /* Texture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55086D2F1CDC69560060E43D /* Texture.swift */; };
 		550AE98018DFC1CE00F0C197 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 550AE97F18DFC1CE00F0C197 /* libz.dylib */; };
 		550AE9A318DFC22800F0C197 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 550AE9A218DFC22800F0C197 /* SDL2.framework */; };
 		550AE9A518DFC24700F0C197 /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 550AE9A218DFC22800F0C197 /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
@@ -215,6 +216,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		55086D2F1CDC69560060E43D /* Texture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Texture.swift; sourceTree = "<group>"; };
 		550AE97F18DFC1CE00F0C197 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		550AE98118DFC20600F0C197 /* alstubs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = alstubs.h; sourceTree = "<group>"; };
 		550AE98218DFC20600F0C197 /* binio.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = binio.h; sourceTree = "<group>"; };
@@ -568,6 +570,7 @@
 				554B1EE91CCBFAE8005CE5BC /* Quaternions.swift */,
 				55320A7D1CCD43F400BAEE86 /* Skeleton.swift */,
 				554B1EE71CCBFA3D005CE5BC /* Terrain.swift */,
+				55086D2F1CDC69560060E43D /* Texture.swift */,
 				55350C9B1CCDE02200CABBB8 /* Text.swift */,
 				55A13D051CC971420070DECF /* Assets.xcassets */,
 				55A13D1D1CC9728B0070DECF /* CmdLine.cpp */,
@@ -1124,6 +1127,7 @@
 				554B1EEA1CCBFAE8005CE5BC /* Quaternions.swift in Sources */,
 				55A13D171CC972140070DECF /* private.c in Sources */,
 				55320A7E1CCD43F400BAEE86 /* Skeleton.swift in Sources */,
+				55086D301CDC69560060E43D /* Texture.swift in Sources */,
 				554B1EE61CCBE6EF005CE5BC /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

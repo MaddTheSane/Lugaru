@@ -83,22 +83,22 @@ struct Preferences {
 		var description: String {
 			switch self {
 			case .Easy:
-				return "Easy"
+				return "Easier"
 			case .Medium:
-				return "Medium"
+				return "Difficult"
 			case .Hard:
-				return "Hard"
+				return "Insane"
 			}
 		}
 		
 		var debugDescription: String {
 			switch self {
 			case .Easy:
-				return "Difficulty: Easy"
+				return "Difficulty: Easier"
 			case .Medium:
-				return "Difficulty: Medium"
+				return "Difficulty: Difficult"
 			case .Hard:
-				return "Difficulty: Hard"
+				return "Difficulty: Insane"
 			}
 		}
 	}
