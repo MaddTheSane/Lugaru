@@ -261,7 +261,7 @@ extern bool autoslomo;
 extern bool keyboardfrozen;
 extern bool loadingstuff;
 extern XYZ windvector;
-static int music1;
+extern int music1;
 extern XYZ envsound[30];
 extern float envsoundvol[30];
 extern int numenvsounds;
@@ -283,7 +283,7 @@ extern bool reversaltrain;
 extern bool canattack;
 extern bool cananger;
 extern int maptype;
-extern int editoractive;
+extern editortypes editoractive;
 extern int editorpathtype;
 extern bool oldbuttons[3];
 

@@ -293,6 +293,9 @@ public:
 
 		Dispose();
 	}
+	
+private:
+	bool allDead;
 
 public:
 	void getWindowSize(int &width, int &height);

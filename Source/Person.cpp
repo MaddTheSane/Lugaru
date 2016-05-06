@@ -7715,7 +7715,7 @@ Person::Person()
 	oldcurrentanimation = 0;
 	oldtargetanimation = 0;
 
-	howactive = 0;
+	howactive = typeactive;
 
 	parriedrecently = 0;
 

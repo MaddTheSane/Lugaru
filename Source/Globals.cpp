@@ -135,6 +135,7 @@ int loadscreencolor = 0;
 int whichjointstartarray[26] = {0};
 int whichjointendarray[26] = {0};
 int kBitsPerPixel = 0;
+int music1 = 0;
 
 int numhotspots = 0;
 XYZ hotspot[40];
@@ -188,7 +189,7 @@ float damagetaken = 0;
 
 int maptype = 0;
 
-int editoractive = 0;
+editortypes editoractive = typeactive;
 int editorpathtype = 0;
 
 bool reversaltrain = 0;
