@@ -10,7 +10,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -48,7 +48,7 @@ typedef simd::float3 euler;
 //};
 struct angle_axis
 {
-	float x, y, z, angle;
+    float x, y, z, angle;
 };
 
 typedef simd::float4 quaternion;
@@ -76,16 +76,16 @@ static inline void ReflectVector(XYZ &vel, const XYZ &n);
 inline XYZ DoRotation(XYZ thePoint, float xang, float yang, float zang);
 inline XYZ DoRotationRadian(XYZ thePoint, float xang, float yang, float zang);
 inline float findLengthfast(XYZ *point1);
-static inline float findDistancefast(XYZ *point1, XYZ *point2);
-inline float findDistancefast(const XYZ &point1, const XYZ &point2);
-inline float findDistancefastflat(XYZ *point1, XYZ *point2);
-inline float findDistancefastflat(const XYZ &point1, const XYZ &point2);
+static inline float distsq(XYZ *point1, XYZ *point2);
+inline float distsq(const XYZ &point1, const XYZ &point2);
+inline float distsqflat(XYZ *point1, XYZ *point2);
+inline float distsqflat(const XYZ &point1, const XYZ &point2);
 bool sphere_line_intersection (
-							   float x1, float y1 , float z1,
-							   float x2, float y2 , float z2,
-							   float x3, float y3 , float z3, float r );
+    float x1, float y1 , float z1,
+    float x2, float y2 , float z2,
+    float x3, float y3 , float z3, float r );
 bool sphere_line_intersection (
-							   const XYZ &p1, const XYZ &p2, const XYZ &p3, const float r );
+    const XYZ &p1, const XYZ &p2, const XYZ &p3, const float r );
 inline bool DistancePointLine( XYZ *Point, XYZ *LineStart, XYZ *LineEnd, float *Distance, XYZ *Intersection );
 
 
@@ -94,36 +94,38 @@ static inline void Normalise(XYZ &vectory) {
 }
 
 static inline float fast_sqrt (register float arg)
-{	
+{
 #if __ppc__
-	// Can replace with slower return std::sqrt(arg);
-	register float result;
+    // Can replace with slower return std::sqrt(arg);
+    register float result;
 
-	if (arg == 0.0) return 0.0;
+    if (arg == 0.0)
+        return 0.0;
 
-	asm {
-		frsqrte		result,arg			// Calculate Square root
-	}	
+    asm {
+        frsqrte     result, arg         // Calculate Square root
+    }
 
-	// Newton Rhapson iterations.
-	result = result + 0.5 * result * (1.0 - arg * result * result);
-	result = result + 0.5 * result * (1.0 - arg * result * result);
+    // Newton Rhapson iterations.
+    result = result + 0.5 * result * (1.0 - arg * result * result);
+    result = result + 0.5 * result * (1.0 - arg * result * result);
 
-	return result * arg;
+    return result * arg;
 #else
-	return sqrt(arg);
+    return std::sqrt( arg);
 #endif
 }
 
-inline float normaldotproduct(XYZ point1, XYZ point2){
-	GLfloat returnvalue;
-	Normalise(point1);
-	Normalise(point2);
+inline float normaldotproduct(XYZ point1, XYZ point2)
+{
+    GLfloat returnvalue;
+    Normalise(point1);
+    Normalise(point2);
 #if 0
-	return simd::dot(point1, point2);
+    return simd::dot(point1, point2);
 #else
-	returnvalue=(point1.x*point2.x+point1.y*point2.y+point1.z*point2.z);
-	return returnvalue;
+    returnvalue=(point1.x*point2.x+point1.y*point2.y+point1.z*point2.z);
+    return returnvalue;
 #endif
 }
 
@@ -132,208 +134,221 @@ static inline void ReflectVector(XYZ &vel, const XYZ &n)
 	vel = simd::reflect(vel, n);
 }
 
-inline float findLengthfast(XYZ *point1){
+inline float findLengthfast(XYZ *point1)
+{
 	return((point1->x)*(point1->x)+(point1->y)*(point1->y)+(point1->z)*(point1->z));
 }
 
-static inline float findDistancefast(XYZ *point1, XYZ *point2){
-	return findDistancefast(*point1, *point2);
-}
-
-inline float findDistancefast(const XYZ &point1, const XYZ &point2){
-	return((point1.x-point2.x)*(point1.x-point2.x)+(point1.y-point2.y)*(point1.y-point2.y)+(point1.z-point2.z)*(point1.z-point2.z));
-}
-
-inline float findDistancefastflat(XYZ *point1, XYZ *point2){
-	return findDistancefastflat(*point1, *point2);
-}
-
-inline float findDistancefastflat(const XYZ &point1, const XYZ &point2) {
-	return (point1.x-point2.x)*(point1.x-point2.x)+(point1.z-point2.z)*(point1.z-point2.z);
-}
-
-inline XYZ DoRotation(XYZ thePoint, float xang, float yang, float zang){
-	XYZ newpoint = {0};
-	if(xang){
-		xang*=6.283185f;
-		xang/=360;
-	}
-	if(yang){
-		yang*=6.283185f;
-		yang/=360;
-	}
-	if(zang){
-		zang*=6.283185f;
-		zang/=360;
-	}
-
-
-	if(yang){
-		newpoint.z=thePoint.z*cos(yang)-thePoint.x*sin(yang);
-		newpoint.x=thePoint.z*sin(yang)+thePoint.x*cos(yang);
-		thePoint.z=newpoint.z;
-		thePoint.x=newpoint.x;
-	}
-
-	if(zang){
-		newpoint.x=thePoint.x*cos(zang)-thePoint.y*sin(zang);
-		newpoint.y=thePoint.y*cos(zang)+thePoint.x*sin(zang);
-		thePoint.x=newpoint.x;
-		thePoint.y=newpoint.y;
-	}
-
-	if(xang){
-		newpoint.y=thePoint.y*cos(xang)-thePoint.z*sin(xang);
-		newpoint.z=thePoint.y*sin(xang)+thePoint.z*cos(xang);
-		thePoint.z=newpoint.z;
-		thePoint.y=newpoint.y;
-	}
-
-	return thePoint;
-}
-
-static inline float square(const float f ) { return (f*f) ;}
-
-inline bool sphere_line_intersection (
-									  float x1, float y1 , float z1,
-									  float x2, float y2 , float z2,
-									  float x3, float y3 , float z3, float r )
+static inline float distsq(XYZ *point1, XYZ *point2)
 {
+    return distsq(*point1, *point2);
+}
 
-	// x1,y1,z1  P1 coordinates (point of line)
-	// x2,y2,z2  P2 coordinates (point of line)
-	// x3,y3,z3, r  P3 coordinates and radius (sphere)
-	// x,y,z   intersection coordinates
-	//
-	// This function returns a pointer array which first index indicates
-	// the number of intersection point, followed by coordinate pairs.
+inline float distsq(const XYZ &point1, const XYZ &point2)
+{
+    return simd::distance_squared(point1, point2);
+}
 
-	float a, b, c, i ;
+inline float distsqflat(XYZ *point1, XYZ *point2)
+{
+	return distsqflat(*point1, *point2);
+}
 
-	if(x1>x3+r&&x2>x3+r)
-		return false;
-	if(x1<x3-r&&x2<x3-r)
-		return false;
-	if(y1>y3+r&&y2>y3+r)
-		return false;
-	if(y1<y3-r&&y2<y3-r)
-		return false;
-	if(z1>z3+r&&z2>z3+r)
-		return false;
-	if(z1<z3-r&&z2<z3-r)
-		return false;
-	a =  square(x2 - x1) + square(y2 - y1) + square(z2 - z1);
-	b =  2* ( (x2 - x1)*(x1 - x3)
-		+ (y2 - y1)*(y1 - y3)
-		+ (z2 - z1)*(z1 - z3) );
-	c =  square(x3) + square(y3) +
-		square(z3) + square(x1) +
-		square(y1) + square(z1) -
-		2* ( x3*x1 + y3*y1 + z3*z1 ) - square(r);
-	i =   b * b - 4 * a * c;
+inline float distsqflat(const XYZ &point1, const XYZ &point2)
+{
+    return (point1.x - point2.x) * (point1.x - point2.x) + (point1.z - point2.z) * (point1.z - point2.z);
+}
 
-	if ( i < 0.0 )
-	{
-		// no intersection
-		return false;
-	}
-	return true;
+inline XYZ DoRotation(XYZ thePoint, float xang, float yang, float zang)
+{
+    using std::cos;
+    using std::sin;
+    XYZ newpoint = {0};
+    if (xang) {
+        xang *= 6.283185f;
+        xang /= 360;
+    }
+    if (yang) {
+        yang *= 6.283185f;
+        yang /= 360;
+    }
+    if (zang) {
+        zang *= 6.283185f;
+        zang /= 360;
+    }
+
+
+    if (yang) {
+        newpoint.z = thePoint.z * cos(yang) - thePoint.x * sin(yang);
+        newpoint.x = thePoint.z * sin(yang) + thePoint.x * cos(yang);
+        thePoint.z = newpoint.z;
+        thePoint.x = newpoint.x;
+    }
+
+    if (zang) {
+        newpoint.x = thePoint.x * cos(zang) - thePoint.y * sin(zang);
+        newpoint.y = thePoint.y * cos(zang) + thePoint.x * sin(zang);
+        thePoint.x = newpoint.x;
+        thePoint.y = newpoint.y;
+    }
+
+    if (xang) {
+        newpoint.y = thePoint.y * cos(xang) - thePoint.z * sin(xang);
+        newpoint.z = thePoint.y * sin(xang) + thePoint.z * cos(xang);
+        thePoint.z = newpoint.z;
+        thePoint.y = newpoint.y;
+    }
+
+    return thePoint;
+}
+
+static inline float square(const float f )
+{
+    return (f * f) ;
 }
 
 inline bool sphere_line_intersection (
-									  const XYZ &p1, const XYZ &p2, const XYZ &p3, const float r )
+    float x1, float y1 , float z1,
+    float x2, float y2 , float z2,
+    float x3, float y3 , float z3, float r )
 {
 
-	// x1,p1->y,p1->z  P1 coordinates (point of line)
-	// p2->x,p2->y,p2->z  P2 coordinates (point of line)
-	// p3->x,p3->y,p3->z, r  P3 coordinates and radius (sphere)
-	// x,y,z   intersection coordinates
-	//
-	// This function returns a pointer array which first index indicates
-	// the number of intersection point, followed by coordinate pairs.
+    // x1,y1,z1  P1 coordinates (point of line)
+    // x2,y2,z2  P2 coordinates (point of line)
+    // x3,y3,z3, r  P3 coordinates and radius (sphere)
+    // x,y,z   intersection coordinates
+    //
+    // This function returns a pointer array which first index indicates
+    // the number of intersection point, followed by coordinate pairs.
 
-	float a, b, c, i ;
+    float a, b, c, i ;
 
-	if(p1.x>p3.x+r&&p2.x>p3.x+r)
-		return false;
-	if(p1.x<p3.x-r&&p2.x<p3.x-r)
-		return false;
-	if(p1.y>p3.y+r&&p2.y>p3.y+r)
-		return false;
-	if(p1.y<p3.y-r&&p2.y<p3.y-r)
-		return false;
-	if(p1.z>p3.z+r&&p2.z>p3.z+r)
-		return false;
-	if(p1.z<p3.z-r&&p2.z<p3.z-r)
-		return false;
-	a =  square(p2.x - p1.x) + square(p2.y - p1.y) + square(p2.z - p1.z);
-	b =  2* ( (p2.x - p1.x)*(p1.x - p3.x)
-		+ (p2.y - p1.y)*(p1.y - p3.y)
-		+ (p2.z - p1.z)*(p1.z - p3.z) ) ;
-	c =  square(p3.x) + square(p3.y) +
-		square(p3.z) + square(p1.x) +
-		square(p1.y) + square(p1.z) -
-		2* ( p3.x*p1.x + p3.y*p1.y + p3.z*p1.z ) - square(r) ;
-	i =   b * b - 4 * a * c ;
+    if(x1>x3+r&&x2>x3+r)
+        return false;
+    if(x1<x3-r&&x2<x3-r)
+        return false;
+    if(y1>y3+r&&y2>y3+r)
+        return false;
+    if(y1<y3-r&&y2<y3-r)
+        return false;
+    if(z1>z3+r&&z2>z3+r)
+        return false;
+    if(z1<z3-r&&z2<z3-r)
+        return false;
+    a =  square(x2 - x1) + square(y2 - y1) + square(z2 - z1);
+    b =  2 * ( (x2 - x1) * (x1 - x3)
+               + (y2 - y1) * (y1 - y3)
+               + (z2 - z1) * (z1 - z3) );
+    c =  square(x3) + square(y3) +
+         square(z3) + square(x1) +
+         square(y1) + square(z1) -
+         2 * ( x3 * x1 + y3 * y1 + z3 * z1 ) - square(r);
+    i =   b * b - 4 * a * c;
 
-	if ( i < 0.0 )
-	{
-		// no intersection
-		return false;
-	}
-	return true;
+    if ( i < 0.0 ) {
+        // no intersection
+        return false;
+    }
+    return true;
 }
 
-inline XYZ DoRotationRadian(XYZ thePoint, float xang, float yang, float zang){
-	XYZ newpoint = {0};
-	XYZ oldpoint = thePoint;
-
-	if(yang!=0){
-		newpoint.z=oldpoint.z*cos(yang)-oldpoint.x*sin(yang);
-		newpoint.x=oldpoint.z*sin(yang)+oldpoint.x*cos(yang);
-		oldpoint.z=newpoint.z;
-		oldpoint.x=newpoint.x;
-	}
-
-	if(zang!=0){
-		newpoint.x=oldpoint.x*cos(zang)-oldpoint.y*sin(zang);
-		newpoint.y=oldpoint.y*cos(zang)+oldpoint.x*sin(zang);
-		oldpoint.x=newpoint.x;
-		oldpoint.y=newpoint.y;
-	}
-
-	if(xang!=0){
-		newpoint.y=oldpoint.y*cos(xang)-oldpoint.z*sin(xang);
-		newpoint.z=oldpoint.y*sin(xang)+oldpoint.z*cos(xang);
-		oldpoint.z=newpoint.z;
-		oldpoint.y=newpoint.y;	
-	}
-
-	return oldpoint;
-
-}
-
-inline bool DistancePointLine(XYZ *Point, XYZ *LineStart, XYZ *LineEnd, float *Distance, XYZ *Intersection)
+inline bool sphere_line_intersection (
+    const XYZ &p1, const XYZ &p2, const XYZ &p3, const float r )
 {
-	float U;
 
-	float LineMag = simd::distance( *LineEnd, *LineStart );
+    // x1,p1->y,p1->z  P1 coordinates (point of line)
+    // p2->x,p2->y,p2->z  P2 coordinates (point of line)
+    // p3->x,p3->y,p3->z, r  P3 coordinates and radius (sphere)
+    // x,y,z   intersection coordinates
+    //
+    // This function returns a pointer array which first index indicates
+    // the number of intersection point, followed by coordinate pairs.
+    
+    float a, b, c, i ;
 
-	U = ( ( ( Point->x - LineStart->x ) * ( LineEnd->x - LineStart->x ) ) +
-		( ( Point->y - LineStart->y ) * ( LineEnd->y - LineStart->y ) ) +
-		( ( Point->z - LineStart->z ) * ( LineEnd->z - LineStart->z ) ) ) /
-		( LineMag * LineMag );
+    if( p1.x > p3.x + r && p2.x > p3.x + r)
+        return false;
+    if(p1.x<p3.x-r&&p2.x<p3.x-r)
+        return false;
+    if(p1.y>p3.y+r&&p2.y>p3.y+r)
+        return false;
+    if(p1.y<p3.y-r&&p2.y<p3.y-r)
+        return false;
+    if(p1.z>p3.z+r&&p2.z>p3.z+r)
+        return false;
+    if(p1.z<p3.z-r&&p2.z<p3.z-r)
+        return false;
+    a =  square(p2.x - p1.x) + square(p2.y - p1.y) + square(p2.z - p1.z);
+    b =  2* ( (p2.x - p1.x)*(p1.x - p3.x)
+             + (p2.y - p1.y)*(p1.y - p3.y)
+             + (p2.z - p1.z)*(p1.z - p3.z) ) ;
+    c =  square(p3.x) + square(p3.y) +
+    square(p3.z) + square(p1.x) +
+    square(p1.y) + square(p1.z) -
+    2* ( p3.x*p1.x + p3.y*p1.y + p3.z*p1.z ) - square(r) ;
+    i =   b * b - 4 * a * c ;
+    
+    if ( i < 0.0 ) {
+        // no intersection
+        return false;
+    }
+    return true;
+}
 
-	if( U < 0.0f || U > 1.0f )
-		return false;   // closest point does not fall within the line segment
+inline XYZ DoRotationRadian(XYZ thePoint, float xang, float yang, float zang)
+{
+    using std::cos;
+    using std::sin;
+    XYZ newpoint = {0};
 
-	Intersection->x = LineStart->x + U * ( LineEnd->x - LineStart->x );
-	Intersection->y = LineStart->y + U * ( LineEnd->y - LineStart->y );
-	Intersection->z = LineStart->z + U * ( LineEnd->z - LineStart->z );
+    XYZ oldpoint = thePoint;
 
-	*Distance = simd::distance( *Point, *Intersection );
+    if (yang != 0) {
+        newpoint.z = oldpoint.z * cos(yang) - oldpoint.x * sin(yang);
+        newpoint.x = oldpoint.z * sin(yang) + oldpoint.x * cos(yang);
+        oldpoint.z = newpoint.z;
+        oldpoint.x = newpoint.x;
+    }
 
-	return true;
+    if (zang != 0) {
+        newpoint.x = oldpoint.x * cos(zang) - oldpoint.y * sin(zang);
+        newpoint.y = oldpoint.y * cos(zang) + oldpoint.x * sin(zang);
+        oldpoint.x = newpoint.x;
+        oldpoint.y = newpoint.y;
+    }
+
+    if (xang != 0) {
+        newpoint.y = oldpoint.y * cos(xang) - oldpoint.z * sin(xang);
+        newpoint.z = oldpoint.y * sin(xang) + oldpoint.z * cos(xang);
+        oldpoint.z = newpoint.z;
+        oldpoint.y = newpoint.y;
+    }
+
+    return oldpoint;
+
+}
+
+inline bool DistancePointLine( XYZ *Point, XYZ *LineStart, XYZ *LineEnd, float *Distance, XYZ *Intersection )
+{
+    float U;
+
+    float LineMag = simd::distance( *LineEnd, *LineStart );
+
+    U = ( ( ( Point->x - LineStart->x ) * ( LineEnd->x - LineStart->x ) ) +
+          ( ( Point->y - LineStart->y ) * ( LineEnd->y - LineStart->y ) ) +
+          ( ( Point->z - LineStart->z ) * ( LineEnd->z - LineStart->z ) ) ) /
+        ( LineMag * LineMag );
+
+    if ( U < 0.0f || U > 1.0f )
+        return false;   // closest point does not fall within the line segment
+
+    Intersection->x = LineStart->x + U * ( LineEnd->x - LineStart->x );
+    Intersection->y = LineStart->y + U * ( LineEnd->y - LineStart->y );
+    Intersection->z = LineStart->z + U * ( LineEnd->z - LineStart->z );
+
+    *Distance = simd::distance( *Point, *Intersection );
+
+    return true;
 }
 
 #endif

@@ -10,7 +10,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -26,17 +26,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "TGALoader.h"
 #include "Quaternions.h"
 #include "gamegl.h"
+#include "Texture.h"
 
-class SkyBox{
+class SkyBox
+{
 public:
-	GLuint 				front,left,back,right,up,down,cloud,reflect;
-	float cloudmove;
+    Texture front, left, back, right, up, down;
 
-	bool load(const char *ffront,const char *fleft,const char *fback,const char *fright,const char *fup,const char *fdown,const char *fcloud,const char *freflect);
-	void draw();
+    void load(const char *ffront, const char *fleft, const char *fback,
+              const char *fright, const char *fup,   const char *fdown);
+    void draw();
 
-	SkyBox();
-	~SkyBox();
+    SkyBox() {}
+    ~SkyBox();
 };
 
 #endif
