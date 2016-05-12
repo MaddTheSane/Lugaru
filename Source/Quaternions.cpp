@@ -50,12 +50,11 @@ quaternion Quat_Mult(quaternion q1, quaternion q2)
 quaternion To_Quat(Matrix_t m)
 {
     // From Jason Shankel, (C) 2000.
-    static quaternion Quat;
+    quaternion Quat = {0};
 
-    static double Tr = m[0][0] + m[1][1] + m[2][2] + 1.0, fourD;
-    static double q[4];
+    double Tr = m[0][0] + m[1][1] + m[2][2] + 1.0, fourD;
+    double q[4] = {0, 0, 0, 0};
 
-    static int i, j, k;
     if (Tr >= 1.0) {
         fourD = 2.0 * fast_sqrt(Tr);
         q[3] = fourD / 4.0;
@@ -63,6 +62,7 @@ quaternion To_Quat(Matrix_t m)
         q[1] = (m[0][2] - m[2][0]) / fourD;
         q[2] = (m[1][0] - m[0][1]) / fourD;
     } else {
+        int i;
         if (m[0][0] > m[1][1]) {
             i = 0;
         } else {
@@ -71,8 +71,8 @@ quaternion To_Quat(Matrix_t m)
         if (m[2][2] > m[i][i]) {
             i = 2;
         }
-        j = (i + 1) % 3;
-        k = (j + 1) % 3;
+        int j = (i + 1) % 3;
+        int k = (j + 1) % 3;
         fourD = 2.0 * fast_sqrt(m[i][i] - m[j][j] - m[k][k] + 1.0);
         q[i] = fourD / 4.0;
         q[j] = (m[j][i] + m[i][j]) / fourD;
@@ -129,23 +129,21 @@ quaternion To_Quat(angle_axis Ang_Ax)
 
 angle_axis Quat_2_AA(quaternion Quat)
 {
-    static angle_axis Ang_Ax;
-    static float scale, tw;
-    tw = (float)acosf(Quat.w) * 2;
-    scale = (float)sin(tw / 2.0);
+    angle_axis Ang_Ax;
+    float tw = (float)acos(Quat.w) * 2;
+    float scale = (float)sin(tw / 2.0f);
     Ang_Ax.x = Quat.x / scale;
     Ang_Ax.y = Quat.y / scale;
     Ang_Ax.z = Quat.z / scale;
 
-    Ang_Ax.angle = 2.0 * acosf(Quat.w) / (float)PI * 180;
+    Ang_Ax.angle = 2.0 * acos(Quat.w) / (float)PI * 180;
     return Ang_Ax;
 }
 
 quaternion To_Quat(int In_Degrees, euler Euler)
 {
     // From the gamasutra quaternion article
-    static quaternion Quat;
-    static float cr, cp, cy, sr, sp, sy, cpcy, spsy;
+    quaternion Quat;
     //If we are in Degree mode, convert to Radians
     if (In_Degrees) {
         Euler.x = Euler.x * (float)PI / 180;
@@ -154,15 +152,15 @@ quaternion To_Quat(int In_Degrees, euler Euler)
     }
     //Calculate trig identities
     //Formerly roll, pitch, yaw
-    cr = float(cos(Euler.x / 2));
-    cp = float(cos(Euler.y / 2));
-    cy = float(cos(Euler.z / 2));
-    sr = float(sin(Euler.x / 2));
-    sp = float(sin(Euler.y / 2));
-    sy = float(sin(Euler.z / 2));
+    float cr = float(cos(Euler.x / 2));
+    float cp = float(cos(Euler.y / 2));
+    float cy = float(cos(Euler.z / 2));
+    float sr = float(sin(Euler.x / 2));
+    float sp = float(sin(Euler.y / 2));
+    float sy = float(sin(Euler.z / 2));
 
-    cpcy = cp * cy;
-    spsy = sp * sy;
+    float cpcy = cp * cy;
+    float spsy = sp * sy;
     Quat.w = cr * cpcy + sr * spsy;
     Quat.x = sr * cpcy - cr * spsy;
     Quat.y = cr * sp * cy + sr * cp * sy;
@@ -196,17 +194,15 @@ XYZ Quat2Vector(quaternion Quat)
 
 bool PointInTriangle(Vector *p, Vector normal, float p11, float p12, float p13, float p21, float p22, float p23, float p31, float p32, float p33)
 {
-    static float a, b;
-    static float max;
-    static int i, j;
-    static bool bInter;
-    static float pointv[3];
-    static float p1v[3];
-    static float p2v[3];
-    static float p3v[3];
-    static float normalv[3];
-
-    bInter = 0;
+    float a, b;
+    int i, j;
+    float max;
+    bool bInter = false;
+    float pointv[3];
+    float p1v[3];
+    float p2v[3];
+    float p3v[3];
+    float normalv[3];
 
     pointv[0] = p->x;
     pointv[1] = p->y;
@@ -293,8 +289,6 @@ bool LineFacet(Vector p1, Vector p2, Vector pa, Vector pb, Vector pc, Vector *p)
 
 bool PointInTriangle(const XYZ *p, const XYZ normal, const XYZ *p1, const XYZ *p2, const XYZ *p3)
 {
-    float u0, u1, u2;
-    float v0, v1, v2;
     float a, b;
     float max;
     int i, j;
@@ -340,12 +334,12 @@ bool PointInTriangle(const XYZ *p, const XYZ normal, const XYZ *p1, const XYZ *p
         j = 1;
     }
 
-    u0 = pointv[i] - p1v[i];
-    v0 = pointv[j] - p1v[j];
-    u1 = p2v[i] - p1v[i];
-    v1 = p2v[j] - p1v[j];
-    u2 = p3v[i] - p1v[i];
-    v2 = p3v[j] - p1v[j];
+    float u0 = pointv[i] - p1v[i];
+    float v0 = pointv[j] - p1v[j];
+    float u1 = p2v[i] - p1v[i];
+    float v1 = p2v[j] - p1v[j];
+    float u2 = p3v[i] - p1v[i];
+    float v2 = p3v[j] - p1v[j];
 
     if (u1 > -1.0e-05f && u1 < 1.0e-05f) { // == 0.0f)
         b = u0 / u2;
@@ -366,7 +360,7 @@ bool PointInTriangle(const XYZ *p, const XYZ normal, const XYZ *p1, const XYZ *p
     return bInter;
 }
 
-float LineFacetd(const XYZ &p1, const XYZ &p2, const XYZ &pa, const XYZ &pb,const XYZ &pc, XYZ *p)
+float LineFacetd(const XYZ &p1, const XYZ &p2, const XYZ &pa, const XYZ &pb, const XYZ &pc, XYZ *p)
 {
     float d;
     float denom,mu;

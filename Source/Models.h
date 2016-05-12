@@ -157,6 +157,9 @@ public:
     ~Model();
     void deallocate();
     Model();
+
+private:
+    void UpdateBoundingSphere();
 };
 
 #endif

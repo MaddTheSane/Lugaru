@@ -57,24 +57,21 @@ vector<Sprite*> Sprite::sprites = vector<Sprite*>();
 //Functions
 void Sprite::Draw()
 {
-    int i, j, k;
-    static float M[16];
-    static XYZ point;
-    static float distancemult;
-    static int lasttype;
-    static int lastspecial;
-    static int whichpatchx, whichpatchz;
-    static XYZ start, end, colpoint;
-    static bool check;
-    static bool blend;
-    static float tempmult;
-    static XYZ difference;
-    static float lightcolor[3];
-    static float viewdistsquared = viewdistance * viewdistance;
-    static XYZ tempviewer;
+    float M[16];
+    XYZ point = 0;
+    float distancemult = 0;
+    int lasttype = -1;
+    int lastspecial = -1;
+    int whichpatchx = 0, whichpatchz = 0;
+    XYZ start = 0, end = 0, colpoint = 0;
+    bool check = false;
+    bool blend = true;
+    float tempmult = 0;
+    XYZ difference;
+    float lightcolor[3] = {0,0,0};
+    const float viewdistsquared = viewdistance * viewdistance;
 
-    tempviewer = viewer + viewerfacing * 6;
-    check = 0;
+    XYZ tempviewer = viewer + viewerfacing * 6;
 
     lightcolor[0] = light.color[0] * .5 + light.ambient[0];
     lightcolor[1] = light.color[1] * .5 + light.ambient[1];
@@ -87,17 +84,14 @@ void Sprite::Draw()
         checkdelay = 1;
     }
 
-    lasttype = -1;
-    lastspecial = -1;
     glEnable(GL_BLEND);
     glDisable(GL_LIGHTING);
     glDisable(GL_CULL_FACE);
     glEnable(GL_TEXTURE_2D);
-    blend = 1;
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDepthMask(0);
     glAlphaFunc(GL_GREATER, 0.0001);
-    for (i = 0; i < sprites.size(); i++) {
+    for (size_t i = 0; i < sprites.size(); i++) {
         if (lasttype != sprites[i]->type) {
             switch (sprites[i]->type) {
             case cloudsprite:
@@ -279,7 +273,7 @@ void Sprite::Draw()
         glPopMatrix();
     }
     tempmult = multiplier;
-    for (i = sprites.size() - 1; i >= 0; i--) {
+    for (ssize_t i = sprites.size() - 1; i >= 0; i--) {
         multiplier = tempmult;
         if (sprites[i]->type != snowsprite) {
             sprites[i]->position += sprites[i]->velocity * multiplier;
@@ -330,7 +324,7 @@ void Sprite::Draw()
                 float rotationpoint;
                 int whichtri;
 
-                for (j = 0; j < Person::players.size(); j++) {
+                for (size_t j = 0; j < Person::players.size(); j++) {
                     if (!spritehit && Person::players[j]->dead && sprites[i]->alivetime > .1) {
                         where = sprites[i]->oldposition;
                         where -= Person::players[j]->coords;
@@ -349,7 +343,7 @@ void Sprite::Draw()
                         if (whichtri != -1) {
                             spritehit = 1;
                             Person::players[j]->DoBloodBigWhere(0, 160, sprites[i]->oldposition);
-                            DeleteSprite(i);
+                            DeleteSprite((int)i);
                         }
                     }
                 }
@@ -359,15 +353,15 @@ void Sprite::Draw()
                 if (whichpatchx > 0 && whichpatchz > 0 && whichpatchx < subdivision && whichpatchz < subdivision)
                     if (terrain.patchobjectnum[whichpatchx][whichpatchz]) {
                         if (!spritehit)
-                            for (j = 0; j < terrain.patchobjectnum[whichpatchx][whichpatchz]; j++) {
-                                k = terrain.patchobjects[whichpatchx][whichpatchz][j];
+                            for (size_t j = 0; j < terrain.patchobjectnum[whichpatchx][whichpatchz]; j++) {
+                                int k = terrain.patchobjects[whichpatchx][whichpatchz][j];
                                 start = sprites[i]->oldposition;
                                 end = sprites[i]->position;
                                 if (!spritehit)
                                     if (objects.model[k].LineCheck(start, end, colpoint, objects.position[k], objects.yaw[k]) != -1) {
                                         if (detail == 2 || (detail == 1 && abs(Random() % 4) == 0) || (detail == 0 && abs(Random() % 8) == 0))
                                             objects.model[k].MakeDecal(blooddecalfast, DoRotation(colpoint - objects.position[k], 0, -objects.yaw[k], 0), sprites[i]->size * 1.6/*+abs((float)(Random()%100))/2400*/, .5, Random() % 360);
-                                        DeleteSprite(i);
+                                        DeleteSprite((int)i);
                                         spritehit = 1;
                                     }
                             }
@@ -375,7 +369,7 @@ void Sprite::Draw()
                 if (!spritehit)
                     if (sprites[i]->position.y < terrain.getHeight(sprites[i]->position.x, sprites[i]->position.z)) {
                         terrain.MakeDecal(blooddecalfast, sprites[i]->position, sprites[i]->size * 1.6/*+abs((float)(Random()%100))/2400*/, .6, Random() % 360);
-                        DeleteSprite(i);
+                        DeleteSprite((int)i);
                     }
             }
         }
@@ -415,10 +409,10 @@ void Sprite::Draw()
             sprites[i]->rotation += multiplier * sprites[i]->rotatespeed / 5;
         }
         if (sprites[i]->opacity <= 0 || sprites[i]->size <= 0)
-            DeleteSprite(i);
+            DeleteSprite((int)i);
     }
     if (check)
-        for (i = sprites.size() - 1; i >= 0; i--) {
+        for (ssize_t i = sprites.size() - 1; i >= 0; i--) {
             sprites[i]->oldposition = sprites[i]->position;
         }
     glAlphaFunc(GL_GREATER, 0.0001);

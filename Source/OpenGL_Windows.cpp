@@ -159,13 +159,6 @@ static void GLAPIENTRY glDeleteTextures_doNothing(GLsizei n, const GLuint *textu
 
 #endif
 
-static bool g_button, fullscreen = true;
-
-Boolean Button()
-{
-    return g_button;
-}
-
 // Menu defs
 
 int kContextWidth;
@@ -256,21 +249,8 @@ static void toggleFullscreen()
     SDL_SetWindowFullscreen(sdlwindow, flags);
 }
 
-static inline int clamp_sdl_mouse_button(Uint8 button)
-{
-    if (button == 2)   // right mouse button is button 3 in SDL.
-        button = 3;
-    else if (button == 3)
-        button = 2;
-
-    if ((button >= 1) && (button <= 3))
-        return button - 1;
-    return -1;
-}
-
 static SDL_bool sdlEventProc(const SDL_Event &e)
 {
-    int val;
     bool skipkey = false;
     SDL_Keycode sym;
     Uint16 mod;
@@ -334,13 +314,14 @@ static SDL_bool sdlEventProc(const SDL_Event &e)
 }
 
 
+
 // --------------------------------------------------------------------------
 
 static Point gMidPoint;
 
 Boolean SetUp ()
 {
-    char string[10];
+    //char string[10];
 
     LOGFUNC;
 
@@ -811,7 +792,7 @@ int main(int argc, char **argv)
 #ifndef WIN32
     chdirToAppPath(argv[0]);
 #endif
-    
+
     LOGFUNC;
 
     try {
@@ -1000,7 +981,7 @@ static bool load_png(const char *file_name, TGAImageRec &tex)
     png_infop info_ptr = NULL;
     png_uint_32 width, height;
     int bit_depth, color_type, interlace_type;
-    png_byte **rows = NULL;
+    //png_byte **rows = NULL;
     bool retval = false;
     png_byte **row_pointers = NULL;
     FILE *fp = fopen(file_name, "rb");
@@ -1161,9 +1142,3 @@ save_png_done:
         unlink(ConvertFileName(file_name));
     return retval;
 }
-
-void Game::getWindowSize(int &width, int &height)
-{
-	SDL_GetWindowSize(sdlwindow, &width, &height);
-}
-

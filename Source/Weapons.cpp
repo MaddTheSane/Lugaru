@@ -79,22 +79,16 @@ void Weapon::setType(int t)
 void Weapon::DoStuff(int i)
 {
     //~ cout << position.x << "," << position.y << "," << position.z << "|" << tippoint.x << "," << tippoint.y << "," << tippoint.z << endl;
-    static int whichpatchx, whichpatchz, whichhit;
-    static XYZ start, end, colpoint, normalrot, footvel, footpoint;
-    static XYZ terrainnormal;
-    static XYZ vel;
-    static XYZ midp;
-    static XYZ newpoint1, newpoint2;
-    static float friction = 3.5;
-    static float elasticity = .4;
-    static XYZ bounceness;
-    static float frictionness;
-    static float closestdistance;
-    static float distance;
-    static XYZ point[3];
-    static XYZ closestpoint;
-    static XYZ closestswordpoint;
-    static float tempmult;
+    int whichhit;
+    XYZ start, end, colpoint;
+    static const float friction = 3.5;
+    static const float elasticity = .4;
+    float closestdistance;
+    float distance;
+    XYZ point[3] = {0, 0, 0};
+    XYZ closestpoint;
+    XYZ closestswordpoint;
+    float tempmult;
 
     if (owner != -1) {
         oldowner = owner;
@@ -130,19 +124,19 @@ void Weapon::DoStuff(int i)
     if (owner == -1 && (velocity.x || velocity.y || velocity.z) && !physics) { // if the weapon is flying
         position += velocity * multiplier;
         tippoint += velocity * multiplier;
-        whichpatchx = position.x / (terrain.size / subdivision * terrain.scale);
-        whichpatchz = position.z / (terrain.size / subdivision * terrain.scale);
+        int whichpatchx = position.x / (terrain.size / subdivision * terrain.scale);
+        int whichpatchz = position.z / (terrain.size / subdivision * terrain.scale);
         if (whichpatchx > 0 && whichpatchz > 0 && whichpatchx < subdivision && whichpatchz < subdivision) {
             if (terrain.patchobjectnum[whichpatchx][whichpatchz]) { // if there are objects where the weapon is
                 for (int j = 0; j < terrain.patchobjectnum[whichpatchx][whichpatchz]; j++) { // check for collision
                     int k = terrain.patchobjects[whichpatchx][whichpatchz][j];
-                    start = oldtippoint;
-                    end = tippoint;
-                    whichhit = objects.model[k].LineCheck(start, end, colpoint, objects.position[k], objects.yaw[k]);
+                    XYZ start = oldtippoint;
+                    XYZ end = tippoint;
+                    int whichhit = objects.model[k].LineCheck(start, end, colpoint, objects.position[k], objects.yaw[k]);
                     if (whichhit != -1) {
                         if (objects.type[k] == treetrunktype) {
                             objects.model[k].MakeDecal(breakdecal, DoRotation(colpoint - objects.position[k], 0, -objects.yaw[k], 0), .1, 1, Random() % 360);
-                            normalrot = DoRotation(objects.model[k].facenormals[whichhit], 0, objects.yaw[k], 0);
+                            XYZ normalrot = DoRotation(objects.model[k].facenormals[whichhit], 0, objects.yaw[k], 0);
                             velocity = 0;
                             if (type == knife)
                                 position = colpoint - normalrot * .1;
@@ -150,12 +144,10 @@ void Weapon::DoStuff(int i)
                                 position = colpoint - normalrot * .2;
                             else if (type == staff)
                                 position = colpoint - normalrot * .2;
-                            XYZ temppoint1, temppoint2;
-                            float distance;
 
-                            temppoint1 = 0;
-                            temppoint2 = normalrot;
-                            distance = simd::distance(temppoint1, temppoint2);
+                            XYZ temppoint1 = 0;
+                            XYZ temppoint2 = normalrot;
+                            float distance = simd::distance(temppoint1, temppoint2);
                             rotation2 = asin((temppoint1.y - temppoint2.y) / distance);
                             rotation2 *= 360 / 6.28;
                             temppoint1.y = 0;
@@ -191,8 +183,8 @@ void Weapon::DoStuff(int i)
 
         if (velocity.x || velocity.y || velocity.z) {
             for (int j = 0; j < Person::players.size(); j++) {
-                footvel = 0;
-                footpoint = DoRotation((Person::players[j]->jointPos(abdomen) + Person::players[j]->jointPos(neck)) / 2, 0, Person::players[j]->yaw, 0) * Person::players[j]->scale + Person::players[j]->coords;
+                XYZ footvel = 0;
+                XYZ footpoint = DoRotation((Person::players[j]->jointPos(abdomen) + Person::players[j]->jointPos(neck)) / 2, 0, Person::players[j]->yaw, 0) * Person::players[j]->scale + Person::players[j]->coords;
                 if (owner == -1 && distsqflat(&position, &Person::players[j]->coords) < 1.5 &&
                         distsq(&position, &Person::players[j]->coords) < 4 && Person::players[j]->weaponstuck == -1 &&
                         !Person::players[j]->skeleton.free && j != oldowner) {
@@ -275,7 +267,7 @@ void Weapon::DoStuff(int i)
                 }
 
                 terrain.MakeDecal(shadowdecalpermanent, position, .06, .5, 0);
-                normalrot = terrain.getNormal(position.x, position.z) * -1;
+                //normalrot = terrain.getNormal(position.x, position.z) * -1;
                 velocity = 0;
                 glMatrixMode(GL_MODELVIEW);
                 glPushMatrix();
@@ -306,8 +298,7 @@ void Weapon::DoStuff(int i)
 
                 emit_sound_at(knifesheathesound, position, 128.);
 
-                XYZ terrainlight;
-                terrainlight = terrain.getLighting(position.x, position.z);
+                XYZ terrainlight = terrain.getLighting(position.x, position.z);
                 if (environment == snowyenvironment) {
                     if (distsq(&position, &viewer) < viewdistance * viewdistance / 4)
                         Sprite::MakeSprite(cloudsprite, position, velocity, terrainlight.x, terrainlight.y, terrainlight.z, .5, .7);
@@ -331,12 +322,9 @@ void Weapon::DoStuff(int i)
         if (velocity.x != 0 || velocity.z != 0 || velocity.y != 0) {
             velocity.y += gravity * multiplier;
 
-            XYZ temppoint1, temppoint2;
-            float distance;
-
-            temppoint1 = 0;
-            temppoint2 = velocity;
-            distance = simd::distance(temppoint1, temppoint2);
+            XYZ temppoint1 = 0;
+            XYZ temppoint2 = velocity;
+            const float distance = simd::distance(temppoint1, temppoint2);
             rotation2 = asin((temppoint1.y - temppoint2.y) / distance);
             rotation2 *= 360 / 6.28;
             temppoint1.y = 0;
@@ -369,11 +357,11 @@ void Weapon::DoStuff(int i)
             tippoint += tipvelocity * multiplier;
 
             //Length constrain
-            midp = (position * mass + tippoint * tipmass) / (mass + tipmass);
-            vel = tippoint - midp;
+            XYZ midp = (position * mass + tippoint * tipmass) / (mass + tipmass);
+            XYZ vel = tippoint - midp;
             Normalise(vel);
-            newpoint1 = midp - vel * length * (tipmass / (mass + tipmass));
-            newpoint2 = midp + vel * length * (mass / (mass + tipmass));
+            XYZ newpoint1 = midp - vel * length * (tipmass / (mass + tipmass));
+            XYZ newpoint2 = midp + vel * length * (mass / (mass + tipmass));
             if (!freeze) {
                 if (freetime > .04) {
                     velocity = velocity + (newpoint1 - position) / multiplier;
@@ -385,8 +373,8 @@ void Weapon::DoStuff(int i)
 
 
             //Object collisions
-            whichpatchx = (position.x) / (terrain.size / subdivision * terrain.scale);
-            whichpatchz = (position.z) / (terrain.size / subdivision * terrain.scale);
+            int whichpatchx = (position.x) / (terrain.size / subdivision * terrain.scale);
+            int whichpatchz = (position.z) / (terrain.size / subdivision * terrain.scale);
             if (whichpatchx > 0 && whichpatchz > 0 && whichpatchx < subdivision && whichpatchz < subdivision)
                 if (terrain.patchobjectnum[whichpatchx][whichpatchz]) {
                     for (int j = 0; j < terrain.patchobjectnum[whichpatchx][whichpatchz]; j++) {
@@ -432,14 +420,14 @@ void Weapon::DoStuff(int i)
                         if (whichhit != -1) {
                             hitsomething = 1;
                             position = colpoint;
-                            terrainnormal = DoRotation(objects.model[k].facenormals[whichhit], 0, objects.yaw[k], 0) * -1;
+                            XYZ terrainnormal = DoRotation(objects.model[k].facenormals[whichhit], 0, objects.yaw[k], 0) * -1;
                             ReflectVector(velocity, terrainnormal);
                             position += terrainnormal * .002;
 
-                            bounceness = terrainnormal * simd::length(velocity) * (abs(normaldotproduct(velocity, terrainnormal)));
+                            XYZ bounceness = terrainnormal * simd::length(velocity) * (abs(normaldotproduct(velocity, terrainnormal)));
                             if (findLengthfast(&velocity) < findLengthfast(&bounceness))
                                 bounceness = 0;
-                            frictionness = abs(normaldotproduct(velocity, terrainnormal));
+                            float frictionness = abs(normaldotproduct(velocity, terrainnormal));
                             velocity -= bounceness;
                             if (1 - friction * frictionness > 0)
                                 velocity *= 1 - friction * frictionness;
@@ -462,14 +450,14 @@ void Weapon::DoStuff(int i)
                         if (whichhit != -1) {
                             hitsomething = 1;
                             tippoint = colpoint;
-                            terrainnormal = DoRotation(objects.model[k].facenormals[whichhit], 0, objects.yaw[k], 0) * -1;
+                            XYZ terrainnormal = DoRotation(objects.model[k].facenormals[whichhit], 0, objects.yaw[k], 0) * -1;
                             ReflectVector(tipvelocity, terrainnormal);
                             tippoint += terrainnormal * .002;
 
-                            bounceness = terrainnormal * simd::length(tipvelocity) * (abs(normaldotproduct(tipvelocity, terrainnormal)));
+                            XYZ bounceness = terrainnormal * simd::length(tipvelocity) * (abs(normaldotproduct(tipvelocity, terrainnormal)));
                             if (findLengthfast(&tipvelocity) < findLengthfast(&bounceness))
                                 bounceness = 0;
-                            frictionness = abs(normaldotproduct(tipvelocity, terrainnormal));
+                            float frictionness = abs(normaldotproduct(tipvelocity, terrainnormal));
                             tipvelocity -= bounceness;
                             if (1 - friction * frictionness > 0)
                                 tipvelocity *= 1 - friction * frictionness;
@@ -499,13 +487,13 @@ void Weapon::DoStuff(int i)
                                 if (whichhit != -1) {
                                     hitsomething = 1;
                                     mid = colpoint;
-                                    terrainnormal = DoRotation(objects.model[k].facenormals[whichhit], 0, objects.yaw[k], 0) * -1;
+                                    XYZ terrainnormal = DoRotation(objects.model[k].facenormals[whichhit], 0, objects.yaw[k], 0) * -1;
                                     ReflectVector(velocity, terrainnormal);
 
-                                    bounceness = terrainnormal * simd::length(velocity) * (abs(normaldotproduct(velocity, terrainnormal)));
+                                    XYZ bounceness = terrainnormal * simd::length(velocity) * (abs(normaldotproduct(velocity, terrainnormal)));
                                     if (findLengthfast(&velocity) < findLengthfast(&bounceness))
                                         bounceness = 0;
-                                    frictionness = abs(normaldotproduct(velocity, terrainnormal));
+                                    float frictionness = abs(normaldotproduct(velocity, terrainnormal));
                                     velocity -= bounceness;
                                     if (1 - friction * frictionness > 0)
                                         velocity *= 1 - friction * frictionness;
@@ -534,13 +522,13 @@ void Weapon::DoStuff(int i)
                                 if (whichhit != -1) {
                                     hitsomething = 1;
                                     mid = colpoint;
-                                    terrainnormal = DoRotation(objects.model[k].facenormals[whichhit], 0, objects.yaw[k], 0) * -1;
+                                    XYZ terrainnormal = DoRotation(objects.model[k].facenormals[whichhit], 0, objects.yaw[k], 0) * -1;
                                     ReflectVector(tipvelocity, terrainnormal);
 
-                                    bounceness = terrainnormal * simd::length(tipvelocity) * (abs(normaldotproduct(tipvelocity, terrainnormal)));
+                                    XYZ bounceness = terrainnormal * simd::length(tipvelocity) * (abs(normaldotproduct(tipvelocity, terrainnormal)));
                                     if (findLengthfast(&tipvelocity) < findLengthfast(&bounceness))
                                         bounceness = 0;
-                                    frictionness = abs(normaldotproduct(tipvelocity, terrainnormal));
+                                    float frictionness = abs(normaldotproduct(tipvelocity, terrainnormal));
                                     tipvelocity -= bounceness;
                                     if (1 - friction * frictionness > 0)
                                         tipvelocity *= 1 - friction * frictionness;
@@ -610,13 +598,13 @@ void Weapon::DoStuff(int i)
                 else
                     position.y = terrain.getHeight(position.x, position.z);
 
-                terrainnormal = terrain.getNormal(position.x, position.z);
+                XYZ terrainnormal = terrain.getNormal(position.x, position.z);
                 ReflectVector(velocity, terrainnormal);
                 position += terrainnormal * .002;
-                bounceness = terrainnormal * simd::length(velocity) * (abs(normaldotproduct(velocity, terrainnormal)));
+                XYZ bounceness = terrainnormal * simd::length(velocity) * (abs(normaldotproduct(velocity, terrainnormal)));
                 if (findLengthfast(&velocity) < findLengthfast(&bounceness))
                     bounceness = 0;
-                frictionness = abs(normaldotproduct(velocity, terrainnormal));
+                float frictionness = abs(normaldotproduct(velocity, terrainnormal));
                 velocity -= bounceness;
                 if (1 - friction * frictionness > 0)
                     velocity *= 1 - friction * frictionness;
@@ -664,13 +652,13 @@ void Weapon::DoStuff(int i)
                 else
                     tippoint.y = terrain.getHeight(tippoint.x, tippoint.z);
 
-                terrainnormal = terrain.getNormal(tippoint.x, tippoint.z);
+                XYZ terrainnormal = terrain.getNormal(tippoint.x, tippoint.z);
                 ReflectVector(tipvelocity, terrainnormal);
                 tippoint += terrainnormal * .002;
-                bounceness = terrainnormal * simd::length(tipvelocity) * (abs(normaldotproduct(tipvelocity, terrainnormal)));
+                XYZ bounceness = terrainnormal * simd::length(tipvelocity) * (abs(normaldotproduct(tipvelocity, terrainnormal)));
                 if (findLengthfast(&tipvelocity) < findLengthfast(&bounceness))
                     bounceness = 0;
-                frictionness = abs(normaldotproduct(tipvelocity, terrainnormal));
+                float frictionness = abs(normaldotproduct(tipvelocity, terrainnormal));
                 tipvelocity -= bounceness;
                 if (1 - friction * frictionness > 0)
                     tipvelocity *= 1 - friction * frictionness;
@@ -721,13 +709,13 @@ void Weapon::DoStuff(int i)
                 hitsomething = 1;
                 mid.y = terrain.getHeight(mid.x, mid.z);
 
-                terrainnormal = terrain.getNormal(mid.x, mid.z);
+                XYZ terrainnormal = terrain.getNormal(mid.x, mid.z);
                 ReflectVector(velocity, terrainnormal);
                 //mid+=terrainnormal*.002;
-                bounceness = terrainnormal * simd::length(velocity) * (abs(normaldotproduct(velocity, terrainnormal)));
+                XYZ bounceness = terrainnormal * simd::length(velocity) * (abs(normaldotproduct(velocity, terrainnormal)));
                 if (findLengthfast(&velocity) < findLengthfast(&bounceness))
                     bounceness = 0;
-                frictionness = abs(normaldotproduct(velocity, terrainnormal));
+                float frictionness = abs(normaldotproduct(velocity, terrainnormal));
                 velocity -= bounceness;
                 if (1 - friction * frictionness > 0)
                     velocity *= 1 - friction * frictionness;
@@ -765,13 +753,13 @@ void Weapon::DoStuff(int i)
                 hitsomething = 1;
                 mid.y = terrain.getHeight(mid.x, mid.z);
 
-                terrainnormal = terrain.getNormal(mid.x, mid.z);
+                XYZ terrainnormal = terrain.getNormal(mid.x, mid.z);
                 ReflectVector(tipvelocity, terrainnormal);
                 //mid+=terrainnormal*.002;
-                bounceness = terrainnormal * simd::length(tipvelocity) * (abs(normaldotproduct(tipvelocity, terrainnormal)));
+                XYZ bounceness = terrainnormal * simd::length(tipvelocity) * (abs(normaldotproduct(tipvelocity, terrainnormal)));
                 if (findLengthfast(&tipvelocity) < findLengthfast(&bounceness))
                     bounceness = 0;
-                frictionness = abs(normaldotproduct(tipvelocity, terrainnormal));
+                float frictionness = abs(normaldotproduct(tipvelocity, terrainnormal));
                 tipvelocity -= bounceness;
                 if (1 - friction * frictionness > 0)
                     tipvelocity *= 1 - friction * frictionness;
@@ -805,12 +793,9 @@ void Weapon::DoStuff(int i)
             tipvelocity.y += gravity * multiplier;
 
             //Rotation
-            XYZ temppoint1, temppoint2;
-            float distance;
-
-            temppoint1 = position;
-            temppoint2 = tippoint;
-            distance = simd::distance(temppoint1, temppoint2);
+            XYZ temppoint1 = position;
+            XYZ temppoint2 = tippoint;
+            const float distance = simd::distance(temppoint1, temppoint2);
             rotation2 = asin((temppoint1.y - temppoint2.y) / distance);
             rotation2 *= 360 / 6.28;
             temppoint1.y = 0;
@@ -863,7 +848,7 @@ void Weapon::DoStuff(int i)
         if (onfire && flamedelay <= 0) {
             flamedelay = .020;
             flamedelay -= multiplier;
-            normalrot = 0;
+            XYZ normalrot = 0;
             if (owner != -1) {
                 normalrot = Person::players[owner]->velocity;
             }
@@ -884,7 +869,7 @@ void Weapon::DoStuff(int i)
         if (flamedelay <= 0) {
             flamedelay = .020;
             flamedelay -= multiplier;
-            normalrot = 0;
+            XYZ normalrot = 0;
             if (Random() % 50 == 0 && distsq(&position, &viewer) > 80) {
                 XYZ shinepoint;
                 shinepoint = position + (tippoint - position) * (((float)abs(Random() % 100)) / 100);
@@ -907,8 +892,7 @@ void Weapons::DoStuff()
 
 void Weapon::Draw()
 {
-    static XYZ terrainlight;
-    static GLfloat M[16];
+    GLfloat M[16] = {0};
 
     if ((frustum.SphereInFrustum(position.x, position.y, position.z, 1) &&
             distsq(&viewer, &position) < viewdistance * viewdistance)) {
@@ -957,7 +941,7 @@ void Weapon::Draw()
             }
         }
         if (draw) {
-            terrainlight = terrain.getLighting(position.x, position.z);
+            XYZ terrainlight = terrain.getLighting(position.x, position.z);
             if (drawhowmany > 0) {
                 glAlphaFunc(GL_GREATER, 0.01);
             }

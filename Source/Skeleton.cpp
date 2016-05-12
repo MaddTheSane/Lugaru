@@ -169,7 +169,6 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
     XYZ bounceness;
     const int numrepeats = 3;
     float groundlevel = .15;
-    int i, j, k, l, m;
     XYZ temp;
     XYZ terrainnormal;
     int whichhit;
@@ -190,7 +189,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
         objects.SphereCheckPossible(&terrainlight, 1);
 
         //Add velocity
-        for (i = 0; i < num_joints; i++) {
+        for (int i = 0; i < num_joints; i++) {
             joints[i].position = joints[i].position + joints[i].velocity * multiplier;
 
             switch (joints[i].label) {
@@ -217,7 +216,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
         float tempmult = multiplier;
         //multiplier/=numrepeats;
 
-        for (j = 0; j < numrepeats; j++) {
+        for (int j = 0; j < numrepeats; j++) {
             float r = .05;
             // right leg constraints?
             if (!joint(rightknee).locked && !joint(righthip).locked) {
@@ -265,14 +264,14 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                 }
             }
 
-            for (i = 0; i < num_joints; i++) {
+            for (int i = 0; i < num_joints; i++) {
                 if (joints[i].locked && !spinny && findLengthfast(&joints[i].velocity) > 320)
                     joints[i].locked = 0;
                 if (spinny && findLengthfast(&joints[i].velocity) > 600)
                     joints[i].locked = 0;
                 if (joints[i].delay > 0) {
                     bool freely = true;
-                    for (j = 0; j < num_joints; j++) {
+                    for (int j = 0; j < num_joints; j++) {
                         if (joints[j].locked)
                             freely = false;
                     }
@@ -282,12 +281,12 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
             }
 
             if (num_muscles)
-                for (i = 0; i < num_muscles; i++) {
+                for (int i = 0; i < num_muscles; i++) {
                     //Length constraints
                     muscles[i].DoConstraint(spinny);
                 }
 
-            for (i = 0; i < num_joints; i++) {
+            for (int i = 0; i < num_joints; i++) {
                 //Length constraints
                 //Ground constraint
                 groundlevel = 0;
@@ -382,8 +381,8 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                         broken = 1;
                 }
                 if (terrain.patchobjectnum[whichpatchx][whichpatchz])
-                    for (m = 0; m < terrain.patchobjectnum[whichpatchx][whichpatchz]; m++) {
-                        k = terrain.patchobjects[whichpatchx][whichpatchz][m];
+                    for (int m = 0; m < terrain.patchobjectnum[whichpatchx][whichpatchz]; m++) {
+                        int k = terrain.patchobjects[whichpatchx][whichpatchz][m];
                         if (k < objects.numobjects && k >= 0)
                             if (objects.possible[k]) {
                                 friction = objects.friction[k];
@@ -471,17 +470,17 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
 
 
         if (terrain.patchobjectnum[whichpatchx][whichpatchz])
-            for (m = 0; m < terrain.patchobjectnum[whichpatchx][whichpatchz]; m++) {
-                k = terrain.patchobjects[whichpatchx][whichpatchz][m];
+            for (int m = 0; m < terrain.patchobjectnum[whichpatchx][whichpatchz]; m++) {
+                int k = terrain.patchobjects[whichpatchx][whichpatchz][m];
                 if (objects.possible[k]) {
-                    for (i = 0; i < 26; i++) {
+                    for (int i = 0; i < 26; i++) {
                         //Make this less stupid
                         XYZ start = joints[jointlabels[whichjointstartarray[i]]].position * (*scale) + *coords;
                         XYZ end = joints[jointlabels[whichjointendarray[i]]].position * (*scale) + *coords;
                         whichhit = objects.model[k].LineCheckSlidePossible(start, end, temp, objects.position[k], objects.yaw[k]);
                         if (whichhit != -1) {
                             joints[jointlabels[whichjointendarray[i]]].position = (end - *coords) / (*scale);
-                            for (j = 0; j < num_muscles; j++) {
+                            for (int j = 0; j < num_muscles; j++) {
                                 if ((muscles[j].parent1->label == whichjointstartarray[i] && muscles[j].parent2->label == whichjointendarray[i]) || (muscles[j].parent2->label == whichjointstartarray[i] && muscles[j].parent1->label == whichjointendarray[i]))
                                     muscles[j].DoConstraint(spinny);
                             }
@@ -490,7 +489,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
                 }
             }
 
-        for (i = 0; i < num_joints; i++) {
+        for (int i = 0; i < num_joints; i++) {
             switch (joints[i].label) {
             case head:
                 groundlevel = .8;
@@ -520,7 +519,7 @@ float Skeleton::DoConstraints(XYZ *coords, float *scale)
     }
 
     if (!free) {
-        for (i = 0; i < num_muscles; i++) {
+        for (int i = 0; i < num_muscles; i++) {
             if (muscles[i].type == boneconnect)
                 muscles[i].DoConstraint(0);
         }
@@ -670,7 +669,7 @@ void Animation::Load(const char *filename, int aheight, int aattack)
     LOGFUNC;
 
     // concatenate anim_prefix + filename
-    int len = strlen(anim_prefix) + strlen(filename);
+    size_t len = strlen(anim_prefix) + strlen(filename);
     char *buf = new char[len + 1];
     snprintf(buf, len + 1, "%s%s", anim_prefix, filename);
     // Changing the filename into something the OS can understand

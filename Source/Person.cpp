@@ -571,13 +571,10 @@ void Person::DoBloodBig(float howmuch, int which)
  */
 bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
 {
-    static int i, j;
-    static XYZ bloodvel;
-    static XYZ startpoint, endpoint, colpoint, movepoint;
-    static float rotationpoint;
-    static int whichtri;
-    static XYZ p1, p2, p3, p0;
-    static XYZ N, temp;
+    XYZ bloodvel;
+    XYZ startpoint, endpoint, colpoint, movepoint;
+    float rotationpoint;
+    int whichtri;
     XYZ bary;
     XYZ gxx, gyy;
     float coordsx, coordsy;
@@ -598,10 +595,10 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
         whichtri = skeleton.drawmodel.LineCheck(startpoint, endpoint, colpoint, movepoint, rotationpoint);
         if (whichtri != -1) {
             // low level geometry math
-            p0 = colpoint;
-            p1 = skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[whichtri].vertex[0]];
-            p2 = skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[whichtri].vertex[1]];
-            p3 = skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[whichtri].vertex[2]];
+            XYZ p0 = colpoint;
+            XYZ p1 = skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[whichtri].vertex[0]];
+            XYZ p2 = skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[whichtri].vertex[1]];
+            XYZ p3 = skeleton.drawmodel.vertex[skeleton.drawmodel.Triangles[whichtri].vertex[2]];
             /*
             CrossProduct(p2-p1,p3-p1,&N);
             CrossProduct(p0-p1,p3-p1,&temp);
@@ -690,8 +687,8 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
             int endy = 0;
             GLubyte color;
             if (creature == rabbittype)
-                for (i = 0; i < 512; i++) {
-                    for (j = 0; j < 512; j++) {
+                for (int i = 0; i < 512; i++) {
+                    for (int j = 0; j < 512; j++) {
                         if (bloodText[i * 512 * 3 + j * 3 + 0] <= which + 4 && bloodText[i * 512 * 3 + j * 3 + 0] >= which - 4) {
                             if (i < startx) startx = i;
                             if (j < starty) starty = j;
@@ -701,8 +698,8 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
                     }
                 }
             if (creature == wolftype)
-                for (i = 0; i < 512; i++) {
-                    for (j = 0; j < 512; j++) {
+                for (int i = 0; i < 512; i++) {
+                    for (int j = 0; j < 512; j++) {
                         if (wolfbloodText[i * 512 * 3 + j * 3 + 0] <= which + 4 && wolfbloodText[i * 512 * 3 + j * 3 + 0] >= which - 4) {
                             if (i < startx) startx = i;
                             if (j < starty) starty = j;
@@ -731,8 +728,8 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
             int texdetailint = realtexdetail;
             int where;
             if (creature == rabbittype)
-                for (i = startx; i < endx; i++) {
-                    for (j = starty; j < endy; j++) {
+                for (int i = startx; i < endx; i++) {
+                    for (int j = starty; j < endy; j++) {
                         if (bloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] <= which + 4 && bloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] >= which - 4) {
                             color = Random() % 85 + 170;
                             where = i * skeleton.skinsize * 3 + j * 3;
@@ -751,8 +748,8 @@ bool Person::DoBloodBigWhere(float howmuch, int which, XYZ where)
                     }
                 }
             if (creature == wolftype)
-                for (i = startx; i < endx; i++) {
-                    for (j = starty; j < endy; j++) {
+                for (int i = startx; i < endx; i++) {
+                    for (int j = starty; j < endy; j++) {
                         if (wolfbloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] <= which + 4 && wolfbloodText[(i * texdetailint - offsetx) * 512 * 3 + (j * texdetailint - offsety) * 3 + 0] >= which - 4) {
                             color = Random() % 85 + 170;
                             where = i * skeleton.skinsize * 3 + j * 3;
@@ -5829,7 +5826,7 @@ void Person::DoStuff()
  */
 void IKHelper(Person *p, float interp)
 {
-    XYZ point, newpoint, change, change2;
+    XYZ point, change, change2;
     float heightleft, heightright;
 
     // TODO: implement localToWorld and worldToLocal
@@ -6413,7 +6410,7 @@ int Person::DrawSkeleton()
                             weapons[i].smallrotation2 = 50;
                         }
                         if ((animCurrent == crouchstabanim && animTarget == crouchstabanim) || (animCurrent == backhandspringanim && animTarget == backhandspringanim)) {
-                            XYZ temppoint1, temppoint2, tempforward;
+                            XYZ temppoint1, temppoint2;
                             float distance;
 
                             temppoint1 = jointPos(righthand);
@@ -6432,7 +6429,7 @@ int Person::DrawSkeleton()
                                 weapons[i].rotation1 = 360 - weapons[i].rotation1;
                         }
                         if ((animCurrent == knifeslashreversalanim && animTarget == knifeslashreversalanim) || (animCurrent == knifeslashreversedanim && animTarget == knifeslashreversedanim)) {
-                            XYZ temppoint1, temppoint2, tempforward;
+                            XYZ temppoint1, temppoint2;
                             float distance;
 
                             temppoint1 = jointPos(righthand);
@@ -6476,7 +6473,7 @@ int Person::DrawSkeleton()
                             weapons[i].rotation3 = 0;
                         }
                         if ((animTarget == swordgroundstabanim && animCurrent == swordgroundstabanim) || (animTarget == swordsneakattackanim && animCurrent == swordsneakattackanim) || (animTarget == swordslashparryanim && animCurrent == swordslashparryanim) || (animTarget == swordslashparriedanim && animCurrent == swordslashparriedanim) || (animTarget == swordslashreversalanim && animCurrent == swordslashreversalanim) || (animTarget == swordslashreversedanim && animCurrent == swordslashreversedanim) || (animTarget == knifeslashreversalanim && animCurrent == knifeslashreversalanim) || (animTarget == knifeslashreversedanim && animCurrent == knifeslashreversedanim) || (animTarget == swordslashanim && animCurrent == swordslashanim) || (animTarget == drawleftanim && animCurrent == drawleftanim) || (animCurrent == backhandspringanim && animTarget == backhandspringanim)) {
-                            XYZ temppoint1, temppoint2, tempforward;
+                            XYZ temppoint1, temppoint2;
                             float distance;
 
                             temppoint1 = animation[animCurrent].position[skeleton.jointlabels[righthand]][frameCurrent] * (1 - target) + animation[animTarget].position[skeleton.jointlabels[righthand]][frameTarget] * (target); //jointPos(righthand);
@@ -6499,7 +6496,7 @@ int Person::DrawSkeleton()
                         weapons[i].smallrotation = 100;
                         weapons[i].smallrotation2 = 0;
                         if ((animTarget == staffhitanim && animCurrent == staffhitanim) || (animTarget == staffhitreversedanim && animCurrent == staffhitreversedanim) || (animTarget == staffspinhitreversedanim && animCurrent == staffspinhitreversedanim) || (animTarget == staffgroundsmashanim && animCurrent == staffgroundsmashanim) || (animTarget == staffspinhitanim && animCurrent == staffspinhitanim)) {
-                            XYZ temppoint1, temppoint2, tempforward;
+                            XYZ temppoint1, temppoint2;
                             float distance;
 
                             temppoint1 = animation[animCurrent].position[skeleton.jointlabels[righthand]][frameCurrent] * (1 - target) + animation[animTarget].position[skeleton.jointlabels[righthand]][frameTarget] * (target); //jointPos(righthand);

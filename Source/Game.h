@@ -65,11 +65,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 namespace Game
 {
 	
-	extern bool allDead;
-
-	void getWindowSize(int &width, int &height);
-	void writeSettings();
-	void validateDisplaySettings();
+extern bool allDead;
 
 extern Texture terraintexture;
 extern Texture terraintexture2;

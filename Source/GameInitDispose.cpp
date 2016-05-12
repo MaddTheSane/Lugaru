@@ -173,7 +173,6 @@ void Game::deleteGame()
 
 void LoadSave(const char *fileName, GLuint *textureid, bool mipmap, GLubyte *array, int *skinsize)
 {
-    int i;
     int bytesPerPixel;
 
     LOGFUNC;
@@ -201,7 +200,7 @@ void LoadSave(const char *fileName, GLuint *textureid, bool mipmap, GLubyte *arr
         bytesPerPixel = texture.bpp / 8;
 
         int tempnum = 0;
-        for (i = 0; i < (int)(texture.sizeY * texture.sizeX * bytesPerPixel); i++) {
+        for (int i = 0; i < (int)(texture.sizeY * texture.sizeX * bytesPerPixel); i++) {
             if ((i + 1) % 4 || bytesPerPixel == 3) {
                 array[tempnum] = texture.data[i];
                 tempnum++;
@@ -232,7 +231,7 @@ GLvoid Game::ReSizeGLScene(float fov, float pnear)
 
 void Game::LoadingScreen()
 {
-    static float loadprogress;
+    float loadprogress = 0;
     //~ static AbsoluteTime time = {0, 0};
     static AbsoluteTime frametime = {0, 0};
     AbsoluteTime currTime = UpTime ();
@@ -453,14 +452,12 @@ void Game::LoadingScreen()
 
 void FadeLoadingScreen(float howmuch)
 {
-    static float loadprogress;
-
     glLoadIdentity();
     //Clear to black
     glClearColor(0, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    loadprogress = howmuch;
+    const float loadprogress = howmuch;
 
     //loadprogress=abs(Random()%100);
 
@@ -745,9 +742,8 @@ void Game::LoadScreenTexture()
 //TODO: move LoadStuff() closer to GameTick.cpp to get rid of various vars shared in Game.h
 void Game::LoadStuff()
 {
-    static float temptexdetail;
-    static float viewdistdetail;
-    static int i, j;
+    float temptexdetail;
+    float viewdistdetail;
     float megascale = 1;
 
     LOGFUNC;
@@ -760,7 +756,7 @@ void Game::LoadStuff()
         p->skeleton.drawmodel.textureptr.destroy();
     }
 
-    i = abs(Random() % 4);
+    //int i = abs(Random() % 4);
     visibleloading = 0; //don't use loadscreentexture yet
     loadscreentexture.load(":Data:Textures:fire.jpg", 1, 0);
     visibleloading = 1;
@@ -926,23 +922,23 @@ void Game::LoadStuff()
     XYZ moveamount;
     moveamount = 0;
     moveamount.z = 2;
-    for (i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
-        for (j = 0; j < animation[knifesneakattackanim].numframes; j++) {
+    for (int i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
+        for (int j = 0; j < animation[knifesneakattackanim].numframes; j++) {
             animation[knifesneakattackanim].position[i][j] += moveamount;
         }
     }
 
     LoadingScreen();
 
-    for (i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
-        for (j = 0; j < animation[knifesneakattackedanim].numframes; j++) {
+    for (int i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
+        for (int j = 0; j < animation[knifesneakattackedanim].numframes; j++) {
             animation[knifesneakattackedanim].position[i][j] += moveamount;
         }
     }
 
     LoadingScreen();
 
-    for (i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
+    for (int i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
         animation[dead1anim].position[i][1] = animation[dead1anim].position[i][0];
         animation[dead2anim].position[i][1] = animation[dead2anim].position[i][0];
         animation[dead3anim].position[i][1] = animation[dead3anim].position[i][0];
@@ -958,20 +954,20 @@ void Game::LoadStuff()
     animation[dead3anim].speed[1] = 0.001;
     animation[dead4anim].speed[1] = 0.001;
 
-    for (i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
-        for (j = 0; j < animation[swordsneakattackanim].numframes; j++) {
+    for (int i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
+        for (int j = 0; j < animation[swordsneakattackanim].numframes; j++) {
             animation[swordsneakattackanim].position[i][j] += moveamount;
         }
     }
     LoadingScreen();
-    for (j = 0; j < animation[swordsneakattackanim].numframes; j++) {
+    for (int j = 0; j < animation[swordsneakattackanim].numframes; j++) {
         animation[swordsneakattackanim].weapontarget[j] += moveamount;
     }
 
     LoadingScreen();
 
-    for (i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
-        for (j = 0; j < animation[swordsneakattackedanim].numframes; j++) {
+    for (int i = 0; i < Person::players[0]->skeleton.num_joints; i++) {
+        for (int j = 0; j < animation[swordsneakattackedanim].numframes; j++) {
             animation[swordsneakattackedanim].position[i][j] += moveamount;
         }
     }

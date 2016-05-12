@@ -21,40 +21,29 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Game.h"
 #include "Models.h"
+#include "Globals.h"
 
 using namespace std;
 using namespace simd;
 
-extern float multiplier;
-extern float viewdistance;
-extern XYZ viewer;
-extern float fadestart;
-extern float texdetail;
-extern bool decals;
-
-extern bool visibleloading;
-
 int Model::LineCheck(XYZ &p1,XYZ &p2, XYZ &p, const XYZ &move, const float rotate)
 {
-    float distance;
     static float olddistance;
-    int intersecting;
-    int firstintersecting;
+    int firstintersecting = -1;
     XYZ point;
     
     p1 = p1 - move;
     p2 = p2 - move;
-    if (rotate)
+    if (rotate) {
         p1 = DoRotation(p1, 0, -rotate, 0);
-    if (rotate)
         p2 = DoRotation(p2, 0, -rotate, 0);
+    }
     if (!sphere_line_intersection(p1, p2, boundingspherecenter, boundingsphereradius))
         return -1;
-    firstintersecting = -1;
     
     for (int j = 0; j < TriangleNum; j++) {
-        intersecting = LineFacetd(p1, p2, vertex[Triangles[j].vertex[0]], vertex[Triangles[j].vertex[1]], vertex[Triangles[j].vertex[2]], facenormals[j], point);
-        distance = distance_squared(point, p1);
+        int intersecting = LineFacetd(p1, p2, vertex[Triangles[j].vertex[0]], vertex[Triangles[j].vertex[1]], vertex[Triangles[j].vertex[2]], facenormals[j], point);
+        float distance = distance_squared(point, p1);
         if ((distance < olddistance || firstintersecting == -1) && intersecting) {
             olddistance = distance;
             firstintersecting = j;
@@ -70,32 +59,29 @@ int Model::LineCheck(XYZ &p1,XYZ &p2, XYZ &p, const XYZ &move, const float rotat
 
 int Model::LineCheckSlide(XYZ &p1,XYZ &p2, XYZ &p, const XYZ &move, const float rotate)
 {
-    float distance;
     static float olddistance;
-    int intersecting;
-    int firstintersecting;
+    int firstintersecting = -1;
     XYZ point;
 
     p1 = p1 - move;
     p2 = p2 - move;
     if (!sphere_line_intersection(p1, p2, boundingspherecenter, boundingsphereradius))
         return -1;
-    firstintersecting = -1;
-    if (rotate)
+    if (rotate) {
         p1 = DoRotation(p1, 0, -rotate, 0);
-    if (rotate)
         p2 = DoRotation(p2, 0, -rotate, 0);
+    }
 
     for (int j = 0; j < TriangleNum; j++) {
-        intersecting = LineFacetd(p1, p2, vertex[Triangles[j].vertex[0]], vertex[Triangles[j].vertex[1]], vertex[Triangles[j].vertex[2]], facenormals[j], point);
-        distance = distance_squared(point, p1);
+        int intersecting = LineFacetd(p1, p2, vertex[Triangles[j].vertex[0]], vertex[Triangles[j].vertex[1]], vertex[Triangles[j].vertex[2]], facenormals[j], point);
+        float distance = distance_squared(point, p1);
         if ((distance < olddistance || firstintersecting == -1) && intersecting) {
             olddistance = distance;
             firstintersecting = j;
         }
     }
 
-    distance = abs((facenormals[firstintersecting].x * p2.x) + (facenormals[firstintersecting].y * p2.y) + (facenormals[firstintersecting].z * p2.z) - ((facenormals[firstintersecting].x * vertex[Triangles[firstintersecting].vertex[0]].x) + (facenormals[firstintersecting].y * vertex[Triangles[firstintersecting].vertex[0]].y) + (facenormals[firstintersecting].z * vertex[Triangles[firstintersecting].vertex[0]].z)));
+    float distance = abs((facenormals[firstintersecting].x * p2.x) + (facenormals[firstintersecting].y * p2.y) + (facenormals[firstintersecting].z * p2.z) - ((facenormals[firstintersecting].x * vertex[Triangles[firstintersecting].vertex[0]].x) + (facenormals[firstintersecting].y * vertex[Triangles[firstintersecting].vertex[0]].y) + (facenormals[firstintersecting].z * vertex[Triangles[firstintersecting].vertex[0]].z)));
     p2 -= facenormals[firstintersecting] * distance;
 
     if (rotate)
@@ -140,9 +126,7 @@ int Model::LineCheckPossible(XYZ &p1,XYZ &p2, XYZ &p, const XYZ &move, const flo
 
 int Model::LineCheckSlidePossible(XYZ &p1,XYZ &p2, XYZ &p, const XYZ &move, const float rotate)
 {
-    float distance;
     static float olddistance;
-    int intersecting;
     int firstintersecting = -1;
     XYZ point;
 
@@ -150,25 +134,26 @@ int Model::LineCheckSlidePossible(XYZ &p1,XYZ &p2, XYZ &p, const XYZ &move, cons
     p2 = p2 - move;
     if (!sphere_line_intersection(p1, p2, boundingspherecenter, boundingsphereradius))
         return -1;
-    if (rotate)
+    if (rotate) {
         p1 = DoRotation(p1, 0, -rotate, 0);
-    if (rotate)
         p2 = DoRotation(p2, 0, -rotate, 0);
+    }
 
-    if (numpossible)
+    if (numpossible) {
         for (int j = 0; j < numpossible; j++) {
             if (possible[j] >= 0 && possible[j] < TriangleNum) {
-                intersecting = LineFacetd(p1, p2, vertex[Triangles[possible[j]].vertex[0]], vertex[Triangles[possible[j]].vertex[1]], vertex[Triangles[possible[j]].vertex[2]], facenormals[possible[j]], point);
-                distance= distance_squared(point, p1);
+                int intersecting = LineFacetd(p1, p2, vertex[Triangles[possible[j]].vertex[0]], vertex[Triangles[possible[j]].vertex[1]], vertex[Triangles[possible[j]].vertex[2]], facenormals[possible[j]], point);
+                float distance= distance_squared(point, p1);
                 if ((distance < olddistance || firstintersecting == -1) && intersecting) {
                     olddistance = distance;
                     firstintersecting = possible[j];
                 }
             }
         }
+    }
 
     if (firstintersecting > 0) {
-        distance = abs((facenormals[firstintersecting].x * p2.x) + (facenormals[firstintersecting].y * p2.y) + (facenormals[firstintersecting].z * p2.z) - ((facenormals[firstintersecting].x * vertex[Triangles[firstintersecting].vertex[0]].x) + (facenormals[firstintersecting].y * vertex[Triangles[firstintersecting].vertex[0]].y) + (facenormals[firstintersecting].z * vertex[Triangles[firstintersecting].vertex[0]].z)));
+        float distance = abs((facenormals[firstintersecting].x * p2.x) + (facenormals[firstintersecting].y * p2.y) + (facenormals[firstintersecting].z * p2.z) - ((facenormals[firstintersecting].x * vertex[Triangles[firstintersecting].vertex[0]].x) + (facenormals[firstintersecting].y * vertex[Triangles[firstintersecting].vertex[0]].y) + (facenormals[firstintersecting].z * vertex[Triangles[firstintersecting].vertex[0]].z)));
         p2 -= facenormals[firstintersecting] * distance;
     }
 
@@ -180,9 +165,7 @@ int Model::LineCheckSlidePossible(XYZ &p1,XYZ &p2, XYZ &p, const XYZ &move, cons
 
 int Model::SphereCheck(XYZ &p1,const float radius, XYZ &p, const XYZ &move, const float rotate)
 {
-    float distance;
     static float olddistance;
-    int intersecting;
     int firstintersecting = -1;
     XYZ point;
     
@@ -195,8 +178,8 @@ int Model::SphereCheck(XYZ &p1,const float radius, XYZ &p, const XYZ &move, cons
 
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < TriangleNum; j++) {
-            intersecting = 0;
-            distance = abs((facenormals[j].x * p1.x) + (facenormals[j].y * p1.y) + (facenormals[j].z * p1.z) - ((facenormals[j].x * vertex[Triangles[j].vertex[0]].x) + (facenormals[j].y * vertex[Triangles[j].vertex[0]].y) + (facenormals[j].z * vertex[Triangles[j].vertex[0]].z)));
+            int intersecting = 0;
+            float distance = abs((facenormals[j].x * p1.x) + (facenormals[j].y * p1.y) + (facenormals[j].z * p1.z) - ((facenormals[j].x * vertex[Triangles[j].vertex[0]].x) + (facenormals[j].y * vertex[Triangles[j].vertex[0]].y) + (facenormals[j].z * vertex[Triangles[j].vertex[0]].z)));
             if (distance < radius) {
                 point = p1 - facenormals[j] * distance;
                 if (PointInTriangle( &point, facenormals[j], &vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[1]], &vertex[Triangles[j].vertex[2]]))
@@ -224,20 +207,18 @@ int Model::SphereCheck(XYZ &p1,const float radius, XYZ &p, const XYZ &move, cons
             }
         }
     }
-    if (rotate)
+    if (rotate) {
         p = DoRotation(p, 0, rotate, 0);
-    p = p + move;
-    if (rotate)
         p1 = DoRotation(p1, 0, rotate, 0);
+    }
+    p += move;
     p1 += move;
     return firstintersecting;
 }
 
 int Model::SphereCheckPossible(XYZ &p1,const float radius, const XYZ &move, const float rotate)
 {
-    float distance;
     static float olddistance;
-    int intersecting;
     int firstintersecting = -1;
     XYZ point;
     
@@ -254,8 +235,8 @@ int Model::SphereCheckPossible(XYZ &p1,const float radius, const XYZ &move, cons
     }
 
     for (int j = 0; j < TriangleNum; j++) {
-        intersecting = 0;
-        distance = abs((facenormals[j].x * p1.x) + (facenormals[j].y * p1.y) + (facenormals[j].z * p1.z) - ((facenormals[j].x * vertex[Triangles[j].vertex[0]].x) + (facenormals[j].y * vertex[Triangles[j].vertex[0]].y) + (facenormals[j].z * vertex[Triangles[j].vertex[0]].z)));
+        int intersecting = 0;
+        float distance = abs((facenormals[j].x * p1.x) + (facenormals[j].y * p1.y) + (facenormals[j].z * p1.z) - ((facenormals[j].x * vertex[Triangles[j].vertex[0]].x) + (facenormals[j].y * vertex[Triangles[j].vertex[0]].y) + (facenormals[j].z * vertex[Triangles[j].vertex[0]].z)));
         if (distance < radius) {
             point = p1 - facenormals[j] * distance;
             if (PointInTriangle( &point, facenormals[j], &vertex[Triangles[j].vertex[0]], &vertex[Triangles[j].vertex[1]], &vertex[Triangles[j].vertex[2]]))
@@ -284,15 +265,27 @@ int Model::SphereCheckPossible(XYZ &p1,const float radius, const XYZ &move, cons
 }
 
 
+void Model::UpdateBoundingSphere()
+{
+    boundingsphereradius = 0;
+    for (int i = 0; i < vertexNum; i++) {
+        for (int j = 0; j < vertexNum; j++) {
+            if (j != i && distsq(&vertex[j], &vertex[i]) / 2 > boundingsphereradius) {
+                boundingsphereradius = distsq(&vertex[j], &vertex[i]) / 2;
+                boundingspherecenter = (vertex[i] + vertex[j]) / 2;
+            }
+        }
+    }
+    boundingsphereradius = fast_sqrt(boundingsphereradius);
+}
+
 void Model::UpdateVertexArray()
 {
     if (type != normaltype && type != decalstype)
         return;
-    int i;
-    int j;
     if (!flat)
-        for (i = 0; i < TriangleNum; i++) {
-            j = i * 24;
+        for (int i = 0; i < TriangleNum; i++) {
+            const int j = i * 24;
             vArray[j + 0] = Triangles[i].gx[0];
             vArray[j + 1] = Triangles[i].gy[0];
             vArray[j + 2] = normals[Triangles[i].vertex[0]].x;
@@ -321,8 +314,8 @@ void Model::UpdateVertexArray()
             vArray[j + 23] = vertex[Triangles[i].vertex[2]].z;
         }
     if (flat)
-        for (i = 0; i < TriangleNum; i++) {
-            j = i * 24;
+        for (int i = 0; i < TriangleNum; i++) {
+            const int j = i * 24;
             vArray[j + 0] = Triangles[i].gx[0];
             vArray[j + 1] = Triangles[i].gy[0];
             vArray[j + 2] = facenormals[i].x * -1;
@@ -357,11 +350,9 @@ void Model::UpdateVertexArrayNoTex()
 {
     if (type != normaltype && type != decalstype)
         return;
-    int i;
-    int j;
     if (!flat)
-        for (i = 0; i < TriangleNum; i++) {
-            j = i * 24;
+        for (int i = 0; i < TriangleNum; i++) {
+            const int j = i * 24;
             vArray[j + 2] = normals[Triangles[i].vertex[0]].x;
             vArray[j + 3] = normals[Triangles[i].vertex[0]].y;
             vArray[j + 4] = normals[Triangles[i].vertex[0]].z;
@@ -384,8 +375,8 @@ void Model::UpdateVertexArrayNoTex()
             vArray[j + 23] = vertex[Triangles[i].vertex[2]].z;
         }
     if (flat)
-        for (i = 0; i < TriangleNum; i++) {
-            j = i * 24;
+        for (int i = 0; i < TriangleNum; i++) {
+            const int j = i * 24;
             vArray[j + 2] = facenormals[i].x * -1;
             vArray[j + 3] = facenormals[i].y * -1;
             vArray[j + 4] = facenormals[i].z * -1;
@@ -413,10 +404,8 @@ void Model::UpdateVertexArrayNoTexNoNorm()
 {
     if (type != normaltype && type != decalstype)
         return;
-    int i;
-    int j;
-    for (i = 0; i < TriangleNum; i++) {
-        j = i * 24;
+    for (int i = 0; i < TriangleNum; i++) {
+        const int j = i * 24;
         vArray[j + 5] = vertex[Triangles[i].vertex[0]].x;
         vArray[j + 6] = vertex[Triangles[i].vertex[0]].y;
         vArray[j + 7] = vertex[Triangles[i].vertex[0]].z;
@@ -434,7 +423,6 @@ void Model::UpdateVertexArrayNoTexNoNorm()
 bool Model::loadnotex(const char *filename )
 {
     FILE *tfile;
-    long i;
 
     //~ int oldvertexNum, oldTriangleNum;
     //~ oldvertexNum = vertexNum;
@@ -460,13 +448,13 @@ bool Model::loadnotex(const char *filename )
     Triangles = (TexturedTriangle*)malloc(sizeof(TexturedTriangle) * TriangleNum);
     vArray = (GLfloat*)malloc(sizeof(GLfloat) * TriangleNum * 24);
 
-    for (i = 0; i < vertexNum; i++) {
+    for (int i = 0; i < vertexNum; i++) {
         float tmpx, tmpy, tmpz;
-        funpackf(tfile, "Bf Bf Bf", &tmpx,&tmpy,&tmpz);
+        funpackf(tfile, "Bf Bf Bf", &tmpx, &tmpy, &tmpz);
         vertex[i] = XYZ{tmpx, tmpy, tmpz};
     }
 
-    for (i = 0; i < TriangleNum; i++) {
+    for (int i = 0; i < TriangleNum; i++) {
         //funpackf(tfile, "Bi Bi Bi", &Triangles[i].vertex[0], &Triangles[i].vertex[1], &Triangles[i].vertex[2]);
         short vertex[ 6];
         funpackf(tfile, "Bs Bs Bs Bs Bs Bs", &vertex[ 0], &vertex[ 1], &vertex[ 2], &vertex[ 3], &vertex[ 4], &vertex[ 5]);
@@ -481,20 +469,11 @@ bool Model::loadnotex(const char *filename )
 
     UpdateVertexArray();
 
-    for (i = 0; i < vertexNum; i++) {
+    for (int i = 0; i < vertexNum; i++) {
         owner[i] = -1;
     }
 
-    boundingsphereradius = 0;
-    for (i = 0; i < vertexNum; i++) {
-        for (int j = 0; j < vertexNum; j++) {
-            if (j != i && distsq(&vertex[j], &vertex[i]) / 2 > boundingsphereradius) {
-                boundingsphereradius = distsq(&vertex[j], &vertex[i]) / 2;
-                boundingspherecenter = (vertex[i] + vertex[j]) / 2;
-            }
-        }
-    }
-    boundingsphereradius = fast_sqrt(boundingsphereradius);
+    UpdateBoundingSphere();
 
     return 1;
 }
@@ -503,7 +482,6 @@ bool Model::loadnotex(const char *filename )
 bool Model::load(const char *filename, bool texture )
 {
     FILE *tfile;
-    long i;
 
     LOGFUNC;
 
@@ -539,13 +517,13 @@ bool Model::load(const char *filename, bool texture )
     Triangles = (TexturedTriangle*)malloc(sizeof(TexturedTriangle) * TriangleNum);
     vArray = (GLfloat*)malloc(sizeof(GLfloat) * TriangleNum * 24);
 
-    for (i = 0; i < vertexNum; i++) {
+    for (int i = 0; i < vertexNum; i++) {
         float tmpx, tmpy, tmpz;
-        funpackf(tfile, "Bf Bf Bf", &tmpx,&tmpy,&tmpz);
+        funpackf(tfile, "Bf Bf Bf", &tmpx, &tmpy, &tmpz);
         vertex[i] = XYZ{tmpx, tmpy, tmpz};
     }
 
-    for (i = 0; i < TriangleNum; i++) {
+    for (int i = 0; i < TriangleNum; i++) {
         //funpackf(tfile, "Bi Bi Bi", &Triangles[i].vertex[0], &Triangles[i].vertex[1], &Triangles[i].vertex[2]);
         short vertex[ 6];
         funpackf(tfile, "Bs Bs Bs Bs Bs Bs", &vertex[ 0], &vertex[ 1], &vertex[ 2], &vertex[ 3], &vertex[ 4], &vertex[ 5]);
@@ -562,20 +540,11 @@ bool Model::load(const char *filename, bool texture )
 
     UpdateVertexArray();
 
-    for (i = 0; i < vertexNum; i++) {
+    for (int i = 0; i < vertexNum; i++) {
         owner[i] = -1;
     }
 
-    boundingsphereradius = 0;
-    for (long i = 0; i < vertexNum; i++) {
-        for (int j = 0; j < vertexNum; j++) {
-            if (j != i && distsq(&vertex[j], &vertex[i]) / 2 > boundingsphereradius) {
-                boundingsphereradius = distsq(&vertex[j], &vertex[i]) / 2;
-                boundingspherecenter = (vertex[i] + vertex[j]) / 2;
-            }
-        }
-    }
-    boundingsphereradius = fast_sqrt(boundingsphereradius);
+    UpdateBoundingSphere();
 
     return 1;
 }
@@ -583,7 +552,6 @@ bool Model::load(const char *filename, bool texture )
 bool Model::loaddecal(const char *filename, bool texture )
 {
     FILE *tfile;
-    long i, j;
 
     LOGFUNC;
 
@@ -622,13 +590,13 @@ bool Model::loaddecal(const char *filename, bool texture )
     vArray = (GLfloat*)malloc(sizeof(GLfloat) * TriangleNum * 24);
 
 
-    for (i = 0; i < vertexNum; i++) {
+    for (int i = 0; i < vertexNum; i++) {
         float tmpx, tmpy, tmpz;
-        funpackf(tfile, "Bf Bf Bf", &tmpx,&tmpy,&tmpz);
+        funpackf(tfile, "Bf Bf Bf", &tmpx, &tmpy, &tmpz);
         vertex[i] = XYZ{tmpx, tmpy, tmpz};
     }
 
-    for (i = 0; i < TriangleNum; i++) {
+    for (int i = 0; i < TriangleNum; i++) {
         //funpackf(tfile, "Bi Bi Bi", &Triangles[i].vertex[0], &Triangles[i].vertex[1], &Triangles[i].vertex[2]);
         short vertex[ 6];
         funpackf(tfile, "Bs Bs Bs Bs Bs Bs", &vertex[ 0], &vertex[ 1], &vertex[ 2], &vertex[ 3], &vertex[ 4], &vertex[ 5]);
@@ -650,29 +618,20 @@ bool Model::loaddecal(const char *filename, bool texture )
         owner[i] = -1;
     }
 
-    boundingsphereradius = 0;
-    for (i = 0; i < vertexNum; i++) {
-        for (j = 0; j < vertexNum; j++) {
-            if (j != i && distsq(&vertex[j], &vertex[i]) / 2 > boundingsphereradius) {
-                boundingsphereradius = distsq(&vertex[j], &vertex[i]) / 2;
-                boundingspherecenter = (vertex[i] + vertex[j]) / 2;
-            }
-        }
-    }
-    boundingsphereradius = fast_sqrt(boundingsphereradius);
+    UpdateBoundingSphere();
 
     //allow decals
     if (!decaltexcoords) {
         decaltexcoords = (float***)malloc(sizeof(float**)*max_model_decals);
-        for (i = 0; i < max_model_decals; i++) {
+        for (int i = 0; i < max_model_decals; i++) {
             decaltexcoords[i] = (float**)malloc(sizeof(float*) * 3);
-            for (j = 0; j < 3; j++) {
+            for (int j = 0; j < 3; j++) {
                 decaltexcoords[i][j] = (float*)malloc(sizeof(float) * 2);
             }
         }
         //if(decalvertex)free(decalvertex);
         decalvertex = (XYZ**)malloc(sizeof(XYZ*)*max_model_decals);
-        for (i = 0; i < max_model_decals; i++) {
+        for (int i = 0; i < max_model_decals; i++) {
             decalvertex[i] = (XYZ*)malloc(sizeof(XYZ) * 3);
         }
 
@@ -689,7 +648,6 @@ bool Model::loaddecal(const char *filename, bool texture )
 bool Model::loadraw(char *filename )
 {
     FILE *tfile;
-    long i;
 
     LOGFUNC;
 
@@ -721,13 +679,13 @@ bool Model::loadraw(char *filename )
     vArray = (GLfloat*)malloc(sizeof(GLfloat) * TriangleNum * 24);
 
 
-    for(i=0;i<vertexNum;i++){
+    for (int i = 0; i < vertexNum; i++) {
         float tmpx, tmpy, tmpz;
         funpackf(tfile, "Bf Bf Bf", &tmpx,&tmpy,&tmpz);
         vertex[i] = XYZ{tmpx, tmpy, tmpz};
     }
 
-    for (i = 0; i < TriangleNum; i++) {
+    for (int i = 0; i < TriangleNum; i++) {
         //funpackf(tfile, "Bi Bi Bi", &Triangles[i].vertex[0], &Triangles[i].vertex[1], &Triangles[i].vertex[2]);
         short vertex[ 6];
         funpackf(tfile, "Bs Bs Bs Bs Bs Bs", &vertex[ 0], &vertex[ 1], &vertex[ 2], &vertex[ 3], &vertex[ 4], &vertex[ 5]);
@@ -741,7 +699,7 @@ bool Model::loadraw(char *filename )
 
     fclose(tfile);
 
-    for (i = 0; i < vertexNum; i++) {
+    for (int i = 0; i < vertexNum; i++) {
         owner[i] = -1;
     }
 
@@ -751,8 +709,7 @@ bool Model::loadraw(char *filename )
 
 void Model::UniformTexCoords()
 {
-    static int i;
-    for (i = 0; i < TriangleNum; i++) {
+    for (int i = 0; i < TriangleNum; i++) {
         Triangles[i].gy[0] = vertex[Triangles[i].vertex[0]].y;
         Triangles[i].gy[1] = vertex[Triangles[i].vertex[1]].y;
         Triangles[i].gy[2] = vertex[Triangles[i].vertex[2]].y;
@@ -789,21 +746,11 @@ void Model::ScaleTexCoords(float howmuch)
 
 void Model::Scale(float xscale, float yscale, float zscale)
 {
-    for(int i=0; i<vertexNum; i++){
+    for (int i = 0; i < vertexNum; i++) {
         vertex[i] *= {xscale, yscale, zscale};
     }
     UpdateVertexArray();
-
-    boundingsphereradius = 0;
-    for (int i = 0; i < vertexNum; i++) {
-        for (int j = 0; j < vertexNum; j++) {
-            if (j != i && distsq(&vertex[j], &vertex[i]) / 2 > boundingsphereradius) {
-                boundingsphereradius = distsq(&vertex[j], &vertex[i]) / 2;
-                boundingspherecenter = (vertex[i] + vertex[j]) / 2;
-            }
-        }
-    }
-    boundingsphereradius = fast_sqrt(boundingsphereradius);
+    UpdateBoundingSphere();
 }
 
 void Model::ScaleNormals(float xscale, float yscale, float zscale)
@@ -811,7 +758,7 @@ void Model::ScaleNormals(float xscale, float yscale, float zscale)
 	if(type!=normaltype&&type!=decalstype)
         return;
 	for (int i = 0; i < vertexNum; i++) {
-		normals[i]*={xscale, yscale, zscale};
+		normals[i] *= {xscale, yscale, zscale};
 	}
 	for (int i = 0; i < TriangleNum; i++) {
 		facenormals[i] *= {xscale, yscale, zscale};
@@ -821,44 +768,20 @@ void Model::ScaleNormals(float xscale, float yscale, float zscale)
 
 void Model::Translate(float xtrans, float ytrans, float ztrans)
 {
-    int i;
-    for (i = 0; i < vertexNum; i++) {
+    for (int i = 0; i < vertexNum; i++) {
         vertex[i] += {xtrans, ytrans, ztrans};
     }
     UpdateVertexArray();
-
-    int j;
-    boundingsphereradius = 0;
-    for (i = 0; i < vertexNum; i++) {
-        for (j = 0; j < vertexNum; j++) {
-            if (j != i && distsq(&vertex[j], &vertex[i]) / 2 > boundingsphereradius) {
-                boundingsphereradius = distsq(&vertex[j], &vertex[i]) / 2;
-                boundingspherecenter = (vertex[i] + vertex[j]) / 2;
-            }
-        }
-    }
-    boundingsphereradius = fast_sqrt(boundingsphereradius);
+    UpdateBoundingSphere();
 }
 
 void Model::Rotate(float xang, float yang, float zang)
 {
-    int i;
-    for (i = 0; i < vertexNum; i++) {
+    for (int i = 0; i < vertexNum; i++) {
         vertex[i] = DoRotation(vertex[i], xang, yang, zang);
     }
     UpdateVertexArray();
-
-    int j;
-    boundingsphereradius = 0;
-    for (i = 0; i < vertexNum; i++) {
-        for (j = 0; j < vertexNum; j++) {
-            if (j != i && distsq(&vertex[j], &vertex[i]) / 2 > boundingsphereradius) {
-                boundingsphereradius = distsq(&vertex[j], &vertex[i]) / 2;
-                boundingspherecenter = (vertex[i] + vertex[j]) / 2;
-            }
-        }
-    }
-    boundingsphereradius = fast_sqrt(boundingsphereradius);
+    UpdateBoundingSphere();
 }
 
 
@@ -1208,8 +1131,8 @@ void Model::MakeDecal(int atype, XYZ *where,float *size, float *opacity, const f
         //static XYZ point,point1,point2;
         float distance;
 
-        if (*opacity > 0)
-            if (distsq(where, &boundingspherecenter) < (boundingsphereradius + *size) * (boundingsphereradius + *size))
+        if (*opacity > 0) {
+            if (distsq(where, &boundingspherecenter) < (boundingsphereradius + *size) * (boundingsphereradius + *size)) {
                 for (int i = 0; i < TriangleNum; i++) {
                     if (facenormals[i].y < -.1 && (vertex[Triangles[i].vertex[0]].y < where->y || vertex[Triangles[i].vertex[1]].y < where->y || vertex[Triangles[i].vertex[2]].y < where->y)) {
                         decalposition[numdecals] = *where;
@@ -1252,10 +1175,10 @@ void Model::MakeDecal(int atype, XYZ *where,float *size, float *opacity, const f
                             decalvertex[numdecals][2].z = placez;
                             decalvertex[numdecals][2].y = vertex[Triangles[i].vertex[2]].y;
 
-                            if (!(decaltexcoords[numdecals][0][0] < 0 && decaltexcoords[numdecals][1][0] < 0 && decaltexcoords[numdecals][2][0] < 0))
-                                if (!(decaltexcoords[numdecals][0][1] < 0 && decaltexcoords[numdecals][1][1] < 0 && decaltexcoords[numdecals][2][1] < 0))
-                                    if (!(decaltexcoords[numdecals][0][0] > 1 && decaltexcoords[numdecals][1][0] > 1 && decaltexcoords[numdecals][2][0] > 1))
-                                        if (!(decaltexcoords[numdecals][0][1] > 1 && decaltexcoords[numdecals][1][1] > 1 && decaltexcoords[numdecals][2][1] > 1)) {
+                            if ((!(decaltexcoords[numdecals][0][0] < 0 && decaltexcoords[numdecals][1][0] < 0 && decaltexcoords[numdecals][2][0] < 0))
+                                && (!(decaltexcoords[numdecals][0][1] < 0 && decaltexcoords[numdecals][1][1] < 0 && decaltexcoords[numdecals][2][1] < 0))
+                                    && (!(decaltexcoords[numdecals][0][0] > 1 && decaltexcoords[numdecals][1][0] > 1 && decaltexcoords[numdecals][2][0] > 1))
+                                        && (!(decaltexcoords[numdecals][0][1] > 1 && decaltexcoords[numdecals][1][1] > 1 && decaltexcoords[numdecals][2][1] > 1))) {
                                             if (decalrotation[numdecals]) {
                                                 for (int j = 0; j < 3; j++) {
                                                     rot.y = 0;
@@ -1272,6 +1195,8 @@ void Model::MakeDecal(int atype, XYZ *where,float *size, float *opacity, const f
                         }
                     }
                 }
+            }
+        }
     }
 }
 

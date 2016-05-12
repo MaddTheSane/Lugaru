@@ -74,7 +74,6 @@ void Text::BuildFont() // Build Our Font Display List
 {
     float cx; // Holds Our X Character Coord
     float cy; // Holds Our Y Character Coord
-    int loop;
 
     LOGFUNC;
 
@@ -88,7 +87,7 @@ void Text::BuildFont() // Build Our Font Display List
 //base=glGenLists(256); // Creating 256 Display Lists
     base = glGenLists(512); // Creating 256 Display Lists
     FontTexture.bind();
-    for (loop = 0; loop < 512; loop++) { // Loop Through All 256 Lists
+    for (int loop = 0; loop < 512; loop++) { // Loop Through All 256 Lists
         if (loop < 256) {
             cx = float(loop % 16) / 16.0f; // X Position Of Current Character
             cy = float(loop / 16) / 16.0f; // Y Position Of Current Character

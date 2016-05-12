@@ -10,10 +10,7 @@
 #define Lugaru_pch
 
 #include <stdbool.h>
-#include <math.h>
-#include <tgmath.h>
 #include "binio.h"
-#include <simd/simd.h>
 #ifdef __cplusplus
 #include <cmath>
 #include <fstream>
@@ -23,6 +20,10 @@
 #include <map>
 #include <string>
 #include "PhysicsMath.h"
+#else
+#include <math.h>
+#include <tgmath.h>
 #endif
+#include <simd/simd.h>
 
 #endif /* Lugaru_pch */

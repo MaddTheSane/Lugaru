@@ -194,11 +194,11 @@ void Terrain::UpdateTransparencyother(int whichx, int whichy)
 
 void Terrain::UpdateTransparencyotherother(int whichx, int whichy)
 {
-    const float viewdistsquared=viewdistance*viewdistance;
-    const int patch_size=size/subdivision;
+    const float viewdistsquared = viewdistance * viewdistance;
+    const int patch_size = size / subdivision;
 
-    static const int stepsize=1;
-    const int c=whichx*patch_elements+whichy*patch_elements*subdivision;
+    static const int stepsize = 1;
+    const int c = whichx*patch_elements+whichy*patch_elements*subdivision;
 
     for (int i = patch_size * whichx; i < patch_size * (whichx + 1) + 1; i += stepsize) {
         for (int j = patch_size * whichy; j < patch_size * (whichy + 1) + 1; j += stepsize) {
@@ -358,10 +358,6 @@ void Terrain::UpdateVertexArray(int whichx, int whichy)
 
 bool Terrain::load(const char *fileName)
 {
-    static long i, j;
-    static long x, y;
-    static float patch_size;
-
     float temptexdetail = texdetail;
     //LoadTGA( fileName );
 
@@ -378,7 +374,7 @@ bool Terrain::load(const char *fileName)
         int bytesPerPixel = texture.bpp / 8;
 
         int tempnum = 0;
-        for (i = 0; i < (long)(texture.sizeY * texture.sizeX * bytesPerPixel); i++) {
+        for (long i = 0; i < (long)(texture.sizeY * texture.sizeX * bytesPerPixel); i++) {
             if ((i + 1) % 4) {
                 texture.data[tempnum] = texture.data[i];
                 tempnum++;
@@ -412,8 +408,8 @@ bool Terrain::load(const char *fileName)
 
         size = texture.sizeX;
 
-        for (i = 0; i < size; i++) {
-            for (j = 0; j < size; j++) {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
                 heightmap[size - 1 - i][j] = (float)((texture.data[(i + (j * size)) * texture.bpp / 8])) / 5;
             }
         }
@@ -424,8 +420,8 @@ bool Terrain::load(const char *fileName)
 
     float slopeness;
 
-    for (i = 0; i < subdivision; i++) {
-        for (j = 0; j < subdivision; j++) {
+    for (int i = 0; i < subdivision; i++) {
+        for (int j = 0; j < subdivision; j++) {
             textureness[i][j] = -1;
         }
     }
@@ -433,8 +429,8 @@ bool Terrain::load(const char *fileName)
         Game::LoadingScreen();
 
 
-    for (i = 0; i < size; i++) {
-        for (j = 0; j < size; j++) {
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
             heightmap[i][j] *= .5;
 
             texoffsetx[i][j] = (float)abs(Random() % 100) / 1200 / scale * 3;
@@ -482,8 +478,8 @@ bool Terrain::load(const char *fileName)
     if (visibleloading)
         Game::LoadingScreen();
 
-    for (i = 0; i < size; i++) {
-        for (j = 0; j < size; j++) {
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
             if (environment == snowyenvironment) {
                 heightmap[i][j] -= opacityother[i][j];
             }
@@ -517,8 +513,8 @@ bool Terrain::load(const char *fileName)
     }*/
 
 
-    for (i = 0; i < size; i++) {
-        for (j = 0; j < size; j++) {
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
             if (opacityother[i][j] < .1)
                 opacityother[i][j] = 0;
             if (textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == -1) {
@@ -532,8 +528,8 @@ bool Terrain::load(const char *fileName)
             if (opacityother[i][j] != 1 && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allsecond)
                 textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] = mixed;
 
-            x = i;
-            y = j;
+            const int x = i;
+            const int y = j;
             if (i > 0) {
                 i--;
                 if (opacityother[x][y] && textureness[(int)(i * subdivision / size)][(int)(j * subdivision / size)] == allfirst)
@@ -643,7 +639,7 @@ bool Terrain::load(const char *fileName)
     if (visibleloading)
         Game::LoadingScreen();
 
-    patch_size = size / subdivision;
+    float patch_size = size / subdivision;
     patch_elements = (patch_size) * (patch_size) * 54;
     CalculateNormals();
     /*DoShadows();
@@ -1010,13 +1006,12 @@ XYZ Terrain::getLighting(float pointx, float pointz)
 void Terrain::draw(int layer)
 {
     float opacity;
-    XYZ terrainpoint;
     float distance[subdivision][subdivision];
 
     int beginx, endx;
     int beginz, endz;
 
-    float patch_size = size / subdivision * scale;
+    const float patch_size = size / subdivision * scale;
     const float viewdistsquared=viewdistance*viewdistance;
 
     //Only nearby blocks
@@ -1037,6 +1032,7 @@ void Terrain::draw(int layer)
     if (!layer) {
         for (int i = beginx; i < endx; i++) {
             for (int j = beginz; j < endz; j++) {
+                XYZ terrainpoint;
                 terrainpoint.x = i * patch_size + (patch_size) / 2;
                 terrainpoint.y = viewer.y; //heightmap[i][j]*scale;
                 terrainpoint.z = j * patch_size + (patch_size) / 2;
@@ -1211,14 +1207,12 @@ void Terrain::drawdecals()
 
 void Terrain::AddObject(XYZ where, float radius, int id)
 {
-    bool done;
-    int i, j;
     XYZ points[4];
-    if (id >= 0 && id < 10000)
-        for (i = 0; i < subdivision; i++) {
-            for (j = 0; j < subdivision; j++) {
+    if (id >= 0 && id < 10000) {
+        for (int i = 0; i < subdivision; i++) {
+            for (int j = 0; j < subdivision; j++) {
                 if (patchobjectnum[i][j] < 300 - 1) {
-                    done = 0;
+                    bool done = false;
                     points[0].x = (size / subdivision) * i;
                     points[0].z = (size / subdivision) * j;
                     points[0].y = heightmap[(int)points[0].x][(int)points[0].z];
@@ -1238,11 +1232,12 @@ void Terrain::AddObject(XYZ where, float radius, int id)
                     if (!done && where.x + radius > points[0].x && where.x - radius < points[2].x && where.z + radius > points[0].z && where.z - radius < points[2].z) {
                         patchobjects[i][j][patchobjectnum[i][j]] = id;
                         patchobjectnum[i][j]++;
-                        done = 1;
+                        done = true;
                     }
                 }
             }
         }
+    }
 }
 
 void Terrain::DeleteDecal(int which)
@@ -1444,21 +1439,19 @@ void Terrain::MakeDecalLock(int type, XYZ where, int whichx, int whichy, float s
 
 void Terrain::DoLighting()
 {
-    int i,j,k,todivide;
-    float brightness, total;
-    XYZ terrainpoint;
     XYZ lightloc = light.location;
     Normalise(lightloc);
     //Calculate shadows
-    for (i = 0; i < size; i++) {
-        for (j = 0; j < size; j++) {
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            XYZ terrainpoint;
             terrainpoint.x = (float)i * scale;
             terrainpoint.z = (float)j * scale;
             terrainpoint.y = heightmap[i][j] * scale + .1;
             /*brightness=0;
             if(lineTerrain(lightlocation*10+terrainpoint,terrainpoint,&blank)==-1)
             */
-            brightness = simd::dot(lightloc, normals[i][j]);
+            float brightness = simd::dot(lightloc, normals[i][j]);
 
             if (brightness > 1)
                 brightness = 1;
@@ -1479,11 +1472,11 @@ void Terrain::DoLighting()
     }
 
     //Smooth shadows
-    for (i = 0; i < size; i++) {
-        for (j = 0; j < size; j++) {
-            for (k = 0; k < 3; k++) {
-                total = 0;
-                todivide = 0;
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            for (int k = 0; k < 3; k++) {
+                float total = 0;
+                int todivide = 0;
                 if (i != 0) {
                     total += colors[j][i - 1][k];
                     todivide++;

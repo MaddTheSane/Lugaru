@@ -38,7 +38,7 @@ struct MenuItem {
         lineendsize = _lineendsize;
         if (type == MenuItem::BUTTON) {
             if (w == -1)
-                w = text.length() * 10;
+                w = (int)text.length() * 10;
             if (h == -1)
                 h = 20;
         }
@@ -96,7 +96,7 @@ void Menu::setText(int id, const string& text)
     for (vector<MenuItem>::iterator it = items.begin(); it != items.end(); it++)
         if (it->id == id) {
             it->text = text;
-            it->w = it->text.length() * 10;
+            it->w = (int)it->text.length() * 10;
             break;
         }
 }
@@ -109,7 +109,7 @@ void Menu::setText(int id, const string& text, int x, int y, int w, int h)
             it->x = x;
             it->y = y;
             if (w == -1)
-                it->w = it->text.length() * 10;
+                it->w = (int)it->text.length() * 10;
             if (h == -1)
                 it->h = 20;
             break;
@@ -250,6 +250,10 @@ void Menu::drawItems()
             glPopMatrix();
             glEnable(GL_TEXTURE_2D);
         }
+        break;
+
+        //Quiet Clang warning
+        case MenuItem::NONE:
         break;
         }
     }
