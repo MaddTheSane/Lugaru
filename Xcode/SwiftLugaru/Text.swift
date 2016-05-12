@@ -16,7 +16,7 @@ final class Text {
 	private var base: GLuint = 0
 
 	func loadFontTexture(textureURL: NSURL) {
-		loadTexture(textureURL, textureID: &fontTexture, mipmap: 0, hasAlpha: false)
+		loadTexture(textureURL, textureID: &fontTexture, mipmap: false, hasAlpha: false)
 		
 		if base != 0 {
 			glDeleteLists(base, 512);

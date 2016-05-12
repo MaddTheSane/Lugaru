@@ -13,6 +13,8 @@
 		550AE9A318DFC22800F0C197 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 550AE9A218DFC22800F0C197 /* SDL2.framework */; };
 		550AE9A518DFC24700F0C197 /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 550AE9A218DFC22800F0C197 /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		550AE9A918DFC8B700F0C197 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 550AE9A818DFC8B700F0C197 /* Images.xcassets */; };
+		5521240A1CE51D2B00A880BA /* Animation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 552124091CE51D2B00A880BA /* Animation.swift */; };
+		5521240F1CE5249E00A880BA /* OpenALWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5521240E1CE5249E00A880BA /* OpenALWrapper.swift */; };
 		55320A7E1CCD43F400BAEE86 /* Skeleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55320A7D1CCD43F400BAEE86 /* Skeleton.swift */; };
 		55350C9C1CCDE02200CABBB8 /* Text.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55350C9B1CCDE02200CABBB8 /* Text.swift */; };
 		554B1EE61CCBE6EF005CE5BC /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 554B1EE51CCBE6EF005CE5BC /* Constants.swift */; };
@@ -33,12 +35,10 @@
 		55A13D121CC9718D0070DECF /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A13CD41CC95FFE0070DECF /* libpng.a */; };
 		55A13D131CC9718D0070DECF /* libvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A13CE71CC960180070DECF /* libvorbis.a */; };
 		55A13D151CC971940070DECF /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A13D141CC971940070DECF /* libz.tbd */; };
-		55A13D161CC972090070DECF /* openal_wrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 565ACFFA11990D7600DF867A /* openal_wrapper.cpp */; };
 		55A13D171CC972140070DECF /* private.c in Sources */ = {isa = PBXBuildFile; fileRef = 565ACFFF11990D7600DF867A /* private.c */; };
 		55A13D191CC972190070DECF /* unpack.c in Sources */ = {isa = PBXBuildFile; fileRef = 565AD00911990D7600DF867A /* unpack.c */; };
 		55A13D1B1CC972190070DECF /* pack.c in Sources */ = {isa = PBXBuildFile; fileRef = 565ACFFD11990D7600DF867A /* pack.c */; };
 		55A13D1C1CC972370070DECF /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 565AD1141199144400DF867A /* OpenAL.framework */; };
-		55A13D1E1CC9728B0070DECF /* CmdLine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55A13D1D1CC9728B0070DECF /* CmdLine.cpp */; };
 		55A13D211CC974200070DECF /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A13D201CC974200070DECF /* Model.swift */; };
 		55A13D231CC975850070DECF /* MacCompatibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A13D221CC975850070DECF /* MacCompatibility.swift */; };
 		55A13D251CC9778A0070DECF /* NSURLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A13D241CC9778A0070DECF /* NSURLAdditions.swift */; };
@@ -250,6 +250,9 @@
 		550AE9A618DFC29A00F0C197 /* Data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Data; path = ../Data; sourceTree = SOURCE_ROOT; };
 		550AE9A818DFC8B700F0C197 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		551C714D1CCA8F6C0098D893 /* Lugaru.exp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.exports; path = Lugaru.exp; sourceTree = "<group>"; };
+		552124091CE51D2B00A880BA /* Animation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Animation.swift; sourceTree = "<group>"; };
+		5521240D1CE521F700A880BA /* Sounds.def */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; path = Sounds.def; sourceTree = "<group>"; };
+		5521240E1CE5249E00A880BA /* OpenALWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenALWrapper.swift; sourceTree = "<group>"; };
 		552EA5521CE516A300BCAD73 /* Animation.def */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; path = Animation.def; sourceTree = "<group>"; };
 		552EA5531CE516A300BCAD73 /* Awards.def */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; path = Awards.def; sourceTree = "<group>"; };
 		552EA5541CE516A300BCAD73 /* Bonuses.def */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; path = Bonuses.def; sourceTree = "<group>"; };
@@ -278,7 +281,6 @@
 		55A13D081CC971430070DECF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		55A13D0A1CC971430070DECF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		55A13D141CC971940070DECF /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
-		55A13D1D1CC9728B0070DECF /* CmdLine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CmdLine.cpp; sourceTree = "<group>"; };
 		55A13D1F1CC9735D0070DECF /* SwiftLugaru-Bridging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SwiftLugaru-Bridging.h"; sourceTree = "<group>"; };
 		55A13D201CC974200070DECF /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		55A13D221CC975850070DECF /* MacCompatibility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacCompatibility.swift; sourceTree = "<group>"; };
@@ -586,8 +588,9 @@
 				554B1EE71CCBFA3D005CE5BC /* Terrain.swift */,
 				55086D2F1CDC69560060E43D /* Texture.swift */,
 				55350C9B1CCDE02200CABBB8 /* Text.swift */,
+				552124091CE51D2B00A880BA /* Animation.swift */,
+				5521240E1CE5249E00A880BA /* OpenALWrapper.swift */,
 				55A13D051CC971420070DECF /* Assets.xcassets */,
-				55A13D1D1CC9728B0070DECF /* CmdLine.cpp */,
 				55A13D0A1CC971430070DECF /* Info.plist */,
 				55A13D071CC971430070DECF /* MainMenu.xib */,
 				55A13D1F1CC9735D0070DECF /* SwiftLugaru-Bridging.h */,
@@ -748,6 +751,7 @@
 				552EA5521CE516A300BCAD73 /* Animation.def */,
 				552EA5531CE516A300BCAD73 /* Awards.def */,
 				552EA5541CE516A300BCAD73 /* Bonuses.def */,
+				5521240D1CE521F700A880BA /* Sounds.def */,
 				E1DC1D3E137BDA7900E6FD6F /* Account.cpp */,
 				55BDE32D1CDAB47400191270 /* Account.h */,
 				E1DC1D50137BDB4600E6FD6F /* Animation.cpp */,
@@ -1136,9 +1140,8 @@
 				55A2F4071CCE8A0F00B12C09 /* Game.swift in Sources */,
 				554B1EE81CCBFA3D005CE5BC /* Terrain.swift in Sources */,
 				55A13D211CC974200070DECF /* Model.swift in Sources */,
-				55A13D1E1CC9728B0070DECF /* CmdLine.cpp in Sources */,
+				5521240F1CE5249E00A880BA /* OpenALWrapper.swift in Sources */,
 				55A13D191CC972190070DECF /* unpack.c in Sources */,
-				55A13D161CC972090070DECF /* openal_wrapper.cpp in Sources */,
 				55A13D251CC9778A0070DECF /* NSURLAdditions.swift in Sources */,
 				554B1EEF1CCC1A90005CE5BC /* Globals.swift in Sources */,
 				55A2F4091CCE8A6B00B12C09 /* Preferences.swift in Sources */,
@@ -1150,6 +1153,7 @@
 				55A13D171CC972140070DECF /* private.c in Sources */,
 				55320A7E1CCD43F400BAEE86 /* Skeleton.swift in Sources */,
 				55086D301CDC69560060E43D /* Texture.swift in Sources */,
+				5521240A1CE51D2B00A880BA /* Animation.swift in Sources */,
 				554B1EE61CCBE6EF005CE5BC /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
