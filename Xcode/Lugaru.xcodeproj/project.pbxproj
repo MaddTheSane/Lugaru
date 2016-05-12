@@ -220,6 +220,7 @@
 		550AE9A618DFC29A00F0C197 /* Data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Data; path = ../Data; sourceTree = SOURCE_ROOT; };
 		550AE9A818DFC8B700F0C197 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		551C714D1CCA8F6C0098D893 /* Lugaru.exp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.exports; path = Lugaru.exp; sourceTree = "<group>"; };
+		5521240D1CE521F700A880BA /* Sounds.def */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; path = Sounds.def; sourceTree = "<group>"; };
 		552EA5521CE516A300BCAD73 /* Animation.def */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; path = Animation.def; sourceTree = "<group>"; };
 		552EA5531CE516A300BCAD73 /* Awards.def */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; path = Awards.def; sourceTree = "<group>"; };
 		552EA5541CE516A300BCAD73 /* Bonuses.def */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; path = Bonuses.def; sourceTree = "<group>"; };
@@ -651,6 +652,7 @@
 				552EA5521CE516A300BCAD73 /* Animation.def */,
 				552EA5531CE516A300BCAD73 /* Awards.def */,
 				552EA5541CE516A300BCAD73 /* Bonuses.def */,
+				5521240D1CE521F700A880BA /* Sounds.def */,
 				E1DC1D3E137BDA7900E6FD6F /* Account.cpp */,
 				55BDE32D1CDAB47400191270 /* Account.h */,
 				E1DC1D50137BDB4600E6FD6F /* Animation.cpp */,
