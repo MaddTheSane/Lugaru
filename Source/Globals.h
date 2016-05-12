@@ -27,8 +27,7 @@
 #include "TGALoader.h"
 #include "openal_wrapper.h"
 #include "Quaternions.h"
-
-#include "Constants.h"
+#include "Game.h"
 
 class Terrain;
 class FRUSTUM;
@@ -42,7 +41,7 @@ class Skeleton;
 class Objects;
 
 extern bool visibleloading;
-extern OPENAL_SAMPLE *samp[100];
+extern OPENAL_SAMPLE *samp[71];
 extern OPENAL_STREAM *strm[20];
 extern int channels[100];
 
@@ -123,33 +122,13 @@ extern float damagetaken;
 extern bool invertmouse;
 
 extern int numhotspots;
-extern int winhotspot;
+extern bool winhotspot;
 extern int killhotspot;
 extern XYZ hotspot[40];
 extern int hotspottype[40];
 extern float hotspotsize[40];
 extern char hotspottext[40][256];
 extern int currenthotspot;
-
-#pragma mark user accounts
-
-extern int numaccounts;
-extern int accountactive;
-extern int accountdifficulty[10];
-extern int accountprogress[10];
-extern float accountpoints[10];
-extern float accounthighscore[10][50];
-extern float accountfasttime[10][50];
-extern bool accountunlocked[10][60];
-extern char accountname[10][256];
-
-extern int accountcampaignchoicesmade[10];
-extern int accountcampaignchoices[10][5000];
-
-extern float accountcampaignhighscore[10];
-extern float accountcampaignfasttime[10];
-extern float accountcampaignscore[10];
-extern float accountcampaigntime[10];
 
 
 extern int numfalls;
@@ -191,11 +170,6 @@ extern int dialoguegonethrough[20];
 
 
 extern bool gamestarted;
-
-extern "C" {
-	void PlaySoundEx(int chan, OPENAL_SAMPLE *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
-	void PlayStreamEx(int chan, OPENAL_STREAM *sptr, OPENAL_DSPUNIT *dsp, signed char startpaused);
-}
 
 #pragma mark screen
 
@@ -242,9 +216,9 @@ extern float dialoguetime;
 
 #pragma mark -
 
-class Game;
+//class Game;
 
-extern Game * pgame;
+//extern Game * pgame;
 extern bool skyboxtexture;
 
 extern bool LoadImage(const char * fname, TGAImageRec & tex);
@@ -289,13 +263,15 @@ extern bool oldbuttons[3];
 
 extern float hostiletime;
 
-extern int windialogue;
+extern bool windialogue;
 
 extern int kBitsPerPixel;
 extern int hostile;
 
 
 extern float oldgamespeed;
+
+extern bool showdamagebar;
 
 
 #pragma mark -

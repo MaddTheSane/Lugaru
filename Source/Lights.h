@@ -10,7 +10,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -27,13 +27,23 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamegl.h"
 #include "Quaternions.h"
 
-class Light{
+class Light
+{
 public:
-	GLint type;
-	GLfloat color[3];
-	GLfloat ambient[3];
-	int attach;
-	XYZ location;
+    GLint type;
+    GLfloat color[3];
+    GLfloat ambient[3];
+    int attach;
+    XYZ location;
+    inline void setColors(GLfloat cr, GLfloat cg, GLfloat cb,
+                          GLfloat ar, GLfloat ag, GLfloat ab) {
+        color[0] = cr;
+        color[1] = cg;
+        color[2] = cb;
+        ambient[0] = ar;
+        ambient[1] = ag;
+        ambient[2] = ab;
+    }
 };
 
 void SetUpMainLight(Light* whichsource, int whichlight, float ambientr, float ambientg, float ambientb);
