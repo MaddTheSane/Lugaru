@@ -219,7 +219,7 @@ int setKeySelected_thread(void* data)
             keycode = evenement.key.keysym.sym;
             break;
         case SDL_MOUSEBUTTONDOWN:
-            keycode = SDLK_LALT + evenement.button.button;
+            keycode = evenement.button.button;
             break;
         default:
             break;
