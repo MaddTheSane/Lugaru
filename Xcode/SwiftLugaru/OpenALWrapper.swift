@@ -120,7 +120,7 @@ final class OpenALWrapper {
 			var loop: ALint = 0;
 			alGetSourceiv(sid, AL_LOOPING, &loop);
 			if loop != 0 {
-				return(OPENAL_LOOP_NORMAL);
+				return OPENAL_LOOP_NORMAL
 			}
 			return OPENAL_LOOP_OFF;
 		}
@@ -134,7 +134,6 @@ final class OpenALWrapper {
 			alGetSourceiv(sid, AL_SOURCE_STATE, &state);
 			return((state == AL_PLAYING) ? true : false);
 		}
-
 		
 		func setAttributes(position pos: UnsafePointer<float3>, velocity vel: UnsafePointer<float3>) -> Bool {
 			if !initialized {
@@ -174,7 +173,6 @@ final class OpenALWrapper {
 			}
 			
 			implChannels.forEach() { $0.setFrequency(freq) }
-
 		}
 		
 		func setFrequency(freq: Int32) {
@@ -183,10 +181,10 @@ final class OpenALWrapper {
 			}
 
 			if (freq == 8012) {
-			// hack
-			alSourcef(sid, AL_PITCH, 8012.0 / 44100.0);
+				// hack
+				alSourcef(sid, AL_PITCH, 8012.0 / 44100.0);
 			} else {
-			alSourcef(sid, AL_PITCH, 1.0);
+				alSourcef(sid, AL_PITCH, 1.0);
 			}
 		}
 		
@@ -201,24 +199,24 @@ final class OpenALWrapper {
 		let name: String
 		///buffer id.
 		private(set) var bid: ALuint = 0
-		private(set) var mode: Int32 = 0
+		var mode: Int32 = 0
 		let is2D: Bool
 		
-		init?(index: Int32, file: NSURL, name name_or_data: String?, mode: UInt32, offset: Int32, length: Int32) {
-			if (!initialized) {
-				return nil;
+		init?(index: Int32, file: NSURL, name name_or_data: String? = nil, mode: UInt32, offset: Int32, length: Int32) {
+			guard initialized else {
+				return nil
 			}
-			if (index != OPENAL_FREE) {
-				return nil;  // this is all the game does...
+			if index != OPENAL_FREE {
+				return nil  // this is all the game does...
 			}
-			if (offset != 0) {
-				return nil;  // this is all the game does...
+			if offset != 0 {
+				return nil  // this is all the game does...
 			}
-			if (length != 0) {
-				return nil;  // this is all the game does...
+			if length != 0 {
+				return nil  // this is all the game does...
 			}
-			if ((mode != OPENAL_HW3D) && (mode != OPENAL_2D)) {
-				return nil;  // this is all the game does...
+			if mode != OPENAL_HW3D && mode != OPENAL_2D {
+				return nil  // this is all the game does...
 			}
 			
 			var format: ALenum = AL_NONE;
@@ -263,7 +261,7 @@ final class OpenALWrapper {
 			guard initialized else {
 				return;
 			}
-
+			
 			implChannels.forEach { (channel) in
 				if channel.sample === self {
 					alSourceStop(channel.sid);
@@ -278,9 +276,9 @@ final class OpenALWrapper {
 	
 	private static func setListenerAttributes(position pos: UnsafePointer<float3>, inout velocity vel: UnsafePointer<float3>, f: float3, t: float3) {
 		if !initialized {
-		return;
+			return;
 		}
-		if (pos != nil) {
+		if pos != nil {
 			alListener3f(AL_POSITION, pos.memory[0], pos.memory[1], -pos.memory[2]);
 			listenerPosition[0] = pos.memory[0];
 			listenerPosition[1] = pos.memory[1];
@@ -299,9 +297,9 @@ final class OpenALWrapper {
 	}
 	
 	static func initialize(mixrate: Int32, maxSoftwareChannels maxsoftwarechannels: Int32, flags: UInt32) -> Bool {
-		if (initialized) {
+		if initialized {
 			return false;
-		} else if (maxsoftwarechannels == 0) {
+		} else if maxsoftwarechannels == 0 {
 			return false;
 		}
 		
@@ -357,7 +355,6 @@ final class OpenALWrapper {
 			alcCloseDevice(dev);
 		}
 		
-		
 		initialized = false;
 	}
 	
@@ -369,21 +366,21 @@ final class OpenALWrapper {
 		alcProcessContext(alcGetCurrentContext())
 	}
 	
-	static func setSFXMasterVolume(volume: Int32){
-		if (!initialized) {
-			return;
+	static func setSFXMasterVolume(volume: Int32) {
+		guard initialized else {
+			return
 		}
 		let gain = ALfloat(volume) / 255.0
-		alListenerf(AL_GAIN, gain);
+		alListenerf(AL_GAIN, gain)
 	}
 
 	private static func OPENAL_PlaySoundEx(channel channel1: Int32, sample sptr: Sample, dsp: DSPUnit = nil, startpaused: Bool) -> Int32 {
 		var channel = channel1
 		guard initialized else {
-			return -1;
+			return -1
 		}
 		guard dsp == nil else {
-			return -1;
+			return -1
 		}
 		if channel == OPENAL_FREE {
 			for (i, chan) in implChannels.enumerate() {
@@ -436,7 +433,6 @@ private func decodeToPCM(_fName: NSURL, inout format: ALenum, inout size: ALsize
 	
 	var retval: UnsafeMutablePointer<ALubyte> = nil;
 	
-	
 	#if false  // untested, so disable this!
 	// Can we just feed it to the AL compressed?
 		if alIsExtensionPresent( "AL_EXT_vorbis") != 0 {
@@ -455,7 +451,6 @@ private func decodeToPCM(_fName: NSURL, inout format: ALenum, inout size: ALsize
 			return UnsafeMutablePointer<()>(retval);
 		}
 	#endif
-
 	
 	// Uncompress and feed to the AL.
 	var vf = OggVorbis_File();
@@ -501,46 +496,47 @@ private func decodeToPCM(_fName: NSURL, inout format: ALenum, inout size: ALsize
 	return nil;
 }
 
-
-
 func PlaySoundEx(channel chan: Int32, sample sptr: OpenALWrapper.Sample, dsp: OpenALWrapper.DSPUnit = nil, startPaused: Bool) {
-/*
-    const OPENAL_SAMPLE * currSample = OPENAL_GetCurrentSample(channels[chan]);
-    if (currSample && currSample == samp[chan]) {
-        if (OPENAL_GetPaused(channels[chan])) {
-            OPENAL_StopSound(channels[chan]);
-            channels[chan] = OPENAL_FREE;
-        } else if (OPENAL_IsPlaying(channels[chan])) {
-            int loop_mode = OPENAL_GetLoopMode(channels[chan]);
-            if (loop_mode & OPENAL_LOOP_OFF) {
-                channels[chan] = OPENAL_FREE;
-            }
-        }
-    } else {
-        channels[chan] = OPENAL_FREE;
-    }
-
-    channels[chan] = OPENAL_PlaySoundEx(channels[chan], sptr, dsp, startpaused);
-    if (channels[chan] < 0) {
-        channels[chan] = OPENAL_PlaySoundEx(OPENAL_FREE, sptr, dsp, startpaused);
-    }
-*/
+	func aChan(a: Int32) -> OpenALWrapper.Channel {
+		return OpenALWrapper.channelAtIndex(Int(channels[Int(a)]))
+	}
+	let currSample = aChan(chan).sample
+	if let currSample = currSample where currSample === samp[Int(chan)] {
+		if aChan(chan).paused {
+			aChan(chan).stop()
+			channels[Int(chan)] = OPENAL_FREE
+		} else if aChan(chan).playing {
+			let loopMode = aChan(chan).loopMode
+			if loopMode & OPENAL_LOOP_OFF != 0 {
+				channels[Int(chan)] = OPENAL_FREE;
+			}
+		}
+	} else {
+		channels[Int(chan)] = OPENAL_FREE
+	}
+	
+	channels[Int(chan)] = OpenALWrapper.OPENAL_PlaySoundEx(channel: channels[Int(chan)], sample: sptr, dsp: dsp, startpaused: startPaused);
+	if (channels[Int(chan)] < 0) {
+		channels[Int(chan)] = OpenALWrapper.OPENAL_PlaySoundEx(channel: OPENAL_FREE, sample: sptr, dsp: dsp, startpaused: startPaused);
+	}
 }
 
 func PlayStreamEx(channel chan: Int32, sample sptr: OpenALWrapper.Sample, dsp: OpenALWrapper.DSPUnit = nil, startPaused: Bool) {
-	/*
-	const OPENAL_SAMPLE * currSample = OPENAL_GetCurrentSample(channels[chan]);
-    if (currSample && currSample == OPENAL_Stream_GetSample(sptr)) {
-        OPENAL_StopSound(channels[chan]);
-        OPENAL_Stream_Stop(sptr);
-    } else {
-        OPENAL_Stream_Stop(sptr);
-        channels[chan] = OPENAL_FREE;
-    }
-
-    channels[chan] = OPENAL_Stream_PlayEx(channels[chan], sptr, dsp, startpaused);
-    if (channels[chan] < 0) {
-        channels[chan] = OPENAL_Stream_PlayEx(OPENAL_FREE, sptr, dsp, startpaused);
-    }
-	*/
+	func aChan(a: Int32) -> OpenALWrapper.Channel {
+		return OpenALWrapper.channelAtIndex(Int(channels[Int(a)]))
+	}
+	
+	let currSample = aChan(chan).sample
+	if let currSample = currSample where currSample === sptr {
+		aChan(chan).stop()
+		sptr.stop()
+	} else {
+		sptr.stop()
+		channels[Int(chan)] = OPENAL_FREE
+	}
+	
+	channels[Int(chan)] = OpenALWrapper.OPENAL_PlaySoundEx(channel: channels[Int(chan)], sample: sptr, dsp: dsp, startpaused: startPaused)
+	if channels[Int(chan)] < 0 {
+		channels[Int(chan)] = OpenALWrapper.OPENAL_PlaySoundEx(channel: OPENAL_FREE, sample: sptr, dsp: dsp, startpaused: startPaused)
+	}
 }
