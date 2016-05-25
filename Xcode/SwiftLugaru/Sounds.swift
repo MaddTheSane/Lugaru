@@ -9,24 +9,9 @@
 import Foundation
 import simd
 
-/*
-// FIXME: dimensionality is not a property of the sound sample.
-// This should be decided at the time of playback
-static int snd_mode(int snd)
-{
-switch (snd) {
-case alarmsound:
-case consolefailsound:
-case consolesuccesssound:
-case firestartsound:
-case fireendsound:
-return OPENAL_2D;
-default:
-return OPENAL_HW3D;
-}
-}
-*/
 
+/// FIXME: dimensionality is not a property of the sound sample.
+/// This should be decided at the time of playback
 private func snd_mode(snd: SoundTypes) -> UInt32 {
 	switch snd {
 	case .Alarm, .ConsoleFail, .ConsoleSuccess, .FireStart, .FireEnd:
@@ -35,7 +20,6 @@ private func snd_mode(snd: SoundTypes) -> UInt32 {
 	default:
 		return OPENAL_HW3D
 	}
-	
 }
 
 var channels = [Int32](count: 100, repeatedValue: OPENAL_FREE)
@@ -220,32 +204,15 @@ private let Sounds: [SoundValues] = {
 	return toRet
 }()
 
-private(set) var FootstepSound1: SoundTypes = .FootstepSnow1;
-private(set) var FootstepSound2: SoundTypes = .FootstepSnow2;
-private(set) var FootstepSound3: SoundTypes = .FootstepStone1;
-private(set) var FootstepSound4: SoundTypes = .FootstepStone2;
+var FootstepSound1: SoundTypes = .FootstepSnow1;
+var FootstepSound2: SoundTypes = .FootstepSnow2;
+var FootstepSound3: SoundTypes = .FootstepStone1;
+var FootstepSound4: SoundTypes = .FootstepStone2;
 
 
 func loadAllSounds() {
 	//Force loading the sounds
 	_ = samp
-/*	for (int i = 0; i < sounds_count; i++) {
-		char buf[64];
-		snprintf(buf, 64, ":Data:Sounds:%s", sound_data[i]);
-		samp[i] = OPENAL_Sample_Load(OPENAL_FREE,
-		                             ConvertFileName(buf),
-		                             snd_mode(i),
-		                             0, 0);
-	}
-	footstepsound = footstepsn1;
-	footstepsound2 = footstepsn2;
-	footstepsound3 = footstepst1;
-	footstepsound4 = footstepst2;
-	// Huh?
-	// OPENAL_Sample_SetMode(samp[whooshsound], OPENAL_LOOP_NORMAL);
-	for (int i = stream_firesound; i <= stream_menutheme; i++)
-	OPENAL_Stream_SetMode(samp[i], OPENAL_LOOP_NORMAL);
-*/
 }
 
 func emitSoundAt(soundid: Int32, position pos: float3, volume vol: Float)
@@ -287,7 +254,7 @@ func resumeStream(soundid: Int32) {
 	aChann.paused = false
 }
 
-func pause_sound(soundid: Int32) {
+func pauseSound(soundid: Int32) {
 	let aChann = OpenALWrapper.channelAtIndex(Int(channels[Int(soundid)]))
 	aChann.paused = true
 }

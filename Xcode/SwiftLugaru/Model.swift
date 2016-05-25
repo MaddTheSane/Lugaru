@@ -1418,5 +1418,4 @@ final class Model {
 			}
 		}
 	}
-
 }
