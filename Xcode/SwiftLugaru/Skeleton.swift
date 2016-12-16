@@ -13,16 +13,16 @@ import OpenGL.GL.GLU
 import OpenGL.GL.Ext
 
 enum AttackType {
-	case Neutral
-	case Normal
-	case Reversed
-	case Reversal
+	case neutral
+	case normal
+	case reversed
+	case reversal
 }
 
 enum AttackHeight {
-	case Low
-	case Middle
-	case High
+	case low
+	case middle
+	case high
 }
 
 final class Skeleton {
@@ -36,8 +36,8 @@ final class Skeleton {
 		var verticesClothes = [Int32]()
 		var length = Float(0)
 		var targetLength = Float(0)
-		var parent1: UnsafeMutablePointer<Joint> = nil
-		var parent2: UnsafeMutablePointer<Joint> = nil
+		var parent1: UnsafeMutablePointer<Joint>? = nil
+		var parent2: UnsafeMutablePointer<Joint>? = nil
 		var maxLength = Float()
 		var minLength = Float()
 		var type: Int32 = 0
@@ -51,7 +51,7 @@ final class Skeleton {
 		var strength = Float(0)
 
 		
-		mutating func doConstraint(spinny: Bool) {
+		mutating func doConstraint(_ spinny: Bool) {
 			
 		}
 

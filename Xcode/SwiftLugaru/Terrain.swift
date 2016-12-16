@@ -14,7 +14,7 @@ let subdivision = 64
 let max_patch_elements = (maxTerrainSize/subdivision)*(maxTerrainSize/subdivision)*54
 
 enum Environment {
-	case Snow //0
-	case Grass //1
-	case Desert //2
+	case snow //0
+	case grass //1
+	case desert //2
 }

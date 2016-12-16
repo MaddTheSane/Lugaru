@@ -13,11 +13,11 @@ struct Preferences {
 	var screenHeight = 480
 	var mouseSensitivity: Float = 1
 	var blur = false
-	var overallDetail = OverallDetail.Medium
+	var overallDetail = OverallDetail.medium
 	var floatingJump = false
 	var mouseJump = false
 	var ambientSound = true
-	var blood = Blood.LowDetail
+	var blood = Blood.lowDetail
 	var autoSloMo = true
 	var foliage = true
 	var music = true
@@ -25,7 +25,7 @@ struct Preferences {
 	var decalsEnabled = true
 	var invertMouse = false
 	var gameSpeed: Float = 1
-	var difficulty = Difficulty.Hard
+	var difficulty = Difficulty.hard
 	var damageEffects = true
 	var text = true
 	var debug = false
@@ -48,84 +48,84 @@ struct Preferences {
 	
 	
 	enum OverallDetail: Int, CustomStringConvertible, CustomDebugStringConvertible {
-		case Low = 0
-		case Medium = 1
-		case High = 2
+		case low = 0
+		case medium = 1
+		case high = 2
 		
 		var description: String {
 			switch self {
-			case .Low:
+			case .low:
 				return "Low"
-			case .Medium:
+			case .medium:
 				return "Medium"
-			case .High:
+			case .high:
 				return "High"
 			}
 		}
 		
 		var debugDescription: String {
 			switch self {
-			case .Low:
+			case .low:
 				return "Overall Detail: Low"
-			case .Medium:
+			case .medium:
 				return "Overall Detail: Medium"
-			case .High:
+			case .high:
 				return "Overall Detail: High"
 			}
 		}
 	}
 	
 	enum Difficulty: Int, CustomStringConvertible, CustomDebugStringConvertible {
-		case Easy = 0
-		case Medium = 1
-		case Hard = 2
+		case easy = 0
+		case medium = 1
+		case hard = 2
 		
 		var description: String {
 			switch self {
-			case .Easy:
+			case .easy:
 				return "Easier"
-			case .Medium:
+			case .medium:
 				return "Difficult"
-			case .Hard:
+			case .hard:
 				return "Insane"
 			}
 		}
 		
 		var debugDescription: String {
 			switch self {
-			case .Easy:
+			case .easy:
 				return "Difficulty: Easier"
-			case .Medium:
+			case .medium:
 				return "Difficulty: Difficult"
-			case .Hard:
+			case .hard:
 				return "Difficulty: Insane"
 			}
 		}
 	}
 	
 	enum Blood: Int, CustomStringConvertible, CustomDebugStringConvertible {
-		case Off = 0
-		case LowDetail = 1
-		case HighDetail = 2
+		case off = 0
+		case lowDetail = 1
+		case highDetail = 2
 		
 		var description: String {
 			switch self {
-			case .Off:
+			case .off:
 				return "Off"
-			case .LowDetail:
+			case .lowDetail:
 				return "On, low detail"
-			case .HighDetail:
+			case .highDetail:
 				return "On, high detail (slower)"
 			}
 		}
 		
 		var debugDescription: String {
 			switch self {
-			case .Off:
+			case .off:
 				return "Blood: Off"
-			case .LowDetail:
+			case .lowDetail:
 				return "Blood: On, low detail"
-			case .HighDetail:
+			case .highDetail:
 				return "Blood: On, high detail (slower)"
 			}
 		}

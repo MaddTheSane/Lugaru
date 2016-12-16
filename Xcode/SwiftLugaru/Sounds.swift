@@ -12,9 +12,9 @@ import simd
 
 /// FIXME: dimensionality is not a property of the sound sample.
 /// This should be decided at the time of playback
-private func snd_mode(snd: SoundTypes) -> UInt32 {
+private func snd_mode(_ snd: SoundTypes) -> UInt32 {
 	switch snd {
-	case .Alarm, .ConsoleFail, .ConsoleSuccess, .FireStart, .FireEnd:
+	case .alarm, .consoleFail, .consoleSuccess, .fireStart, .fireEnd:
 		return OPENAL_2D
 		
 	default:
@@ -22,10 +22,10 @@ private func snd_mode(snd: SoundTypes) -> UInt32 {
 	}
 }
 
-var channels = [Int32](count: 100, repeatedValue: OPENAL_FREE)
+var channels = [Int32](repeating: OPENAL_FREE, count: 100)
 var samp: Array<OpenALWrapper.Sample> = {
 	var toRet = Array<OpenALWrapper.Sample>()
-	for i in 0..<SoundTypes.Count.rawValue {
+	for i in 0..<SoundTypes.count.rawValue {
 		let aSamp = OpenALWrapper.Sample(index: OPENAL_FREE, file: ConvertFileName(":Data:Sounds:" + Sounds[i].name), name: Sounds[i].name, mode: snd_mode(SoundTypes(rawValue: i)!), offset: 0, length: 0)!
 		toRet.append(aSamp)
 	}
@@ -35,86 +35,86 @@ var samp: Array<OpenALWrapper.Sample> = {
 	//footstepsound4 = footstepst2;
 	// Huh?
 	// OPENAL_Sample_SetMode(samp[whooshsound], OPENAL_LOOP_NORMAL);
-	for i in SoundTypes.Stream_Fire.rawValue...SoundTypes.Stream_MenuTheme.rawValue {
+	for i in SoundTypes.stream_Fire.rawValue...SoundTypes.stream_MenuTheme.rawValue {
 		toRet[i].mode = OPENAL_LOOP_NORMAL
 	}
 	return toRet
 }()
 
 enum SoundTypes: Int {
-	case FootstepSnow1 = 0
-	case FootstepSnow2
-	case FootstepStone1
-	case FootstepStone2
-	case FootstepGrass1
-	case FootstepGrass2
-	case Land
-	case Jump
-	case Hawk
-	case Whoosh
-	case Land1
-	case Land2
-	case Break
-	case LowWhoosh
-	case MidWhoosh
-	case HighWhoosh
-	case MoveWhoosh
-	case HeavyImpact
-	case WhooshHit
-	case Thud
-	case Alarm
-	case Break2
-	case KnifeDraw
-	case KnifeSheathe
-	case FleshStab
-	case FleshStabRemove
-	case KnifeSwish
-	case KnifeSlice
-	case SwordSlice
-	case Skid
-	case SnowSkid
-	case BushRustle
-	case Clank1
-	case Clank2
-	case Clank3
-	case Clank4
-	case ConsoleSuccess
-	case ConsoleFail
-	case MetalHit
-	case ClawSlice
-	case Splatter
-	case Growl
-	case Growl2
-	case Bark
-	case Bark2
-	case Bark3
-	case Snarl
-	case Snarl2
-	case BarkGrowl
-	case RabbitAttack
-	case RabbitAttack2
-	case RabbitAttack3
-	case RabbitAttack4
-	case RabbitPain
-	case RabbitPain1
-	case RabbitChitter
-	case RabbitChitter2
-	case SwordStaff
-	case StaffBody
-	case StaffHead
-	case StaffBreak
-	case FireStart
-	case FireEnd
-	case Stream_Fire
-	case Stream_GrassTheme
-	case Stream_SnowTheme
-	case Stream_DesertTheme
-	case Stream_Wind
-	case Stream_DesertAmbient
-	case Stream_FightTheme
-	case Stream_MenuTheme
+	case footstepSnow1 = 0
+	case footstepSnow2
+	case footstepStone1
+	case footstepStone2
+	case footstepGrass1
+	case footstepGrass2
+	case land
+	case jump
+	case hawk
+	case whoosh
+	case land1
+	case land2
+	case `break`
+	case lowWhoosh
+	case midWhoosh
+	case highWhoosh
+	case moveWhoosh
+	case heavyImpact
+	case whooshHit
+	case thud
+	case alarm
+	case break2
+	case knifeDraw
+	case knifeSheathe
+	case fleshStab
+	case fleshStabRemove
+	case knifeSwish
+	case knifeSlice
+	case swordSlice
+	case skid
+	case snowSkid
+	case bushRustle
+	case clank1
+	case clank2
+	case clank3
+	case clank4
+	case consoleSuccess
+	case consoleFail
+	case metalHit
+	case clawSlice
+	case splatter
+	case growl
+	case growl2
+	case bark
+	case bark2
+	case bark3
+	case snarl
+	case snarl2
+	case barkGrowl
+	case rabbitAttack
+	case rabbitAttack2
+	case rabbitAttack3
+	case rabbitAttack4
+	case rabbitPain
+	case rabbitPain1
+	case rabbitChitter
+	case rabbitChitter2
+	case swordStaff
+	case staffBody
+	case staffHead
+	case staffBreak
+	case fireStart
+	case fireEnd
+	case stream_Fire
+	case stream_GrassTheme
+	case stream_SnowTheme
+	case stream_DesertTheme
+	case stream_Wind
+	case stream_DesertAmbient
+	case stream_FightTheme
+	case stream_MenuTheme
 	
-	case Count
+	case count
 }
 
 
@@ -125,89 +125,89 @@ private struct SoundValues {
 
 private let Sounds: [SoundValues] = {
 	var toRet = [SoundValues]()
-	func DECLARE_SOUND(a: SoundTypes, _ b: String) {
+	func DECLARE_SOUND(_ a: SoundTypes, _ b: String) {
 		toRet.append(SoundValues(index: a, name: b))
 	}
 	// TODO: better, more elegant way to do this?
-	DECLARE_SOUND(.FootstepSnow1, "footstepsnow1.ogg")
-	DECLARE_SOUND(.FootstepSnow2, "footstepsnow2.ogg")
-	DECLARE_SOUND(.FootstepStone1, "footstepstone1.ogg")
-	DECLARE_SOUND(.FootstepStone2, "footstepstone2.ogg")
-	DECLARE_SOUND(.FootstepGrass1, "footstepgrass1.ogg")
-	DECLARE_SOUND(.FootstepGrass2, "footstepgrass2.ogg")
-	DECLARE_SOUND(.Land, "land.ogg")
-	DECLARE_SOUND(.Jump, "jump.ogg")
-	DECLARE_SOUND(.Hawk, "hawk.ogg")
-	DECLARE_SOUND(.Whoosh, "whoosh.ogg")
-	DECLARE_SOUND(.Land1, "land1.ogg")
-	DECLARE_SOUND(.Land2, "land2.ogg")
-	DECLARE_SOUND(.Break, "broken.ogg")
-	DECLARE_SOUND(.LowWhoosh, "lowwhoosh.ogg")
-	DECLARE_SOUND(.MidWhoosh, "midwhoosh.ogg")
-	DECLARE_SOUND(.HighWhoosh, "highwhoosh.ogg")
-	DECLARE_SOUND(.MoveWhoosh, "movewhoosh.ogg")
-	DECLARE_SOUND(.HeavyImpact, "heavyimpact.ogg")
-	DECLARE_SOUND(.WhooshHit, "whooshhit.ogg")
-	DECLARE_SOUND(.Thud, "thud.ogg")
-	DECLARE_SOUND(.Alarm, "alarm.ogg")
-	DECLARE_SOUND(.Break2, "break.ogg")
-	DECLARE_SOUND(.KnifeDraw, "knifedraw.ogg")
-	DECLARE_SOUND(.KnifeSheathe, "knifesheathe.ogg")
-	DECLARE_SOUND(.FleshStab, "fleshstab.ogg")
-	DECLARE_SOUND(.FleshStabRemove, "fleshstabremove.ogg")
-	DECLARE_SOUND(.KnifeSwish, "knifeswish.ogg")
-	DECLARE_SOUND(.KnifeSlice, "knifeslice.ogg")
-	DECLARE_SOUND(.SwordSlice, "swordslice.ogg")
-	DECLARE_SOUND(.Skid, "skid.ogg")
-	DECLARE_SOUND(.SnowSkid, "snowskid.ogg")
-	DECLARE_SOUND(.BushRustle, "bushrustle.ogg")
-	DECLARE_SOUND(.Clank1, "clank1.ogg")
-	DECLARE_SOUND(.Clank2, "clank2.ogg")
-	DECLARE_SOUND(.Clank3, "clank3.ogg")
-	DECLARE_SOUND(.Clank4, "clank4.ogg")
-	DECLARE_SOUND(.ConsoleSuccess, "consolesuccess.ogg")
-	DECLARE_SOUND(.ConsoleFail, "consolefail.ogg")
-	DECLARE_SOUND(.MetalHit, "metalhit.ogg")
-	DECLARE_SOUND(.ClawSlice, "clawslice.ogg")
-	DECLARE_SOUND(.Splatter, "splatter.ogg")
-	DECLARE_SOUND(.Growl, "growl.ogg")
-	DECLARE_SOUND(.Growl2, "growl2.ogg")
-	DECLARE_SOUND(.Bark, "bark.ogg")
-	DECLARE_SOUND(.Bark2, "bark2.ogg")
-	DECLARE_SOUND(.Bark3, "bark3.ogg")
-	DECLARE_SOUND(.Snarl, "snarl.ogg")
-	DECLARE_SOUND(.Snarl2, "snarl2.ogg")
-	DECLARE_SOUND(.BarkGrowl, "barkgrowl.ogg")
-	DECLARE_SOUND(.RabbitAttack, "rabbitattack.ogg")
-	DECLARE_SOUND(.RabbitAttack2, "rabbitattack2.ogg")
-	DECLARE_SOUND(.RabbitAttack3, "rabbitattack3.ogg")
-	DECLARE_SOUND(.RabbitAttack4, "rabbitattack4.ogg")
-	DECLARE_SOUND(.RabbitPain, "rabbitpain.ogg")
-	DECLARE_SOUND(.RabbitPain1, "rabbitpain2.ogg")
-	DECLARE_SOUND(.RabbitChitter, "rabbitchitter.ogg")
-	DECLARE_SOUND(.RabbitChitter2, "rabbitchitter2.ogg")
-	DECLARE_SOUND(.SwordStaff, "swordstaff.ogg")
-	DECLARE_SOUND(.StaffBody, "staffbody.ogg")
-	DECLARE_SOUND(.StaffHead, "staffhead.ogg")
-	DECLARE_SOUND(.StaffBreak, "staffbreak.ogg")
-	DECLARE_SOUND(.FireStart, "firestart.ogg")
-	DECLARE_SOUND(.FireEnd, "fireend.ogg")
-	DECLARE_SOUND(.Stream_Fire, "fire.ogg")
-	DECLARE_SOUND(.Stream_GrassTheme, "music1grass.ogg")
-	DECLARE_SOUND(.Stream_SnowTheme, "music1snow.ogg")
-	DECLARE_SOUND(.Stream_DesertTheme, "music1desert.ogg")
-	DECLARE_SOUND(.Stream_Wind, "wind.ogg")
-	DECLARE_SOUND(.Stream_DesertAmbient, "desertambient.ogg")
-	DECLARE_SOUND(.Stream_FightTheme, "music2.ogg")
-	DECLARE_SOUND(.Stream_MenuTheme, "music3.ogg")
+	DECLARE_SOUND(.footstepSnow1, "footstepsnow1.ogg")
+	DECLARE_SOUND(.footstepSnow2, "footstepsnow2.ogg")
+	DECLARE_SOUND(.footstepStone1, "footstepstone1.ogg")
+	DECLARE_SOUND(.footstepStone2, "footstepstone2.ogg")
+	DECLARE_SOUND(.footstepGrass1, "footstepgrass1.ogg")
+	DECLARE_SOUND(.footstepGrass2, "footstepgrass2.ogg")
+	DECLARE_SOUND(.land, "land.ogg")
+	DECLARE_SOUND(.jump, "jump.ogg")
+	DECLARE_SOUND(.hawk, "hawk.ogg")
+	DECLARE_SOUND(.whoosh, "whoosh.ogg")
+	DECLARE_SOUND(.land1, "land1.ogg")
+	DECLARE_SOUND(.land2, "land2.ogg")
+	DECLARE_SOUND(.break, "broken.ogg")
+	DECLARE_SOUND(.lowWhoosh, "lowwhoosh.ogg")
+	DECLARE_SOUND(.midWhoosh, "midwhoosh.ogg")
+	DECLARE_SOUND(.highWhoosh, "highwhoosh.ogg")
+	DECLARE_SOUND(.moveWhoosh, "movewhoosh.ogg")
+	DECLARE_SOUND(.heavyImpact, "heavyimpact.ogg")
+	DECLARE_SOUND(.whooshHit, "whooshhit.ogg")
+	DECLARE_SOUND(.thud, "thud.ogg")
+	DECLARE_SOUND(.alarm, "alarm.ogg")
+	DECLARE_SOUND(.break2, "break.ogg")
+	DECLARE_SOUND(.knifeDraw, "knifedraw.ogg")
+	DECLARE_SOUND(.knifeSheathe, "knifesheathe.ogg")
+	DECLARE_SOUND(.fleshStab, "fleshstab.ogg")
+	DECLARE_SOUND(.fleshStabRemove, "fleshstabremove.ogg")
+	DECLARE_SOUND(.knifeSwish, "knifeswish.ogg")
+	DECLARE_SOUND(.knifeSlice, "knifeslice.ogg")
+	DECLARE_SOUND(.swordSlice, "swordslice.ogg")
+	DECLARE_SOUND(.skid, "skid.ogg")
+	DECLARE_SOUND(.snowSkid, "snowskid.ogg")
+	DECLARE_SOUND(.bushRustle, "bushrustle.ogg")
+	DECLARE_SOUND(.clank1, "clank1.ogg")
+	DECLARE_SOUND(.clank2, "clank2.ogg")
+	DECLARE_SOUND(.clank3, "clank3.ogg")
+	DECLARE_SOUND(.clank4, "clank4.ogg")
+	DECLARE_SOUND(.consoleSuccess, "consolesuccess.ogg")
+	DECLARE_SOUND(.consoleFail, "consolefail.ogg")
+	DECLARE_SOUND(.metalHit, "metalhit.ogg")
+	DECLARE_SOUND(.clawSlice, "clawslice.ogg")
+	DECLARE_SOUND(.splatter, "splatter.ogg")
+	DECLARE_SOUND(.growl, "growl.ogg")
+	DECLARE_SOUND(.growl2, "growl2.ogg")
+	DECLARE_SOUND(.bark, "bark.ogg")
+	DECLARE_SOUND(.bark2, "bark2.ogg")
+	DECLARE_SOUND(.bark3, "bark3.ogg")
+	DECLARE_SOUND(.snarl, "snarl.ogg")
+	DECLARE_SOUND(.snarl2, "snarl2.ogg")
+	DECLARE_SOUND(.barkGrowl, "barkgrowl.ogg")
+	DECLARE_SOUND(.rabbitAttack, "rabbitattack.ogg")
+	DECLARE_SOUND(.rabbitAttack2, "rabbitattack2.ogg")
+	DECLARE_SOUND(.rabbitAttack3, "rabbitattack3.ogg")
+	DECLARE_SOUND(.rabbitAttack4, "rabbitattack4.ogg")
+	DECLARE_SOUND(.rabbitPain, "rabbitpain.ogg")
+	DECLARE_SOUND(.rabbitPain1, "rabbitpain2.ogg")
+	DECLARE_SOUND(.rabbitChitter, "rabbitchitter.ogg")
+	DECLARE_SOUND(.rabbitChitter2, "rabbitchitter2.ogg")
+	DECLARE_SOUND(.swordStaff, "swordstaff.ogg")
+	DECLARE_SOUND(.staffBody, "staffbody.ogg")
+	DECLARE_SOUND(.staffHead, "staffhead.ogg")
+	DECLARE_SOUND(.staffBreak, "staffbreak.ogg")
+	DECLARE_SOUND(.fireStart, "firestart.ogg")
+	DECLARE_SOUND(.fireEnd, "fireend.ogg")
+	DECLARE_SOUND(.stream_Fire, "fire.ogg")
+	DECLARE_SOUND(.stream_GrassTheme, "music1grass.ogg")
+	DECLARE_SOUND(.stream_SnowTheme, "music1snow.ogg")
+	DECLARE_SOUND(.stream_DesertTheme, "music1desert.ogg")
+	DECLARE_SOUND(.stream_Wind, "wind.ogg")
+	DECLARE_SOUND(.stream_DesertAmbient, "desertambient.ogg")
+	DECLARE_SOUND(.stream_FightTheme, "music2.ogg")
+	DECLARE_SOUND(.stream_MenuTheme, "music3.ogg")
 	
 	return toRet
 }()
 
-var FootstepSound1: SoundTypes = .FootstepSnow1;
-var FootstepSound2: SoundTypes = .FootstepSnow2;
-var FootstepSound3: SoundTypes = .FootstepStone1;
-var FootstepSound4: SoundTypes = .FootstepStone2;
+var FootstepSound1: SoundTypes = .footstepSnow1;
+var FootstepSound2: SoundTypes = .footstepSnow2;
+var FootstepSound3: SoundTypes = .footstepStone1;
+var FootstepSound4: SoundTypes = .footstepStone2;
 
 
 func loadAllSounds() {
@@ -215,7 +215,7 @@ func loadAllSounds() {
 	_ = samp
 }
 
-func emitSoundAt(soundid: Int32, position pos: float3, volume vol: Float)
+func emitSoundAt(_ soundid: Int32, position pos: float3, volume vol: Float)
 {
 	var pos2 = pos
 	PlaySoundEx (channel: soundid, sample: samp[Int(soundid)], dsp: nil, startPaused: true)
@@ -225,7 +225,7 @@ func emitSoundAt(soundid: Int32, position pos: float3, volume vol: Float)
 	aChann.paused = false
 }
 
-func emitSound_np(soundid: Int32, volume vol: Float)
+func emitSound_np(_ soundid: Int32, volume vol: Float)
 {
 	PlaySoundEx (channel: soundid, sample: samp[Int(soundid)], dsp: nil, startPaused: true);
 	let aChann = OpenALWrapper.channelAtIndex(Int(channels[Int(soundid)]))
@@ -233,7 +233,7 @@ func emitSound_np(soundid: Int32, volume vol: Float)
 	aChann.paused = false
 }
 
-func emitStreamAt(soundid: Int32, position pos: float3, volume vol: Float) {
+func emitStreamAt(_ soundid: Int32, position pos: float3, volume vol: Float) {
 	var pos2 = pos
 	PlayStreamEx (channel: soundid, sample: samp[Int(soundid)], dsp: nil, startPaused: true);
 	let aChann = OpenALWrapper.channelAtIndex(Int(channels[Int(soundid)]))
@@ -242,19 +242,19 @@ func emitStreamAt(soundid: Int32, position pos: float3, volume vol: Float) {
 	aChann.paused = false
 }
 
-func emitStream_np(soundid: Int32, volume vol: Float) {
+func emitStream_np(_ soundid: Int32, volume vol: Float) {
 	PlayStreamEx (channel: soundid, sample: samp[Int(soundid)], dsp: nil, startPaused: true);
 	let aChann = OpenALWrapper.channelAtIndex(Int(channels[Int(soundid)]))
 	aChann.setVolume(Int32(vol))
 	aChann.paused = false
 }
 
-func resumeStream(soundid: Int32) {
+func resumeStream(_ soundid: Int32) {
 	let aChann = OpenALWrapper.channelAtIndex(Int(channels[Int(soundid)]))
 	aChann.paused = false
 }
 
-func pauseSound(soundid: Int32) {
+func pauseSound(_ soundid: Int32) {
 	let aChann = OpenALWrapper.channelAtIndex(Int(channels[Int(soundid)]))
 	aChann.paused = true
 }

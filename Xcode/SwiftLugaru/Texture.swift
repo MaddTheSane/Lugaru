@@ -10,13 +10,13 @@ import Cocoa
 import OpenGL.GL
 
 final class Texture {
-	private var tex: TextureRes?
+	fileprivate var tex: TextureRes?
 	
-	func load(fileURL: NSURL, hasMipMap: Bool, hasAlpha: Bool) {
+	func load(_ fileURL: URL, hasMipMap: Bool, hasAlpha: Bool) {
 		tex = TextureRes(fileName: fileURL, hasMipMap: hasMipMap, hasAlpha: hasAlpha)
 	}
 	
-	func load(fileURL: NSURL, hasMipMap: Bool, array byteArray: UnsafeMutablePointer<GLubyte>, inout skinSize: Int32) {
+	func load(_ fileURL: URL, hasMipMap: Bool, array byteArray: UnsafeMutablePointer<GLubyte>, skinSize: inout Int32) {
 		tex = TextureRes(fileName: fileURL, hasMipMap: hasMipMap, array: byteArray, skinSize: &skinSize)
 	}
 	
@@ -35,25 +35,25 @@ final class Texture {
 
 private class TextureRes {
 	var id: GLuint = 0
-	let filename: NSURL
+	let filename: URL
 	let hasMipmap: Bool
 	var hasAlpha: Bool
 	var isSkin = false
 	var skinsize: Int32 = 0
-	var data: NSData? = nil//UnsafeMutableBufferPointer<GLubyte> = nil
+	var data: Data? = nil//UnsafeMutableBufferPointer<GLubyte> = nil
 	//int datalen;
-	var skinData: UnsafeMutablePointer<GLubyte> = nil
+	var skinData: UnsafeMutablePointer<GLubyte>? = nil
 	
-	init(fileName _filename: NSURL, hasMipMap _hasMipmap: Bool, hasAlpha _hasAlpha: Bool) {
+	init(fileName _filename: URL, hasMipMap _hasMipmap: Bool, hasAlpha _hasAlpha: Bool) {
 		filename = _filename
 		hasMipmap = _hasMipmap
 		hasAlpha = _hasAlpha
 		
 		load();
-		TextureRes.list.addObject(self)
+		TextureRes.list.add(self)
 	}
 
-	init(fileName _filename: NSURL, hasMipMap _hasMipmap: Bool, array: UnsafeMutablePointer<GLubyte>, inout  skinSize skinsizep: Int32) {
+	init(fileName _filename: URL, hasMipMap _hasMipmap: Bool, array: UnsafeMutablePointer<GLubyte>, skinSize skinsizep: inout Int32) {
 		filename = _filename
 		hasMipmap = _hasMipmap
 		hasAlpha = false
@@ -62,19 +62,19 @@ private class TextureRes {
 		load();
 		skinsizep = skinsize;
 		
-		for (i, dat) in UnsafeBufferPointer(start: UnsafePointer<UInt8>(data!.bytes), count: data!.length).enumerate() {
+		for (i, dat) in UnsafeBufferPointer(start: (data! as NSData).bytes.bindMemory(to: UInt8.self, capacity: data!.count), count: data!.count).enumerated() {
 			array[i] = dat;
 		}
 		skinData = array;
-		TextureRes.list.addObject(self)
+		TextureRes.list.add(self)
 	}
 	
-	static var list = NSHashTable.weakObjectsHashTable()// Array<TextureRes>()
+	static var list = NSHashTable<AnyObject>.weakObjects()// Array<TextureRes>()
 	
 	func load() {
 		//load image into 'texture' global var
-		guard let image = NSImage(contentsOfURL: filename), imgData = image.TIFFRepresentation,
-			texture = NSBitmapImageRep(data: imgData) else {
+		guard let image = NSImage(contentsOf: filename), let imgData = image.tiffRepresentation,
+			let texture = NSBitmapImageRep(data: imgData) else {
 			return
 		}
 		
@@ -111,18 +111,19 @@ private class TextureRes {
 			} else {
 				let nb = texture.pixelsHigh * texture.pixelsWide * (texture.bitsPerPixel / 8);
 				let data = NSMutableData(length: Int(nb))
-				self.data = data
+				self.data = data as Data?
 				//data = (GLubyte*)malloc(nb * sizeof(GLubyte));
 				//datalen = 0;
 				var datalen = 0
-				let data2 = UnsafeMutableBufferPointer(start: UnsafeMutablePointer<UInt8>(data!.mutableBytes), count: data!.length)
+				//data.
+				let data2 = UnsafeMutableBufferPointer(start: data!.mutableBytes.assumingMemoryBound(to: UInt8.self), count: data!.length)
 				for i in 0..<nb {
 					if (((i + 1) % 4) != 0 || type == GL_RGB) {
-						data2[datalen] = texture.bitmapData[i]
+						data2[datalen] = texture.bitmapData![i]
 						datalen += 1
 					}
 				}
-				glTexImage2D(GLenum(GL_TEXTURE_2D), 0, type, GLsizei(texture.pixelsWide), GLsizei(texture.pixelsHigh), 0, GLenum(GL_RGB), GLenum(GL_UNSIGNED_BYTE), self.data!.bytes)
+				glTexImage2D(GLenum(GL_TEXTURE_2D), 0, type, GLsizei(texture.pixelsWide), GLsizei(texture.pixelsHigh), 0, GLenum(GL_RGB), GLenum(GL_UNSIGNED_BYTE), (self.data! as NSData).bytes)
 			}
 		} else {
 			glTexImage2D(GLenum(GL_TEXTURE_2D), 0, type, GLsizei(texture.pixelsWide), GLsizei(texture.pixelsHigh), 0, GLenum(type), GLenum(GL_UNSIGNED_BYTE), texture.bitmapData)
@@ -134,7 +135,7 @@ private class TextureRes {
 	}
 	
 	static func reloadAll() {
-		let generator = NSFastGenerator(list)
+		let generator = NSFastEnumerationIterator(list)
 		while let anObj = generator.next() as? TextureRes {
 			anObj.id = 0
 			anObj.load()

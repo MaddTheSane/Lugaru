@@ -9,7 +9,7 @@
 import Foundation
 import simd
 
-func normaldotproduct(point1a: float3, _ point2a: float3) -> Float {
+func normaldotproduct(_ point1a: float3, _ point2a: float3) -> Float {
 	var point1 = normalize(point1a)
 	var point2 = normalize(point2a)
 	//return simd::dot(point1, point2);
@@ -17,7 +17,7 @@ func normaldotproduct(point1a: float3, _ point2a: float3) -> Float {
 	return returnvalue;
 }
 
-func ReflectVector(inout vel: float3, _ n: float3)
+func ReflectVector(_ vel: inout float3, _ n: float3)
 {
 	let dotprod = dot(n,vel);
 	let vn = n * dotprod;
@@ -27,7 +27,7 @@ func ReflectVector(inout vel: float3, _ n: float3)
 }
 
 
-func rotate(thePoint1: float3, byAngles angles: (x: Float, y: Float, z: Float)) -> float3 {
+func rotate(_ thePoint1: float3, byAngles angles: (x: Float, y: Float, z: Float)) -> float3 {
 	var newpoint = float3();
 	var thePoint = thePoint1
 	var xang = angles.x
@@ -92,15 +92,15 @@ func distance(point Point: float3, lineStart LineStart: float3, lineEnd LineEnd:
 	return (Distance, Intersection);
 }
 
-func findDistancefast(point1: float3, _ point2: float3) -> Float {
+func findDistancefast(_ point1: float3, _ point2: float3) -> Float {
 	return((point1.x-point2.x)*(point1.x-point2.x)+(point1.y-point2.y)*(point1.y-point2.y)+(point1.z-point2.z)*(point1.z-point2.z));
 }
 
-private func square(num: Float) -> Float {
+private func square(_ num: Float) -> Float {
 	return num * num
 }
 
-func pointInTriangle(p: float3, normal: float3, _ p1: float3, _ p2: float3, _ p3: float3) -> Bool
+func pointInTriangle(_ p: float3, normal: float3, _ p1: float3, _ p2: float3, _ p3: float3) -> Bool
 {
 	var bInter = false;
 	let pointv = [p.x, p.y, p.z]
@@ -143,7 +143,7 @@ func pointInTriangle(p: float3, normal: float3, _ p1: float3, _ p2: float3, _ p3
 	return bInter;
 }
 
-func sphereLineIntersection(p1: float3, _ p2: float3, center p3: float3, radius r: Float) -> Bool {
+func sphereLineIntersection(_ p1: float3, _ p2: float3, center p3: float3, radius r: Float) -> Bool {
 	
 	// x1,p1->y,p1->z  P1 coordinates (point of line)
 	// p2->x,p2->y,p2->z  P2 coordinates (point of line)
@@ -183,7 +183,7 @@ func sphereLineIntersection(p1: float3, _ p2: float3, center p3: float3, radius 
 	return true;
 }
 
-func lineFacetd(p1: float3, _ p2: float3, _ pa: float3, _ pb: float3, _ pc: float3, _ n: float3, inout p: float3) -> Float {
+func lineFacetd(_ p1: float3, _ p2: float3, _ pa: float3, _ pb: float3, _ pc: float3, _ n: float3, p: inout float3) -> Float {
 	//Calculate the parameters for the plane
 	let d = -n.x * pa.x - n.y * pa.y - n.z * pa.z;
 	

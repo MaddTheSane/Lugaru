@@ -12,21 +12,21 @@ import OpenGL.GL.GLU
 import OpenGL.GL.Ext
 
 
-func loadTexture(fileURL: NSURL, inout textureID: GLuint, mipmap: Bool, hasAlpha: Bool) {
-	guard let sourcefile = NSImage(contentsOfURL:fileURL) else {
+func loadTexture(_ fileURL: URL, textureID: inout GLuint, mipmap: Bool, hasAlpha: Bool) {
+	guard let sourcefile = NSImage(contentsOf:fileURL) else {
 		return
 	}
 	
-	guard let sourceTiff = sourcefile.TIFFRepresentation, imgRep = NSBitmapImageRep(data: sourceTiff) else {
+	guard let sourceTiff = sourcefile.tiffRepresentation, let imgRep = NSBitmapImageRep(data: sourceTiff) else {
 		return
 	}
 	
-	print("Loading texture... " + fileURL.path!)
+	print("Loading texture... " + fileURL.path)
 	
 	do {
 		let type: GLint
 		//Alpha channel?
-		if !imgRep.alpha {
+		if !imgRep.hasAlpha {
 			type = GL_RGB
 		} else {
 			type = GL_RGBA
@@ -38,7 +38,7 @@ func loadTexture(fileURL: NSURL, inout textureID: GLuint, mipmap: Bool, hasAlpha
 			glGenTextures(1, &textureID)
 		}
 		glBindTexture(GLenum(GL_TEXTURE_2D), textureID)
-		glTexImage2D(GLenum(GL_TEXTURE_2D), 0, type, GLsizei(imgRep.pixelsWide), GLsizei(imgRep.pixelsHigh), 0, GLenum(imgRep.alpha ? GL_RGBA : GL_RGB), GLenum(GL_UNSIGNED_BYTE), imgRep.bitmapData);
+		glTexImage2D(GLenum(GL_TEXTURE_2D), 0, type, GLsizei(imgRep.pixelsWide), GLsizei(imgRep.pixelsHigh), 0, GLenum(imgRep.hasAlpha ? GL_RGBA : GL_RGB), GLenum(GL_UNSIGNED_BYTE), imgRep.bitmapData);
 		//ATI workaround!
 		glEnable(GLenum(GL_TEXTURE_2D))
 		glGenerateMipmap(GLenum(GL_TEXTURE_2D));  //Generate mipmaps now!!!

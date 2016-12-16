@@ -8,11 +8,11 @@
 
 import Foundation
 
-extension NSURL {
-	func URLByAppendingPathComponents(paths: [String]) -> NSURL {
+extension URL {
+	func URLByAppendingPathComponents(_ paths: [String]) -> URL {
 		var newURL = self
 		for path in paths {
-			newURL = newURL.URLByAppendingPathComponent(path)
+			newURL = newURL.appendingPathComponent(path)
 		}
 		return newURL
 	}

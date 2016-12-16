@@ -15,68 +15,68 @@ import OpenGL.GL.Ext
 let max_model_decals = 300
 
 final class Model {
-	private(set) var modelType = Type.Nothing
-	private var oldType = Type.Nothing
+	fileprivate(set) var modelType = ModelType.nothing
+	fileprivate var oldType = ModelType.nothing
 	
-	private(set) var vertexNum: Int16 = 0
+	fileprivate(set) var vertexNum: Int16 = 0
 	var hastexture = false
 	
-	private var possible = [Int32]() // maxModelVertex
-	private var owner = [Int32]() // maxTexturedTriangle
-	private var vertex = [float3]() // maxModelVertex
-	private var normals = [float3]() // maxModelVertex
-	private var faceNormals = [float3]() //maxTexturedTriangle
-	private var triangles = [TexturedTriangle]() //maxTexturedTriangle
-	private var vArray = [GLfloat]() //maxTexturedTriangle * 24
+	fileprivate var possible = [Int32]() // maxModelVertex
+	fileprivate var owner = [Int32]() // maxTexturedTriangle
+	fileprivate var vertex = [float3]() // maxModelVertex
+	fileprivate var normals = [float3]() // maxModelVertex
+	fileprivate var faceNormals = [float3]() //maxTexturedTriangle
+	fileprivate var triangles = [TexturedTriangle]() //maxTexturedTriangle
+	fileprivate var vArray = [GLfloat]() //maxTexturedTriangle * 24
 	
-	private(set) var texturePtr: GLuint = 0
-	private(set) var texture = Texture()
-	private(set) var numPossible: Int = 0
-	private(set) var color = false
+	fileprivate(set) var texturePtr: GLuint = 0
+	fileprivate(set) var texture = Texture()
+	fileprivate(set) var numPossible: Int = 0
+	fileprivate(set) var color = false
 	
-	private(set) var boundingSphereCenter = float3()
-	private(set) var boundingSphereRadius = Float(0)
+	fileprivate(set) var boundingSphereCenter = float3()
+	fileprivate(set) var boundingSphereRadius = Float(0)
 	
 	
 	struct Decal {
-		var textureCoordinates = [[Float]](count: 3, repeatedValue: [Float](count: 2, repeatedValue: 0))
-		var vertex = [float3](count: 3, repeatedValue: float3(0))
-		var type = Kind.Shadow
+		var textureCoordinates = [[Float]](repeating: [Float](repeating: 0, count: 2), count: 3)
+		var vertex = [float3](repeating: float3(0), count: 3)
+		var type = Kind.shadow
 		var opacity: Float = 0
 		var rotation: Float = 0
 		var aliveTime: Float = 0
 		var position = float3(0)
 		
 		enum Kind: Int {
-			case Shadow = 0
-			case Footprint
-			case Blood
-			case BloodFast
-			case PermanentShadow
-			case Break
-			case BloodSlow
-			case Bodyprint
+			case shadow = 0
+			case footprint
+			case blood
+			case bloodFast
+			case permanentShadow
+			case `break`
+			case bloodSlow
+			case bodyprint
 		}
 
 	}
-	private var decals = [Decal]()
+	fileprivate var decals = [Decal]()
 	
-	private(set) var flat = false
+	fileprivate(set) var flat = false
 
 	
-	enum Type {
-		case Nothing
-		case NoTexture
-		case Raw
-		case Decals
-		case Normal
+	enum ModelType {
+		case nothing
+		case noTexture
+		case raw
+		case decals
+		case normal
 	}
 
 	/// Textures List
 	struct Texture {
 		var xsz: Int = 0
 		var ysz: Int = 0
-		var txt: UnsafeMutablePointer<GLubyte> = nil
+		var txt: UnsafeMutablePointer<GLubyte>? = nil
 	}
 	
 	struct TexturedTriangle {
@@ -93,7 +93,7 @@ final class Model {
 	
 	// MARK: - checking functions
 	
-	func lineCheck(inout p1: float3, inout _ p2: float3, inout _ p: float3, move: float3, rotate: Float = 0) -> Int {
+	func lineCheck(_ p1: inout float3, _ p2: inout float3, _ p: inout float3, move: float3, rotate: Float = 0) -> Int {
 		var point = float3()
 		var oldDistance = Float(0)
 		
@@ -108,7 +108,7 @@ final class Model {
 		}
 		var firstintersecting = -1;
 		
-		for (j, triangle) in triangles.enumerate() {
+		for (j, triangle) in triangles.enumerated() {
 			let intersecting = lineFacetd(p1, p2, vertex[Int(triangle.vertex.0)], vertex[Int(triangle.vertex.1)],vertex[Int(triangle.vertex.2)], faceNormals[j],p: &point);
 			let distance = distance_squared(point, p1);
 			if (distance < oldDistance || firstintersecting == -1) && (intersecting != 0) {
@@ -125,7 +125,7 @@ final class Model {
 		return firstintersecting;
 	}
 	
-	func lineCheckSlide(inout p1: float3, inout _ p2: float3, inout _ p: float3, move: float3, rotate: Float = 0) -> Int {
+	func lineCheckSlide(_ p1: inout float3, _ p2: inout float3, _ p: inout float3, move: float3, rotate: Float = 0) -> Int {
 		var point = float3()
 		var olddistance = Float(0)
 		
@@ -140,7 +140,7 @@ final class Model {
 			p2 = SwiftLugaru.rotate(p2, byAngles: (x: 0, y: -rotate, z: 0));
 		}
 		
-		for (j, triangle) in triangles.enumerate() {
+		for (j, triangle) in triangles.enumerated() {
 			let intersecting = lineFacetd(p1, p2, vertex[Int(triangle.vertex.0)], vertex[Int(triangle.vertex.1)], vertex[Int(triangle.vertex.2)], faceNormals[j], p: &point);
 			let distance = distance_squared(point, p1);
 			if (distance<olddistance||firstintersecting == -1) && (intersecting != 0) {
@@ -163,7 +163,7 @@ final class Model {
 		return firstintersecting;
 	}
 	
-	func lineCheckPossible(inout p1: float3, inout _ p2: float3, inout _ p: float3, move: float3, rotate: Float = 0) -> Int {
+	func lineCheckPossible(_ p1: inout float3, _ p2: inout float3, _ p: inout float3, move: float3, rotate: Float = 0) -> Int {
 		var olddistance = Float(0)
 		var firstintersecting = -1;
 		var point = float3()
@@ -200,7 +200,7 @@ final class Model {
 		return firstintersecting;
 	}
 	
-	func lineCheckSlidePossible(inout p1: float3, inout _ p2: float3, inout _ p: float3, move: float3, rotate: Float = 0) -> Int {
+	func lineCheckSlidePossible(_ p1: inout float3, _ p2: inout float3, _ p: inout float3, move: float3, rotate: Float = 0) -> Int {
 		var olddistance = Float(0)
 		var point = float3()
 		
@@ -244,7 +244,7 @@ final class Model {
 		return firstintersecting;
 	}
 	
-	func sphereCheck(inout p1: float3, radius: Float, inout _ p: float3, move: float3, rotate: Float = 0) -> Int {
+	func sphereCheck(_ p1: inout float3, radius: Float, _ p: inout float3, move: float3, rotate: Float = 0) -> Int {
 		var olddistance = Float(0)
 		var point = float3()
 		var firstintersecting = -1;
@@ -259,7 +259,7 @@ final class Model {
 		}
 		
 		for _ in 0..<4 {
-			for (j, triangle) in triangles.enumerate() {
+			for (j, triangle) in triangles.enumerated() {
 				var intersecting = false
 				let distance: Float = {
 					let stage1 = (faceNormals[j].x*p1.x)+(faceNormals[j].y*p1.y)+(faceNormals[j].z*p1.z)
@@ -314,12 +314,12 @@ final class Model {
 	
 	// MARK: - file loading
 	
-	func load(fileNamed: String, texture textured: Bool) {
+	func load(_ fileNamed: String, texture textured: Bool) {
 		load(ConvertFileName(fileNamed), texture: textured)
 	}
 	
-	func load(fileURL: NSURL, texture textured: Bool) /*throws*/ {
-		print("Loading model " + fileURL.path!);
+	func load(_ fileURL: URL, texture textured: Bool) /*throws*/ {
+		print("Loading model " + fileURL.path);
 		
 		//if(visibleloading){
 		//loadscreencolor=2;
@@ -330,22 +330,22 @@ final class Model {
 		//oldvertexNum=vertexNum;
 		//oldTriangleNum=TriangleNum;
 		if textured {
-			modelType = .Normal;
+			modelType = .normal;
 		} else {
-			modelType = .NoTexture
+			modelType = .noTexture
 		}
 		color = false;
 		
-		let tfile = fopen(fileURL.fileSystemRepresentation, "rb" );
+		let tfile = fopen((fileURL as NSURL).fileSystemRepresentation, "rb" );
 		// read model settings
 		var triangleNum: Int16 = 0
 		
 		fseek(tfile, 0, SEEK_SET);
 		do {
 			var vNum: Int16 = 0
-			var vaListArr = [CVarArgType]()
-			vaListArr.append(withUnsafeMutablePointer(&vNum, {$0}))
-			vaListArr.append(withUnsafeMutablePointer(&triangleNum, {$0}))
+			var vaListArr = [CVarArg]()
+			vaListArr.append(withUnsafeMutablePointer(to: &vNum, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(to: &triangleNum, {$0}))
 			vfunpackf(tfile, "Bs Bs", getVaList(vaListArr))
 			vertexNum = vNum
 		}
@@ -363,26 +363,26 @@ final class Model {
 		
 		numPossible = 0;
 		
-		owner = [Int32](count: Int(vertexNum), repeatedValue: -1)
-		possible = [Int32](count: Int(triangleNum), repeatedValue: 0)
+		owner = [Int32](repeating: -1, count: Int(vertexNum))
+		possible = [Int32](repeating: 0, count: Int(triangleNum))
 		vertex.removeAll()
 		vertex.reserveCapacity(Int(vertexNum))
-		normals = [float3](count: Int(vertexNum), repeatedValue: float3(0))
-		faceNormals = [float3](count: Int(triangleNum), repeatedValue: float3(0))
+		normals = [float3](repeating: float3(0), count: Int(vertexNum))
+		faceNormals = [float3](repeating: float3(0), count: Int(triangleNum))
 		triangles.removeAll()
 		triangles.reserveCapacity(Int(triangleNum))
-		vArray = [GLfloat](count: Int(triangleNum) * 24, repeatedValue: 0)
+		vArray = [GLfloat](repeating: 0, count: Int(triangleNum) * 24)
 		
 		for _ in 0..<vertexNum {
-			var vaListArr = [CVarArgType]()
+			var vaListArr = [CVarArg]()
 			var tmpx = Float()
 			var tmpy = Float()
 			var tmpz = Float()
-			vaListArr.append(withUnsafeMutablePointer(&tmpx, {$0}))
-			vaListArr.append(withUnsafeMutablePointer(&tmpy, {$0}))
-			vaListArr.append(withUnsafeMutablePointer(&tmpz, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(to: &tmpx, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(to: &tmpy, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(to: &tmpz, {$0}))
 			vfunpackf(tfile, "Bf Bf Bf", getVaList(vaListArr))
-			vaListArr.removeAll(keepCapacity: true)
+			vaListArr.removeAll(keepingCapacity: true)
 			vertex.append(float3(tmpx, tmpy, tmpz))
 		}
 		
@@ -395,13 +395,13 @@ final class Model {
 			var vertex4: Int16 = 0
 			var vertex5: Int16 = 0
 			var vertex6: Int16 = 0
-			var vaListArr = [CVarArgType]()
-			vaListArr.append(withUnsafeMutablePointer(&vertex1, {$0}))
-			vaListArr.append(withUnsafeMutablePointer(&vertex2, {$0}))
-			vaListArr.append(withUnsafeMutablePointer(&vertex3, {$0}))
-			vaListArr.append(withUnsafeMutablePointer(&vertex4, {$0}))
-			vaListArr.append(withUnsafeMutablePointer(&vertex5, {$0}))
-			vaListArr.append(withUnsafeMutablePointer(&vertex6, {$0}))
+			var vaListArr = [CVarArg]()
+			vaListArr.append(withUnsafeMutablePointer(to: &vertex1, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(to: &vertex2, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(to: &vertex3, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(to: &vertex4, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(to: &vertex5, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(to: &vertex6, {$0}))
 			vfunpackf(tfile, "Bs Bs Bs Bs Bs Bs", getVaList(vaListArr))
 			triangle.vertex.0 = vertex1
 			triangle.vertex.1 = vertex3
@@ -410,11 +410,11 @@ final class Model {
 				var float1: Float = 0
 				var float2: Float = 0
 				var float3: Float = 0
-				var vaListArr2 = [CVarArgType]()
+				var vaListArr2 = [CVarArg]()
 				
-				vaListArr2.append(withUnsafeMutablePointer(&float1, {$0}))
-				vaListArr2.append(withUnsafeMutablePointer(&float2, {$0}))
-				vaListArr2.append(withUnsafeMutablePointer(&float3, {$0}))
+				vaListArr2.append(withUnsafeMutablePointer(to: &float1, {$0}))
+				vaListArr2.append(withUnsafeMutablePointer(to: &float2, {$0}))
+				vaListArr2.append(withUnsafeMutablePointer(to: &float3, {$0}))
 				vfunpackf(tfile, "Bf Bf Bf", getVaList(vaListArr2))
 				triangle.gx.0 = float1
 				triangle.gx.1 = float2
@@ -425,10 +425,10 @@ final class Model {
 				var float2: Float = 0
 				var float3: Float = 0
 				
-				var vaListArr2 = [CVarArgType]()
-				vaListArr2.append(withUnsafeMutablePointer(&float1, {$0}))
-				vaListArr2.append(withUnsafeMutablePointer(&float2, {$0}))
-				vaListArr2.append(withUnsafeMutablePointer(&float3, {$0}))
+				var vaListArr2 = [CVarArg]()
+				vaListArr2.append(withUnsafeMutablePointer(to: &float1, {$0}))
+				vaListArr2.append(withUnsafeMutablePointer(to: &float2, {$0}))
+				vaListArr2.append(withUnsafeMutablePointer(to: &float3, {$0}))
 				vfunpackf(tfile, "Bf Bf Bf", getVaList(vaListArr2))
 				triangle.gy.0 = float1
 				triangle.gy.1 = float2
@@ -445,30 +445,30 @@ final class Model {
 		updateBoundingSphere()
 	}
 	
-	func loadDecal(fileNamed: String, texture textured: Bool) {
+	func loadDecal(_ fileNamed: String, texture textured: Bool) {
 		loadDecal(ConvertFileName(fileNamed), texture: textured)
 	}
 	
-	func loadDecal(fileURL: NSURL, texture textured: Bool) {
-		print("Loading decal... " + fileURL.path!);
+	func loadDecal(_ fileURL: URL, texture textured: Bool) {
+		print("Loading decal... " + fileURL.path);
 		
 		//int oldvertexNum,oldTriangleNum;
 		//oldvertexNum=vertexNum;
 		//oldTriangleNum=TriangleNum;
 		
-		modelType = .Decals;
+		modelType = .decals;
 		color=false;
 		
-		let tfile = fopen(fileURL.fileSystemRepresentation, "rb");
+		let tfile = fopen((fileURL as NSURL).fileSystemRepresentation, "rb");
 		// read model settings
 		
 		var triangleNum = Int16()
 		fseek(tfile, 0, SEEK_SET);
 		do {
 			var vNum = Int16()
-			var vaListArr = [CVarArgType]()
-			vaListArr.append(withUnsafeMutablePointer(&vNum, {$0}))
-			vaListArr.append(withUnsafeMutablePointer(&triangleNum, {$0}))
+			var vaListArr = [CVarArg]()
+			vaListArr.append(withUnsafeMutablePointer(to: &vNum, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(to: &triangleNum, {$0}))
 			vfunpackf(tfile, "Bs Bs", getVaList(vaListArr))
 			vertexNum = vNum
 		}
@@ -486,25 +486,25 @@ final class Model {
 		
 		numPossible=0;
 		
-		owner = [Int32](count: Int(vertexNum), repeatedValue: -1)
-		possible = [Int32](count: Int(triangleNum), repeatedValue: 0)
+		owner = [Int32](repeating: -1, count: Int(vertexNum))
+		possible = [Int32](repeating: 0, count: Int(triangleNum))
 		vertex.removeAll()
 		vertex.reserveCapacity(Int(vertexNum))
-		normals = [float3](count: Int(vertexNum), repeatedValue: float3(0))
-		faceNormals = [float3](count: Int(triangleNum), repeatedValue: float3(0))
+		normals = [float3](repeating: float3(0), count: Int(vertexNum))
+		faceNormals = [float3](repeating: float3(0), count: Int(triangleNum))
 		triangles.removeAll()
 		triangles.reserveCapacity(Int(triangleNum))
-		vArray = [GLfloat](count: Int(triangleNum) * 24, repeatedValue: 0)
+		vArray = [GLfloat](repeating: 0, count: Int(triangleNum) * 24)
 		
 		
 		for _ in 0..<vertexNum {
 			var tmpx = Float()
 			var tmpy = Float()
 			var tmpz = Float()
-			var vaListArr = [CVarArgType]()
-			vaListArr.append(withUnsafeMutablePointer(&tmpx, {$0}))
-			vaListArr.append(withUnsafeMutablePointer(&tmpy, {$0}))
-			vaListArr.append(withUnsafeMutablePointer(&tmpz, {$0}))
+			var vaListArr = [CVarArg]()
+			vaListArr.append(withUnsafeMutablePointer(to: &tmpx, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(to: &tmpy, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(to: &tmpz, {$0}))
 			vfunpackf(tfile, "Bf Bf Bf", getVaList(vaListArr))
 			vertex.append(float3(tmpx, tmpy, tmpz))
 		}
@@ -518,13 +518,13 @@ final class Model {
 			var vertex4: Int16 = 0
 			var vertex5: Int16 = 0
 			var vertex6: Int16 = 0
-			var vaListArr = [CVarArgType]()
-			vaListArr.append(withUnsafeMutablePointer(&vertex1, {$0}))
-			vaListArr.append(withUnsafeMutablePointer(&vertex2, {$0}))
-			vaListArr.append(withUnsafeMutablePointer(&vertex3, {$0}))
-			vaListArr.append(withUnsafeMutablePointer(&vertex4, {$0}))
-			vaListArr.append(withUnsafeMutablePointer(&vertex5, {$0}))
-			vaListArr.append(withUnsafeMutablePointer(&vertex6, {$0}))
+			var vaListArr = [CVarArg]()
+			vaListArr.append(withUnsafeMutablePointer(to: &vertex1, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(to: &vertex2, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(to: &vertex3, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(to: &vertex4, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(to: &vertex5, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(to: &vertex6, {$0}))
 			vfunpackf(tfile, "Bs Bs Bs Bs Bs Bs", getVaList(vaListArr))
 			triangle.vertex.0 = vertex1
 			triangle.vertex.1 = vertex3
@@ -533,11 +533,11 @@ final class Model {
 				var float1: Float = 0
 				var float2: Float = 0
 				var float3: Float = 0
-				var vaListArr2 = [CVarArgType]()
+				var vaListArr2 = [CVarArg]()
 				
-				vaListArr2.append(withUnsafeMutablePointer(&float1, {$0}))
-				vaListArr2.append(withUnsafeMutablePointer(&float2, {$0}))
-				vaListArr2.append(withUnsafeMutablePointer(&float3, {$0}))
+				vaListArr2.append(withUnsafeMutablePointer(to: &float1, {$0}))
+				vaListArr2.append(withUnsafeMutablePointer(to: &float2, {$0}))
+				vaListArr2.append(withUnsafeMutablePointer(to: &float3, {$0}))
 				vfunpackf(tfile, "Bf Bf Bf", getVaList(vaListArr2))
 				triangle.gx.0 = float1
 				triangle.gx.1 = float2
@@ -548,10 +548,10 @@ final class Model {
 				var float2: Float = 0
 				var float3: Float = 0
 				
-				var vaListArr2 = [CVarArgType]()
-				vaListArr2.append(withUnsafeMutablePointer(&float1, {$0}))
-				vaListArr2.append(withUnsafeMutablePointer(&float2, {$0}))
-				vaListArr2.append(withUnsafeMutablePointer(&float3, {$0}))
+				var vaListArr2 = [CVarArg]()
+				vaListArr2.append(withUnsafeMutablePointer(to: &float1, {$0}))
+				vaListArr2.append(withUnsafeMutablePointer(to: &float2, {$0}))
+				vaListArr2.append(withUnsafeMutablePointer(to: &float3, {$0}))
 				vfunpackf(tfile, "Bf Bf Bf", getVaList(vaListArr2))
 				triangle.gy.0 = float1
 				triangle.gy.1 = float2
@@ -594,32 +594,32 @@ final class Model {
 		//return 1;
 	}
 	
-	func loadRaw(fileNamed: String) {
+	func loadRaw(_ fileNamed: String) {
 		loadRaw(ConvertFileName(fileNamed))
 	}
 	
-	func loadRaw(fileURL: NSURL) {
+	func loadRaw(_ fileURL: URL) {
 		//LOGFUNC;
 		
-		print("Loading raw... " + fileURL.path!);
+		print("Loading raw... " + fileURL.path);
 		
 		//int oldvertexNum,oldTriangleNum;
 		//oldvertexNum=vertexNum;
 		//oldTriangleNum=TriangleNum;
 		
-		modelType = .Raw;
+		modelType = .raw;
 		color = false;
 		
-		let tfile = fopen(fileURL.fileSystemRepresentation, "rb");
+		let tfile = fopen((fileURL as NSURL).fileSystemRepresentation, "rb");
 		// read model settings
 		
 		var triangleNum = Int16()
 		var vNum = Int16()
 		fseek(tfile, 0, SEEK_SET);
 		do {
-			var vaListArr = [CVarArgType]()
-			vaListArr.append(withUnsafeMutablePointer(&vNum, {$0}))
-			vaListArr.append(withUnsafeMutablePointer(&triangleNum, {$0}))
+			var vaListArr = [CVarArg]()
+			vaListArr.append(withUnsafeMutablePointer(to: &vNum, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(to: &triangleNum, {$0}))
 			vfunpackf(tfile, "Bs Bs", getVaList(vaListArr))
 			vertexNum = vNum
 		}
@@ -636,22 +636,22 @@ final class Model {
 		
 		numPossible=0;
 		
-		owner = [Int32](count: Int(vertexNum), repeatedValue: -1)
-		possible = [Int32](count: Int(triangleNum), repeatedValue: 0)
+		owner = [Int32](repeating: -1, count: Int(vertexNum))
+		possible = [Int32](repeating: 0, count: Int(triangleNum))
 		vertex.removeAll()
 		vertex.reserveCapacity(Int(vertexNum))
 		triangles.removeAll()
 		triangles.reserveCapacity(Int(triangleNum))
-		vArray = [GLfloat](count: Int(triangleNum) * 24, repeatedValue: 0)
+		vArray = [GLfloat](repeating: 0, count: Int(triangleNum) * 24)
 		
 		for _ in 0..<vertexNum {
 			var tmpx = Float()
 			var tmpy = Float()
 			var tmpz = Float()
-			var vaListArr = [CVarArgType]()
-			vaListArr.append(withUnsafeMutablePointer(&tmpx, {$0}))
-			vaListArr.append(withUnsafeMutablePointer(&tmpy, {$0}))
-			vaListArr.append(withUnsafeMutablePointer(&tmpz, {$0}))
+			var vaListArr = [CVarArg]()
+			vaListArr.append(withUnsafeMutablePointer(to: &tmpx, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(to: &tmpy, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(to: &tmpz, {$0}))
 			vfunpackf(tfile, "Bf Bf Bf", getVaList(vaListArr))
 			vertex.append(float3(tmpx, tmpy, tmpz))
 		}
@@ -665,13 +665,13 @@ final class Model {
 			var vertex4: Int16 = 0
 			var vertex5: Int16 = 0
 			var vertex6: Int16 = 0
-			var vaListArr = [CVarArgType]()
-			vaListArr.append(withUnsafeMutablePointer(&vertex1, {$0}))
-			vaListArr.append(withUnsafeMutablePointer(&vertex2, {$0}))
-			vaListArr.append(withUnsafeMutablePointer(&vertex3, {$0}))
-			vaListArr.append(withUnsafeMutablePointer(&vertex4, {$0}))
-			vaListArr.append(withUnsafeMutablePointer(&vertex5, {$0}))
-			vaListArr.append(withUnsafeMutablePointer(&vertex6, {$0}))
+			var vaListArr = [CVarArg]()
+			vaListArr.append(withUnsafeMutablePointer(to: &vertex1, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(to: &vertex2, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(to: &vertex3, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(to: &vertex4, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(to: &vertex5, {$0}))
+			vaListArr.append(withUnsafeMutablePointer(to: &vertex6, {$0}))
 			vfunpackf(tfile, "Bs Bs Bs Bs Bs Bs", getVaList(vaListArr))
 			triangle.vertex.0 = vertex1
 			triangle.vertex.1 = vertex3
@@ -680,11 +680,11 @@ final class Model {
 				var float1: Float = 0
 				var float2: Float = 0
 				var float3: Float = 0
-				var vaListArr2 = [CVarArgType]()
+				var vaListArr2 = [CVarArg]()
 				
-				vaListArr2.append(withUnsafeMutablePointer(&float1, {$0}))
-				vaListArr2.append(withUnsafeMutablePointer(&float2, {$0}))
-				vaListArr2.append(withUnsafeMutablePointer(&float3, {$0}))
+				vaListArr2.append(withUnsafeMutablePointer(to: &float1, {$0}))
+				vaListArr2.append(withUnsafeMutablePointer(to: &float2, {$0}))
+				vaListArr2.append(withUnsafeMutablePointer(to: &float3, {$0}))
 				vfunpackf(tfile, "Bf Bf Bf", getVaList(vaListArr2))
 				triangle.gx.0 = float1
 				triangle.gx.1 = float2
@@ -695,10 +695,10 @@ final class Model {
 				var float2: Float = 0
 				var float3: Float = 0
 				
-				var vaListArr2 = [CVarArgType]()
-				vaListArr2.append(withUnsafeMutablePointer(&float1, {$0}))
-				vaListArr2.append(withUnsafeMutablePointer(&float2, {$0}))
-				vaListArr2.append(withUnsafeMutablePointer(&float3, {$0}))
+				var vaListArr2 = [CVarArg]()
+				vaListArr2.append(withUnsafeMutablePointer(to: &float1, {$0}))
+				vaListArr2.append(withUnsafeMutablePointer(to: &float2, {$0}))
+				vaListArr2.append(withUnsafeMutablePointer(to: &float3, {$0}))
 				vfunpackf(tfile, "Bf Bf Bf", getVaList(vaListArr2))
 				triangle.gy.0 = float1
 				triangle.gy.1 = float2
@@ -714,12 +714,12 @@ final class Model {
 
 	
 	func updateVertexArray() {
-		guard modelType == .Normal || modelType == .Decals else {
+		guard modelType == .normal || modelType == .decals else {
 			return;
 		}
 		
 		if !flat {
-			for (i,triangle) in triangles.enumerate() {
+			for (i,triangle) in triangles.enumerated() {
 				let j = i*24;
 				vArray[j+0]=triangle.gx.0;
 				vArray[j+1]=triangle.gy.0;
@@ -749,7 +749,7 @@ final class Model {
 				vArray[j+23]=vertex[Int(triangle.vertex.2)].z;
 			}
 		} else {
-			for (i,triangle) in triangles.enumerate() {
+			for (i,triangle) in triangles.enumerated() {
 				let j = i*24;
 				vArray[j+0]=triangle.gx.0;
 				vArray[j+1]=triangle.gy.0;
@@ -783,11 +783,11 @@ final class Model {
 	}
 	
 	func updateVertexArrayNoTexture() {
-		guard modelType == .Normal || modelType == .Decals else {
+		guard modelType == .normal || modelType == .decals else {
 			return;
 		}
 		if !flat {
-			for (i,triangle) in triangles.enumerate() {
+			for (i,triangle) in triangles.enumerated() {
 				let j = i*24;
 				vArray[j+2]=normals[Int(triangle.vertex.0)].x;
 				vArray[j+3]=normals[Int(triangle.vertex.0)].y;
@@ -811,7 +811,7 @@ final class Model {
 				vArray[j+23]=vertex[Int(triangle.vertex.2)].z;
 			}
 		} else {
-			for (i,triangle) in triangles.enumerate() {
+			for (i,triangle) in triangles.enumerated() {
 				let j = i*24;
 				vArray[j+2]=faceNormals[i].x * -1;
 				vArray[j+3]=faceNormals[i].y * -1;
@@ -838,10 +838,10 @@ final class Model {
 	}
 	
 	func updateVertexArrayNoTexNoNorm() {
-		guard modelType == .Normal || modelType == .Decals else {
+		guard modelType == .normal || modelType == .decals else {
 			return;
 		}
-		for (i, triangle) in triangles.enumerate() {
+		for (i, triangle) in triangles.enumerated() {
 			let j = i*24;
 			vArray[j+5]=vertex[Int(triangle.vertex.0)].x;
 			vArray[j+6]=vertex[Int(triangle.vertex.0)].y;
@@ -880,7 +880,7 @@ final class Model {
 		updateVertexArray();
 	}
 	
-	func scaleTextureCoords(howMuch: Float) {
+	func scaleTextureCoords(_ howMuch: Float) {
 		for var triangle in triangles {
 			triangle.gx.0 *= howMuch;
 			triangle.gx.1 *= howMuch;
@@ -893,7 +893,7 @@ final class Model {
 		updateVertexArray();
 	}
 	
-	private func updateBoundingSphere() {
+	fileprivate func updateBoundingSphere() {
 		boundingSphereRadius=0;
 		for i in 0..<Int(vertexNum) {
 			for j in 0..<Int(vertexNum) {
@@ -910,7 +910,7 @@ final class Model {
 		scale(float3(xscale, yscale, zscale))
 	}
 	
-	func scale(amount: float3) {
+	func scale(_ amount: float3) {
 		for var vert in vertex {
 			vert *= amount
 		}
@@ -922,8 +922,8 @@ final class Model {
 		scaleNormals(float3(xscale, yscale, zscale))
 	}
 	
-	func scaleNormals(amount: float3) {
-		guard modelType == .Normal || modelType == .Decals else {
+	func scaleNormals(_ amount: float3) {
+		guard modelType == .normal || modelType == .decals else {
 			return
 		}
 		for var normal in normals {
@@ -941,7 +941,7 @@ final class Model {
 		translate(float3(xscale, yscale, zscale))
 	}
 	
-	func translate(amount: float3) {
+	func translate(_ amount: float3) {
 		for var vert in vertex {
 			vert += amount
 		}
@@ -954,7 +954,7 @@ final class Model {
 	}
 
 	
-	func rotate(amount: float3) {
+	func rotate(_ amount: float3) {
 		for var vert in vertex {
 			vert = SwiftLugaru.rotate(vert, byAngles: (amount.x, amount.y, amount.z))
 		}
@@ -964,18 +964,18 @@ final class Model {
 
 	//MARK: -
 	
-	func calculateNormals(facenormalise: Bool) {
+	func calculateNormals(_ facenormalise: Bool) {
 		//if(visibleloading){
 		//loadscreencolor=3;
 		//pgame->LoadingScreen();
 		//}
-		guard modelType == .Normal || modelType == .Decals else {
+		guard modelType == .normal || modelType == .decals else {
 			return;
 		}
 		
-		normals = [float3](count: Int(vertexNum), repeatedValue: float3())
+		normals = [float3](repeating: float3(), count: Int(vertexNum))
 		
-		for (i, triangle) in triangles.enumerate() {
+		for (i, triangle) in triangles.enumerated() {
 			let l_vect_b1 = vertex[Int(triangle.vertex.1)] - vertex[Int(triangle.vertex.0)];
 			let l_vect_b2 = vertex[Int(triangle.vertex.2)] - vertex[Int(triangle.vertex.0)];
 			faceNormals[i] = cross(l_vect_b1, l_vect_b2);
@@ -1000,10 +1000,10 @@ final class Model {
 		drawImmediate(texture: texturePtr)
 	}
 	
-	func drawImmediate(texture texture: GLuint) {
+	func drawImmediate(texture: GLuint) {
 		glBindTexture(GLenum(GL_TEXTURE_2D), texture);
 		glBegin(GLenum(GL_TRIANGLES))
-		for (i, triangle) in triangles.enumerate() {
+		for (i, triangle) in triangles.enumerated() {
 			/*if(Triangles[i].vertex[0]<vertexNum&&Triangles[i].vertex[1]<vertexNum&&Triangles[i].vertex[2]<vertexNum&&Triangles[i].vertex[0]>=0&&Triangles[i].vertex[1]>=0&&Triangles[i].vertex[2]>=0){
 			if(isnormal(vertex[Int(triangle.vertex.0)].x)&&isnormal(vertex[Int(triangle.vertex.0)].y)&&isnormal(vertex[Int(triangle.vertex.0)].z)
 			&&isnormal(vertex[Int(triangle.vertex.1)].x)&&isnormal(vertex[Int(triangle.vertex.1)].y)&&isnormal(vertex[Int(triangle.vertex.1)].z)
@@ -1054,8 +1054,8 @@ final class Model {
 		draw(texture: texturePtr)
 	}
 	
-	func draw(texture texture: GLuint) {
-		if modelType != .Normal && modelType != .Decals {
+	func draw(texture: GLuint) {
+		if modelType != .normal && modelType != .decals {
 			return
 		}
 		
@@ -1064,9 +1064,9 @@ final class Model {
 		glEnableClientState(GLenum(GL_TEXTURE_COORD_ARRAY))
 		
 		if !color {
-			glInterleavedArrays(GLenum(GL_T2F_N3F_V3F), GLsizei(8*sizeof(GLfloat)), vArray);
+			glInterleavedArrays(GLenum(GL_T2F_N3F_V3F), GLsizei(8*MemoryLayout<GLfloat>.size), vArray);
 		} else {
-			glInterleavedArrays(GLenum(GL_T2F_C3F_V3F), GLsizei(8*sizeof(GLfloat)), vArray);
+			glInterleavedArrays(GLenum(GL_T2F_C3F_V3F), GLsizei(8*MemoryLayout<GLfloat>.size), vArray);
 		}
 		glBindTexture(GLenum(GL_TEXTURE_2D), texture);
 		
@@ -1089,7 +1089,7 @@ final class Model {
 	}
 
 	func drawDecals(shadowTexture shadowtexture: GLuint, bloodTexture bloodtexture: GLuint, secondBloodTexture bloodtexture2: GLuint, breakTexture breaktexture: GLuint) {
-		guard preferences.decalsEnabled && modelType == .Decals else {
+		guard preferences.decalsEnabled && modelType == .decals else {
 			return
 		}
 		var lastType: Decal.Kind? = nil
@@ -1105,32 +1105,32 @@ final class Model {
 		glDepthMask(0);
 		//if(numdecals>max_model_decals)numdecals=max_model_decals;
 		for var decal in decals {
-			if (decal.type == .BloodFast && decal.aliveTime<2) {
+			if (decal.type == .bloodFast && decal.aliveTime<2) {
 				decal.aliveTime = 2;
 			}
 			
-			if decal.type == .Shadow && decal.type != lastType {
+			if decal.type == .shadow && decal.type != lastType {
 				glBindTexture(GLenum(GL_TEXTURE_2D), shadowtexture);
 				if !blend {
 					blend=true;
 					glAlphaFunc(GLenum(GL_GREATER), 0.0001);
 					glBlendFunc(GLenum(GL_SRC_ALPHA), GLenum(GL_ONE_MINUS_SRC_ALPHA))
 				}
-			} else if decal.type == .Break && decal.type != lastType {
+			} else if decal.type == .break && decal.type != lastType {
 				glBindTexture(GLenum(GL_TEXTURE_2D), breaktexture);
 				if !blend {
 					blend=true;
 					glAlphaFunc(GLenum(GL_GREATER), 0.0001);
 					glBlendFunc(GLenum(GL_SRC_ALPHA), GLenum(GL_ONE_MINUS_SRC_ALPHA))
 				}
-			} else if (decal.type == .Blood || decal.type == .BloodSlow) && decal.type != lastType {
+			} else if (decal.type == .blood || decal.type == .bloodSlow) && decal.type != lastType {
 				glBindTexture(GLenum(GL_TEXTURE_2D), bloodtexture);
 				if blend {
 					blend=false;
 					glAlphaFunc(GLenum(GL_GREATER), 0.15);
 					glBlendFunc(GLenum(GL_ONE),GLenum(GL_ZERO))
 				}
-			} else if (decal.type == .BloodFast) && decal.type != lastType {
+			} else if (decal.type == .bloodFast) && decal.type != lastType {
 				glBindTexture(GLenum(GL_TEXTURE_2D), bloodtexture2);
 				if blend {
 					blend=false;
@@ -1139,16 +1139,16 @@ final class Model {
 				}
 			}
 			switch decal.type {
-			case .Shadow:
+			case .shadow:
 				glColor4f(1,1,1,decal.opacity);
 				
-			case .Break:
+			case .break:
 				glColor4f(1,1,1,decal.opacity);
 				if decal.aliveTime > 58 {
 					glColor4f(1,1,1, decal.opacity * (60 - decal.aliveTime)/2);
 				}
 				
-			case .Blood, .BloodFast, .BloodSlow:
+			case .blood, .bloodFast, .bloodSlow:
 				glColor4f(1,1,1,decal.opacity);
 				if decal.aliveTime < 4 {
 					glColor4f(1,1,1,decal.opacity * decal.aliveTime * 0.25);
@@ -1178,40 +1178,40 @@ final class Model {
 		}
 		
 		var delDecalPos = Set<Int>()
-		for (i, var decal) in decals.enumerate().reverse() {
+		for (i, var decal) in decals.enumerated().reversed() {
 			decal.aliveTime+=multiplier;
-			if decal.type == .BloodSlow {
+			if decal.type == .bloodSlow {
 				decal.aliveTime-=multiplier*2/3;
 			}
-			if decal.type == .BloodFast {
+			if decal.type == .bloodFast {
 				decal.aliveTime+=multiplier*4;
 			}
-			if decal.type == .Shadow {
+			if decal.type == .shadow {
 				delDecalPos.insert(i)
 				continue
 			}
-			if (decal.type == .Blood || decal.type == .BloodFast || decal.type == .BloodSlow) && decal.aliveTime >= 60 {
+			if (decal.type == .blood || decal.type == .bloodFast || decal.type == .bloodSlow) && decal.aliveTime >= 60 {
 				delDecalPos.insert(i)
 			}
 		}
 		glAlphaFunc(GLenum(GL_GREATER), 0.0001);
 		glBlendFunc(GLenum(GL_SRC_ALPHA), GLenum(GL_ONE_MINUS_SRC_ALPHA))
 		
-		for i in Array(delDecalPos).sort().reverse() {
+		for i in Array(delDecalPos).sorted().reversed() {
 			removeDecal(i)
 		}
 	}
 	
 	// MARK: - Decals
-	func removeDecal(which: Int) {
-		guard preferences.decalsEnabled && modelType == .Decals else {
+	func removeDecal(_ which: Int) {
+		guard preferences.decalsEnabled && modelType == .decals else {
 			return
 		}
-		decals.removeAtIndex(which)
+		decals.remove(at: which)
 	}
 	
-	func makeDecal(type atype: Decal.Kind, `where` loc: float3, size: Float, opacity: Float, rotation: Float) {
-		guard preferences.decalsEnabled && modelType == .Decals else {
+	func makeDecal(type atype: Decal.Kind, where loc: float3, size: Float, opacity: Float, rotation: Float) {
+		guard preferences.decalsEnabled && modelType == .decals else {
 			return
 		}
 		
@@ -1219,7 +1219,7 @@ final class Model {
 		var aDecal = Decal()
 		decals.reserveCapacity(max_model_decals)
 		
-		func validateDecal(bDecal: Decal) -> Bool {
+		func validateDecal(_ bDecal: Decal) -> Bool {
 			if !(bDecal.textureCoordinates[0][0] < 0 && bDecal.textureCoordinates[1][0] < 0 && bDecal.textureCoordinates[2][0] < 0) {
 				if !(bDecal.textureCoordinates[0][1] < 0 && bDecal.textureCoordinates[1][1] < 0 && bDecal.textureCoordinates[2][1] < 0) {
 					if !(bDecal.textureCoordinates[0][0] > 1 && bDecal.textureCoordinates[1][0] > 1 && bDecal.textureCoordinates[2][0] > 1) {
@@ -1234,7 +1234,7 @@ final class Model {
 		
 		if opacity > 0 {
 			if (findDistancefast(loc, boundingSphereCenter) < (boundingSphereRadius + size) * (boundingSphereRadius + size)) {
-				for (i, triangle) in triangles.enumerate() {
+				for (i, triangle) in triangles.enumerated() {
 					let distance: Float = {
 						var stage1: Float = (faceNormals[i].x * loc.x)
 						stage1 += (faceNormals[i].y * loc.y)

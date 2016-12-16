@@ -12,10 +12,10 @@ import OpenGL.GL.GLU
 import OpenGL.GL.Ext
 
 final class Text {
-	private(set) var fontTexture: GLuint = 0
-	private var base: GLuint = 0
+	fileprivate(set) var fontTexture: GLuint = 0
+	fileprivate var base: GLuint = 0
 
-	func loadFontTexture(textureURL: NSURL) {
+	func loadFontTexture(_ textureURL: URL) {
 		loadTexture(textureURL, textureID: &fontTexture, mipmap: false, hasAlpha: false)
 		
 		if base != 0 {
@@ -97,11 +97,11 @@ final class Text {
 		}
 	}
 	
-	func print(x x: GLfloat, y: GLfloat, string: UnsafePointer<CChar>, set: UInt32, size: GLfloat, width: GLfloat, height: GLfloat, start: Int = 0, end: Int? = nil) {
+	func print(x: GLfloat, y: GLfloat, string: UnsafePointer<CChar>, set: UInt32, size: GLfloat, width: GLfloat, height: GLfloat, start: Int = 0, end: Int? = nil) {
 		glPrint(x: x, y: y, string: string, set: set, size: size, width: width, height: height, start: start, end: end ?? Int(strlen(string)), offset: 0);
 	}
 	
-	func printOutline(x x: GLfloat, y: GLfloat, string: UnsafePointer<CChar>, set: UInt32, size: GLfloat, width: GLfloat, height: GLfloat, start: Int = 0, end: Int? = nil) {
+	func printOutline(x: GLfloat, y: GLfloat, string: UnsafePointer<CChar>, set: UInt32, size: GLfloat, width: GLfloat, height: GLfloat, start: Int = 0, end: Int? = nil) {
 		glPrint(x: x, y: y, string: string, set: set, size: size, width: width, height: height, start: start, end: end ?? Int(strlen(string)), offset: 256);
 	}
 
@@ -115,7 +115,7 @@ final class Text {
 	}
 	
 	/// Where The Printing Happens
-	private func glPrint(x x: GLfloat, y: GLfloat, string: UnsafePointer<CChar>, set aSet: UInt32, size: GLfloat, width: GLfloat, height: GLfloat, start: Int, end: Int, offset: UInt32) {
+	fileprivate func glPrint(x: GLfloat, y: GLfloat, string: UnsafePointer<CChar>, set aSet: UInt32, size: GLfloat, width: GLfloat, height: GLfloat, start: Int, end: Int, offset: UInt32) {
 		var set = aSet
 		if set > 1 {
 			set = 1
@@ -151,7 +151,7 @@ final class Text {
 				// Choose The Font Set (0 or 1)
 				glListBase(base-32+(128*set) + offset);
 				// Write The Text To The Screen
-				glCallLists(Int32(end-start),GLenum(GL_BYTE),string.advancedBy(start));
+				glCallLists(Int32(end-start),GLenum(GL_BYTE),string.advanced(by: start));
 				// Select The Projection Matrix
 				glMatrixMode(GLenum(GL_PROJECTION));
 			}

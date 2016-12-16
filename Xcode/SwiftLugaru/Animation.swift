@@ -10,16 +10,16 @@ import Foundation
 
 class Animation {
 	enum AttackType {
-		case Neutral
-		case NormalAttack
-		case Reversed
-		case Reversal
+		case neutral
+		case normalAttack
+		case reversed
+		case reversal
 	}
 	
 	enum HeightType {
-		case Low
-		case Middle
-		case High
+		case low
+		case middle
+		case high
 	}
 	
 	enum AnimationTypes: Int {
@@ -160,35 +160,35 @@ class Animation {
 	}
 	
 	enum AnimationBitOffsets: Int {
-		case Idle = 0
-		case Sit
-		case Sleep
-		case Crouch
-		case Run
-		case Stop
-		case Land
-		case LandHard
-		case Flip
-		case Walljump
+		case idle = 0
+		case sit
+		case sleep
+		case crouch
+		case run
+		case stop
+		case land
+		case landHard
+		case flip
+		case walljump
 		
 		case animation_bit_count
 	};
 	
-	struct AnimationBits: OptionSetType {
+	struct AnimationBits: OptionSet {
 		let rawValue: UInt
 	
 		init(rawValue: UInt) {
 			self.rawValue = rawValue
 		}
-		static let Idle = AnimationBits(rawValue: 1 << UInt(AnimationBitOffsets.Idle.rawValue))
-		static let Sit = AnimationBits(rawValue: 1 << UInt(AnimationBitOffsets.Sit.rawValue))
-		static let Sleep = AnimationBits(rawValue: 1 << UInt(AnimationBitOffsets.Sleep.rawValue))
-		static let Crouch = AnimationBits(rawValue: 1 << UInt(AnimationBitOffsets.Crouch.rawValue))
-		static let Run = AnimationBits(rawValue: 1 << UInt(AnimationBitOffsets.Run.rawValue))
-		static let Stop = AnimationBits(rawValue: 1 << UInt(AnimationBitOffsets.Stop.rawValue))
-		static let Land = AnimationBits(rawValue: 1 << UInt(AnimationBitOffsets.Land.rawValue))
-		static let LandHard = AnimationBits(rawValue: 1 << UInt(AnimationBitOffsets.LandHard.rawValue))
-		static let Flip = AnimationBits(rawValue: 1 << UInt(AnimationBitOffsets.Flip.rawValue))
-		static let Walljump = AnimationBits(rawValue: 1 << UInt(AnimationBitOffsets.Walljump.rawValue))
+		static let Idle = AnimationBits(rawValue: 1 << UInt(AnimationBitOffsets.idle.rawValue))
+		static let Sit = AnimationBits(rawValue: 1 << UInt(AnimationBitOffsets.sit.rawValue))
+		static let Sleep = AnimationBits(rawValue: 1 << UInt(AnimationBitOffsets.sleep.rawValue))
+		static let Crouch = AnimationBits(rawValue: 1 << UInt(AnimationBitOffsets.crouch.rawValue))
+		static let Run = AnimationBits(rawValue: 1 << UInt(AnimationBitOffsets.run.rawValue))
+		static let Stop = AnimationBits(rawValue: 1 << UInt(AnimationBitOffsets.stop.rawValue))
+		static let Land = AnimationBits(rawValue: 1 << UInt(AnimationBitOffsets.land.rawValue))
+		static let LandHard = AnimationBits(rawValue: 1 << UInt(AnimationBitOffsets.landHard.rawValue))
+		static let Flip = AnimationBits(rawValue: 1 << UInt(AnimationBitOffsets.flip.rawValue))
+		static let Walljump = AnimationBits(rawValue: 1 << UInt(AnimationBitOffsets.walljump.rawValue))
 	};
 }

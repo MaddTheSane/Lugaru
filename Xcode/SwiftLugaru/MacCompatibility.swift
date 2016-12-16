@@ -11,13 +11,13 @@ import Foundation
 
 //char* ConvertFileName( const char* orgfilename, const char *mode = "rb" );
 
-private func getPrefPath() -> NSURL {
-	var appSupURL = try! NSFileManager.defaultManager().URLForDirectory(.ApplicationSupportDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
-	appSupURL = appSupURL.URLByAppendingPathComponent("Lugaru", isDirectory: true)
+private func getPrefPath() -> URL {
+	var appSupURL = try! FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+	appSupURL = appSupURL.appendingPathComponent("Lugaru", isDirectory: true)
 	
 	return appSupURL
 }
 
-func ConvertFileName(orgfilename: String, mode: String = "rb") -> NSURL {
-	return NSURL(fileURLWithPath: orgfilename)
+func ConvertFileName(_ orgfilename: String, mode: String = "rb") -> URL {
+	return URL(fileURLWithPath: orgfilename)
 }

@@ -27,10 +27,10 @@ let OPENAL_ALL: Int32 = -3
 
 ///Used as a basic namespace
 final class OpenALWrapper {
-	typealias DSPUnit = UnsafePointer<()>
+	typealias DSPUnit = UnsafeRawPointer
 
-	private static var implChannels = [Channel]()
-	static func channelAtIndex(idx: Int) -> Channel {
+	fileprivate static var implChannels = [Channel]()
+	static func channelAtIndex(_ idx: Int) -> Channel {
 		return implChannels[idx]
 	}
 	
@@ -58,7 +58,7 @@ final class OpenALWrapper {
 			}
 		}
 		
-		static func pauseAll(pause: Bool = true) {
+		static func pauseAll(_ pause: Bool = true) {
 			guard initialized else {
 				return
 			}
@@ -113,7 +113,7 @@ final class OpenALWrapper {
 			implChannels.forEach() { $0.stop() }
 		}
 		
-		private var loopMode: Int32 {
+		fileprivate var loopMode: Int32 {
 			guard initialized else {
 				return 0
 			}
@@ -125,7 +125,7 @@ final class OpenALWrapper {
 			return OPENAL_LOOP_OFF;
 		}
 		
-		private var playing: Bool {
+		fileprivate var playing: Bool {
 			guard initialized else {
 				return false
 			}
@@ -135,13 +135,14 @@ final class OpenALWrapper {
 			return((state == AL_PLAYING) ? true : false);
 		}
 		
-		func setAttributes(position pos: UnsafePointer<float3>, velocity vel: UnsafePointer<float3>) -> Bool {
+		@discardableResult
+		func setAttributes(position pos: UnsafePointer<float3>?, velocity vel: UnsafePointer<float3>?) -> Bool {
 			if !initialized {
 				return false;
 			}
 			
 			if pos != nil {
-				position = pos.memory * float3(1, 1, -1)
+				position = (pos?.pointee)! * float3(1, 1, -1)
 			}
 			
 			// we ignore velocity, since doppler's broken in the Linux AL at the moment...
@@ -149,7 +150,7 @@ final class OpenALWrapper {
 			return true;
 		}
 		
-		static func setVolumeForAll(vol: Int32) {
+		static func setVolumeForAll(_ vol: Int32) {
 			guard initialized else {
 				return
 			}
@@ -157,7 +158,7 @@ final class OpenALWrapper {
 			implChannels.forEach() { $0.setVolume(vol) }
 		}
 		
-		func setVolume(vol1: Int32) {
+		func setVolume(_ vol1: Int32) {
 			guard initialized else {
 				return
 			}
@@ -167,7 +168,7 @@ final class OpenALWrapper {
 			alSourcef(sid, AL_GAIN, gain);
 		}
 		
-		static func setFrequencyForAll(freq: Int32) {
+		static func setFrequencyForAll(_ freq: Int32) {
 			guard initialized else {
 				return
 			}
@@ -175,7 +176,7 @@ final class OpenALWrapper {
 			implChannels.forEach() { $0.setFrequency(freq) }
 		}
 		
-		func setFrequency(freq: Int32) {
+		func setFrequency(_ freq: Int32) {
 			guard initialized else {
 				return
 			}
@@ -198,11 +199,11 @@ final class OpenALWrapper {
 	final class Sample {
 		let name: String
 		///buffer id.
-		private(set) var bid: ALuint = 0
+		fileprivate(set) var bid: ALuint = 0
 		var mode: Int32 = 0
 		let is2D: Bool
 		
-		init?(index: Int32, file: NSURL, name name_or_data: String? = nil, mode: UInt32, offset: Int32, length: Int32) {
+		init?(index: Int32, file: URL, name name_or_data: String? = nil, mode: UInt32, offset: Int32, length: Int32) {
 			guard initialized else {
 				return nil
 			}
@@ -240,7 +241,7 @@ final class OpenALWrapper {
 			self.bid = bid
 			self.mode = OPENAL_LOOP_OFF
 			is2D = (mode == OPENAL_2D)
-			self.name = name_or_data ?? file.lastPathComponent!
+			self.name = name_or_data ?? file.lastPathComponent
 		}
 		
 		deinit {
@@ -257,7 +258,7 @@ final class OpenALWrapper {
 			}
 		}
 		
-		private func stop() {
+		fileprivate func stop() {
 			guard initialized else {
 				return;
 			}
@@ -271,18 +272,18 @@ final class OpenALWrapper {
 		}
 	}
 	
-	private static var initialized = false
-	private static var listenerPosition = float3()
+	fileprivate static var initialized = false
+	fileprivate static var listenerPosition = float3()
 	
-	private static func setListenerAttributes(position pos: UnsafePointer<float3>, inout velocity vel: UnsafePointer<float3>, f: float3, t: float3) {
+	fileprivate static func setListenerAttributes(position pos: UnsafePointer<float3>?, velocity vel: inout UnsafePointer<float3>, f: float3, t: float3) {
 		if !initialized {
 			return;
 		}
 		if pos != nil {
-			alListener3f(AL_POSITION, pos.memory[0], pos.memory[1], -pos.memory[2]);
-			listenerPosition[0] = pos.memory[0];
-			listenerPosition[1] = pos.memory[1];
-			listenerPosition[2] = -pos.memory[2];
+			alListener3f(AL_POSITION, (pos?.pointee[0])!, (pos?.pointee[1])!, -(pos?.pointee[2])!);
+			listenerPosition[0] = (pos?.pointee[0])!;
+			listenerPosition[1] = (pos?.pointee[1])!;
+			listenerPosition[2] = -(pos?.pointee[2])!;
 		}
 		
 		let vec: [ALfloat] = [ f.x, f.y, -f.z, t.z, t.y, -t.z ];
@@ -296,7 +297,7 @@ final class OpenALWrapper {
 		}
 	}
 	
-	static func initialize(mixrate: Int32, maxSoftwareChannels maxsoftwarechannels: Int32, flags: UInt32) -> Bool {
+	static func initialize(_ mixrate: Int32, maxSoftwareChannels maxsoftwarechannels: Int32, flags: UInt32) -> Bool {
 		if initialized {
 			return false;
 		} else if maxsoftwarechannels == 0 {
@@ -331,7 +332,7 @@ final class OpenALWrapper {
 		printf("AL_EXTENSIONS: %s\n", (char *) alGetString(AL_EXTENSIONS));
 		}*/
 		
-		implChannels = [Channel](count: Int(maxsoftwarechannels), repeatedValue: Channel())
+		implChannels = [Channel](repeating: Channel(), count: Int(maxsoftwarechannels))
 		for channel in implChannels {
 			alGenSources(1, &channel.sid) // !!! FIXME: verify this didn't fail!
 		}
@@ -366,7 +367,7 @@ final class OpenALWrapper {
 		alcProcessContext(alcGetCurrentContext())
 	}
 	
-	static func setSFXMasterVolume(volume: Int32) {
+	static func setSFXMasterVolume(_ volume: Int32) {
 		guard initialized else {
 			return
 		}
@@ -374,7 +375,7 @@ final class OpenALWrapper {
 		alListenerf(AL_GAIN, gain)
 	}
 
-	private static func OPENAL_PlaySoundEx(channel channel1: Int32, sample sptr: Sample, dsp: DSPUnit = nil, startpaused: Bool) -> Int32 {
+	fileprivate static func OPENAL_PlaySoundEx(channel channel1: Int32, sample sptr: Sample, dsp: DSPUnit? = nil, startpaused: Bool) -> Int32 {
 		var channel = channel1
 		guard initialized else {
 			return -1
@@ -383,7 +384,7 @@ final class OpenALWrapper {
 			return -1
 		}
 		if channel == OPENAL_FREE {
-			for (i, chan) in implChannels.enumerate() {
+			for (i, chan) in implChannels.enumerated() {
 				var state: ALint = 0;
 				alGetSourceiv(chan.sid, AL_SOURCE_STATE, &state);
 				if ((state != AL_PLAYING) && (state != AL_PAUSED)) {
@@ -410,14 +411,14 @@ final class OpenALWrapper {
 	}
 }
 
-private func decodeToPCM(_fName: NSURL, inout format: ALenum, inout size: ALsizei, inout frequency freq: ALuint) -> UnsafeMutablePointer<()> {
-	let fname: NSURL
+private func decodeToPCM(_ _fName: URL, format: inout ALenum, size: inout ALsizei, frequency freq: inout ALuint) -> UnsafeMutableRawPointer? {
+	let fname: URL
 	// !!! FIXME: if it's not Ogg, we don't have a decoder. I'm lazy.  :/
-	if _fName.pathExtension != nil {
-		let tmpURL = _fName.URLByDeletingPathExtension!
-		fname = tmpURL.URLByAppendingPathExtension("ogg")
+	if _fName.pathExtension != nil || _fName.pathExtension == "" {
+		let tmpURL = _fName.deletingPathExtension()
+		fname = tmpURL.appendingPathExtension("ogg")
 	} else {
-		fname = _fName.URLByAppendingPathExtension("ogg")
+		fname = _fName.appendingPathExtension("ogg")
 	}
 	//#ifdef __POWERPC__
 	//const int bigendian = 1;
@@ -426,12 +427,12 @@ private func decodeToPCM(_fName: NSURL, inout format: ALenum, inout size: ALsize
 	//#endif
 	
 	// just in case...
-	let io = fopen(fname.fileSystemRepresentation, "rb");
+	let io = fopen((fname as NSURL).fileSystemRepresentation, "rb");
 	guard io != nil else {
 		return nil;
 	}
 	
-	var retval: UnsafeMutablePointer<ALubyte> = nil;
+	var retval: UnsafeMutablePointer<ALubyte>? = nil;
 	
 	#if false  // untested, so disable this!
 	// Can we just feed it to the AL compressed?
@@ -458,25 +459,25 @@ private func decodeToPCM(_fName: NSURL, inout format: ALenum, inout size: ALsize
 		var bitstream: Int32 = 0;
 		let info = ov_info(&vf, -1);
 		size = 0;
-		format = (info.memory.channels == 1) ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
-		freq = ALuint(info.memory.rate)
+		format = (info?.pointee.channels == 1) ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
+		freq = ALuint((info?.pointee.rate)!)
 		
-		if ((info.memory.channels != 1) && (info.memory.channels != 2)) {
+		if ((info?.pointee.channels != 1) && (info?.pointee.channels != 2)) {
 			ov_clear(&vf);
 			return nil;
 		}
 		
-		var buf = [Int8](count: 1024 * 16, repeatedValue: 0)
+		var buf = [Int8](repeating: 0, count: 1024 * 16)
 		var rc = 0;
 		var allocated = 64 * 1024;
-		retval = UnsafeMutablePointer<ALubyte>(malloc(allocated))
+		retval =  malloc(allocated).assumingMemoryBound(to: ALubyte.self)
 		rc = ov_read(&vf, &buf, Int32(buf.count), bigendian, 2, 1, &bitstream)
 		while rc != 0 {
 			if rc > 0 {
 				size += rc;
 				if Int(size) >= allocated {
 					allocated *= 2;
-					let tmp = UnsafeMutablePointer<ALubyte>(realloc(retval, allocated))
+					let tmp = realloc(retval!, allocated)?.assumingMemoryBound(to: ALubyte.self)
 					guard tmp != nil else {
 						free(retval);
 						retval = nil;
@@ -484,24 +485,24 @@ private func decodeToPCM(_fName: NSURL, inout format: ALenum, inout size: ALsize
 					}
 					retval = tmp;
 				}
-				memcpy(retval.advancedBy(Int(size) - rc), buf, rc);
+				memcpy(retval?.advanced(by: Int(size) - rc), buf, rc);
 			}
 			rc = ov_read(&vf, &buf, Int32(buf.count), bigendian, 2, 1, &bitstream)
 		}
 		ov_clear(&vf);
-		return UnsafeMutablePointer<()>(retval)
+		return UnsafeMutableRawPointer(retval!)
 	}
 	
 	fclose(io);
 	return nil;
 }
 
-func PlaySoundEx(channel chan: Int32, sample sptr: OpenALWrapper.Sample, dsp: OpenALWrapper.DSPUnit = nil, startPaused: Bool) {
-	func aChan(a: Int32) -> OpenALWrapper.Channel {
+func PlaySoundEx(channel chan: Int32, sample sptr: OpenALWrapper.Sample, dsp: OpenALWrapper.DSPUnit? = nil, startPaused: Bool) {
+	func aChan(_ a: Int32) -> OpenALWrapper.Channel {
 		return OpenALWrapper.channelAtIndex(Int(channels[Int(a)]))
 	}
 	let currSample = aChan(chan).sample
-	if let currSample = currSample where currSample === samp[Int(chan)] {
+	if let currSample = currSample, currSample === samp[Int(chan)] {
 		if aChan(chan).paused {
 			aChan(chan).stop()
 			channels[Int(chan)] = OPENAL_FREE
@@ -521,13 +522,13 @@ func PlaySoundEx(channel chan: Int32, sample sptr: OpenALWrapper.Sample, dsp: Op
 	}
 }
 
-func PlayStreamEx(channel chan: Int32, sample sptr: OpenALWrapper.Sample, dsp: OpenALWrapper.DSPUnit = nil, startPaused: Bool) {
-	func aChan(a: Int32) -> OpenALWrapper.Channel {
+func PlayStreamEx(channel chan: Int32, sample sptr: OpenALWrapper.Sample, dsp: OpenALWrapper.DSPUnit? = nil, startPaused: Bool) {
+	func aChan(_ a: Int32) -> OpenALWrapper.Channel {
 		return OpenALWrapper.channelAtIndex(Int(channels[Int(a)]))
 	}
 	
 	let currSample = aChan(chan).sample
-	if let currSample = currSample where currSample === sptr {
+	if let currSample = currSample, currSample === sptr {
 		aChan(chan).stop()
 		sptr.stop()
 	} else {
